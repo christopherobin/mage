@@ -4,6 +4,23 @@ var errors = {
 	ERROR_CONST: { module: 'sns', code: 0000, log: { msg: 'Default error.', method: 'error' } }
 };
 
+var joins = {
+	actorActor:  { sql: 'JOIN actor AS ? ON sns_friend.actor = ?.id' },
+	friendActor: { sql: 'LEFT JOIN actor AS ? ON sns_friend.friend = ?.id' } //, requires: ['actorActor']
+}
+
+var allowedFields = {
+	count:				'count (*)',
+	actorId:            'actorId',
+	actorName:          ['actorActor', 'name'],
+	actorCreationTime:  ['actorActor', 'creationTime'],
+	friendName:         ['friendActor', 'name'],
+	friendCreationTime: ['friendActor', 'creationTime']
+}
+
+var emptyParams = {};
+
+
 exports.getFriends = function(state, actorId, fields, filter, cb)
 {
 	/* GETS ACTOR'S FRIENDS
@@ -13,6 +30,13 @@ exports.getFriends = function(state, actorId, fields, filter, cb)
 	filter - an object to set up where clauses
 	cb - callback function executed when db operation is done or on error(first param)
 	*/
+	
+	
+	var query = state.datasources.db.buildSelect(fields, allowedFields, 'sns_friend', joins) + " WHERE actor = ?" ;
+
+	var params = [actorId];
+
+	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 }
 
 exports.areFriends = function(state, actorId, otherActorId, cb)
@@ -23,6 +47,19 @@ exports.areFriends = function(state, actorId, otherActorId, cb)
 	otherActorId - whom you want to test against
 	cb - callback on complete or error.
 	*/
+	
+	var query = "select count(*) as amount from sns_friend where actor = ? and friend = ?"
+	
+	state.datasources.db.getOne(query, [actorId, otherActorId], errors.ERROR_CONST, function(err, data) {
+		if(err || data.amount == 0)
+		{
+			cb(ERROR_CONST);
+		}
+		else
+		{
+			cb(null, true);
+		}
+	});
 }
 
 exports.requestFriend = function(state, actorId, otherActorId, cb)
