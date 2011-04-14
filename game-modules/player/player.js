@@ -4,23 +4,6 @@ var errors = {
 
 exports.errors = errors;
 
-/*
-Player.prototype.load = function(state, cb)
-{
-	var query  = 'SELECT vipLevel, creationTime, lastLoginTime, nickname FROM player WHERE id = ?';
-	var params = [this.id];
-
-	app.util.loadObjectFromDb(this, state, query, params, errors.PLAYER_NOTFOUND, cb);
-};
-
-
-exports.load = function(ids, state, cb)
-{
-	var query  = 'SELECT id, vipLevel, creationTime, lastLoginTime, nickname FROM player WHERE id IN (' + ids.map(function() { return '?'; }).join(', ') + ')';
-
-	app.util.loadObjectsFromDb(Player, state, query, ids, errors.PLAYER_NOTFOUND, cb);
-};
-*/
 
 var playerFields = ['id', 'vipLevel', 'creationTime', 'lastLoginTime', 'nickname'];
 
