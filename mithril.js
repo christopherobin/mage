@@ -1,7 +1,6 @@
 global.mithril = this;
 
 var path = require('path');
-var fs   = require('fs');
 
 var gamePath = path.dirname(process.mainModule.filename);
 var rootPath = path.dirname(module.filename);
@@ -18,6 +17,8 @@ exports.paths = paths;
 
 exports.setup = function(pathConfig)
 {
+	var fs = require('fs');
+
 	var config = JSON.parse(fs.readFileSync(pathConfig, 'utf8'));
 
 	exports.config = config;
@@ -61,5 +62,23 @@ exports.setup = function(pathConfig)
 			client.send(JSON.stringify(userError));
 		}
 	};
+};
+
+
+exports.start = function()
+{
+	var httpServer = require('http').createServer(function(request, response) {
+		if (true || req.url == '/favicon.ico')
+		{
+			res.writeHead(404);
+			res.end('404 Not found');
+			return;
+		}
+	});
+
+	exports.httpServer.listen(mithril.config.server.port, mithril.config.server.host);
+
+	exports.msgServer = require(paths.lib + '/msg-server.js');
+	exports.msgServer.start(exports.httpServer);
 };
 
