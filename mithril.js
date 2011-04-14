@@ -7,11 +7,9 @@ var gamePath = path.dirname(process.mainModule.filename);
 var rootPath = path.dirname(module.filename);
 
 var paths = {
-	root:         rootPath,
-	extlib:       rootPath + '/extlib',
-	lib:          rootPath + '/lib'
-//	usercommands: rootPath + '/usercommands',
-//	log:          rootPath + '/log'
+	root:   rootPath,
+	extlib: rootPath + '/extlib',
+	lib:    rootPath + '/lib'
 };
 
 
