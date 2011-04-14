@@ -12,31 +12,13 @@ var paths = {
 	lib:    rootPath + '/lib'
 };
 
-
-function State(session, msgClient, datasources)
-{
-	this.session = session || null;			// if requests concern a player session
-	this.msgClient = msgClient || null;		// if live feedback is required through the message server
-	this.datasources = datasources || null;	// if datasources are required
-};
-
-State.prototype.cleanup = function()
-{
-	if (this.datasources)
-	{
-		this.datasources.close();
-		this.datasources = null;
-	}
-};
-
-
-exports.State = State;
+exports.state = require(paths.lib + '/state.js');
 exports.paths = paths;
 
 
 exports.setup = function(pathConfig)
 {
-	var config = JSON.parse(fs.readFileSync(pathConfig, 'utf8')); //   paths.root + '/config/config.json', 'utf8'));
+	var config = JSON.parse(fs.readFileSync(pathConfig, 'utf8'));
 
 	exports.config = config;
 	exports.datasources = require(paths.lib + '/datasources.js');
@@ -57,7 +39,11 @@ exports.setup = function(pathConfig)
 				logger.add(name, output);
 		}
 
-		exports.log = logger;
+		process.on('uncaughtException', function(error) {
+			logger.error(error);
+		});
+
+		exports.logger = logger;
 	}
 
 	exports.warn = function(error, client)
@@ -75,9 +61,5 @@ exports.setup = function(pathConfig)
 			client.send(JSON.stringify(userError));
 		}
 	};
-
-	process.on('uncaughtException', function(error) {
-		logger.error(error);
-	});
 };
 
