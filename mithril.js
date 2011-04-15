@@ -82,3 +82,21 @@ exports.start = function()
 	exports.msgServer.start(exports.httpServer);
 };
 
+
+exports.time = null;
+exports.mtime = null;
+
+function updateTime()
+{
+	var currentTime = (new Date).getTime();
+
+	exports.time = (currentTime / 1000) << 0;	// round down
+	exports.mtime = currentTime;
+
+	setTimeout(updateTime, 1000 - (currentTime % 1000));
+
+	// console.log('Scheduled time update in ' + (1000 - (currentTime % 1000)) + 'msec (current time: ' + exports.time + ', ' + exports.mtime + ')');
+}
+
+updateTime();
+
