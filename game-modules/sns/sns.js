@@ -18,7 +18,7 @@ var allowedFields = {
 	friendCreationTime: ['friendActor', 'creationTime']
 }
 
-var emptyParams = {};
+var emptyParams = [];
 
 
 exports.getFriends = function(state, actorId, fields, filter, cb)
@@ -48,7 +48,7 @@ exports.areFriends = function(state, actorId, otherActorId, cb)
 	cb - callback on complete or error.
 	*/
 	
-	var query = "select count(*) as amount from sns_friend where actor = ? and friend = ?"
+	var query = "SELECT count(*) AS amount FROM sns_friend WHERE actor = ? AND friend = ?"
 	
 	state.datasources.db.getOne(query, [actorId, otherActorId], errors.ERROR_CONST, function(err, data) {
 		if(err || data.amount == 0)
@@ -70,6 +70,11 @@ exports.requestFriend = function(state, actorId, otherActorId, cb)
 	otherActorId - whom you want to link with
 	cb - callback on complete or error.
 	*/
+	
+	var query = "INSERT INTO sns_friendrequest (actor, targetActor) VALUES ( ?, ? )";
+	
+	state.datasources.db.exec(query, [actorId, otherActorId], errors.ERROR_CONST, cb);
+	
 }
 
 exports.getRecievedFriendRequests = function(state, actorId, cb)
@@ -79,6 +84,10 @@ exports.getRecievedFriendRequests = function(state, actorId, cb)
 	actorId - this actor's ID
 	cb - callback on complete or error gives back records of actors requesting actorID's friendship.
 	*/
+	
+	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.actor = actor.id WHERE targetActor = ?";
+	
+	state.datasources.db.getMany(query, actorId, errors.ERROR_CONST, cb);
 }
 
 exports.getSentFriendRequests = function(state, actorId, cb)
@@ -88,6 +97,10 @@ exports.getSentFriendRequests = function(state, actorId, cb)
 	actorId - this actor's ID
 	cb - callback on complete or error gives back records of actors to who actor Id has sent an unaccepted request
 	*/
+	
+	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.targetActor = actor.id WHERE sns_friendrequest.actor = ?";
+	
+	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
 }
 
 exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
@@ -98,7 +111,30 @@ exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
 	otherActorId - whom link up with
 	cb - callback on complete or error.
 	*/
-		
+	
+	var sqlTestRequested = "SELECT count (*) as request FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
+	
+	state.datasources.db.getOne(sqlTestRequested, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, function(err, data) {
+		if(err)
+		{
+			cb(ERROR_CONST);
+		}
+		else
+		{
+			state.datasources.db.wrapTransaction(function(){
+				
+				var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
+				state.datasources.db.exec(sqlCleanup, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, null);
+				
+				var sqlMakeFriends = "INSERT INTO sns_friends (actor, friend) VALUES ( ? , ? )";
+				state.datasources.db.exec(sqlMakeFriends, [actorId, otherActorId], errors.ERROR_CONST, null);
+				
+				state.datasources.db.unwrapTransaction();
+				
+			}, cb);
+		}
+	});
+	
 }
 
 exports.rejectFriendRequest(state, actorId, otherActorId, cb)
@@ -109,5 +145,8 @@ exports.rejectFriendRequest(state, actorId, otherActorId, cb)
 	otherActorId - whom link up with
 	cb - callback on complete or error.
 	*/
+	
+	var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
+	state.datasources.db.exec(sqlCleanup,[actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, cb);
 	
 }
