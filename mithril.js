@@ -11,9 +11,9 @@ var paths = {
 	lib:    rootPath + '/lib'
 };
 
-exports.state = require(paths.lib + '/state.js');
 exports.paths = paths;
-
+exports.state = require(paths.lib + '/state.js');
+exports.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
 
 exports.setup = function(pathConfig)
 {
@@ -67,7 +67,7 @@ exports.setup = function(pathConfig)
 
 exports.start = function()
 {
-	var httpServer = require('http').createServer(function(request, response) {
+	exports.httpServer = require('http').createServer(function(request, response) {
 		if (true || req.url == '/favicon.ico')
 		{
 			res.writeHead(404);
@@ -78,7 +78,7 @@ exports.start = function()
 
 	exports.httpServer.listen(mithril.config.server.port, mithril.config.server.host);
 
-	exports.msgServer = require(paths.lib + '/msg-server.js');
+	exports.msgServer = require(paths.lib + '/msgServer.js');
 	exports.msgServer.start(exports.httpServer);
 };
 
