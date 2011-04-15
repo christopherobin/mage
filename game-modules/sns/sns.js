@@ -18,7 +18,7 @@ var allowedFields = {
 	friendCreationTime: ['friendActor', 'creationTime']
 }
 
-var emptyParams = {};
+var emptyParams = [];
 
 
 exports.getFriends = function(state, actorId, fields, filter, cb)
@@ -71,9 +71,9 @@ exports.requestFriend = function(state, actorId, otherActorId, cb)
 	cb - callback on complete or error.
 	*/
 	
-	var query = "INSERT INTO sns_friendrequest (actor, targetActor) VALUES (" + actorId + ", " + otherActorId +")";
+	var query = "INSERT INTO sns_friendrequest (actor, targetActor) VALUES ( ?, ? )";
 	
-	state.datasources.db.insert(query, errors.ERROR_CONST, cb);
+	state.datasources.db.exec(query, [actorId, otherActorId], errors.ERROR_CONST, cb);
 	
 }
 
@@ -85,9 +85,9 @@ exports.getRecievedFriendRequests = function(state, actorId, cb)
 	cb - callback on complete or error gives back records of actors requesting actorID's friendship.
 	*/
 	
-	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.actor = actor.id WHERE targetActor = " + actorId;
+	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.actor = actor.id WHERE targetActor = ?";
 	
-	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(query, actorId, errors.ERROR_CONST, cb);
 }
 
 exports.getSentFriendRequests = function(state, actorId, cb)
@@ -98,9 +98,9 @@ exports.getSentFriendRequests = function(state, actorId, cb)
 	cb - callback on complete or error gives back records of actors to who actor Id has sent an unaccepted request
 	*/
 	
-	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.targetActor = actor.id WHERE sns_friendrequest.actor = " + actorId;
+	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.targetActor = actor.id WHERE sns_friendrequest.actor = ?";
 	
-	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
 }
 
 exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
@@ -112,33 +112,26 @@ exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
 	cb - callback on complete or error.
 	*/
 	
-	var sqlTestRequested = "SELECT count (*) as request FROM sns_friendrequest where actor = " + actorId + " AND targetActor = " + otherActorId + " OR actor = " + otherActorId + " AND targetActor = " + actorId;
+	var sqlTestRequested = "SELECT count (*) as request FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
 	
-	state.datasources.db.getOne(sqlTestRequested, {}, errors.ERROR_CONST, function(err, data) {
-		if(err || data.request == 0)
+	state.datasources.db.getOne(sqlTestRequested, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, function(err, data) {
+		if(err)
 		{
 			cb(ERROR_CONST);
 		}
 		else
 		{
-			state.datasources.db.beginTransaction();
-			
-			var sqlCleanup = "DELETE FROM sns_friendrequest where actor = " + actorId + " AND targetActor = " + otherActorId + " OR actor = " + otherActorId + " AND targetActor = " + actorId;
-			state.datasources.db.delFrom(sqlCleanup, errors.ERROR_CONST, null);
-			
-			var sqlMakeFriends = "INSERT INTO sns_friends (actor, friend) VALUES (" + actorId + ", " + otherActorId +")";
-			state.datasources.db.insert(sqlMakeFriends, errors.ERROR_CONST, null);
-			
-			state.datasources.db.commit( function (error){
-				if(error != null)				
-				{
-					state.datasources.db.rollBack()
-				}
-				else
-				{
-					cb(ERROR_CONST);
-				}
-			});
+			state.datasources.db.wrapTransaction(function(){
+				
+				var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
+				state.datasources.db.exec(sqlCleanup, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, null);
+				
+				var sqlMakeFriends = "INSERT INTO sns_friends (actor, friend) VALUES ( ? , ? )";
+				state.datasources.db.exec(sqlMakeFriends, [actorId, otherActorId], errors.ERROR_CONST, null);
+				
+				state.datasources.db.unwrapTransaction();
+				
+			}, cb);
 		}
 	});
 	
@@ -153,7 +146,7 @@ exports.rejectFriendRequest(state, actorId, otherActorId, cb)
 	cb - callback on complete or error.
 	*/
 	
-	var sqlDel = "DELETE FROM sns_friendrequest where actor = " + actorId + " AND targetActor = " + otherActorId + " OR actor = " + otherActorId + " AND targetActor = " + actorId;
-	state.datasources.db.sqlDel(sqlCleanup, errors.ERROR_CONST, cb);
+	var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
+	state.datasources.db.exec(sqlCleanup,[actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, cb);
 	
 }
