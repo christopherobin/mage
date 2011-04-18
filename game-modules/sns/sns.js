@@ -1,4 +1,4 @@
-// Social Networking Services Module.
+// Social Networking Services Module. TF April 2011
 
 var errors = {
 	ERROR_CONST: { module: 'sns', code: 0000, log: { msg: 'Default error.', method: 'error' } }
@@ -18,25 +18,18 @@ var allowedFields = {
 	friendCreationTime: ['friendActor', 'creationTime']
 }
 
-var emptyParams = [];
-
-
-exports.getFriends = function(state, actorId, fields, filter, cb)
+exports.getFriends = function(state, actorId, fields, cb)
 {
 	/* GETS ACTOR'S FRIENDS
 	state - tossable object containing actors's particulars, session, dbconn etc
 	actorId - integer representing actor's ID
 	fields - an array containing the fields required
-	filter - an object to set up where clauses
 	cb - callback function executed when db operation is done or on error(first param)
 	*/
 	
-	
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'sns_friend', joins) + " WHERE actor = ?" ;
 
-	var params = [actorId];
-
-	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
 }
 
 exports.areFriends = function(state, actorId, otherActorId, cb)
@@ -115,23 +108,23 @@ exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
 	var sqlTestRequested = "SELECT count (*) as request FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
 	
 	state.datasources.db.getOne(sqlTestRequested, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, function(err, data) {
-		if(err)
+		if(err || data.request != 1)
 		{
 			cb(ERROR_CONST);
 		}
 		else
 		{
-			state.datasources.db.wrapTransaction(function(){
+			state.datasources.db.wrapTransaction(function(db){
 				
 				var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
-				state.datasources.db.exec(sqlCleanup, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, null);
+				db.exec(sqlCleanup, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, null);
 				
 				var sqlMakeFriends = "INSERT INTO sns_friends (actor, friend) VALUES ( ? , ? )";
-				state.datasources.db.exec(sqlMakeFriends, [actorId, otherActorId], errors.ERROR_CONST, null);
+				db.exec(sqlMakeFriends, [actorId, otherActorId], errors.ERROR_CONST, null);
 				
-				state.datasources.db.unwrapTransaction();
+				db.unwrapTransaction();
 				
-			}, cb);
+			}, cb);  //cb gets err only in this case.
 		}
 	});
 	
