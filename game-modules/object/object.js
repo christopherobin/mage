@@ -21,25 +21,33 @@ var allowedFields = {
 }
 
 exports.getCollection = function(state, collectionId, fields, objOptions, cb){
-	// TODO: Parse objOptions as where clase.
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE id = ?" ;
+	var params = [collectionId];
 
-	state.datasources.db.getMany(query, [collectionId], errors.ERROR_CONST, cb);
+	if(objOptions && Object.keys(objOptions).length > 0)
+	{
+		if('objectName' in objOptions)
+		{
+			query += " AND obj_object.name = ?";
+			params.push(objOptions[objectName]);
+		}
+		if('propertyName' in objOptions)
+		{
+			query += " AND obj_object_data.property = ";
+			params.push(objOptions[propertyName]);
+		}
+	}
+	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
-
 exports.addCollection = function(state, type, slotCount, parentCollection, cb){
-	
 	var query = "INSERT INTO collection (type, slotCount, parent) VALUES ( ?, ?, ? )";
-	
 	state.datasources.db.exec(query, [type, slotCount, parentCollection], errors.ERROR_CONST, cb);
-	
 };
 
 exports.editCollection = function(state, collectionId, objFields, cb){
 	
 	var query = "UPDATE obj_collection SET ";
-	
 	var params = [];
 	
 	for(var key in objFields)
@@ -51,7 +59,6 @@ exports.editCollection = function(state, collectionId, objFields, cb){
 		}
 	}
 	query = query.substring(0,query.lenth-2);
-	
 	query += " WHERE id = ?";
 	
 	params.push(collectionId);
@@ -60,7 +67,6 @@ exports.editCollection = function(state, collectionId, objFields, cb){
 };
 
 exports.delCollection = function(state, collectionId, objOptions, cb){
-	
 	//TODO: parse options: removeObjects, allowOrphanChildCollections, removeChildCollections, etc
 	
 	var sql = "DELETE FROM obj_collection WHERE id = ?";
@@ -74,23 +80,48 @@ exports.setCollectionOwnership = function(state, collectionId, actorId, cb){
 
 exports.getPlayerCollections = function(state, owner, objOptions, cb)
 {	
-	//TODO: parse options as where clause - eg. type=xyz
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE owner = ?" ;
+	var params = [owner];
+	
+	if(objOptions && Object.keys(objOptions).length > 0)
+	{
+		if('parent' in objOptions)
+		{
+			query += " AND obj_collection.parent = ? ";
+			params.push(objOptions[parent]);
+		}
+	}
 	state.datasources.db.getMany(query, [owner], errors.ERROR_CONST, cb);
 };
 
 exports.getChildCollections = function(state, collectionId, objOptions, cb)
 {
-	var query = "SELECT * FROM obj_collection WHERE parent = ?";  //TODO: change SELECT * ?
+	var query = "SELECT * FROM obj_collection WHERE parent = ?";
 	state.datasources.db.getMany(query, [collectionId], errors.ERROR_CONST, cb);
 };
 
 exports.addObjectToCollection = function(state, objectId, collectionId, optSlot, objOptions, cb)
-{ /*TODO: parse objOptions e.g moveFromExistingCol.
-	TODO: deal with slots */
-	
-	var sql = "INSERT into obj_collection_object (collection, object) VALUES (?, ?)";
-	state.datasources.db.exec(sql,[collectionId, objectId], errors.ERROR_CONST, cb);
+{
+	state.datasources.db.wrapTransaction(function(db)
+	{
+		params = [collectionId, objectId];
+		var sql = (optSlot) ? (params.push(optSlot), "INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)") : "INSERT into obj_collection_object (collection, object) VALUES (?, ?)";	
+		
+		state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
+			
+		if(objOptions && Object.keys(objOptions).length > 0)
+		{
+			if('removeFromCurrentCollections' in objOptions)
+			{
+				sql = "DELETE from obj_collection_object WHERE collection <> ?";
+				db.exec(sql, [collectionId], errors.ERROR_CONST, function(err, data){
+					db.unwrapTransaction();	
+				});
+			}
+		}
+		else
+		{	db.unwrapTransaction();	}
+	});
 };
 
 exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollectionId, cb)
@@ -110,11 +141,14 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 				{
 					sql = "INSERT into obj_collection_object (collection, object) VALUES (?,?)";
 					params = [newCollectionId, data.id];
-					db.exec(sql, params, errors.ERROR_CONST, null);
+					db.exec(sql, params, errors.ERROR_CONST, function(err, data){
+						db.unwrapTransaction();	
+					});
 				}
-			
-				db.unwrapTransaction();	
-			
+				else
+				{
+					db.unwrapTransaction();	
+				}
 			});
 		});
 	}, cb);
@@ -153,7 +187,7 @@ exports.getObjectData = function(state, objectId, properties, cb)
 	}
 	query = query.substr(0,query.length - 2);
 	query += ");";
-	state.datasources.db.exec(query, [], errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(query, [], errors.ERROR_CONST, cb);
 };
 
 exports.setObjectData = function(state, objectId, data, cb)	// this could get expensive on big objs. reccomend one property per obj.
@@ -187,10 +221,12 @@ exports.delObjectData = function(state, objectId, properties, cb)
 	sql = "DELETE FROM obj_object_data WHERE object = ? and property IN (";
 	for(var i=0;i<properties.length;i++)
 	{
-		sql += properties[i] + " ,";
+		//sql += properties[i] + " ,";
+		sql += "? ,";
 	}
 	sql = sql.substr(0,sql.length - 2);
-	sql += ");";
+	sql += ")";
 	
-	state.datasources.db.exec(sql, [objectId], errors.ERROR_CONST, cb);
+	properties.unshift(objectId);
+	state.datasources.db.exec(sql, properties, errors.ERROR_CONST, cb);
 };
