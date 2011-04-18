@@ -29,14 +29,14 @@ exports.getActor = function(state, id, fields, state, cb)
 };
 
 
-exports.addActor = function(state, creationTime, name, cb)
+exports.addActor = function(state, name, cb)
 {
 	var time = mithril.core.time;
 
-	var query = 'INSERT INTO actor VALUES(NULL, ?, ?)';
+	var query = 'INSERT INTO actor (name, creationTime) VALUES (?, ?)';
 	var params = [name, time];
-
-	state.datasources.db.exec(query, params, error.ACTOR_ADD_FAILED, function(err, info) {
+console.log(query, params)
+	state.datasources.db.exec(query, params, errors.ACTOR_ADD_FAILED, function(err, info) {
 		if (err)
 			cb(err);
 		else
@@ -50,7 +50,7 @@ exports.setActorName = function(state, id, name, cb)
 	var query = 'UPDATE actor SET name = ? WHERE id = ?';
 	var params = [name, id];
 
-	state.datasources.db.exec(query, params, error.ACTOR_EDIT_FAILED, cb);
+	state.datasources.db.exec(query, params, errors.ACTOR_EDIT_FAILED, cb);
 };
 
 
@@ -59,6 +59,6 @@ exports.delActor = function(state, id, cb)
 	var query = 'DELETE FROM actor WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.exec(query, params, error.ACTOR_DEL_FAILED, cb);
+	state.datasources.db.exec(query, params, errors.ACTOR_DEL_FAILED, cb);
 };
 

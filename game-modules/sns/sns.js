@@ -130,7 +130,7 @@ exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
 	
 }
 
-exports.rejectFriendRequest(state, actorId, otherActorId, cb)
+exports.rejectFriendRequest = function(state, actorId, otherActorId, cb)
 {
 	/* ACTOR A REJECTS ACTOR B's FRIENDSHIP REQUEST
 	state - tossable object containing actors's particulars, session, dbconn etc

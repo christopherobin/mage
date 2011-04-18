@@ -20,17 +20,19 @@ var joins = {
 };
 
 
-exports.getPlayer = function(state, id, fields, state, cb)
+exports.getPlayer = function(state, id, fields, cb)
 {
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'player', joins) + ' WHERE actor = ?';
 	var params = [id];
 
-	state.datasources.db.getOne(query, params, errors.PLAYER_NOTFOUND, cb);
+	state.datasources.db.getOne(query, params, true, errors.PLAYER_NOTFOUND, cb);
 };
 
 
-exports.addPlayer = function(state, actorId, vipLevel, lastLoginTime, cb)
+exports.addPlayer = function(state, actorId, vipLevel, cb)
 {
+	var lastLoginTime = mithril.core.time;
+	
 	var query = 'INSERT INTO player(actor, vipLevel, lastLoginTime) VALUES(?, ?, ?)';
 	var params = [actorId, vipLevel, lastLoginTime];
 
@@ -85,5 +87,5 @@ exports.delPlayer = function(state, playerId, cb)
 };
 
 
-exports.session = require('./session.js');
+exports.sessions = require('./sessions.js');
 
