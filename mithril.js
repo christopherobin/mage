@@ -1,19 +1,32 @@
 global.mithril = this;
 
+exports.core = {};
+
 var path = require('path');
 
 var gamePath = path.dirname(process.mainModule.filename);
 var rootPath = path.dirname(module.filename);
 
 var paths = {
-	root:   rootPath,
-	extlib: rootPath + '/extlib',
-	lib:    rootPath + '/lib'
+	root:        rootPath,
+	extlib:      rootPath + '/extlib',
+	lib:         rootPath + '/lib',
+	gameModules: rootPath + '/game-modules'
 };
 
-exports.paths = paths;
-exports.state = require(paths.lib + '/state.js');
-exports.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
+exports.core.paths = paths;
+exports.core.state = require(paths.lib + '/state.js');
+exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
+
+
+// import game modules
+
+exports.actor = require(paths.gameModules + '/actor/actor.js');
+exports.player = require(paths.gameModules + '/player/player.js');
+exports.sns = require(paths.gameModules + '/sns/sns.js');
+exports.obj = require(paths.gameModules + '/obj/obj.js');
+exports.gc = require(paths.gameModules + '/gc/gc.js');
+
 
 exports.setup = function(pathConfig)
 {
@@ -21,8 +34,8 @@ exports.setup = function(pathConfig)
 
 	var config = JSON.parse(fs.readFileSync(pathConfig, 'utf8'));
 
-	exports.config = config;
-	exports.datasources = require(paths.lib + '/datasources.js');
+	exports.core.config = config;
+	exports.core.datasources = require(paths.lib + '/datasources.js');
 
 	if (config.debug && config.debug.log)
 	{
@@ -44,10 +57,10 @@ exports.setup = function(pathConfig)
 			logger.error(error);
 		});
 
-		exports.logger = logger;
+		exports.core.logger = logger;
 	}
 
-	exports.warn = function(error, client)
+	exports.core.warn = function(error, client)
 	{
 		if (error.log)
 		{
@@ -67,7 +80,7 @@ exports.setup = function(pathConfig)
 
 exports.start = function()
 {
-	exports.httpServer = require('http').createServer(function(request, response) {
+	exports.core.httpServer = require('http').createServer(function(request, response) {
 		if (true || req.url == '/favicon.ico')
 		{
 			res.writeHead(404);
@@ -76,22 +89,22 @@ exports.start = function()
 		}
 	});
 
-	exports.httpServer.listen(mithril.config.server.port, mithril.config.server.host);
+	exports.core.httpServer.listen(exports.core.config.server.port, exports.core.config.server.host);
 
-	exports.msgServer = require(paths.lib + '/msgServer.js');
-	exports.msgServer.start(exports.httpServer);
+	exports.core.msgServer = require(paths.lib + '/msgServer.js');
+	exports.core.msgServer.start(exports.core.httpServer);
 };
 
 
-exports.time = null;
-exports.mtime = null;
+exports.core.time = null;
+exports.core.mtime = null;
 
 function updateTime()
 {
 	var currentTime = (new Date).getTime();
 
-	exports.time = (currentTime / 1000) << 0;	// round down
-	exports.mtime = currentTime;
+	exports.core.time = (currentTime / 1000) << 0;	// round down
+	exports.core.mtime = currentTime;
 
 	setTimeout(updateTime, 1000 - (currentTime % 1000));
 
@@ -99,4 +112,3 @@ function updateTime()
 }
 
 updateTime();
-

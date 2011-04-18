@@ -58,7 +58,7 @@ exports.setVipLevel = function(state, playerId, vipLevel, cb)
 
 exports.setLoggedIn = function(state, playerId, cb)
 {
-	var lastLoginTime = mithril.time;
+	var lastLoginTime = mithril.core.time;
 
 	var query = 'UPDATE player SET lastLoginTime = ? WHERE actor = ?';
 	var params = [lastLoginTime, playerId];

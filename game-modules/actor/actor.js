@@ -31,7 +31,7 @@ exports.getActor = function(state, id, fields, state, cb)
 
 exports.addActor = function(state, creationTime, name, cb)
 {
-	var time = mithril.time;
+	var time = mithril.core.time;
 
 	var query = 'INSERT INTO actor VALUES(NULL, ?, ?)';
 	var params = [name, time];
