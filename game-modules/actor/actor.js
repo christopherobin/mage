@@ -20,7 +20,7 @@ var joins = {
 };
 
 
-exports.getActor = function(id, fields, state, cb)
+exports.getActor = function(state, id, fields, state, cb)
 {
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'actor', joins) + ' WHERE id = ?';
 	var params = [id];
