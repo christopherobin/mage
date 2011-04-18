@@ -107,7 +107,7 @@ exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
 	
 	var sqlTestRequested = "SELECT count (*) as request FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
 	
-	state.datasources.db.getOne(sqlTestRequested, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, function(err, data) {
+	state.datasources.db.getOne(sqlTestRequested, [actorId, otherActorId, otherActorId, actorId], true, errors.ERROR_CONST, function(err, data) {
 		if(err || data.request != 1)
 		{
 			cb(ERROR_CONST);
