@@ -83,7 +83,7 @@ exports.delPlayer = function(state, playerId, cb)
 	var query = 'DELETE FROM player WHERE actor = ?';
 	var params = [playerId];
 
-	state.datasources.db.exec(query, params, error.PLAYER_DEL_FAILED, cb);
+	state.datasources.db.exec(query, params, errors.PLAYER_DEL_FAILED, cb);
 };
 
 

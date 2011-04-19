@@ -6,10 +6,10 @@ var errors = {
 
 var joins = {
 	collectionOwner:	{ sql: 'LEFT JOIN actor AS ? ON obj_collection.owner = ?.id' },
-	collectionObject:	{ sql: 'JOIN obj_collection_object AS ? ON obj_collection.collection = ?.id' },
-	object:  			{ sql: 'JOIN object AS ? ON obj_collection_object.object = ?.id', requires:'collectionObject' },
-	objectData:			{ sql: 'JOIN object_object_data AS ? ON object_object_data.object = ?.id', requires:'object' }
-}
+	collectionObject:	{ sql: 'JOIN obj_collection_object AS ? ON obj_collection.id = ?.collection' },
+	object:  			{ sql: 'JOIN obj_object AS ? ON collectionObject.object = ?.id', requires:['collectionObject'] },
+	objectData:			{ sql: 'JOIN object_object_data AS ? ON object.id = ?.object', requires:['object'] }
+};
 
 var allowedFields = {
 	ownerId:           	'owner',
@@ -19,11 +19,11 @@ var allowedFields = {
 	ownerName:          ['collectionOwner', 'name'],
 	objectName:		  	['object', 'name'],
 	propertyName:		[]
-}
+};
 
 exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 {
-	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE id = ?" ;
+	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE obj_collection.id = ?" ;
 	var params = [collectionId];
 
 	if(objOptions && Object.keys(objOptions).length > 0)
@@ -41,6 +41,28 @@ exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 	}
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
+
+exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
+{
+	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE obj_collection.owner = ?" ;
+	var params = [ownerId];
+
+	if(objOptions && Object.keys(objOptions).length > 0)
+	{
+		if('objectName' in objOptions)
+		{
+			query += " AND obj_object.name = ?";
+			params.push(objOptions[objectName]);
+		}
+		if('propertyName' in objOptions)
+		{
+			query += " AND obj_object_data.property = ?";
+			params.push(objOptions[propertyName]);
+		}
+	}
+	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
+};
+
 
 exports.addCollection = function(state, type, slotCount, parentCollection, owner, cb)
 {
@@ -86,21 +108,6 @@ exports.setCollectionOwnership = function(state, collectionId, actorId, cb)
 	state.datasources.db.exec(sql,[actorId, collectionId], errors.ERROR_CONST, cb);
 };
 
-exports.getPlayerCollections = function(state, owner, objOptions, cb)
-{
-	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE owner = ?";
-	var params = [owner];
-	
-	if(objOptions && Object.keys(objOptions).length > 0)
-	{
-		if('parent' in objOptions)
-		{
-			query += " AND obj_collection.parent = ?";
-			params.push(objOptions[parent]);
-		}
-	}
-	state.datasources.db.getMany(query, [owner], errors.ERROR_CONST, cb);
-};
 
 exports.getChildCollections = function(state, collectionId, objOptions, cb)
 {
@@ -135,8 +142,23 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 	}, cb);
 };
 
+exports.addObject = function(state, name, cb)
+{
+	var sql = "INSERT INTO obj_object (name) VALUES ( ? )";
+	state.datasources.db.exec(sql, [name], errors.ERROR_CONST, cb);
+}
+
+exports.editObject = function(state, id, name, cb)
+{
+	var sql = "UPDATE obj_object SET name = ? WHERE id = ? ";
+	state.datasources.db.exec(sql, [name, id], errors.ERROR_CONST, cb);
+}
+
 exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollectionId, cb)
 { /*TODO: deal with properties; TEST*/
+
+	var newData = null;
+	
 	state.datasources.db.wrapTransaction(function(db)
 	{
 		var query = "SELECT * from obj_object WHERE id = ?";
@@ -146,6 +168,8 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 			var sql = "INSERT INTO obj_object (name, appliedToObject) VALUES ( ? , ? )";
 			db.exec(sql, params, errors.ERROR_CONST, function(err, info)
 			{
+				newData = info;
+				
 				if(newCollectionId)
 				{
 					sql = "INSERT into obj_collection_object (collection, object) VALUES (?,?)";
@@ -156,7 +180,7 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 				db.unwrapTransaction();	
 			});
 		});
-	}, cb);
+	}, function(err){ cb(err, newData); });
 };
 
 exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
@@ -184,10 +208,11 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 };
 
 exports.getObjectData = function(state, objectId, properties, cb)
-{
+{	//requested properties is [] in this case.
 	var params = [objectId];
 
 	var query = "SELECT property, value FROM obj_object_data WHERE object = ? AND property IN (";
+
 	for (var i=0;i<properties.length;i++)
 	{
 		params.push(properties[i]);
@@ -200,7 +225,7 @@ exports.getObjectData = function(state, objectId, properties, cb)
 };
 
 exports.setObjectData = function(state, objectId, data, cb)	
-{
+{	// data is {}
 	var sql = 'INSERT INTO obj_object_data VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
 	for(var property in data)
@@ -212,7 +237,7 @@ exports.setObjectData = function(state, objectId, data, cb)
 };
 
 exports.delObjectData = function(state, objectId, properties, cb)
-{
+{	//properties should be []
 	sql = "DELETE FROM obj_object_data WHERE object = ? and property IN (";
 	for(var i=0;i<properties.length;i++)
 	{
