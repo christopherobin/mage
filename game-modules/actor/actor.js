@@ -20,12 +20,12 @@ var joins = {
 };
 
 
-exports.getActor = function(state, id, fields, state, cb)
+exports.getActor = function(state, id, fields, cb)
 {
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'actor', joins) + ' WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.getOne(query, params, errors.ACTOR_NOTFOUND, cb);
+	state.datasources.db.getOne(query, params, true, errors.ACTOR_NOTFOUND, cb);
 };
 
 
@@ -35,7 +35,7 @@ exports.addActor = function(state, name, cb)
 
 	var query = 'INSERT INTO actor (name, creationTime) VALUES (?, ?)';
 	var params = [name, time];
-console.log(query, params)
+
 	state.datasources.db.exec(query, params, errors.ACTOR_ADD_FAILED, function(err, info) {
 		if (err)
 			cb(err);

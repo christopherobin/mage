@@ -43,7 +43,7 @@ exports.areFriends = function(state, actorId, otherActorId, cb)
 	
 	var query = "SELECT count(*) AS amount FROM sns_friend WHERE actor = ? AND friend = ?"
 	
-	state.datasources.db.getOne(query, [actorId, otherActorId], errors.ERROR_CONST, function(err, data) {
+	state.datasources.db.getOne(query, [actorId, otherActorId], true, errors.ERROR_CONST, function(err, data) {
 		if(err || data.amount == 0)
 		{
 			cb(ERROR_CONST);
