@@ -25,7 +25,7 @@ exports.actor = require(paths.gameModules + '/actor/actor.js');
 exports.player = require(paths.gameModules + '/player/player.js');
 exports.sns = require(paths.gameModules + '/sns/sns.js');
 exports.obj = require(paths.gameModules + '/obj/obj.js');
-//exports.gc = require(paths.gameModules + '/gc/gc.js');
+exports.playerstate = require(paths.gameModules + '/playerstate/playerstate.js');
 
 
 exports.setup = function(pathConfig)
