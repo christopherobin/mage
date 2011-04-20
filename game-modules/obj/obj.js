@@ -18,6 +18,7 @@ var allowedFields = {
 	slotCount:			'slotCount',
 	ownerName:          ['collectionOwner', 'name'],
 	objectName:		  	['object', 'name'],
+	objectId:		  	['object', 'id'],
 	propertyName:		[]
 };
 
@@ -62,7 +63,6 @@ exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 	}
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
-
 
 exports.addCollection = function(state, type, slotCount, parentCollection, owner, cb)
 {
@@ -120,11 +120,8 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 	state.datasources.db.wrapTransaction(function(db)
 	{
 		if (!optSlot && optSlot !== 0) optSlot = null;
-
 		params = [collectionId, objectId, optSlot];
-
 		var sql = "INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)";
-		
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
 			
 		if(objOptions && Object.keys(objOptions).length > 0)
@@ -155,10 +152,8 @@ exports.editObject = function(state, id, name, cb)
 }
 
 exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollectionId, cb)
-{ /*TODO: deal with properties; TEST*/
-
+{	/*TODO: deal with properties; TEST*/
 	var newData = null;
-	
 	state.datasources.db.wrapTransaction(function(db)
 	{
 		var query = "SELECT * from obj_object WHERE id = ?";
@@ -169,14 +164,12 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 			db.exec(sql, params, errors.ERROR_CONST, function(err, info)
 			{
 				newData = info;
-				
 				if(newCollectionId)
 				{
 					sql = "INSERT into obj_collection_object (collection, object) VALUES (?,?)";
 					params = [newCollectionId, info.insertId];
 					db.exec(sql, params, errors.ERROR_CONST);
 				}
-
 				db.unwrapTransaction();	
 			});
 		});
@@ -191,36 +184,39 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
 
 exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb)
 {
-	var sql = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?"
+	var sql = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?";
 	state.datasources.db.exec(sql, [slotNumber, collectionId, objectId], errors.ERROR_CONST, cb);
 };
 
 exports.applyObjectToObject = function(state, objectId, applyToObjectId, cb)
 {
-	var sql = "UPDATE obj_object SET appliedToObject = ? WHERE id = ?"
+	var sql = "UPDATE obj_object SET appliedToObject = ? WHERE id = ?";
 	state.datasources.db.exec(sql, [applyToObjectId, objectId], errors.ERROR_CONST, cb);
 };
 
 exports.detachObjectFromObject = function(state, objectId, cb)
 {
-	var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?"
+	var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?";
 	state.datasources.db.exec(sql, [objectId], errors.ERROR_CONST, cb);
 };
 
 exports.getObjectData = function(state, objectId, properties, cb)
-{	//requested properties is [] in this case.
+{	//requested properties is ['name',...].  If props undefined, [] or null, all come back.
 	var params = [objectId];
+	var query = "SELECT property, value FROM obj_object_data WHERE object = ?";
 
-	var query = "SELECT property, value FROM obj_object_data WHERE object = ? AND property IN (";
-
-	for (var i=0;i<properties.length;i++)
+	if(properties && properties.length > 0)
 	{
-		params.push(properties[i]);
-		query += "? ,";
+		query += " AND property IN (";
+	
+		for (var i=0;i<properties.length;i++)
+		{
+			params.push(properties[i]);
+			query += "? ,";
+		}
+		query = query.substr(0,query.length - 2);
+		query += ")";
 	}
-	query = query.substr(0,query.length - 2);
-	query += ")";
-
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
@@ -231,7 +227,6 @@ exports.setObjectData = function(state, objectId, data, cb)
 	for(var property in data)
 	{	
 		var params = [objectId, property, data[property]];
-
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
 	}
 };
