@@ -97,7 +97,7 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 
 exports.delCollection = function(state, collectionId, objOptions, cb)
 {
-	//TODO: parse options: removeObjects, allowOrphanChildCollections, removeChildCollections, etc
+	//TODO: parse options: removeObjects, allowOrphanChildCollections, removeChildCollections, etc - cascade can take care of this for now.
 	var sql = "DELETE FROM obj_collection WHERE id = ?";
 	state.datasources.db.exec(sql,[collectionId], errors.ERROR_CONST, cb);
 };
