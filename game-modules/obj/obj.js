@@ -18,6 +18,7 @@ var allowedFields = {
 	slotCount:			'slotCount',
 	ownerName:          ['collectionOwner', 'name'],
 	objectName:		  	['object', 'name'],
+	objectWeight:	  	['object', 'weight'],
 	objectId:		  	['object', 'id'],
 	propertyName:		[]
 };
@@ -33,6 +34,11 @@ exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 		{
 			query += " AND obj_object.name = ?";
 			params.push(objOptions[objectName]);
+		}
+		if('objectWeight' in objOptions)
+		{
+			query += " AND obj_object.weight = ?";
+			params.push(objOptions[objectWeight]);
 		}
 		if('propertyName' in objOptions)
 		{
@@ -55,6 +61,11 @@ exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 			query += " AND obj_object.name = ?";
 			params.push(objOptions[objectName]);
 		}
+		if('objectWeight' in objOptions)
+		{
+			query += " AND obj_object.weight = ?";
+			params.push(objOptions[objectWeight]);
+		}
 		if('propertyName' in objOptions)
 		{
 			query += " AND obj_object_data.property = ?";
@@ -64,14 +75,15 @@ exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
-exports.addCollection = function(state, type, slotCount, parentCollection, owner, cb)
+exports.addCollection = function(state, type, slotCount, maxWeight, parentCollection, owner, cb)
 {
-	var query = "INSERT INTO obj_collection (type, slotCount, parent, owner) VALUES ( ?, ?, ?, ? )";
-	state.datasources.db.exec(query, [type, slotCount, parentCollection, owner], errors.ERROR_CONST, function(err, info) {
-		if (err)
-			cb(err);
+	var query = "INSERT INTO obj_collection (type, slotCount, maxWeight, parent, owner) VALUES ( ?, ?, ?, ?, ? )";
+	state.datasources.db.exec(query, [type, slotCount, maxWeight, parentCollection, owner], errors.ERROR_CONST, function(err, info) {
+		if (err) { cb(err); }
 		else
-			cb(null, { id: info.insertId, type: type, slotCount: slotCount, parentCollection: parentCollection, owner: owner });
+		{
+			cb(null, { id: info.insertId, type: type, slotCount: slotCount, maxWeight: maxWeight, parentCollection: parentCollection, owner: owner });
+		}
 	});
 };
 
@@ -83,7 +95,7 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 	// TODO: limit allowedFields to obj_collection writeable fields, and what if allowedFields[key] is an array?
 	for(var key in objFields)
 	{
-		if(key in allowedFields)
+		if(key in allowedFields && !(allowedFields[key] instanceof Array))
 		{
 			query+= allowedFields[key] + " = ?";
 			params.push(objFields[key]);
@@ -139,16 +151,16 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 	}, cb);
 };
 
-exports.addObject = function(state, name, cb)
+exports.addObject = function(state, name, weight,  cb)
 {
-	var sql = "INSERT INTO obj_object (name) VALUES ( ? )";
-	state.datasources.db.exec(sql, [name], errors.ERROR_CONST, cb);
+	var sql = "INSERT INTO obj_object (name, weight) VALUES ( ?, ? )";
+	state.datasources.db.exec(sql, [name, weight], errors.ERROR_CONST, cb);
 }
 
-exports.editObject = function(state, id, name, cb)
+exports.editObject = function(state, id, name, weight, cb)
 {
-	var sql = "UPDATE obj_object SET name = ? WHERE id = ? ";
-	state.datasources.db.exec(sql, [name, id], errors.ERROR_CONST, cb);
+	var sql = "UPDATE obj_object SET name = ?, weight = ? WHERE id = ? ";
+	state.datasources.db.exec(sql, [name, weight, id], errors.ERROR_CONST, cb);
 }
 
 exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollectionId, cb)
@@ -159,8 +171,8 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 		var query = "SELECT * from obj_object WHERE id = ?";
 		db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,data)
 		{
-			var params = [data.name, data.appliedToObject];
-			var sql = "INSERT INTO obj_object (name, appliedToObject) VALUES ( ? , ? )";
+			var sql = "INSERT INTO obj_object (name, weight, appliedToObject) VALUES ( ? , ?, ? )";
+			var params = [data.name, data.weight, data.appliedToObject];
 			db.exec(sql, params, errors.ERROR_CONST, function(err, info)
 			{
 				newData = info;
