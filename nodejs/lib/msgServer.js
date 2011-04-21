@@ -79,7 +79,6 @@ exports.start = function(httpServer)
 			try
 			{
 				msg = JSON.parse(msg);
-				console.log(msg);
 			}
 			catch (e)
 			{
@@ -114,7 +113,7 @@ exports.start = function(httpServer)
 						{
 							if (msg.cmd)
 							{
-								mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, state.msgClient.finish);	// TODO: we may have to wrap this callback into an anonymous function
+								mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); });
 							}
 						}
 					});
@@ -124,7 +123,7 @@ exports.start = function(httpServer)
 			{
 				if (msg.cmd)
 				{
-					mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, state.msgClient.finish); // TODO: we may have to wrap this callback into an anonymous function
+					mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); });
 				}
 			}
 		});

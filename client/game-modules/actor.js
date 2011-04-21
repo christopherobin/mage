@@ -11,8 +11,8 @@ MithrilGameModActor.prototype.setup = function()
 
 MithrilGameModActor.prototype.getActor = function(actorId, fields, cb)
 {
-	this.mithril.send('getActor', { actorId: actorId, fields: fields }, function(error, actor) {
-		cb(error, actor);
+	this.mithril.io.send('getActor', { actorId: actorId, fields: fields }, function(result) {
+		cb(result.errors, result.response);
 	});
 };
 

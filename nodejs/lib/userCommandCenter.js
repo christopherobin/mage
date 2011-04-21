@@ -23,24 +23,26 @@ exports.register = function(commandList)
 };
 
 
-exports.execute = function(state, playerId, msg)
+exports.execute = function(state, playerId, msg, cb)
 {
 	// check if command type is valid
 
 	if (!('cmd' in msg) || typeof msg.cmd != 'string')
 	{
-		mithril.core.warn(errors.USERCOMMAND_EXPECTED, state.msgClient);
+		state.msgClient.error(errors.USERCOMMAND_EXPECTED);
+		cb();
 		return;
 	}
 
 	if (!(msg.cmd in commands))
 	{
-		mithril.core.warn(errors.USERCOMMAND_UNKNOWN, state.msgClient);
+		state.msgClient.error(errors.USERCOMMAND_UNKNOWN);
+		cb();
 		return;
 	}
 
 	// execute the command
 
-	commands[msg.cmd].execute(state, playerId, msg);
+	commands[msg.cmd].execute(state, playerId, msg, cb);
 };
 

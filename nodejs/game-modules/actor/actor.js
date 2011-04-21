@@ -7,6 +7,10 @@ var errors = {
 
 exports.errors = errors;
 
+exports.userCommands = {
+	getActor: __dirname + '/usercommands/getActor.js'
+};
+
 
 // queryable model structure
 

@@ -324,8 +324,9 @@ MySqlDatabase.prototype.exec = function(sql, params, error, cb)
 };
 
 
-MySqlDatabase.prototype.buildSelect = function(fields, allowedFields, table, joins, params)
+MySqlDatabase.prototype.buildSelect = function(fields, allowedFields, table, joins)
 {
+	
 /* example:
 
 var fields = ['actorName'];

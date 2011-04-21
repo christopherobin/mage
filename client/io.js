@@ -29,7 +29,6 @@ MithrilIo.prototype.start = function()
 			_this.receivedEvent(result);
 		}
 	});
-
 	this.socket.connect();
 };
 
@@ -69,6 +68,7 @@ MithrilIo.prototype.send = function(command, parameters, cb)
 		this.queries[obj.id] = cb;
 	}
 
+		
 	this.socket.send(JSON.stringify(obj));
 };
 
