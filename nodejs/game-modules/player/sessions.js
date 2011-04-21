@@ -16,7 +16,7 @@ function Session(playerId)
 
 Session.prototype.touch = function()
 {
-	this.lastTouchTime = (new Date).getTime();
+	this.lastTouchTime = mithril.core.time;
 };
 
 
