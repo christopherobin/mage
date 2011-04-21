@@ -66,7 +66,7 @@ MithrilIo.prototype.send = function(command, parameters, cb)
 	if (cb)
 	{
 		obj.id = ++this.queryId;
-		this.queries[obj.id] = cb:
+		this.queries[obj.id] = cb;
 	}
 
 	this.socket.send(JSON.stringify(obj));

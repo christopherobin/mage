@@ -9,7 +9,7 @@ function Session(playerId)
 {
 	this.playerId = playerId;
 	this.key = null;
-	this.creationTime = (new Date).getTime();
+	this.creationTime = mithril.core.time;
 	this.lastTouchTime = this.creationTime;
 }
 
@@ -34,7 +34,7 @@ Session.prototype.getFullKey = function()
 Session.prototype.register = function(cb)
 {
 	const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	const len = 10;
+	var len = 10;
 	var key = '';
 	var charCount = chars.length;
 
