@@ -90,7 +90,7 @@ exports.setup = function(pathConfig)
 exports.start = function()
 {
 	exports.core.httpServer = require('http').createServer(function(request, response) {
-		if (true || req.url == '/favicon.ico')
+		if (true || request.url == '/favicon.ico')
 		{
 			res.writeHead(404);
 			res.end('404 Not found');
