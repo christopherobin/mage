@@ -27,41 +27,8 @@ Mithril.prototype.start = function()
 };
 
 
-
-
-// old crap:
-
-Mithril.prototype.setupIo = function()
-{
-	this.socket = new io.Socket(this.config.host, { port: this.config.port, rememberTransport: false });
-	this.socket.connect();
-
-	var _this = this;
-
-	this.socket.on('message', function(data) {
-		data = JSON.parse(data);
-
-		if (data.id)
-		{
-			if (data.id in _this.queries) _this.queries[data.id]();
-		}
-	});
-};
-
-
-Mithril.prototype.send = function(command, parameters, cb)
-{
-	var obj = { cmd: command, p: parameters };
-
-	if (cb)
-	{
-		obj.id = ++this.queryId;
-		this.queries[obj.id] = cb;
-	}
-
-	this.socket.send(JSON.stringify(obj));
-};
-
+/*
+// CONCEPT:
 
 mithril.sns.getMyFriends(cb);
 
@@ -86,5 +53,5 @@ Cards
 	{
 		mithril.obj.getCollections('deck', cb);
 	}
-
+*/
 
