@@ -4,6 +4,66 @@ var errors = {
 };
 
 
+function MsgClient(client)
+{
+	this.client = client;
+	this.response = null;
+	this.events = [];
+	this.errors = [];
+	this.queryId = null;
+}
+
+
+MsgClient.prototype.error = function(code)
+{
+	this.errors.push(code);
+};
+
+
+MsgClient.prototype.respond = function(response)
+{
+	this.response = response;
+};
+
+
+MsgClient.prototype.emit = function(data)
+{
+	this.events.push(data);
+};
+
+
+MsgClient.prototype.finish = function()
+{
+	var o = { events: this.events, response: this.response };
+
+	if (this.queryId)
+	{
+		o.id = this.queryId;
+		this.queryId = null;
+	}
+
+	if (this.errors.length > 0)
+	{
+		o.errors = this.errors;
+	}
+
+	this.client.send(JSON.stringify(o));
+
+	this.response = null;
+	this.events = [];
+	this.errors = [];
+};
+
+
+MsgClient.prototype.cleanup = function()
+{
+	this.client = null;
+	this.response = null;
+	this.events = [];
+	this.errors = [];
+};
+
+
 // startup messaging server
 
 exports.start = function(httpServer)
@@ -27,9 +87,14 @@ exports.start = function(httpServer)
 
 			if (!msg) return;
 
+
 			// if session is not yet known, we must expect this to be revealed by the first message
 
-			if (!state) state = new mithril.core.state.State(null, client, new mithril.core.datasources.DataSources);
+			if (!state) state = new mithril.core.state.State(null, new MsgClient(client), new mithril.core.datasources.DataSources);
+
+			// check if the message has been tagged with a query ID.
+
+			state.msgClient.queryId = msg.id;	// can be undefined
 
 			if (!state.session)
 			{
@@ -46,14 +111,20 @@ exports.start = function(httpServer)
 						}
 						else
 						{
-							mithril.core.userCommandCenter.execute(state, state.session.playerId, msg);
+							if (msg.cmd)
+							{
+								mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, state.msgClient.finish); });	// TODO: we may have to wrap this callback into an anonymous function
+							}
 						}
 					});
 				}
 			}
 			else
 			{
-				mithril.core.userCommandCenter.execute(state, state.session.playerId, msg);
+				if (msg.cmd)
+				{
+					mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, state.msgClient.finish); }); // TODO: we may have to wrap this callback into an anonymous function
+				}
 			}
 		});
 

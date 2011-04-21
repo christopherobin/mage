@@ -32,6 +32,12 @@ State.prototype.cleanup = function()
 		this.datasources.close();
 		this.datasources = null;
 	}
+
+	if (this.msgClient)
+	{
+		this.msgClient.cleanup();
+		this.msgClient = null;
+	}
 };
 
 
