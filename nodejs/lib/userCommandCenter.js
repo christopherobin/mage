@@ -11,10 +11,15 @@ var commands = {};
 
 exports.register = function(commandList)
 {
+	var i=0;
+
 	for (var cmdName in commandList)
 	{
 		commands[cmdName] = commandList[cmdName];
+		i++;
 	}
+
+	mithril.core.logger.info(i + ' user commands registered.');
 };
 
 

@@ -37,6 +37,8 @@ exports.setup = function(pathConfig)
 	exports.core.config = config;
 	exports.core.datasources = require(paths.lib + '/datasources.js');
 
+	var logger = {};
+
 	if (config.debug && config.debug.log)
 	{
 		paths.log = path.resolve(gamePath, config.logPath);
@@ -56,9 +58,14 @@ exports.setup = function(pathConfig)
 		process.on('uncaughtException', function(error) {
 			logger.error(error);
 		});
-
-		exports.core.logger = logger;
 	}
+
+	if (!logger.info)  logger.info  = function() {};
+	if (!logger.error) logger.error = function() {};
+	if (!logger.debug) logger.debug = function() {};
+
+	exports.core.logger = logger;
+
 
 	exports.core.warn = function(error, client)
 	{
@@ -75,6 +82,8 @@ exports.setup = function(pathConfig)
 			client.send(JSON.stringify(userError));
 		}
 	};
+
+	exports.core.logger.info('Mithril setup complete.');
 };
 
 
@@ -90,6 +99,8 @@ exports.start = function()
 	});
 
 	exports.core.httpServer.listen(exports.core.config.server.port, exports.core.config.server.host);
+
+	exports.core.logger.info('Server running at http://' + exports.core.config.server.host + ':' + exports.core.config.server.port + '/');
 
 	exports.core.msgServer = require(paths.lib + '/msgServer.js');
 	exports.core.msgServer.start(exports.core.httpServer);
@@ -112,3 +123,4 @@ function updateTime()
 }
 
 updateTime();
+
