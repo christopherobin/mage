@@ -27,13 +27,13 @@ exports.execute = function(state, playerId, msg)
 {
 	// check if command type is valid
 
-	if (!('command' in msg) || typeof msg.command != 'string')
+	if (!('cmd' in msg) || typeof msg.cmd != 'string')
 	{
 		mithril.core.warn(errors.USERCOMMAND_EXPECTED, state.msgClient);
 		return;
 	}
 
-	if (!(msg.command in commands))
+	if (!(msg.cmd in commands))
 	{
 		mithril.core.warn(errors.USERCOMMAND_UNKNOWN, state.msgClient);
 		return;
@@ -41,6 +41,6 @@ exports.execute = function(state, playerId, msg)
 
 	// execute the command
 
-	commands[msg.command].execute(state, playerId, msg);
+	commands[msg.cmd].execute(state, playerId, msg);
 };
 

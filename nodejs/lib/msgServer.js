@@ -79,6 +79,7 @@ exports.start = function(httpServer)
 			try
 			{
 				msg = JSON.parse(msg);
+				console.log(msg);
 			}
 			catch (e)
 			{
