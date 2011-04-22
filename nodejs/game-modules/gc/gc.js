@@ -4,6 +4,10 @@ var errors = {
 
 exports.errors = errors;
 
+exports.userCommands = {
+	loadNodes: __dirname + '/usercommands/loadNodes.js'
+};
+
 
 exports.loadNodes = function(state, options, cb)
 {

@@ -88,6 +88,8 @@ exports.setup = function(pathConfig)
 
 exports.start = function()
 {
+	exports.core.logger.debug('Starting HTTP service at http://' + exports.core.config.server.host + ':' + exports.core.config.server.port + '/');
+
 	exports.core.httpServer = require('http').createServer(function(request, response) {
 		if (true || request.url == '/favicon.ico')
 		{

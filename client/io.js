@@ -7,7 +7,7 @@ function MithrilIo(mithril)
 }
 
 
-MithrilIo.prototype.start = function()
+MithrilIo.prototype.start = function(cb)
 {
 	this.socket = new io.Socket(this.mithril.config.host, { port: this.mithril.config.port, rememberTransport: false });
 
@@ -15,6 +15,12 @@ MithrilIo.prototype.start = function()
 
 	this.socket.on('connect', function() {
 		_this.socket.send(JSON.stringify({ sessionId: _this.mithril.sessionId }));
+
+		if (cb)
+		{
+			cb();
+			cb = null;
+		}
 	});
 
 	this.socket.on('message', function(result) {
@@ -29,6 +35,7 @@ MithrilIo.prototype.start = function()
 			_this.receivedEvent(result);
 		}
 	});
+
 	this.socket.connect();
 };
 
@@ -68,7 +75,6 @@ MithrilIo.prototype.send = function(command, parameters, cb)
 		this.queries[obj.id] = cb;
 	}
 
-		
 	this.socket.send(JSON.stringify(obj));
 };
 
