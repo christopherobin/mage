@@ -55,7 +55,7 @@ exports.setup = function(pathConfig)
 		}
 
 		process.on('uncaughtException', function(error) {
-			logger.error(error);
+			logger.error(error.stack);
 		});
 	}
 
