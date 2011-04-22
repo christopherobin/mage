@@ -9,20 +9,6 @@ exports.errors = errors;
 var commands = {};
 
 
-exports.register = function(commandList)
-{
-	var count=0;
-
-	for (var cmdName in commandList)
-	{
-		commands['game.' + cmdName] = commandList[cmdName];
-		count++;
-	}
-
-	mithril.core.logger.info(count + ' user commands registered.');
-};
-
-
 exports.expose = function(commandList)
 {
 	var count=0;
@@ -34,6 +20,8 @@ exports.expose = function(commandList)
 		for (var i=0; i < cmds.length; i++)
 		{
 			var cmdName = cmds[i];
+
+			if (!(gameModule in mithril)) throw ('Game module ' + gameModule + ' not found.');
 
 			commands[gameModule + '.' + cmdName] = require(mithril[gameModule].userCommands[cmdName]);
 			count++;
@@ -64,6 +52,6 @@ exports.execute = function(state, playerId, msg, cb)
 
 	// execute the command
 
-	commands[msg.cmd].execute(state, playerId, msg, cb);
+	commands[msg.cmd].execute(state, playerId, msg.p || {}, cb);
 };
 
