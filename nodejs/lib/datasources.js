@@ -216,7 +216,7 @@ MySqlDatabase.prototype.rollBack = function(cb)
 MySqlDatabase.prototype.wrapTransaction = function(wrap, unwrap)
 {
 	var _this = this;
-	
+
 	this.transactionUnwrap = unwrap;
 	this.transactionError = null;
 
@@ -265,9 +265,12 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, error, cb)
 		cb(this.transactionError);
 		return;
 	}
+
 	this.source(true).query(sql, params, function(err, results) {
 		if (err || (required && results.length != 1) || results.length > 1)
 		{
+			if (err) mithril.core.logger.debug(err);
+
 			this.transactionError = error;
 			if(cb) { cb(error); }
 		}
@@ -288,9 +291,13 @@ MySqlDatabase.prototype.getMany = function(sql, params, error, cb)
 		return;
 	}
 
+	mithril.core.logger.debug('getMany SQL: ' + sql + ' using ' + JSON.stringify(params));
+
 	this.source(true).query(sql, params, function(err, results) {
 		if (err)
 		{
+			mithril.core.logger.debug(err);
+
 			this.transactionError = error;
 			if(cb) { cb(error); }
 		}
@@ -313,6 +320,8 @@ MySqlDatabase.prototype.exec = function(sql, params, error, cb)
 	this.source(false).query(sql, params, function(err, info) {
 		if (err)
 		{
+			mithril.core.logger.debug(err);
+
 			this.transactionError = error;
 			if (cb) cb(error);
 		}
@@ -326,7 +335,7 @@ MySqlDatabase.prototype.exec = function(sql, params, error, cb)
 
 MySqlDatabase.prototype.buildSelect = function(fields, allowedFields, table, joins)
 {
-	
+
 /* example:
 
 var fields = ['actorName'];

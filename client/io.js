@@ -24,6 +24,7 @@ MithrilIo.prototype.start = function(cb)
 	});
 
 	this.socket.on('message', function(result) {
+		console.log('Received message: ' + result);
 		result = JSON.parse(result);
 
 		if (result.id)
@@ -51,9 +52,11 @@ MithrilIo.prototype.receivedEvent = function(result)
 
 MithrilIo.prototype.receivedQueryResult = function(result)
 {
+	console.log('Received query result', result);
+
 	for (var id in this.queries)
 	{
-		if (id == result.id)
+		if (id == result.id && id in this.queries)
 		{
 			var cb = this.queries[id];
 			delete this.queries[id];
@@ -74,6 +77,8 @@ MithrilIo.prototype.send = function(command, parameters, cb)
 		obj.id = ++this.queryId;
 		this.queries[obj.id] = cb;
 	}
+
+	console.log('Sending ', obj);
 
 	this.socket.send(JSON.stringify(obj));
 };

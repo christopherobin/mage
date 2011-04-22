@@ -67,6 +67,8 @@ exports.execute = function(state, playerId, msg, cb)
 
 	// execute the command
 
+	mithril.core.logger.debug('Executing command "' + msg.cmd + '"');
+
 	commands[msg.cmd].execute(state, playerId, msg.p || {}, cb);
 };
 
