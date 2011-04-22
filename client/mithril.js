@@ -15,7 +15,7 @@ function Mithril(config, sessionId)
 }
 
 
-Mithril.prototype.start = function()
+Mithril.prototype.start = function(cb)
 {
 	if (this.actor)  this.actor.setup();
 	if (this.player) this.player.setup();
@@ -23,7 +23,7 @@ Mithril.prototype.start = function()
 	if (this.obj)    this.obj.setup();
 	if (this.gc)     this.gc.setup();
 
-	this.io.start();
+	this.io.start(cb);
 };
 
 
