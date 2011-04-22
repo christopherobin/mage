@@ -1,9 +1,9 @@
-exports.execute = function(state, playerId, msg, cb)
+exports.execute = function(state, playerId, p, cb)
 {
 	var result = {};
 
-	mithril.actor.getActor(state, msg.p.actorId, msg.p.fields, function(error, actor) {
-		if (error) 
+	mithril.actor.getActor(state, p.actorId, p.fields, function(error, actor) {
+		if (error)
 		{
 			state.msgClient.error(1234);
 		}
@@ -14,3 +14,4 @@ exports.execute = function(state, playerId, msg, cb)
 		cb();
 	});
 };
+
