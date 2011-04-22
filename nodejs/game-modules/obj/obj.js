@@ -79,10 +79,13 @@ exports.addCollection = function(state, type, slotCount, maxWeight, parentCollec
 {
 	var query = "INSERT INTO obj_collection (type, slotCount, maxWeight, parent, owner) VALUES ( ?, ?, ?, ?, ? )";
 	state.datasources.db.exec(query, [type, slotCount, maxWeight, parentCollection, owner], errors.ERROR_CONST, function(err, info) {
-		if (err) { cb(err); }
-		else
-		{
-			cb(null, { id: info.insertId, type: type, slotCount: slotCount, maxWeight: maxWeight, parentCollection: parentCollection, owner: owner });
+		if (err)
+		{ 
+			if(cb) cb(err); 
+		}
+		else 
+		{	
+			if(cb) cb(null, { id: info.insertId, type: type, slotCount: slotCount, maxWeight: maxWeight, parentCollection: parentCollection, owner: owner });
 		}
 	});
 };
@@ -166,6 +169,16 @@ exports.editObject = function(state, id, name, weight, cb)
 exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollectionId, cb)
 {	/*TODO: deal with properties; TEST*/
 	var newData = null;
+
+
+//card:spiritname
+
+/*	objPropertiesToInclude = {
+		spirit: null,
+		level3: level
+	};
+*/
+
 	state.datasources.db.wrapTransaction(function(db)
 	{
 		var query = "SELECT * from obj_object WHERE id = ?";
@@ -185,7 +198,7 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 				db.unwrapTransaction();	
 			});
 		});
-	}, function(err){ cb(err, newData); });
+	}, function(err){ if(cb) cb(err, newData); });
 };
 
 exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
