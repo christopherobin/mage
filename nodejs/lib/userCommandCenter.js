@@ -21,7 +21,22 @@ exports.expose = function(commandList)
 		{
 			var cmdName = cmds[i];
 
-			if (!(gameModule in mithril)) throw ('Game module ' + gameModule + ' not found.');
+			if (!(gameModule in mithril))
+			{
+				throw ('Game module "' + gameModule + '" not found.');
+			}
+
+			if (!('userCommands' in mithril[gameModule]))
+			{
+				throw ('Game module "' + gameModule + '" has no userCommands listing.');
+			}
+
+			if (!(cmdName in mithril[gameModule].userCommands))
+			{
+				throw ('User command "' + cmdName + '" not found in module "' + gameModule + '".');
+			}
+
+			mithril.core.logger.debug('Exposing user-command "' + gameModule + '.' + cmdName + '" at "' + mithril[gameModule].userCommands[cmdName] + '"');
 
 			commands[gameModule + '.' + cmdName] = require(mithril[gameModule].userCommands[cmdName]);
 			count++;
