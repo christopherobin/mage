@@ -11,15 +11,36 @@ var commands = {};
 
 exports.register = function(commandList)
 {
-	var i=0;
+	var count=0;
 
 	for (var cmdName in commandList)
 	{
-		commands[cmdName] = commandList[cmdName];
-		i++;
+		commands['game.' + cmdName] = commandList[cmdName];
+		count++;
 	}
 
-	mithril.core.logger.info(i + ' user commands registered.');
+	mithril.core.logger.info(count + ' user commands registered.');
+};
+
+
+exports.expose = function(commandList)
+{
+	var count=0;
+
+	for (var gameModule in commandList)
+	{
+		var cmds = commandList[gameModule];
+
+		for (var i=0; i < cmds.length; i++)
+		{
+			var cmdName = cmds[i];
+
+			commands[gameModule + '.' + cmdName] = require(mithril[gameModule].userCommands[cmdName]);
+			count++;
+		}
+	}
+
+	mithril.core.logger.info(count + ' user commands exposed.');
 };
 
 
