@@ -99,7 +99,11 @@ exports.loadNodeProgress = function(state, node, actorId, cb)
 		}
 		else
 		{
-			node.progress = result;
+			if (result)
+			{
+				node.progress = result;
+			}
+
 			if (cb) cb(null);
 		}
 	});
@@ -143,23 +147,28 @@ exports.loadNodeInConnectors = function(state, node, cb)
 		}
 		else
 		{
-			node.inConnectors = {};
+			var count = results.length;
 
-			for (var i=0; i < results.length; i++)
+			if (count > 0)
 			{
-				var result = results[i];
+				node.inConnectors = {};
 
-				if (!(result.type in node.inConnectors))
+				for (var i=0; i < count; i++)
 				{
-					node.inConnectors[result.type] = {};
-				}
+					var result = results[i];
 
-				if (!(result.andGroup in node.inConnectors[result.type]))
-				{
-					node.inConnectors[result.type][result.andGroup] = [];
-				}
+					if (!(result.type in node.inConnectors))
+					{
+						node.inConnectors[result.type] = {};
+					}
 
-				node.inConnectors[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
+					if (!(result.andGroup in node.inConnectors[result.type]))
+					{
+						node.inConnectors[result.type][result.andGroup] = [];
+					}
+
+					node.inConnectors[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
+				}
 			}
 
 			if (cb) cb(null);
@@ -180,23 +189,28 @@ exports.loadNodeOutConnectors = function(state, node, cb)
 		}
 		else
 		{
-			node.outConnectors = {};
+			var count = results.length;
 
-			for (var i=0; i < results.length; i++)
+			if (count > 0)
 			{
-				var result = results[i];
+				node.outConnectors = {};
 
-				if (!(result.type in node.outConnectors))
+				for (var i=0; i < count; i++)
 				{
-					node.outConnectors[result.type] = {};
-				}
+					var result = results[i];
 
-				if (!(result.onState in node.outConnectors[result.type]))
-				{
-					node.outConnectors[result.type][result.onState] = [];
-				}
+					if (!(result.type in node.outConnectors))
+					{
+						node.outConnectors[result.type] = {};
+					}
 
-				node.outConnectors[result.type][result.onState].push(result.targetNode);
+					if (!(result.onState in node.outConnectors[result.type]))
+					{
+						node.outConnectors[result.type][result.onState] = [];
+					}
+
+					node.outConnectors[result.type][result.onState].push(result.targetNode);
+				}
 			}
 
 			if (cb) cb(null);
