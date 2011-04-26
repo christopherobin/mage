@@ -33,10 +33,9 @@ MithrilGameModObj.prototype.getAllPlayerObjects = function(cb)
 	});
 };
 
-MithrilGameModObj.prototype.getMyCollection = function(matchColType, cb)
+MithrilGameModObj.prototype.getMyCollectionByType = function(matchColType, cb)
 {
 	var _this = this;
-	var returnData = null;
 	
 	this.mithril.obj.getAllPlayerObjects(function(err,cache)
 	{
@@ -46,18 +45,35 @@ MithrilGameModObj.prototype.getMyCollection = function(matchColType, cb)
 		{
 			if(cache.collections[key].collectionType == matchColType)
 			{
-				returnData = cache.collections[key];
-				for(var i=0;i<returnData.members.length;i++)
-				{
-					returnData.members[i] = cache.objects[returnData.members[i]];
-				}
+				cb(null, cache.collections[key]);
+				return;				
 			}
 		}
-		cb(null, returnData)
 	});
 };
 
+MithrilGameModObj.prototype.getObjectsByCollectionType = function(matchColType, cb)
+{
+	var _this = this;
+	var objects = [];
+	
+	this.mithril.obj.getAllPlayerObjects(function(err,cache)
+	{
+		if(err) { cb(err); return; }
 
-
-//var objects = getObjectsInCollection(getCollectionId('deck'))
+		for (var key in cache.collections)
+		{
+			if(cache.collections[key].collectionType == matchColType)
+			{
+				var members = cache.collections[key].members;
+				for(var i=0;i<members.length;i++)
+				{
+					objects.push(cache.objects[members[i]])
+				}
+				cb(null, objects);
+				return;
+			}
+		}
+	});
+};
 
