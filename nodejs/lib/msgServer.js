@@ -26,9 +26,9 @@ MsgClient.prototype.respond = function(response)
 };
 
 
-MsgClient.prototype.emit = function(data)
+MsgClient.prototype.emit = function(module, data)
 {
-	this.events.push(data);
+	this.events.push([module, data]);
 };
 
 
