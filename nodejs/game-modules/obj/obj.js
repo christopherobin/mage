@@ -8,19 +8,26 @@ var joins = {
 	collectionOwner:	{ sql: 'LEFT JOIN actor AS ? ON obj_collection.owner = ?.id' },
 	collectionObject:	{ sql: 'JOIN obj_collection_object AS ? ON obj_collection.id = ?.collection' },
 	object:  			{ sql: 'JOIN obj_object AS ? ON collectionObject.object = ?.id', requires:['collectionObject'] },
-	objectData:			{ sql: 'JOIN object_object_data AS ? ON object.id = ?.object', requires:['object'] }
+	objectData:			{ sql: 'JOIN obj_object_data AS ? ON object.id = ?.object', requires:['object'] }
 };
 
 var allowedFields = {
+	collectionId:		'id',
 	ownerId:           	'owner',
 	parentId:          	'parent',
 	collectionType:		'type',
 	slotCount:			'slotCount',
+	maxWeight:			'maxWeight',
 	ownerName:          ['collectionOwner', 'name'],
 	objectName:		  	['object', 'name'],
 	objectWeight:	  	['object', 'weight'],
 	objectId:		  	['object', 'id'],
-	propertyName:		[]
+	propertyName:		['objectData', 'property'],
+	propertyValue:		['objectData', 'value']
+};
+
+exports.userCommands = {
+	getAllObjects: __dirname + '/usercommands/getAllObjects.js'
 };
 
 exports.getCollection = function(state, collectionId, fields, objOptions, cb)
@@ -45,15 +52,21 @@ exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 			query += " AND obj_object_data.property = ?";
 			params.push(objOptions[propertyName]);
 		}
+		if('propertyValue' in objOptions)
+		{
+			query += " AND obj_object_data.value = ?";
+			params.push(objOptions[propertyValue]);
+		}
 	}
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
 exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 {
+	console.log(arguments)
+	
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE obj_collection.owner = ?" ;
 	var params = [ownerId];
-
 	if(objOptions && Object.keys(objOptions).length > 0)
 	{
 		if('objectName' in objOptions)
@@ -71,9 +84,20 @@ exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 			query += " AND obj_object_data.property = ?";
 			params.push(objOptions[propertyName]);
 		}
+		if('propertyValue' in objOptions)
+		{
+			query += " AND obj_object_data.value = ?";
+			params.push(objOptions[propertyValue]);
+		}
 	}
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
+
+exports.getActorObjects = function(state, ownerId, cb)
+{
+	var query = "SELECT oo.id, oo.name, oo.weight, appliedToObject FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
+	state.datasources.db.getMany(query, [ownerId], errors.ERROR_CONST, cb);
+}
 
 exports.addCollection = function(state, type, slotCount, maxWeight, parentCollection, owner, cb)
 {
@@ -153,6 +177,12 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 		{	db.unwrapTransaction();	}
 	}, cb);
 };
+
+exports.getCollectionMembers = function(state, collectionId, cb)
+{
+	var query = "SELECT object, collection FROM obj_collection_object WHERE collection = ? ORDER BY slot";
+	state.datasources.db.getMany(query, [collectionId], errors.ERROR_CONST, cb);
+}
 
 exports.addObject = function(state, name, weight,  cb)
 {
@@ -244,6 +274,12 @@ exports.getObjectData = function(state, objectId, properties, cb)
 	}
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
+
+exports.getObjectDataByOwner = function(state, ownerId, cb)
+{
+	var query = "SELECT od.object, od.property, od.value FROM obj_object_data AS od JOIN obj_collection_object AS oc ON oc.object = od.object JOIN obj_collection AS c ON c.id = oc.collection WHERE c.owner = ? GROUP BY od.object, od.property";
+	state.datasources.db.getMany(query, [ownerId], errors.ERROR_CONST, cb);
+}
 
 exports.setObjectData = function(state, objectId, data, cb)	
 {	// data is {}
