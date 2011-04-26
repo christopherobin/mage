@@ -22,16 +22,12 @@ exports.execute = function(state, actorId, p, cb)
 				var acData = data
 				var collectionId = acData[i].collectionId;
 				returnData.collections[collectionId] = acData[i];
+				returnData.collections[collectionId].members = [];
 				
-				mithril.obj.getCollectionMembers(state, collectionId, function(err,data){
-		
-					for (var l=0;l<data.length;l++)
+				mithril.obj.getCollectionMembers(state, collectionId, function(err,cMdata){
+					for (var l=0;l<cMdata.length;l++)
 					{
-						if(!returnData.collections[data[l].collection].members)	
-						{
-							returnData.collections[data[l].collection].members = [];	
-						}
-						returnData.collections[data[l].collection].members.push(data[l].object);
+						returnData.collections[cMdata[l].collection].members.push(cMdata[l].object);
 					}
 				});
 			}
