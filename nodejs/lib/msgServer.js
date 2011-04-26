@@ -100,6 +100,8 @@ exports.start = function(httpServer)
 			{
 				if (!msg.sessionId)
 				{
+					mithril.core.logger.debug(msg);
+
 					mithril.core.warn(errors.SESSION_EXPECTED, client);
 				}
 				else
