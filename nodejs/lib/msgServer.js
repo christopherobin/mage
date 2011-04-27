@@ -26,15 +26,27 @@ MsgClient.prototype.respond = function(response)
 };
 
 
-MsgClient.prototype.emit = function(data)
+MsgClient.prototype.emit = function(module, data)
 {
-	this.events.push(data);
+	this.events.push([module, data]);
 };
 
 
 MsgClient.prototype.finish = function()
 {
-	var o = { events: this.events, response: this.response };
+	var o = {};
+
+	if (this.events.length > 0)
+	{
+		o.events = this.events;
+		this.events = [];
+	}
+
+	if (this.response !== null)
+	{
+		o.response = this.response;
+		this.response = null;
+	}
 
 	if (this.queryId)
 	{
@@ -45,13 +57,10 @@ MsgClient.prototype.finish = function()
 	if (this.errors.length > 0)
 	{
 		o.errors = this.errors;
+		this.errors = [];
 	}
 
 	this.client.send(JSON.stringify(o));
-
-	this.response = null;
-	this.events = [];
-	this.errors = [];
 };
 
 
