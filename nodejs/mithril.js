@@ -21,13 +21,26 @@ exports.core.testing = require(paths.lib + '/testing.js');
 
 // import game modules
 
-exports.actor  = require(paths.gameModules + '/actor/actor.js');
-exports.player = require(paths.gameModules + '/player/player.js');
-exports.sns    = require(paths.gameModules + '/sns/sns.js');
-exports.obj    = require(paths.gameModules + '/obj/obj.js');
-exports.gc     = require(paths.gameModules + '/gc/gc.js');
+var modules = {
+	actor:  paths.gameModules + '/actor/actor.js',
+	player: paths.gameModules + '/player/player.js',
+	sns:    paths.gameModules + '/sns/sns.js',
+	obj:    paths.gameModules + '/obj/obj.js',
+	gc:     paths.gameModules + '/gc/gc.js'
+};
 
-exports.setup = function(pathConfig)
+
+exports.addModule = function(name, path)
+{
+	modules[name] = path;
+};
+
+
+// setup() sets up mithril and its modules.
+// After this (callback), mithril is ready to be started.
+// Once started, users may connect.
+
+exports.setup = function(pathConfig, cb)
 {
 	var fs = require('fs');
 
@@ -82,9 +95,46 @@ exports.setup = function(pathConfig)
 		}
 	};
 
-	exports.core.logger.info('Mithril setup complete.');
+
+	// expose modules and set them up
+
+	function onDone()
+	{
+		exports.core.logger.info('Mithril setup complete.');
+		cb();
+	}
+
+
+	// expose modules
+
+	var moduleCount = 0;
+	var done = 0;
+
+	for (var key in modules)
+	{
+		exports.core.logger.info('Exposing module ' + key);
+
+		exports[key] = require(modules[key]);
+		moduleCount++;
+	}
+
+	for (var key in modules)
+	{
+		if (exports[key].setup)
+		{
+			exports.core.logger.info('Setting up module ' + key);
+
+			exports[key].setup(function() { if (++done == moduleCount) onDone(); });
+		}
+		else
+		{
+			if (++done == moduleCount) onDone();
+		}
+	}
 };
 
+
+// start() starts all services that allow users to connect
 
 exports.start = function()
 {
@@ -108,19 +158,19 @@ exports.start = function()
 };
 
 
+// Clock. Updated every second.
+
 exports.core.time = null;
-exports.core.mtime = null;
 
 function updateTime()
 {
 	var currentTime = (new Date).getTime();
 
 	exports.core.time = (currentTime / 1000) << 0;	// round down
-	exports.core.mtime = currentTime;
 
 	setTimeout(updateTime, 1000 - (currentTime % 1000));
 
-	// console.log('Scheduled time update in ' + (1000 - (currentTime % 1000)) + 'msec (current time: ' + exports.time + ', ' + exports.mtime + ')');
+	// console.log('Scheduled time update in ' + (1000 - (currentTime % 1000)) + 'msec (current time: ' + exports.time + ')');
 }
 
 updateTime();
