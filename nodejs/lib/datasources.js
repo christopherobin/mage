@@ -81,8 +81,7 @@ function MySqlDatabase(config)
 	this.inTransaction = false;
 	this.connRW = null;
 	this.connRO = null;
-	this.transactionUnwrap = null;
-	this.transactionError = null;
+	this.transaction = null;
 }
 
 
@@ -140,7 +139,7 @@ MySqlDatabase.prototype.rw = function()
 
 MySqlDatabase.prototype.beginTransaction = function(cb)
 {
-	if (this.inTransaction)
+	if (this.transaction)
 	{
 		if (cb) cb(errors.ALREADY_IN_TRANSACTION);
 	}
@@ -148,14 +147,21 @@ MySqlDatabase.prototype.beginTransaction = function(cb)
 	{
 		var _this = this;
 
-		this.source(false).query('START TRANSACTION', [], function(err) {
+		this.transaction = {
+			db:      this.source(false),
+			level:   [],
+			current: null,
+			error:   null
+		};
+
+		this.transaction.db.query('START TRANSACTION', [], function(err) {
 			if (err)
 			{
+				_this.transaction = null;
 				if (cb) cb(errors.DB_ERROR);
 			}
 			else
 			{
-				_this.inTransaction = true;
 				if (cb) cb(null);
 			}
 		});
@@ -165,7 +171,7 @@ MySqlDatabase.prototype.beginTransaction = function(cb)
 
 MySqlDatabase.prototype.commit = function(cb)
 {
-	if (!this.inTransaction)
+	if (!this.transaction)
 	{
 		if (cb) cb(errors.NOT_IN_TRANSACTION);
 	}
@@ -173,14 +179,15 @@ MySqlDatabase.prototype.commit = function(cb)
 	{
 		var _this = this;
 
-		this.source(false).query('COMMIT', [], function(err) {
+		this.transaction.db.query('COMMIT', [], function(err) {
+			_this.transaction = null;
+
 			if (err)
 			{
 				if (cb) cb(errors.DB_ERROR);
 			}
 			else
 			{
-				_this.inTransaction = false;
 				if (cb) cb(null);
 			}
 		});
@@ -190,7 +197,7 @@ MySqlDatabase.prototype.commit = function(cb)
 
 MySqlDatabase.prototype.rollBack = function(cb)
 {
-	if (!this.inTransaction)
+	if (!this.transaction)
 	{
 		if (cb) cb(errors.NOT_IN_TRANSACTION);
 	}
@@ -198,14 +205,15 @@ MySqlDatabase.prototype.rollBack = function(cb)
 	{
 		var _this = this;
 
-		this.source(false).query('ROLLBACK', [], function(err) {
+		this.transaction.db.query('ROLLBACK', [], function(err) {
+			_this.transaction = null;
+
 			if (err)
 			{
 				if (cb) cb(errors.DB_ERROR);
 			}
 			else
 			{
-				_this.inTransaction = false;
 				if (cb) cb(null);
 			}
 		});
@@ -215,45 +223,88 @@ MySqlDatabase.prototype.rollBack = function(cb)
 
 MySqlDatabase.prototype.wrapTransaction = function(wrap, unwrap)
 {
-	var _this = this;
+	if (this.transaction)
+	{
+		this.transaction.level.push({ wrap: wrap, unwrap: unwrap });
+	}
+	else
+	{
+		var _this = this;
 
-	this.transactionUnwrap = unwrap;
-	this.transactionError = null;
+		this.beginTransaction(function(error) {
+			if (error)
+			{
+				unwrap(error);
+			}
+			else
+			{
+				_this.transaction.current = { wrap: wrap, unwrap: unwrap };
+				wrap(_this);
+			}
+		});
+	}
+};
 
-	this.beginTransaction(function(error) {
-		if (error)
+
+MySqlDatabase.prototype.runTransactionLevel = function()
+{
+	if (!this.transaction || !this.transaction.current)
+	{
+		if (cb) cb(errors.NOT_IN_TRANSACTION);
+		return;
+	}
+
+	if (this.transaction.error)
+	{
+		do
 		{
-			unwrap(error);
-			_this.transactionUnwrap = null;
-			_this.transactionError = null;
+			this.transaction.current.unwrap(error);
+			this.transaction.current = (this.transaction.level.length > 0) ? this.transaction.level.pop() : null;
 		}
-		else
-			wrap(_this);
-	});
+		while (this.transaction.current);
+	}
+	else
+	{
+		this.transaction.current.wrap(this.transaction.db);
+	}
 };
 
 
 MySqlDatabase.prototype.unwrapTransaction = function()
 {
-	var error = this.transactionError;
-	var unwrap = this.transactionUnwrap;
-
-	this.transactionUnwrap = null;
-	this.transactionError = null;
-
-	if (error)
+	if (!this.transaction || !this.transaction.current)
 	{
-		this.rollBack();
-		unwrap(error);
+		if (cb) cb(errors.NOT_IN_TRANSACTION);
+		return;
+	}
+
+	var unwrap = this.transaction.current.unwrap;
+
+	if (this.transaction.level.length > 0)
+	{
+		unwrap(this.transaction.error);
+
+		this.transaction.current = this.transaction.level.pop();
+		this.runTransactionLevel();
 	}
 	else
 	{
-		this.commit(function(err) {
-			if (err)
-				unwrap(errors.DB_ERROR);
-			else
-				unwrap(null);
-		});
+		if (this.transaction.error)
+		{
+			var error = this.transaction.error;
+
+			this.rollBack();
+			unwrap(error);
+		}
+		else
+		{
+			this.commit(function(err) {
+				if (err)
+					unwrap(errors.DB_ERROR);
+				else
+					unwrap(null);
+			});
+		}
 	}
 };
 
@@ -262,7 +313,7 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, error, cb)
 {
 	if (this.transactionError)
 	{
-		cb(this.transactionError);
+		if (cb) cb(this.transactionError);
 		return;
 	}
 
@@ -272,12 +323,12 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, error, cb)
 			if (err) mithril.core.logger.debug(err);
 
 			this.transactionError = error;
-			if(cb) { cb(error); }
+			if (cb) cb(error);
 		}
 		else
 		{
 			var result = (results.length > 0) ? results[0] : null;
-			if(cb) { cb(null, result); }
+			if (cb) cb(null, result);
 		}
 	});
 };
@@ -287,7 +338,7 @@ MySqlDatabase.prototype.getMany = function(sql, params, error, cb)
 {
 	if (this.transactionError)
 	{
-		cb(this.transactionError);
+		if (cb) cb(this.transactionError);
 		return;
 	}
 
@@ -299,11 +350,11 @@ MySqlDatabase.prototype.getMany = function(sql, params, error, cb)
 			mithril.core.logger.debug(err);
 
 			this.transactionError = error;
-			if(cb) { cb(error); }
+			if (cb) cb(error);
 		}
-		else if(cb)
+		else
 		{
-			cb(null, results);
+			if (cb) cb(null, results);
 		}
 	});
 };
@@ -404,7 +455,6 @@ var allowedFields = {
 
 	return result.join(' ');
 };
-
 
 
 exports.DataSources = DataSources;
