@@ -24,21 +24,21 @@ MithrilIo.prototype.start = function(cb)
 	});
 
 	this.socket.on('message', function(result) {
-		console.log('Received message: ' + result);
+		console.log('Received message: ', result);
 
 		result = JSON.parse(result);
 
-		if (result.id && result.response)
+		if (result.id)
 		{
-			_this.receivedQueryResult(result.response);
+			_this.receivedQueryResult(result);
 		}
 
 		if (result.events)
 		{
 			var n = result.events.length;
-			while (n--)
+			for (var i=0; i < n; i++)
 			{
-				var evt = result.events[n];
+				var evt = result.events[i];
 				_this.receivedEvent(evt[0], evt[1]);
 			}
 		}
@@ -50,9 +50,11 @@ MithrilIo.prototype.start = function(cb)
 
 MithrilIo.prototype.receivedEvent = function(module, data)
 {
-	if (this.mithril[module])
+	var mod = this.mithril[module];
+
+	if (mod && mod.sysUpdate)
 	{
-		this.mithril[module].sysUpdate(data);
+		mod.sysUpdate(data);
 	}
 	else
 	{
@@ -63,14 +65,19 @@ MithrilIo.prototype.receivedEvent = function(module, data)
 
 MithrilIo.prototype.receivedQueryResult = function(result)
 {
-	console.log('Received query result', result);
+	console.log('Received query result', result.id, result.response);
 
 	if (result.id in this.queries)
 	{
 		var cb = this.queries[result.id];
 		delete this.queries[result.id];
 
-		cb(result);
+		var errors = result.errors || null;
+
+		if ('response' in result)
+			cb(errors, result.response);
+		else
+			cb(errors, null);
 	}
 };
 
