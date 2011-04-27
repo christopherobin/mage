@@ -12,9 +12,7 @@ MithrilGameModGc.prototype.setup = function()
 
 MithrilGameModGc.prototype.loadNodes = function(options, cb)
 {
-	this.mithril.io.send('gc.loadNodes', { options: options }, function(result) {
-		cb(result.errors, result.response);
-	});
+	this.mithril.io.send('gc.loadNodes', { options: options }, cb);
 };
 
 

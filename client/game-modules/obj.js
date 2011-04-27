@@ -10,9 +10,7 @@ MithrilGameModObj.prototype.setup = function()
 
 var loadPlayerCache = function(cb)
 {
-	this.mithril.io.send('obj.getAllObjects', {}, function(result) {
-		cb(result.errors, result.response);
-	});
+	this.mithril.io.send('obj.getAllObjects', {}, cb);
 };
 
 MithrilGameModObj.prototype.getAllPlayerObjects = function(cb)
@@ -37,7 +35,7 @@ MithrilGameModObj.prototype.getMyCollection = function(matchColType, cb)
 {
 	var _this = this;
 	var returnData = null;
-	
+
 	this.mithril.obj.getAllPlayerObjects(function(err,cache)
 	{
 		if(err) { cb(err); return; }
