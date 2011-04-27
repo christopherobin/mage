@@ -178,6 +178,30 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 	}, cb);
 };
 
+exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
+{
+	var events = [
+		{ type: 'removeObjectFromCollection', objectId: objectId, collectionId: collectionId }
+	];
+
+	var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
+	state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, data) {
+		if (error)
+		{
+			if (cb) cb(error);
+		}
+		else
+		{
+			if(state.msgClient)
+			{
+//				events.forEach(function(evt) { mithril.actorEvent.emit(collection.owner, 'obj', evt); }); // TODO
+//				events.forEach(function(evt) { state.msgClient.emit('obj', evt); });
+			}
+		}
+	});
+};
+
+
 exports.getCollectionMembers = function(state, collectionId, cb)
 {
 	var query = "SELECT object, collection, slot FROM obj_collection_object WHERE collection = ? ORDER BY slot";
@@ -229,12 +253,6 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 			});
 		});
 	}, function(err){ if(cb) cb(err, newData); });
-};
-
-exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
-{
-	var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
-	state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, cb);
 };
 
 exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb)
