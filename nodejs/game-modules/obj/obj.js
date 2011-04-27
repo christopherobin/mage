@@ -180,7 +180,7 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 
 exports.getCollectionMembers = function(state, collectionId, cb)
 {
-	var query = "SELECT object, collection FROM obj_collection_object WHERE collection = ? ORDER BY slot";
+	var query = "SELECT object, collection, slot FROM obj_collection_object WHERE collection = ? ORDER BY slot";
 	state.datasources.db.getMany(query, [collectionId], errors.ERROR_CONST, cb);
 }
 

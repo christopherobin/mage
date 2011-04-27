@@ -27,7 +27,7 @@ exports.execute = function(state, actorId, p, cb)
 				mithril.obj.getCollectionMembers(state, collectionId, function(err,cMdata){
 					for (var l=0;l<cMdata.length;l++)
 					{
-						returnData.collections[cMdata[l].collection].members.push(cMdata[l].object);
+						returnData.collections[cMdata[l].collection].members.push({id:cMdata[l].object,slot:cMdata[l].slot});
 					}
 				});
 			}

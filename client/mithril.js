@@ -9,7 +9,7 @@ function Mithril(config, sessionId)
 
 	if (typeof MithrilGameModActor  != 'undefined') this.actor  = new MithrilGameModActor(this);
 	if (typeof MithrilGameModPlayer != 'undefined') this.player = new MithrilGameModPlayer(this);
-	if (typeof MithrilGameModSns    != 'undefined') this.sns    = new MithrilGameModSns(this);
+//	if (typeof MithrilGameModSns    != 'undefined') this.sns    = new MithrilGameModSns(this);
 	if (typeof MithrilGameModObj    != 'undefined') this.obj    = new MithrilGameModObj(this);
 	if (typeof MithrilGameModGc     != 'undefined') this.gc     = new MithrilGameModGc(this);
 }
@@ -17,41 +17,44 @@ function Mithril(config, sessionId)
 
 Mithril.prototype.start = function(cb)
 {
-	if (this.actor)  this.actor.setup();
-	if (this.player) this.player.setup();
-	if (this.sns)    this.sns.setup();
-	if (this.obj)    this.obj.setup();
-	if (this.gc)     this.gc.setup();
-
-	this.io.start(cb);
+	var _this = this;
+	this.io.start(function(error) {
+		if (error) { cb(error); }
+		else
+		{
+			_this.setupModules(cb);
+		}
+	});
 };
 
 
-/*
-// CONCEPT:
+Mithril.prototype.setupModules = function(cb)
+{
+	var done = 0;
+	var modules = [];
 
-mithril.sns.getMyFriends(cb);
+	if (this.actor)  modules.push(this.actor);
+	if (this.player) modules.push(this.player);
+	if (this.sns)    modules.push(this.sns);
+	if (this.obj)    modules.push(this.obj);
+	if (this.gc)     modules.push(this.gc);
 
-mithril.obj.loadAll(cb);
-	this.cache.collection.isFullyLoaded = true;
-	this.cache.collection['deck'] = data.deck;
-	this.cache.objects.isFullyLoaded = true;
-	this.cache.objects[..] = data....;
+	var _this = this;
 
-mithril.obj.getCollections('deck', cb);
-	if ('deck' in this.cache.collection) return this.cache['deck'];
-	return this.cache['deck'] = data;
-
-mithril.obj.getCollections('cardlist', cb);
-
-for (collections)
-	if (myObj.id in collection) myObj = collection[myObj.id];
-
-
-Cards
-	this.getDeck = function(cb)
+	for (var i=0; i < modules.length; i++)
 	{
-		mithril.obj.getCollections('deck', cb);
-	}
-*/
+		modules[i].setup(function(error) {
+			if (error)
+			{
+				if (cb) { cb(error); cb = null; }
+			}
+			else
+				done++;
 
+			if (done == modules.length)
+			{
+				cb(null);
+			}
+		});
+	}
+};

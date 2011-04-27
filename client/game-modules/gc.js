@@ -5,42 +5,18 @@ function MithrilGameModGc(mithril)
 }
 
 
-MithrilGameModGc.prototype.setup = function()
+MithrilGameModGc.prototype.setup = function(cb)
 {
-};
-
-
-MithrilGameModGc.prototype.loadNodes = function(options, cb)
-{
-	this.mithril.io.send('gc.loadNodes', { options: options }, cb);
-};
-
-
-MithrilGameModGc.prototype.getAllNodes = function(cb)
-{
-	if (this.cache)
-	{
-		cb(null, this.cache);
-		return;
-	}
-
 	var _this = this;
-
-	this.loadNodes({ loadProgressForActor: true, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(errors, response) {
-		if (errors)
+	this.mithril.io.send('gc.loadNodes', { options: { loadProgressForActor: true, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true } }, function(error, response) {
+		if (error)
 		{
-			cb(errors);
+			cb(error);
+			return;
 		}
-		else
-		{
-			// cache results
 
-			_this.cache = response;
-
-			// call cb
-
-			cb(null, _this.cache);
-		}
+		_this.cache = response;
+		cb(null);
 	});
 };
 

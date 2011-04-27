@@ -82,7 +82,7 @@ exports.start = function(httpServer)
 	io.on('connection', function(client) {
 		// resolve session object
 
-		var state = null;
+		var session = null;
 
 		client.on('message', function(msg) {
 			try
@@ -99,13 +99,13 @@ exports.start = function(httpServer)
 
 			// if session is not yet known, we must expect this to be revealed by the first message
 
-			if (!state) state = new mithril.core.state.State(null, new MsgClient(client), new mithril.core.datasources.DataSources);
+			var state = new mithril.core.state.State(null, new MsgClient(client), new mithril.core.datasources.DataSources);
 
 			// check if the message has been tagged with a query ID.
 
 			state.msgClient.queryId = msg.id;	// can be undefined
 
-			if (!state.session)
+			if (!session)
 			{
 				if (!msg.sessionId)
 				{
@@ -122,9 +122,11 @@ exports.start = function(httpServer)
 						}
 						else
 						{
+							session = state.session;
+
 							if (msg.cmd)
 							{
-								mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); });
+								mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); state.cleanup(); });
 							}
 						}
 					});
@@ -132,19 +134,16 @@ exports.start = function(httpServer)
 			}
 			else
 			{
+				state.session = session;
+
 				if (msg.cmd)
 				{
-					mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); });
+					mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); state.cleanup(); });
 				}
 			}
 		});
 
 		client.on('disconnect', function() {
-			if (state)
-			{
-				state.cleanup();
-				state = null;
-			}
 		});
 	});
 

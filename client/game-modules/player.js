@@ -4,8 +4,9 @@ function MithrilGameModPlayer(mithril)
 }
 
 
-MithrilGameModPlayer.prototype.setup = function()
+MithrilGameModPlayer.prototype.setup = function(cb)
 {
+	cb(null);
 };
 
 
