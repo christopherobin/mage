@@ -54,23 +54,24 @@ var sessions = {};
 
 // resolve(key) returns a session object to the callback for the given key, or false if not found
 
-exports.resolve = function(state, key, cb)
+exports.resolve = function(key, cb)
 {
 	var info = key.split(':');
-	if (info.length != 2) return false;
-
-	var playerId = info[0];
-	var sessionKey = info[1];
-
-	var session = sessions[playerId];
-
-	if (session && session.key == sessionKey)
+	if (info.length == 2)
 	{
-		state.session = session;
-		cb(null);
+		var playerId = info[0];
+		var sessionKey = info[1];
+
+		var session = sessions[playerId];
+
+		if (session && session.key == sessionKey)
+		{
+			cb(null, session);
+			return;
+		}
 	}
-	else
-		cb(errors.SESSION_NOTFOUND);
+
+	cb(errors.SESSION_NOTFOUND);
 };
 
 

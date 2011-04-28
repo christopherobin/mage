@@ -1,17 +1,18 @@
-exports.execute = function(state, playerId, p, cb)
+exports.execute = function(state, p, cb)
 {
 	var options = p.options || {};
 
 	if (options.loadProgressForActor)
 	{
-		options.loadProgressForActor = playerId;
+		options.loadProgressForActor = state.actorId;
 	}
 
 	mithril.gc.loadNodes(state, options, function(error, nodes) {
 		if (error)
-			state.msgClient.error(1234);
+			state.error(1234);
 		else
-			state.msgClient.respond(nodes);
+			state.respond(nodes);
+
 		cb();
 	});
 };

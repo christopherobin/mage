@@ -13,9 +13,100 @@ exports.userCommands = {
 };
 
 
+var allNodes = null;
+
+
+exports.setup = function(cb)
+{
+	var state = new mithril.core.state.State(null, null, new mithril.core.datasources.DataSources);
+
+	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodes) {
+		if (error)
+			cb(error);
+		else
+		{
+			allNodes = nodes;
+			cb(null);
+		}
+	});
+};
+
+
+exports.getNode = function(nodeId)
+{
+	if (nodeId in gameStructure)
+	{
+		return gameStructure[nodeId];
+	}
+	return null;
+};
+
+
+exports.filterNodes = function(filter, nextMatch)
+{
+	// filter nodes to only the required ones
+
+	var result = [];
+
+	for (var nodeId in allNodes)
+	{
+		var node = allNodes[nodeId];
+		if (filter(node))
+			result.push(node);
+	}
+
+	var count = result.length;
+
+	if (!nextMatch || count == 0) return result;
+
+	// sort nodes
+
+	function addToResult(out, filtered, i)
+	{
+		if (!filtered[i]) return -1;
+
+		var node = filtered[i];
+		var index;
+
+		filtered[i] = null;
+
+		var nextNodeId = nextMatch(node);
+		if (nextNodeId)
+		{
+			var nextNode = allNodes[nextNodeId];
+
+			index = out.indexOf(nextNode);
+			if (index == -1)
+			{
+				index = addToResult(out, filtered, filtered.indexOf(nextNode));
+			}
+
+			if (index != -1)
+			{
+				out.splice(index, 0, node);
+			}
+		}
+		else
+		{
+			out.push(node);
+			index = out.length - 1;
+		}
+
+		return index;
+	}
+
+	var out = [];
+
+	for (var i=0; i < count; i++)
+		addToResult(out, result, i);
+
+	return out;
+};
+
+
 exports.loadNodes = function(state, options, cb)
 {
-	// options: { loadProgressForActor: actorId, loadNodeData: true, load, loadInConnectors: true, loadOutConnectors: true }
+	// options: { loadProgressForActor: actorId, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }
 	// loads as little as possible by default (if no options given)
 
 	if (!options) options = {};
