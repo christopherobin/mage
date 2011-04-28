@@ -162,58 +162,127 @@ exports.getChildCollections = function(state, collectionId, objOptions, cb)
 
 exports.addObjectToCollection = function(state, objectId, collectionId, optSlot, objOptions, cb)
 {
-	state.datasources.db.wrapTransaction(function(db)
-	{
-		if (!optSlot && optSlot !== 0) optSlot = null;
-		params = [collectionId, objectId, optSlot];
-		var sql = "INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)";
-		state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
+	var owner = null;
 
-		if(objOptions && Object.keys(objOptions).length > 0)
+	var sql = "SELECT owner from obj_collection WHERE id = ?";
+	var params = [collectionId];
+
+	state.datasources.db.getOne(sql, params, true, errors.ERROR_CONST, function(err, data)
+	{
+		if (err)
 		{
-			if(objOptions && objOptions.removeFromCurrentCollections)
-			{
-				sql = "DELETE from obj_collection_object WHERE collection <> ?";
-				db.exec(sql, [collectionId], errors.ERROR_CONST, function(err, data){
-					db.unwrapTransaction();
-					
-					var query = "SELECT owner from obj_collection WHERE id = ?";
-					db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,collectionData)
-					{
-						var owner = collectionData.owner;
-						if(owner)
-						{
-							mithril.emit('obj.collection.object.add', owner, { objectId: objectId, collectionId: collectionId });
-						}
-						
-					});
-					
-				});
-			}
+			if (cb) cb(err);
+			return;
 		}
-		else
-		{	db.unwrapTransaction();	}
-	}, cb);
+		
+		if (data.owner)
+		{
+			owner = data.owner;
+		}
+
+
+		state.datasources.db.wrapTransaction(function(db)
+		{
+			if (!optSlot && optSlot !== 0) optSlot = null;
+	
+			function removeFromCurrentCollection(cb)
+			{
+				exports.removeObjectFromCollection(state, objectId, collectionId, owner, cb);
+			}
+	
+			function removeObjectFromSlot(cb)
+			{
+				exports.removeObjectFromSlot(state, objectId, collectionId, optSlot, owner, cb);
+			}
+	
+			function createLink(cb)
+			{
+				state.emit(owner, 'obj.collection.object.add', { objectId: objectId, collectionId: collectionId, slot: optSlot });
+
+				var sql = "INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)";
+				var params = [collectionId, objectId, optSlot];
+	
+				db.exec(sql, params, errors.ERROR_CONST, cb);
+			}
+	
+			var queries = [];
+	
+			queries.push(removeFromCurrentCollection);
+
+			if (optSlot)
+			{
+				queries.push(removeObjectFromSlot);
+			}
+	
+			queries.push(createLink);
+
+	
+			function runQuery(i)
+			{
+				if (queries[i+1])
+					queries[i](function() { runQuery(i+1); });
+				else
+					queries[i](function() { db.unwrapTransaction(); });
+			}
+	
+			runQuery(0);
+		}, cb);
+	},
+	cb);
 };
 
-exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
+
+exports.removeObjectFromCollection = function(state, objectId, collectionId, requiredOwner, cb)
 {
 	var query = "SELECT owner from obj_collection WHERE id = ?";
-	db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,collectionData)
+
+	state.datasources.db.getOne(query, [collectionId], true, errors.ERROR_CONST, function(err,collectionData)
 	{
 		var owner = collectionData.owner;
 	
 		var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
-		state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, data) {
+		state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, info) {
 			if (error)
 			{
 				if (cb) cb(error);
 			}
-			else if(owner)
+			else
 			{
-				mithril.emit('obj.collection.object.del', owner, { objectId: objectId, collectionId: collectionId });
+				if (owner && info.affectedRows > 0)
+				{
+					state.emit(owner, 'obj.collection.object.del', { objectId: objectId, collectionId: collectionId });
+				}
+
+				if (cb) cb(error);
 			}
 		});
+	});
+};
+
+
+exports.removeObjectFromSlot = function(state, objectId, collectionId, slot, requiredOwner, cb)
+{
+	// TODO: make requiredOwner optional?
+
+	var sql = "DELETE FROM obj_collection_object WHERE collection = ? AND slot = ? AND collection IN (SELECT id FROM obj_collection WHERE id = ? AND owner = ?)";
+	var params = [collectionId, slot, collectionId, requiredOwner];
+	
+	state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+		if (error)
+		{
+			if (cb) cb(error);
+		}
+		else
+		{
+			console.log(info);
+
+			if (info.affectedRows > 0)
+			{
+				state.emit(requiredOwner, 'obj.collection.object.del', { objectId: objectId, collectionId: collectionId, slot: slot });
+			}
+
+			if (cb) cb(error);
+		}
 	});
 };
 
