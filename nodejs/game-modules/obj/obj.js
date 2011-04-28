@@ -208,7 +208,7 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
 			if (error)
 			{
 				if (cb) cb(error);
-//			}
+			}
 			else if(owner)
 			{
 				mithril.emit('obj.collection.object.del', owner, { objectId: objectId, collectionId: collectionId });
