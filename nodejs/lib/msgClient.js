@@ -3,7 +3,6 @@ function MsgClient(client)
 	this.client = client;
 	this.responses = [];
 	this.events = [];
-	this.errors = [];
 }
 
 
@@ -22,15 +21,13 @@ MsgClient.prototype.rebind = function(client)
 };
 
 
-MsgClient.prototype.error = function(code)
+MsgClient.prototype.respond = function(id, response, errors)
 {
-	this.errors.push(code);
-};
+	var out = [id, response];
+	if (errors)
+		out.push(errors);
 
-
-MsgClient.prototype.respond = function(id, response)
-{
-	this.responses.push([id, response]);
+	this.responses.push(out);
 };
 
 
@@ -58,12 +55,6 @@ MsgClient.prototype.send = function()
 		this.responses = [];
 	}
 
-	if (this.errors.length > 0)
-	{
-		o.errors = this.errors;
-		this.errors = [];
-	}
-
 	this.client.send(JSON.stringify(o));
 };
 
@@ -73,6 +64,5 @@ MsgClient.prototype.cleanup = function()
 	this.client = null;
 	this.responses = [];
 	this.events = [];
-	this.errors = [];
 };
 
