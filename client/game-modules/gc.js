@@ -21,6 +21,12 @@ MithrilGameModGc.prototype.setup = function(cb)
 };
 
 
+MithrilGameModGc.prototype.getNode = function(nodeId)
+{
+	return (nodeId in this.cache) ? this.cache[nodeId] : null;
+};
+
+
 MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 {
 	// checks if the given node's inConnector of type "type" is set true/false based on the inConnector's requirements.
