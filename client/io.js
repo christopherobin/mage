@@ -4,7 +4,7 @@ function MithrilIo(mithril)
 	this.socket = null;
 	this.queries = {};
 	this.queryId = 0;
-	this.eventListeners = {};
+	this.eventListeners = [{}, {}];
 }
 
 
@@ -48,19 +48,23 @@ MithrilIo.prototype.start = function(cb)
 };
 
 
-MithrilIo.prototype.on = function(path, cb)
+MithrilIo.prototype.on = function(path, cb, priority)
 {
-	if (!(path in this.eventListeners)) this.eventListeners[path] = [];
+	var group = priority ? 0 : 1;
+	
+	if (!(path in this.eventListeners[group])) this.eventListeners[group][path] = [];
 
-	this.eventListeners[path].push({ cb: cb });
+	this.eventListeners[group][path].push({ cb: cb });
 };
 
 
-MithrilIo.prototype.once = function(path, cb)
+MithrilIo.prototype.once = function(path, cb, priority)
 {
-	if (!(path in this.eventListeners)) this.eventListeners[path] = [];
+	var group = priority ? 0 : 1;
+	
+	if (!(path in this.eventListeners[group])) this.eventListeners[group][path] = [];
 
-	this.eventListeners[path].push({ cb: cb, once: true });
+	this.eventListeners[group][path].push({ cb: cb, once: true });
 };
 
 
@@ -69,47 +73,44 @@ MithrilIo.prototype.receivedEvent = function(evt)
 	var path = evt[0];
 	var data = evt[1];
 
-	var pathElements = path.split('.');
+	var result = null;
 
-	var mod = this.mithril[pathElements[0]];
-
-	var emit = true;
-
-	if (mod && mod.on)
+	for (var i=0; i < this.eventListeners.length; i++)
 	{
-		if (false === mod.on(path, data)) emit = false;
-	}
+		var pathElements = path.split('.');
 
-	if (emit)
-	{
 		do
 		{
 			var listenerPath = pathElements.join('.');
-
-			var listeners = this.eventListeners[listenerPath];
-
+	
+			var listeners = this.eventListeners[i][listenerPath];
+	
 			if (listeners)
 			{
 				var dropped = false;
 				var n = listeners.length;
-
-				for (i=0; i < n; i++)
+	
+				for (j=0; j < n; j++)
 				{
-					var listener = listeners[i];
-
-					listener.cb(path, data);
-
+					var listener = listeners[j];
+	
+					result = listener.cb(path, data);
+	
 					if (listener.once)
 					{
-						delete listeners[i];
+						delete listeners[j];
 						dropped = true;
 					}
+					
+					if (result === false) break;
 				}
-
+	
 				if (dropped)
-					this.eventListeners[listenerPath] = listeners.filter(function(elm) { return elm; });
-			}
+					this.eventListeners[i][listenerPath] = listeners.filter(function(elm) { return elm; });
 
+				if (result === false) return;
+			}
+	
 			pathElements.pop();
 		}
 		while (pathElements.length);
