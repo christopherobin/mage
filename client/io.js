@@ -29,9 +29,13 @@ MithrilIo.prototype.start = function(cb)
 
 		result = JSON.parse(result);
 
-		if (result.id)
+		if (result.responses)
 		{
-			_this.receivedQueryResult(result);
+			var n = result.responses.length;
+			for (var i=0; i < n; i++)
+			{
+				_this.receivedQueryResult(result.responses[i]);
+			}
 		}
 
 		if (result.events)
@@ -41,6 +45,11 @@ MithrilIo.prototype.start = function(cb)
 			{
 				_this.receivedEvent(result.events[i]);
 			}
+		}
+
+		if (result.errors)
+		{
+			// TODO
 		}
 	});
 
@@ -119,19 +128,18 @@ MithrilIo.prototype.receivedEvent = function(evt)
 
 MithrilIo.prototype.receivedQueryResult = function(result)
 {
-	console.log('Received query result', result.id, result.response);
+	console.log('Received query result', result);
 
-	if (result.id in this.queries)
+	var id = result[0];
+	var response = result[1];
+	var errors = (result.length >= 3) ? result[2] : null;
+
+	if (id in this.queries)
 	{
-		var cb = this.queries[result.id];
-		delete this.queries[result.id];
+		var cb = this.queries[id];
+		delete this.queries[id];
 
-		var errors = result.errors || null;
-
-		if ('response' in result)
-			cb(errors, result.response);
-		else
-			cb(errors, null);
+		cb(errors, response);
 	}
 };
 

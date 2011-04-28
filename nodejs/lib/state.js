@@ -57,7 +57,7 @@ State.prototype.finish = function()
 {
 	if (this.errors.length > 0)
 	{
-		this.rollBack(true);
+		this.rollBack();
 	}
 	else
 		this.commit();
@@ -67,16 +67,6 @@ State.prototype.finish = function()
 State.prototype.commit = function()
 {
 	var msgClient = (this.session && this.session.msgClient) ? this.session.msgClient : null;
-
-	for (var i=0; i < this.errors.length; i++)
-	{
-		if (msgClient)
-			msgClient.error(this.errors[i]);
-		else
-		{
-			// log the error
-		}
-	}
 
 	var n = this.events.length;
 	for (var i=0; i < n; i++)
@@ -99,7 +89,10 @@ State.prototype.commit = function()
 	if (this.id)
 	{
 		if (msgClient)
-			msgClient.respond(this.id, this.response);
+		{
+			var errors = (this.errors.length > 0) ? this.errors : null;
+			msgClient.respond(this.id, this.response, errors);
+		}
 		else
 		{
 			// log the response
@@ -107,7 +100,7 @@ State.prototype.commit = function()
 	}
 
 	if (msgClient)
-		msgClient.send()
+		msgClient.send();
 
 	this.events = [];
 	this.response = null;
@@ -115,20 +108,22 @@ State.prototype.commit = function()
 };
 
 
-State.prototype.rollBack = function(sendErrors)
+State.prototype.rollBack = function()
 {
-	if (sendErrors)
+	if (this.id)
 	{
 		var msgClient = (this.session && this.session.msgClient) ? this.session.msgClient : null;
-
-		for (var i=0; i < this.errors.length; i++)
+		if (msgClient)
 		{
+			var errors = (this.errors.length > 0) ? this.errors : null;
+			msgClient.respond(this.id, this.response, errors);
+
 			if (msgClient)
-				msgClient.error(this.errors[i]);
-			else
-			{
-				// log the error
-			}
+				msgClient.send();
+		}
+		else
+		{
+			// log the response
 		}
 	}
 
