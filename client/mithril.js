@@ -58,3 +58,4 @@ Mithril.prototype.setupModules = function(cb)
 		});
 	}
 };
+

@@ -4,73 +4,8 @@ var errors = {
 };
 
 
-function MsgClient(client)
-{
-	this.client = client;
-	this.response = null;
-	this.events = [];
-	this.errors = [];
-	this.queryId = null;
-}
-
-
-MsgClient.prototype.error = function(code)
-{
-	this.errors.push(code);
-};
-
-
-MsgClient.prototype.respond = function(response)
-{
-	this.response = response;
-};
-
-
-MsgClient.prototype.emit = function(module, data)
-{
-	this.events.push([module, data]);
-};
-
-
-MsgClient.prototype.finish = function()
-{
-	var o = {};
-
-	if (this.events.length > 0)
-	{
-		o.events = this.events;
-		this.events = [];
-	}
-
-	if (this.response !== null)
-	{
-		o.response = this.response;
-		this.response = null;
-	}
-
-	if (this.queryId)
-	{
-		o.id = this.queryId;
-		this.queryId = null;
-	}
-
-	if (this.errors.length > 0)
-	{
-		o.errors = this.errors;
-		this.errors = [];
-	}
-
-	this.client.send(JSON.stringify(o));
-};
-
-
-MsgClient.prototype.cleanup = function()
-{
-	this.client = null;
-	this.response = null;
-	this.events = [];
-	this.errors = [];
-};
+State     = require(__dirname + '/state.js').State;
+MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
 
 // startup messaging server
@@ -83,67 +18,93 @@ exports.start = function(httpServer)
 		// resolve session object
 
 		var session = null;
+		var resolvingSession = false;
+		var msgQueue = [];
+
+
+		function handleMessageQueue()
+		{
+			if (msgQueue.length == 0) return;
+
+			var msg = msgQueue.shift();
+			handleMessage(msg, handleMessageQueue);
+		}
+
+
+		function handleMessage(msg, cb)
+		{
+			if (!session || !msg.cmd) { if (cb) cb(); return; }
+
+			var state = new State(session.playerId, msg, session);
+
+			mithril.core.userCommandCenter.execute(state, function() {
+				state.finish();
+				state.cleanup();
+
+				if (cb) cb();
+			});
+		}
+
 
 		client.on('message', function(msg) {
-			try
-			{
-				msg = JSON.parse(msg);
-			}
-			catch (e)
-			{
-				return;
-			}
-
+			try { msg = JSON.parse(msg); } catch (e) { return; }
 			if (!msg) return;
 
 
 			// if session is not yet known, we must expect this to be revealed by the first message
 
-			var state = new mithril.core.state.State(null, new MsgClient(client), new mithril.core.datasources.DataSources);
-
-			// check if the message has been tagged with a query ID.
-
-			state.msgClient.queryId = msg.id;	// can be undefined
-
 			if (!session)
 			{
-				if (!msg.sessionId)
+				if (!resolvingSession && !msg.sessionId)
 				{
 					mithril.core.logger.debug(msg);
-
 					mithril.core.warn(errors.SESSION_EXPECTED, client);
+					return;
 				}
-				else
+
+				msgQueue.push(msg);
+
+				if (!resolvingSession)
 				{
-					mithril.player.sessions.resolve(state, msg.sessionId, function(error) {
+					resolvingSession = true;
+
+					mithril.player.sessions.resolve(msg.sessionId, function(error, result) {
 						if (error)
-						{
 							mithril.core.warn(error, client);
-						}
 						else
 						{
-							session = state.session;
+							if (result.msgClient)
+								result.msgClient.rebind(client);
+							else
+								result.msgClient = new MsgClient(client);
 
-							if (msg.cmd)
-							{
-								mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); state.cleanup(); });
-							}
+							session = result;
 						}
+
+						resolvingSession = false;
+
+						handleMessageQueue();
 					});
+
+					delete msg.sessionId;
 				}
 			}
 			else
 			{
-				state.session = session;
+				if (session.msgClient)
+					session.msgClient.rebind(client);
+				else
+					session.msgClient = new MsgClient(client);
 
-				if (msg.cmd)
-				{
-					mithril.core.userCommandCenter.execute(state, state.session.playerId, msg, function() { state.msgClient.finish(); state.cleanup(); });
-				}
+				handleMessage(msg);
 			}
 		});
 
 		client.on('disconnect', function() {
+			if (session && session.msgClient)
+			{
+				session.msgClient.unbind();
+			}
 		});
 	});
 

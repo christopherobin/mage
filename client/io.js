@@ -4,6 +4,7 @@ function MithrilIo(mithril)
 	this.socket = null;
 	this.queries = {};
 	this.queryId = 0;
+	this.eventListeners = {};
 }
 
 
@@ -38,8 +39,7 @@ MithrilIo.prototype.start = function(cb)
 			var n = result.events.length;
 			for (var i=0; i < n; i++)
 			{
-				var evt = result.events[i];
-				_this.receivedEvent(evt[0], evt[1]);
+				_this.receivedEvent(result.events[i]);
 			}
 		}
 	});
@@ -48,17 +48,71 @@ MithrilIo.prototype.start = function(cb)
 };
 
 
-MithrilIo.prototype.receivedEvent = function(module, data)
+MithrilIo.prototype.on = function(path, cb)
 {
-	var mod = this.mithril[module];
+	if (!(path in this.eventListeners)) this.eventListeners[path] = [];
 
-	if (mod && mod.sysUpdate)
+	this.eventListeners[path].push({ cb: cb });
+};
+
+
+MithrilIo.prototype.once = function(path, cb)
+{
+	if (!(path in this.eventListeners)) this.eventListeners[path] = [];
+
+	this.eventListeners[path].push({ cb: cb, once: true });
+};
+
+
+MithrilIo.prototype.receivedEvent = function(evt)
+{
+	var path = evt[0];
+	var data = evt[1];
+
+	var pathElements = path.split('.');
+
+	var mod = this.mithril[pathElements[0]];
+
+	var emit = true;
+
+	if (mod && mod.on)
 	{
-		mod.sysUpdate(data);
+		if (false === mod.on(path, data)) emit = false;
 	}
-	else
+
+	if (emit)
 	{
-		console.log('Module ' + module + ' has no sysUpdate() method to handle events.');
+		do
+		{
+			var listenerPath = pathElements.join('.');
+
+			var listeners = this.eventListeners[listenerPath];
+
+			if (listeners)
+			{
+				var dropped = false;
+				var n = listeners.length;
+
+				for (i=0; i < n; i++)
+				{
+					var listener = listeners[i];
+
+					listener.cb(path, data);
+
+					if (listener.once)
+					{
+						delete listeners[i];
+						dropped = true;
+					}
+				}
+
+				if (dropped)
+					this.eventListeners[listenerPath] = listeners.filter(function(elm) { return elm; });
+			}
+
+			pathElements.pop();
+		}
+		while (pathElements.length);
 	}
 };
 

@@ -1,16 +1,13 @@
-exports.execute = function(state, playerId, p, cb)
+exports.execute = function(state, p, cb)
 {
 	var result = {};
 
 	mithril.actor.getActor(state, p.actorId, p.fields, function(error, actor) {
 		if (error)
-		{
-			state.msgClient.error(1234);
-		}
+			state.error(1234);
 		else
-		{
-			state.msgClient.respond(actor);
-		}
+			state.respond(actor);
+
 		cb();
 	});
 };

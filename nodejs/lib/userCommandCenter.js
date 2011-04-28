@@ -47,28 +47,28 @@ exports.expose = function(commandList)
 };
 
 
-exports.execute = function(state, playerId, msg, cb)
+exports.execute = function(query, cb)
 {
 	// check if command type is valid
 
-	if (!('cmd' in msg) || typeof msg.cmd != 'string')
+	if (!query.cmd || typeof query.cmd != 'string')
 	{
-		state.msgClient.error(errors.USERCOMMAND_EXPECTED);
+		query.error(errors.USERCOMMAND_EXPECTED);
 		cb();
 		return;
 	}
 
-	if (!(msg.cmd in commands))
+	if (!(query.cmd in commands))
 	{
-		state.msgClient.error(errors.USERCOMMAND_UNKNOWN);
+		query.error(errors.USERCOMMAND_UNKNOWN);
 		cb();
 		return;
 	}
 
 	// execute the command
 
-	mithril.core.logger.debug('Executing command "' + msg.cmd + '"');
+	mithril.core.logger.debug('Executing command "' + query.cmd + '"');
 
-	commands[msg.cmd].execute(state, playerId, msg.p || {}, cb);
+	commands[query.cmd].execute(query, query.p, cb);
 };
 
