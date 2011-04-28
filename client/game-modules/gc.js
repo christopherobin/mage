@@ -21,11 +21,11 @@ MithrilGameModGc.prototype.setup = function(cb)
 };
 
 
-MithrilGameModGc.prototype.getInRequirements = function(nodes, nodeId, type)
+MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 {
 	// checks if the given node's inConnector of type "type" is set true/false based on the inConnector's requirements.
 
-	var node = nodes[nodeId];
+	var node = this.cache[nodeId];
 
 	if (node.inConnectors && node.inConnectors[type])
 	{
@@ -40,11 +40,11 @@ MithrilGameModGc.prototype.getInRequirements = function(nodes, nodeId, type)
 			for (var i=0; i < group.length; i++)
 			{
 				var cond = group[i];
-				var progress = nodes[cond.targetNode].progress;
+				var progress = this.cache[cond.targetNode].progress;
 
 				if (!(progress && progress.state == cond.onState))
 				{
-					groupRequired.push(nodes[cond.targetNode]);
+					groupRequired.push(this.cache[cond.targetNode]);
 				}
 			}
 
@@ -60,15 +60,15 @@ MithrilGameModGc.prototype.getInRequirements = function(nodes, nodeId, type)
 };
 
 
-MithrilGameModGc.prototype.filterNodes = function(nodes, filter, nextMatch)
+MithrilGameModGc.prototype.filterNodes = function(filter, nextMatch)
 {
 	// filter nodes to only the required ones
 
 	var result = [];
 
-	for (var nodeId in nodes)
+	for (var nodeId in this.cache)
 	{
-		var node = nodes[nodeId];
+		var node = this.cache[nodeId];
 		if (filter(node))
 			result.push(node);
 	}
@@ -78,6 +78,8 @@ MithrilGameModGc.prototype.filterNodes = function(nodes, filter, nextMatch)
 	if (!nextMatch || count == 0) return result;
 
 	// sort nodes
+
+	var _this = this;
 
 	function addToResult(out, filtered, i)
 	{
@@ -91,7 +93,7 @@ MithrilGameModGc.prototype.filterNodes = function(nodes, filter, nextMatch)
 		var nextNodeId = nextMatch(node);
 		if (nextNodeId)
 		{
-			var nextNode = nodes[nextNodeId];
+			var nextNode = _this.cache[nextNodeId];
 
 			index = out.indexOf(nextNode);
 			if (index == -1)
