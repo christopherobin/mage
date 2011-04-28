@@ -1,5 +1,8 @@
-// Objects Module. TF April 2011
+/* Objects Module. TF April 2011
 
+TODO: Emit events for every db action that affects an actor.
+
+*/
 var errors = {
 	ERROR_CONST: { module: 'objects', code: 0000, log: { msg: 'Default error.', method: 'error' } }
 };
@@ -173,6 +176,18 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 				sql = "DELETE from obj_collection_object WHERE collection <> ?";
 				db.exec(sql, [collectionId], errors.ERROR_CONST, function(err, data){
 					db.unwrapTransaction();
+					
+					var query = "SELECT owner from obj_collection WHERE id = ?";
+					db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,collectionData)
+					{
+						var owner = collectionData.owner;
+						if(owner)
+						{
+							mithril.emit('obj.collection.object.add', owner, { objectId: objectId, collectionId: collectionId });
+						}
+						
+					});
+					
 				});
 			}
 		}
@@ -183,24 +198,22 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 
 exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
 {
-	var events = [
-		{ type: 'removeObjectFromCollection', objectId: objectId, collectionId: collectionId }
-	];
-
-	var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
-	state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, data) {
-		if (error)
-		{
-			if (cb) cb(error);
-		}
-		else
-		{
-//			if(state.msgClient)
-//			{
-//				events.forEach(function(evt) { mithril.actorEvent.emit(collection.owner, 'obj', evt); }); // TODO
-//				events.forEach(function(evt) { state.msgClient.emit('obj', evt); });
-//			}
-		}
+	var query = "SELECT owner from obj_collection WHERE id = ?";
+	db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,collectionData)
+	{
+		var owner = collectionData.owner;
+	
+		var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
+		state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, data) {
+			if (error)
+			{
+				if (cb) cb(error);
+			}
+			else if(owner)
+			{
+				mithril.emit('obj.collection.object.del', owner, { objectId: objectId, collectionId: collectionId });
+			}
+		});
 	});
 };
 
