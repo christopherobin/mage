@@ -80,7 +80,7 @@ exports.getRecievedFriendRequests = function(state, actorId, cb)
 	
 	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.actor = actor.id WHERE targetActor = ?";
 	
-	state.datasources.db.getMany(query, actorId, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
 }
 
 exports.getSentFriendRequests = function(state, actorId, cb)

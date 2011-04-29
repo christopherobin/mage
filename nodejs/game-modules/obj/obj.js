@@ -34,6 +34,22 @@ exports.userCommands = {
 };
 
 
+exports.getObjectsByUniqueType = function(state, type, cb)
+{
+	var query = "SELECT oo.id, oo.name, oo.weight, appliedToObject FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.type  = ? GROUP BY oo.id";
+	state.datasources.db.getMany(query, [type], errors.ERROR_CONST, function(error, data) {
+		if (error)
+		{
+			if (cb) cb(error);
+		}
+		else
+		{
+			if (cb) cb(null, data);
+		}
+	});
+};
+
+
 exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 {
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE obj_collection.id = ?" ;
@@ -176,7 +192,7 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 				sql = "DELETE from obj_collection_object WHERE collection <> ?";
 				db.exec(sql, [collectionId], errors.ERROR_CONST, function(err, data){
 					db.unwrapTransaction();
-					
+
 					var query = "SELECT owner from obj_collection WHERE id = ?";
 					db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,collectionData)
 					{
@@ -185,9 +201,9 @@ exports.addObjectToCollection = function(state, objectId, collectionId, optSlot,
 						{
 							mithril.emit('obj.collection.object.add', owner, { objectId: objectId, collectionId: collectionId });
 						}
-						
+
 					});
-					
+
 				});
 			}
 		}
@@ -202,7 +218,7 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, cb)
 	db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,collectionData)
 	{
 		var owner = collectionData.owner;
-	
+
 		var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
 		state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, data) {
 			if (error)
@@ -291,9 +307,9 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 
 exports.getObjectData = function(state, objectId, properties, cb)
 {	//requested properties is ['name',...].  If props undefined, [] or null, all come back.
-	var params = [objectId];
-	var query = "SELECT property, value FROM obj_object_data WHERE object = ?";
-
+	//var params = [objectId];
+	var query = "SELECT object, property, value FROM obj_object_data WHERE object = ?";
+	
 	if(properties && properties.length > 0)
 	{
 		query += " AND property IN (";
@@ -306,7 +322,19 @@ exports.getObjectData = function(state, objectId, properties, cb)
 		query = query.substr(0,query.length - 2);
 		query += ")";
 	}
-	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
+
+	objectId.forEach(function(id){
+		state.datasources.db.getMany(query, [id], errors.ERROR_CONST, function(error, data) {
+			if (error)
+			{
+				if (cb) cb(error);
+			}
+			else
+			{
+				if (cb) cb(null,data);
+			}
+		});	
+	});
 };
 
 exports.getObjectDataByOwner = function(state, ownerId, cb)
