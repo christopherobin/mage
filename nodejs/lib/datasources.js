@@ -317,6 +317,8 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, error, cb)
 		return;
 	}
 
+	mithril.core.logger.debug('getOne SQL: ' + sql + ' using ' + JSON.stringify(params));
+
 	this.source(true).query(sql, params, function(err, results) {
 		if (err || (required && results.length != 1) || results.length > 1)
 		{
@@ -367,6 +369,8 @@ MySqlDatabase.prototype.exec = function(sql, params, error, cb)
 		if (cb) cb(this.transactionError);
 		return;
 	}
+
+	mithril.core.logger.debug('exec SQL: ' + sql + ' using ' + JSON.stringify(params));
 
 	this.source(false).query(sql, params, function(err, info) {
 		if (err)

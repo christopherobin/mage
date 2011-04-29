@@ -7,13 +7,21 @@ function MithrilGameModObj(mithril)
 
 MithrilGameModObj.prototype.setup = function(cb)
 {
-	if (this.playerCache)
-	{
-		cb(null, this.playerCache);
-		return;
-	}
 
 	var _this = this;
+	
+	this.mithril.io.on("obj.collection.object.add", function(path, params){
+		console.log(path, params)
+	}, true);
+	this.mithril.io.on("obj.collection.object", function(path, params){
+		console.log(path, params)
+	}, true);
+	this.mithril.io.on("obj.collection", function(path, params){
+		console.log(path, params)
+	}, true);
+	this.mithril.io.on("obj", function(path, params){
+		console.log(path, params)
+	}, true);
 
 	this.mithril.io.send('obj.getAllObjects', {}, function(errors, response) {
 		if (errors) { cb(errors); return; }
@@ -48,12 +56,6 @@ MithrilGameModObj.prototype.setup = function(cb)
 		// call cb
 		cb(null);
 	});
-};
-
-
-MithrilGameModObj.prototype.sysUpdate = function(data)
-{
-	console.log("data from event: ", data)
 };
 
 
