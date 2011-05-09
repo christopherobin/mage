@@ -18,7 +18,7 @@ var allNodes = null;
 
 exports.setup = function(cb)
 {
-	var state = new mithril.core.state.State(null, null, new mithril.core.datasources.DataSources);
+	var state = new mithril.core.state.State();
 
 	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodes) {
 		if (error)
@@ -28,6 +28,8 @@ exports.setup = function(cb)
 			allNodes = nodes;
 			cb(null);
 		}
+
+		state.datasources.close();
 	});
 };
 
@@ -270,7 +272,7 @@ exports.loadNodeInConnectors = function(state, node, cb)
 
 exports.loadNodeOutConnectors = function(state, node, cb)
 {
-	var query = 'SELECT c.type, c.onState, co.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_on AS co ON co.connector = c.id WHERE c.node = ?';
+	var query = 'SELECT c.type, c.onState, ct.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_target AS ct ON ct.connector = c.id WHERE c.node = ?';
 	var params = [node.id];
 
 	state.datasources.db.getMany(query, params, errors.GC_LOAD_OUTCONNECTORS_FAILED, function(err, results) {
