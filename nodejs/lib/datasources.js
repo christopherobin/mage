@@ -89,12 +89,16 @@ MySqlDatabase.prototype.close = function()
 {
 	if (this.connRO && this.connRO !== this.connRW)
 	{
+		mithril.core.logger.debug('Closing read-only database connection.');
+
 		this.connRO.end();
 		this.connRO = null;
 	}
 
 	if (this.connRW)
 	{
+		mithril.core.logger.debug('Closing read/write database connection.');
+
 		this.connRW.end();
 		this.connRW = null;
 	}

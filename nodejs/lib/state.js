@@ -2,7 +2,7 @@ function State(actorId, msg, session)
 {
 	// behaves like a transaction, and will send off everything that happened after commit() is called.
 
-	this.actorId = actorId;
+	this.actorId = actorId || null;
 
 	if (!msg) msg = {};
 
@@ -135,7 +135,9 @@ State.prototype.rollBack = function()
 
 State.prototype.cleanup = function()
 {
-	this.ds = null;
+	this.datasources.close();
+
+	this.datasources = null;
 	this.session = null;
 	this.p = null;
 };
