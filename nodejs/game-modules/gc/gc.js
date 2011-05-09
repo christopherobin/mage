@@ -34,11 +34,16 @@ exports.setup = function(cb)
 
 exports.getNode = function(nodeId)
 {
-	if (nodeId in gameStructure)
+	if (nodeId in allNodes)
 	{
-		return gameStructure[nodeId];
+		return allNodes[nodeId];
 	}
 	return null;
+};
+
+exports.findUnreferencedNode = function(nodes, notMatching)
+{
+	console.log("nodes: ", nodes)
 };
 
 
@@ -201,6 +206,50 @@ exports.loadNodeProgress = function(state, node, actorId, cb)
 };
 
 
+exports.getNodesProgress = function(state, nodes, actorId, cb)
+{	//nodes should be an array 
+
+	cb(null, {
+		1:'not done',
+		2:'not done',
+		3:'not done',
+		4:'not done',
+		5:'not done'
+	})
+	
+	return;
+	
+
+	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (  ';
+	var params = [actorId];
+
+	for (var i=0; i < nodes.length; i++) //loop, add ?, push params;
+	{
+		params.push(nodes[i]);
+		query += "? ,";
+	}
+
+	query = query.substr(0, query.length - 2);
+	query += ")";
+
+	state.datasources.db.getMany(query, params, errors.GC_LOAD_PROGRESS_FAILED, function(err, data) {
+		if (err)
+		{
+			if (cb) cb(err);
+		}
+		else
+		{
+			var result = {};
+			for (var i=0;i<data.length;i++) //loop , dump in object
+			{
+				result[data[i].node] = data[i].state;
+			}
+			if (cb) cb(null, result);
+		}
+	});
+};
+
+
 exports.loadNodeData = function(state, node, cb)
 {
 	var query = 'SELECT property, value FROM gc_node_data WHERE node = ?';
@@ -261,7 +310,6 @@ exports.loadNodeInConnectors = function(state, node, cb)
 					node.inConnectors[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
 				}
 			}
-
 			if (cb) cb(null);
 		}
 	});
