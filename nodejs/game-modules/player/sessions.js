@@ -1,5 +1,6 @@
 var errors = {
-	SESSION_NOTFOUND: { module: 'session', code: 1000 }
+	SESSION_NOTFOUND:     { module: 'session', code: 1000 },
+	SESSION_REGISTRATION: { module: 'session', code: 1001 }
 };
 
 exports.errors = errors;
@@ -48,7 +49,21 @@ Session.prototype.register = function(cb)
 
 	this.key = key;
 
-	cb(null);
+
+	// register session to DB
+
+	var state = new State;
+	var sql = 'REPLACE INTO player_session VALUES (?, ?, ?, ?, ?)';
+	var params = [this.playerId, key, this.creationTime, this.lastTouchTime, 'active'];
+
+	state.datasources.db.exec(sql, params, errors.SESSION_REGISTRATION, function(err, result) {
+		if (err)
+			cb(err);
+		else
+			cb(null);
+
+		state.cleanup();
+	});
 };
 
 
@@ -81,7 +96,7 @@ exports.resolve = function(key, cb)
 
 		// session not found locally, check DB
 
-		var state = new State();
+		var state = new State;
 		var query = 'SELECT creationTime, lastTouchTime FROM player_session WHERE player = ? AND sessionId = ?';
 		var params = [playerId, sessionKey];
 
