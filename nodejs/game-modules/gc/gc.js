@@ -230,7 +230,7 @@ exports.loadNodeData = function(state, node, cb)
 
 exports.loadNodeInConnectors = function(state, node, cb)
 {
-	var query = 'SELECT c.type, cs.andGroup, cs.targetNode, cs.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_stategroup AS cs ON cs.connector = c.id WHERE c.node = ?';
+	var query = 'SELECT c.type, c.andGroup, ct.targetNode, ct.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_target AS ct ON ct.connector = c.id WHERE c.node = ?';
 	var params = [node.id];
 
 	state.datasources.db.getMany(query, params, errors.GC_LOAD_INCONNECTORS_FAILED, function(err, results) {
