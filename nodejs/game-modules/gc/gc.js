@@ -29,7 +29,7 @@ exports.setup = function(cb)
 			cb(null);
 		}
 
-		state.datasources.close();
+		state.cleanup();
 	});
 };
 

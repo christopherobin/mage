@@ -4,8 +4,8 @@ var errors = {
 };
 
 
-State     = require(__dirname + '/state.js').State;
-MsgClient = require(__dirname + '/msgClient.js').MsgClient;
+var State     = require(__dirname + '/state.js').State;
+var MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
 
 // startup messaging server
@@ -24,10 +24,10 @@ exports.start = function(httpServer)
 
 		function handleMessageQueue()
 		{
-			if (msgQueue.length == 0) return;
-
 			var msg = msgQueue.shift();
-			handleMessage(msg, handleMessageQueue);
+
+			if (msg)
+				handleMessage(msg, handleMessageQueue);
 		}
 
 
@@ -73,12 +73,12 @@ exports.start = function(httpServer)
 							mithril.core.warn(error, client);
 						else
 						{
-							if (result.msgClient)
-								result.msgClient.rebind(client);
-							else
-								result.msgClient = new MsgClient(client);
-
 							session = result;
+
+							if (session.msgClient)
+								session.msgClient.rebind(client);
+							else
+								session.msgClient = new MsgClient(client);
 						}
 
 						resolvingSession = false;
