@@ -5,6 +5,9 @@ var errors = {
 exports.errors = errors;
 
 
+var State = require(mithril.core.paths.lib + '/state.js').State;
+
+
 function Session(playerId)
 {
 	this.playerId = playerId;
@@ -34,9 +37,9 @@ Session.prototype.getFullKey = function()
 Session.prototype.register = function(cb)
 {
 	const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	const charCount = chars.length;
 	var len = 10;
 	var key = '';
-	var charCount = chars.length;
 
 	while (len--)
 	{
@@ -56,19 +59,51 @@ var sessions = {};
 
 exports.resolve = function(key, cb)
 {
+	mithril.core.logger.debug('Resolving session ' + key);
+
 	var info = key.split(':');
 	if (info.length == 2)
 	{
 		var playerId = info[0];
 		var sessionKey = info[1];
 
+		// check locally
+
 		var session = sessions[playerId];
 
 		if (session && session.key == sessionKey)
 		{
+			mithril.core.logger.debug('Session found in local cache.');
+
 			cb(null, session);
 			return;
 		}
+
+		// session not found locally, check DB
+
+		var state = new State();
+		var query = 'SELECT creationTime, lastTouchTime FROM player_session WHERE player = ? AND sessionId = ?';
+		var params = [playerId, sessionKey];
+
+		state.datasources.db.getOne(query, params, true, errors.SESSION_NOTFOUND, function(err, result) {
+			if (err)
+				cb(err);
+			else
+			{
+				var session = new Session(playerId);
+				session.key = sessionKey;
+				session.creationTime = result.creationTime;
+				sessions[playerId] = session;
+
+				mithril.core.logger.debug('Session found in DB. Registered in local cache.');
+
+				cb(null, session);
+			}
+
+			state.cleanup();
+		});
+
+		return;
 	}
 
 	cb(errors.SESSION_NOTFOUND);
