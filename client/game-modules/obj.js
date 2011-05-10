@@ -11,16 +11,23 @@ MithrilGameModObj.prototype.setup = function(cb)
 	var _this = this;
 	
 	this.mithril.io.on("obj.collection.object.add", function(path, params){
-		console.log(path, params)
+		console.log(path, params);
 	}, true);
+	
+	
+	this.mithril.io.on("obj.collection.object.del", function(path, params){
+		console.log(path, params);
+	}, true);
+	
+	
 	this.mithril.io.on("obj.collection.object", function(path, params){
-		console.log(path, params)
+		console.log(path, params);
 	}, true);
 	this.mithril.io.on("obj.collection", function(path, params){
-		console.log(path, params)
+		//console.log(path, params);
 	}, true);
 	this.mithril.io.on("obj", function(path, params){
-		console.log(path, params)
+		//console.log(path, params);
 	}, true);
 
 	this.mithril.io.send('obj.getAllObjects', {}, function(errors, response) {
@@ -45,7 +52,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 			var collection = new MithrilGameModObj_Collection(info);
 
 			var len = info.members.length;
-			for (var i=0;i<len;i++)
+			for (var i=0; i<len; i++)
 			{
 				var slot = info.members[i].slot
 				var object = _this.getObjectById(info.members[i].id);
@@ -68,6 +75,18 @@ MithrilGameModObj.prototype.getObjectById = function(objectId)
 	return null;
 };
 
+
+MithrilGameModObj.prototype.getMyCollectionsById = function(id)
+{
+	var result = [];
+
+	var n = this.playerCache.collections.length;
+	while (n--)
+	{
+		if (this.playerCache.collections[n].id == id) return this.playerCache.collections[n];
+	}
+	return null;
+}
 
 MithrilGameModObj.prototype.getMyCollectionsByType = function(type)
 {
@@ -119,6 +138,15 @@ MithrilGameModObj_Collection.prototype.containsName = function(objectName)
 	return this.objects.some(function(info) { return info.object.name == objectName; });
 };
 
+MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
+{
+	var n = this.objects.length;
+	while (n--)
+	{
+		if (this.objects[n].slot == slot) return this.objects[n].object;
+	}
+	return null;
+};
 
 MithrilGameModObj_Collection.prototype.getObjectById = function(objectId)
 {
