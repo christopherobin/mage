@@ -43,9 +43,30 @@ exports.getNode = function(nodeId)
 	return null;
 };
 
-exports.findUnreferencedNode = function(nodes, notMatching)
+
+exports.findUnreferencedNodes = function(nodes, connectorType)
 {
-	console.log("nodes: ", nodes)
+	var referenced = [];
+
+	var len = nodes.length;
+	for (var i=0; i < len; i++)
+	{
+		var node = nodes[i];
+		if (node.outConnectors && node.outConnectors[connectorType])
+		{
+			var connector = node.outConnectors[connectorType];
+
+			for (var onState in connector)
+			{
+				for (var j=0; j < connector[onState].length; j++)
+				{
+					referenced.push(connector[onState][j]);
+				}
+			}
+		}
+	}
+
+	return nodes.filter(function(node) { return (referenced.indexOf(node.id) == -1); });
 };
 
 
@@ -210,17 +231,6 @@ exports.loadNodeProgress = function(state, node, actorId, cb)
 
 exports.getNodesProgress = function(state, nodes, actorId, cb)
 {	//nodes should be an array 
-
-	cb(null, {
-		1:'not done',
-		2:'not done',
-		3:'not done',
-		4:'not done',
-		5:'not done'
-	})
-	
-	return;
-	
 
 	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (  ';
 	var params = [actorId];
