@@ -29,18 +29,44 @@ exports.setup = function(cb)
 			cb(null);
 		}
 
-		state.datasources.close();
+		state.cleanup();
 	});
 };
 
 
 exports.getNode = function(nodeId)
 {
-	if (nodeId in gameStructure)
+	if (nodeId in allNodes)
 	{
-		return gameStructure[nodeId];
+		return allNodes[nodeId];
 	}
 	return null;
+};
+
+
+exports.findUnreferencedNodes = function(nodes, connectorType)
+{
+	var referenced = [];
+
+	var len = nodes.length;
+	for (var i=0; i < len; i++)
+	{
+		var node = nodes[i];
+		if (node.outConnectors && node.outConnectors[connectorType])
+		{
+			var connector = node.outConnectors[connectorType];
+
+			for (var onState in connector)
+			{
+				for (var j=0; j < connector[onState].length; j++)
+				{
+					referenced.push(connector[onState][j]);
+				}
+			}
+		}
+	}
+
+	return nodes.filter(function(node) { return (referenced.indexOf(node.id) == -1); });
 };
 
 
@@ -203,6 +229,39 @@ exports.loadNodeProgress = function(state, node, actorId, cb)
 };
 
 
+exports.getNodesProgress = function(state, nodes, actorId, cb)
+{	//nodes should be an array 
+
+	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (  ';
+	var params = [actorId];
+
+	for (var i=0; i < nodes.length; i++) //loop, add ?, push params;
+	{
+		params.push(nodes[i]);
+		query += "? ,";
+	}
+
+	query = query.substr(0, query.length - 2);
+	query += ")";
+
+	state.datasources.db.getMany(query, params, errors.GC_LOAD_PROGRESS_FAILED, function(err, data) {
+		if (err)
+		{
+			if (cb) cb(err);
+		}
+		else
+		{
+			var result = {};
+			for (var i=0;i<data.length;i++) //loop , dump in object
+			{
+				result[data[i].node] = data[i].state;
+			}
+			if (cb) cb(null, result);
+		}
+	});
+};
+
+
 exports.loadNodeData = function(state, node, cb)
 {
 	var query = 'SELECT property, value FROM gc_node_data WHERE node = ?';
@@ -263,7 +322,6 @@ exports.loadNodeInConnectors = function(state, node, cb)
 					node.inConnectors[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
 				}
 			}
-
 			if (cb) cb(null);
 		}
 	});
