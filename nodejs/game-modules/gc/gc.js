@@ -3,7 +3,8 @@ var errors = {
 	GC_LOAD_PROGRESS_FAILED:      { module: 'gc', code: 1001, log: { msg: 'Loading game content progress failed.', method: 'error' } },
 	GC_LOAD_DATA_FAILED:          { module: 'gc', code: 1002, log: { msg: 'Loading game content data failed.', method: 'error' } },
 	GC_LOAD_INCONNECTORS_FAILED:  { module: 'gc', code: 1003, log: { msg: 'Loading game content in-connectors.', method: 'error' } },
-	GC_LOAD_OUTCONNECTORS_FAILED: { module: 'gc', code: 1004, log: { msg: 'Loading game content out-connectors.', method: 'error' } }
+	GC_LOAD_OUTCONNECTORS_FAILED: { module: 'gc', code: 1004, log: { msg: 'Loading game content out-connectors.', method: 'error' } },
+	SET_STATE_FAILED:             { module: 'gc', code: 2000, log: { msg: 'Setting game content state failed.', method: 'error' } }
 };
 
 exports.errors = errors;
@@ -132,6 +133,16 @@ exports.filterNodes = function(filter, nextMatch)
 };
 
 
+exports.setNodeState = function(state, nodeId, newState, cb)
+{
+	var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
+	var params = [state.actorId, nodeId, newState, mithril.core.time];
+
+	state.datasources.db.exec(sql, params, errors.SET_STATE_FAILED, cb);
+};
+
+
+
 exports.loadNodes = function(state, options, cb)
 {
 	// options: { loadProgressForActor: actorId, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }
@@ -230,7 +241,7 @@ exports.loadNodeProgress = function(state, node, actorId, cb)
 
 
 exports.getNodesProgress = function(state, nodes, actorId, cb)
-{	//nodes should be an array 
+{	//nodes should be an array
 
 	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (  ';
 	var params = [actorId];
