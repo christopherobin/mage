@@ -79,7 +79,7 @@ exports.resolve = function(key, cb)
 	var info = key.split(':');
 	if (info.length == 2)
 	{
-		var playerId = info[0];
+		var playerId = parseInt(info[0]);
 		var sessionKey = info[1];
 
 		// check locally
