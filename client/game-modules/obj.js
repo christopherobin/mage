@@ -7,11 +7,9 @@ function MithrilGameModObj(mithril)
 
 MithrilGameModObj.prototype.setup = function(cb)
 {
-
 	var _this = this;
 	
 	this.mithril.io.on("obj.collection.object.add", function(path, params){
-		console.log(path, params);
 
 		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
 		var len = collection.objects.length;
@@ -31,10 +29,10 @@ MithrilGameModObj.prototype.setup = function(cb)
 	}, true);
 	
 	this.mithril.io.on("obj.collection.object.del", function(path, params){
-		console.log(path, params);
 		
 		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
 		var obj = null;
+		
 		if ('objectId' in params)
 		{
 			obj = collection.getObjectById(params.objectId);
@@ -157,7 +155,7 @@ MithrilGameModObj_Collection.prototype.delObject = function(objectId)
 	var result = false;
 
 	this.objects = this.objects.filter(function(info) {
-		if (info.object.id == objectId)
+		if (info.object.id != objectId)
 		{
 			return true;
 		}
@@ -191,7 +189,7 @@ MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
 	var n = this.objects.length;
 	while (n--)
 	{
-		if (this.objects[n].slot == slot) return this.objects[n].object;
+		if (this.objects[n].slot == slot) return this.objects[n];
 	}
 	return null;
 };
