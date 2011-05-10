@@ -135,8 +135,12 @@ exports.filterNodes = function(filter, nextMatch)
 
 exports.setNodeState = function(state, nodeId, newState, cb)
 {
+	var time = mithril.core.time;
+
+	state.emit(state.actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState, stateTime: time });
+
 	var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
-	var params = [state.actorId, nodeId, newState, mithril.core.time];
+	var params = [state.actorId, nodeId, newState, time];
 
 	state.datasources.db.exec(sql, params, errors.SET_STATE_FAILED, cb);
 };
@@ -186,11 +190,6 @@ exports.loadNodeInformation = function(state, node, options, cb)
 {
 	var queue = [];
 
-	if (options.loadProgressForActor)
-	{
-		queue.push(function(nextCb) { exports.loadNodeProgress(state, node, options.loadProgressForActor, nextCb); });
-	}
-
 	if (options.loadNodeData)
 	{
 		queue.push(function(nextCb) { exports.loadNodeData(state, node, nextCb); });
@@ -204,6 +203,11 @@ exports.loadNodeInformation = function(state, node, options, cb)
 	if (options.loadOutConnectors)
 	{
 		queue.push(function(nextCb) { exports.loadNodeOutConnectors(state, node, nextCb); });
+	}
+
+	if (options.loadProgressForActor)
+	{
+		queue.push(function(nextCb) { exports.loadNodeProgress(state, node, options.loadProgressForActor, nextCb); });
 	}
 
 	var funcCount = queue.length;
@@ -243,17 +247,23 @@ exports.loadNodeProgress = function(state, node, actorId, cb)
 exports.getNodesProgress = function(state, nodes, actorId, cb)
 {	//nodes should be an array
 
-	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (  ';
+	if (nodes.length == 0)
+	{
+		if (cb) cb(null, {});
+		return;
+	}
+
+	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (';
 	var params = [actorId];
 
 	for (var i=0; i < nodes.length; i++) //loop, add ?, push params;
 	{
 		params.push(nodes[i]);
-		query += "? ,";
+		query += '? ,';
 	}
 
 	query = query.substr(0, query.length - 2);
-	query += ")";
+	query += ')';
 
 	state.datasources.db.getMany(query, params, errors.GC_LOAD_PROGRESS_FAILED, function(err, data) {
 		if (err)

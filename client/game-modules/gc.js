@@ -8,6 +8,17 @@ function MithrilGameModGc(mithril)
 MithrilGameModGc.prototype.setup = function(cb)
 {
 	var _this = this;
+
+	this.mithril.io.on('gc.node.progress.edit', function(path, params) {
+		if (!_this.cache) return;
+
+		if (params.nodeId in _this.cache)
+		{
+			_this.cache[params.nodeId].progress = { state: params.state, stateTime: params.stateTime };
+		}
+	}, true);
+
+
 	this.mithril.io.send('gc.loadNodes', { options: { loadProgressForActor: true, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true } }, function(error, response) {
 		if (error)
 		{
