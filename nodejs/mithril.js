@@ -136,16 +136,58 @@ exports.setup = function(pathConfig, cb)
 
 // start() starts all services that allow users to connect
 
+
+var routes = {};
+
+exports.route = function(path, fn)
+{
+	// registered functions NEED to call response.end!
+
+	if (path.substr(-1) === '/') path = path.slice(0, -1);	// drop last slash
+
+	routes[path] = fn;
+};
+
+
 exports.start = function()
 {
 	exports.core.logger.debug('Starting HTTP service at http://' + exports.core.config.server.host + ':' + exports.core.config.server.port + '/');
 
+
 	exports.core.httpServer = require('http').createServer(function(request, response) {
-		if (true || request.url == '/favicon.ico')
+		// parse URL
+
+		var url = request.url.split('?', 2);
+		var path = url[0];
+		var params = url[1];
+
+		if (path.substr(-1) === '/') path = path.slice(0, -1);	// drop last slash
+
+
+		// routing
+
+		if (path in routes)
 		{
-			res.writeHead(404);
-			res.end('404 Not found');
-			return;
+			// parse parameters and call the function in routes[path]
+
+			var result = {};
+
+			params = params.split('&');
+			for (var i=0; i < params.length; i++)
+			{
+				var p = params[i].split('=', 2);
+				if (p.length == 2)
+				{
+					result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+				}
+			}
+
+			routes[path](request, response, result);
+		}
+		else
+		{
+			response.writeHead(404);
+			response.end('404 Not found');
 		}
 	});
 
