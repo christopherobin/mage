@@ -29,10 +29,13 @@ var modules = {
 	gc:     paths.gameModules + '/gc/gc.js'
 };
 
+var customModules = {
+};
+
 
 exports.addModule = function(name, path)
 {
-	modules[name] = path;
+	customModules[name] = path;
 };
 
 
@@ -96,41 +99,42 @@ exports.setup = function(pathConfig, cb)
 	};
 
 
-	// expose modules and set them up
-
-	function onDone()
-	{
-		exports.core.logger.info('Mithril setup complete.');
-		cb();
-	}
-
-
 	// expose modules
 
-	var moduleCount = 0;
-	var done = 0;
-
-	for (var key in modules)
+	function loadModules(list, cb)
 	{
-		exports.core.logger.info('Exposing module ' + key);
+		var moduleCount = 0;
+		var done = 0;
 
-		exports[key] = require(modules[key]);
-		moduleCount++;
+		for (var name in list)
+		{
+			exports.core.logger.info('Exposing module ' + name);
+
+			exports[name] = require(list[name]);
+			moduleCount++;
+		}
+
+		for (var name in list)
+		{
+			if (exports[name].setup)
+			{
+				exports.core.logger.info('Setting up module ' + name);
+
+				exports[name].setup(function() { if (++done == moduleCount) cb(); });
+			}
+			else
+			{
+				if (++done == moduleCount) cb();
+			}
+		}
 	}
 
-	for (var key in modules)
-	{
-		if (exports[key].setup)
-		{
-			exports.core.logger.info('Setting up module ' + key);
-
-			exports[key].setup(function() { if (++done == moduleCount) onDone(); });
-		}
-		else
-		{
-			if (++done == moduleCount) onDone();
-		}
-	}
+	loadModules(modules, function() {
+		loadModules(customModules, function() {
+			exports.core.logger.info('Mithril setup complete.');
+			cb();
+		});
+	});
 };
 
 
