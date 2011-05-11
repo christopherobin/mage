@@ -192,7 +192,7 @@ exports.addCollection = function(state, type, slotCount, maxWeight, parentCollec
 		{
 			if(owner)
 			{
-				state.emit(owner, 'obj.collection.add', { collectionId: info.insertId, collectionType: type, slotCount: slotCount, maxWeight:maxWeight, parentId:parent, owner:owner });
+				state.emit(owner, 'obj.collection.add', { collectionId: info.insertId, collectionType: type, slotCount: slotCount, maxWeight:maxWeight, parentId: parentCollection, owner:owner });
 			}
 			if (cb) { cb(null, { id: info.insertId, type: type, slotCount: slotCount, maxWeight: maxWeight, parentCollection: parentCollection, owner: owner }); }
 		}
@@ -205,11 +205,11 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, function(err, data)
 	{
 		if(err) { if(cb) { cb(err); return; }}
-	
+
 		var sql = "UPDATE obj_collection SET ";
 		var params = [];
 		var owner = null;
-	
+
 		if(data.owner) { owner = data.owner; }
 		var emmission = { collectionId: data.id, owner:owner };
 
@@ -488,7 +488,7 @@ exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb) 
 	state.datasources.db.getOne(query, [collectionId, objectId], true, errors.ERROR_CONST, function(err,data)
 	{
 		if(err) { if(cb) { cb(err); return; }}
-	
+
 		var sql = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?";
 		state.datasources.db.exec(sql, [slotNumber, collectionId, objectId], errors.ERROR_CONST, function(error, info){
 			if(error) { if(cb) { cb(error); return; }}
@@ -505,11 +505,11 @@ exports.applyObjectToObject = function(state, objectId, applyToObjectId, cb)
 {
 	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
 		if(err) { if(cb) { cb(err); return; }}
-		
+
 		var sql = "UPDATE obj_object SET appliedToObject = ? WHERE id = ?";
 		state.datasources.db.exec(sql, [applyToObjectId, objectId], errors.ERROR_CONST, function(error, info){
 			if(error) { if(cb) { cb(error); return; }}
-			
+
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
@@ -524,11 +524,11 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 {
 	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
 		if(err) { if(cb) { cb(err); return; }}
-		
+
 		var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?";
 		state.datasources.db.exec(sql, [objectId], errors.ERROR_CONST, function(error, info){
 			if(error) { if(cb) { cb(error); return; }}
-			
+
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
