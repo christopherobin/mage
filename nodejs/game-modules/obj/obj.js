@@ -171,29 +171,28 @@ exports.addCollection = function(state, type, slotCount, maxWeight, parentCollec
 		if (err) { if (cb) { cb(err); }}
 		else
 		{
-			if (cb) { cb(null, { id: info.insertId, type: type, slotCount: slotCount, maxWeight: maxWeight, parentCollection: parentCollection, owner: owner }); }
 			if(owner)
 			{
 				state.emit(owner, 'obj.collection.add', { collectionId: info.insertId, collectionType: type, slotCount: slotCount, maxWeight:maxWeight, parentId:parent, owner:owner });
 			}
+			if (cb) { cb(null, { id: info.insertId, type: type, slotCount: slotCount, maxWeight: maxWeight, parentCollection: parentCollection, owner: owner }); }
 		}
 	});
 };
 
 exports.editCollection = function(state, collectionId, objFields, cb)
-{	//TODO: deal with change of ownership.
+{	//TODO: deal with change of ownership, or disallow it here
 	var query = "SELECT id, owner FROM obj_collection WHERE id = ?"; //find out who this belongs to so we may notify them
 	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, function(err, data)
 	{	
+		if(err) { if(cb) { cb(err); return; }}
+	
 		var sql = "UPDATE obj_collection SET ";
 		var params = [];
 		var owner = null;
-		if(data.owner)
-		{
-			owner = data.owner;	
-		}
-			
-		var emmission = { collectionId: data.id, owner:owner }
+	
+		if(data.owner) { owner = data.owner; }
+		var emmission = { collectionId: data.id, owner:owner };
 
 		for (var key in objFields)
 		{
@@ -202,7 +201,7 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 				sql+= allowedFields[key] + " = ?";
 				params.push(objFields[key]);
 				
-				var emmissionKey = (key.substr(-2) == "Id") ? key.substr(0, key.length-2) : key ; //does not remap collection type.
+				var emmissionKey = (key.substr(-2) == "Id") ? key.substr(0, key.length-2) : key ; //does not remap collectionType.
 				emmission[emmissionKey] = objFields[key];
 			}
 		}
@@ -210,12 +209,12 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 		params.push(collectionId);
 	
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error,info){
-			if (error) { if (cb) { cb(error);} }
+			if (error) { if (cb) { cb(error); return; } }
 			if(owner)
 			{
-				state.emit(owner, 'obj.collection.edit', emmission); //emission system works as long as owner does not change here!
+				state.emit(owner, 'obj.collection.edit', emmission);
 			}
-			if (cb) cb(null);
+			if (cb) cb(null, info);
 		});
 		
 	});
@@ -236,7 +235,7 @@ exports.delCollection = function(state, collectionId, objOptions, cb)
 			{
 				state.emit(data.owner, 'obj.collection.del', { collectionId: data.id, owner:data.owner }); 
 			}
-			if (cb) cb(null);
+			if (cb) cb(null, info);
 		});
 	});
 };
@@ -246,6 +245,7 @@ exports.setCollectionOwnership = function(state, collectionId, actorId, cb)
 	var query = "SELECT id, parent, type, slotCount, maxWeight, owner FROM obj_collection WHERE id = ?"; 
 	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, function(err, data)
 	{
+		if (err) { if (cb) { cb(err);} }
 		var sql = "UPDATE obj_collection SET owner = ? WHERE id = ?";
 		state.datasources.db.exec(sql,[actorId, collectionId], errors.ERROR_CONST, function(error,info){
 			if (error) { if (cb) { cb(error);} }
@@ -259,7 +259,7 @@ exports.setCollectionOwnership = function(state, collectionId, actorId, cb)
 				{
 					state.emit(actorId, 'obj.collection.add', { collectionId: data.id, collectionType: data.type, slotCount: data.slotCount, maxWeight:data.maxWeight, parentId:data.parent, owner:actorId });
 				}
-				if (cb) cb(null);
+				if (cb) cb(null, info);
 			}
 		});
 	});
@@ -346,6 +346,7 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, req
 	var query = "SELECT owner from obj_collection WHERE id = ?";
 	state.datasources.db.getOne(query, [collectionId], true, errors.ERROR_CONST, function(err, data)
 	{
+		if (err) { if (cb) { cb(err);} }
 		if (requiredOwner && data.owner != requiredOwner)
 		{
 			state.error(1234);
@@ -369,7 +370,6 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, req
 exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner, cb)
 {
 	var query = "SELECT owner from obj_collection WHERE id = ?";
-
 	state.datasources.db.getOne(query, [collectionId], true, errors.ERROR_CONST, function(err, data)
 	{
 		if (err) { if (cb) { cb(err); return; }}
@@ -386,7 +386,7 @@ exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
 			if (error) { if (cb) { cb(error); }}
 			else
-			{	if (info.affectedRows > 0)
+			{	if (data.owner && info.affectedRows > 0)
 				{
 					state.emit(data.owner, 'obj.collection.object.del', { collectionId: collectionId, slot: slot });
 				}
@@ -410,22 +410,20 @@ exports.addObject = function(state, name, weight,  cb)
 
 exports.editObject = function(state, id, name, weight, cb)
 {
-	//search for potential owners
-	var query = "SELECT DISTINCT oc.owner FROM obj_collection AS oc INNER JOIN obj_collection_object AS oco ON oc.id = oco.collection WHERE oco.object = ? ";
-	state.datasources.db.getMany(query, [id], errors.ERROR_CONST, function(error, ownerData){
-		if(error) { if(cb) {cb(error)}}
-		else
-		{
-			var sql = "UPDATE obj_object SET name = ?, weight = ? WHERE id = ? ";
-			state.datasources.db.exec(sql, [name, weight, id], errors.ERROR_CONST, cb);
+	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
+		if(err) { if(cb) {cb(err); return; }}
+
+		var sql = "UPDATE obj_object SET name = ?, weight = ? WHERE id = ? ";
+		state.datasources.db.exec(sql, [name, weight, id], errors.ERROR_CONST, function(error, info){
+			if(error) { if(cb) {cb(error); return; }}
 			
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
 				state.emit(ownerData[i].owner, 'obj.object.edit', { id: id , name: name, weight:weight });
 			}
-			if (cb) {cb(null); }
-		}
+			if (cb) {cb(null, info); }
+		});
 	});
 };
 
@@ -463,25 +461,61 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 	}, function(err) { if (cb) cb(err, newData); });
 };
 
-exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb)
+exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb) //effectively a move within a collection.  may want to add more checks
 {
-	//TODO check ownership, emit 
-	var sql = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?";
-	state.datasources.db.exec(sql, [slotNumber, collectionId, objectId], errors.ERROR_CONST, cb);
+	var query = "SELECT owner FROM obj_collection INNER JOIN obj_collection_obj ON obj_collection.id = obj_collection_obj.collection WHERE collectionId = ? AND objectId = ? ";
+	state.datasources.db.getOne(query, [collectionId, objectId], true, errors.ERROR_CONST, function(err,data)
+	{
+		if(err) { if(cb) { cb(err); return; }}
+	
+		var sql = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?";
+		state.datasources.db.exec(sql, [slotNumber, collectionId, objectId], errors.ERROR_CONST, function(error, info){
+			if(error) { if(cb) { cb(error); return; }}
+			if(data.owner)
+			{
+				state.emit(data.owner, 'obj.collection.object.setObjectSlot', { objectId: objectId , collectionId: collectionId, slot:slotNumber });
+			}
+			if(cb) { cb(null, info); }
+		});
+	});
 };
 
 exports.applyObjectToObject = function(state, objectId, applyToObjectId, cb)
 {
-	//TODO check ownership, emit 
-	var sql = "UPDATE obj_object SET appliedToObject = ? WHERE id = ?";
-	state.datasources.db.exec(sql, [applyToObjectId, objectId], errors.ERROR_CONST, cb);
+	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
+		if(err) { if(cb) { cb(err); return; }}
+		
+		var sql = "UPDATE obj_object SET appliedToObject = ? WHERE id = ?";
+		state.datasources.db.exec(sql, [applyToObjectId, objectId], errors.ERROR_CONST, function(error, info){
+			if(error) { if(cb) { cb(error); return; }}
+			
+			var len = ownerData.length;
+			for(var i=0;i<len;i++)
+			{
+				state.emit(ownerData[i].owner, 'obj.object.applyToObj', { id: objectId , applyTo: applyToObjectId });
+			}
+			if(cb) { cb(null, info); }
+		});
+	});
 };
 
 exports.detachObjectFromObject = function(state, objectId, cb)
 {
-	//TODO check ownership, emit 
-	var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?";
-	state.datasources.db.exec(sql, [objectId], errors.ERROR_CONST, cb);
+	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
+		if(err) { if(cb) { cb(err); return; }}
+		
+		var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?";
+		state.datasources.db.exec(sql, [objectId], errors.ERROR_CONST, function(error, info){
+			if(error) { if(cb) { cb(error); return; }}
+			
+			var len = ownerData.length;
+			for(var i=0;i<len;i++)
+			{
+				state.emit(ownerData[i].owner, 'obj.object.detachFromObj', { id: objectId });
+			}
+			if(cb) { cb(null, info); }
+		});
+	});
 };
 
 exports.getObjectData = function(state, objectId, properties, cb)
@@ -518,8 +552,7 @@ exports.setObjectData = function(state, objectId, data, cb)
 {	// data is {}
 	var sql = 'INSERT INTO obj_object_data VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
-	var query = "SELECT DISTINCT oc.owner FROM obj_collection AS oc INNER JOIN obj_collection_object AS oco ON oc.id = oco.collection WHERE oco.object = ? ";
-	state.datasources.db.getMany(query, [id], errors.ERROR_CONST, function(error, ownerData){
+	_this.mithril.obj.getObjectOwners(state, objectId, function(error, ownerData){
 		if(error) { if(cb) {cb(error)}}
 		else
 		{
@@ -549,8 +582,7 @@ exports.delObjectData = function(state, objectId, properties, cb)
 	sql += ")";
 	properties.unshift(objectId);
 	
-	var query = "SELECT DISTINCT oc.owner FROM obj_collection AS oc INNER JOIN obj_collection_object AS oco ON oc.id = oco.collection WHERE oco.object = ? ";
-	state.datasources.db.getMany(query, [id], errors.ERROR_CONST, function(error, ownerData){
+	_this.mithril.obj.getObjectOwners(state, objectId, function(error, ownerData){
 		if(error) { if(cb) {cb(error)}}
 		else
 		{
@@ -568,3 +600,8 @@ exports.delObjectData = function(state, objectId, properties, cb)
 	});
 };
 
+exports.getObjectOwners = function(state, objectId, cb)
+{
+	var query = "SELECT DISTINCT oc.owner FROM obj_collection AS oc INNER JOIN obj_collection_object AS oco ON oc.id = oco.collection WHERE oco.object = ? ";
+	state.datasources.db.getMany(query, [objectId], errors.ERROR_CONST, cb);
+}

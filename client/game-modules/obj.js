@@ -71,6 +71,27 @@ MithrilGameModObj.prototype.setup = function(cb)
 		}
 	});
 	
+	this.mithril.io.on("obj.collection.object.setObjectSlot", function(path, params){ //this is quite brutal
+		var slot;
+		var collection = null;
+		var len = _this.playerCache.collections.length;
+		for(var i=0;i<len;i++)
+		{
+			if (_this.playerCache.collections[i].id == params.collectiondId) { collection = _this.playerCache.collections[i]; break; }
+		}
+		if (collection)
+		{
+			var men = collection.objects.length;
+			for(var j=0;j<men;j++)
+			{
+				if (collection.objects[j].slot == params.slot)	
+				{
+					collection.objects[j].object = _this.playerCache.objectIds[params.objectId];
+				}
+			}
+		}
+	}, true);
+	
 	this.mithril.io.on("obj.collection.object", function(path, params){
 		console.log(path, params);
 	}, true);
@@ -84,6 +105,14 @@ MithrilGameModObj.prototype.setup = function(cb)
 		{	//name,weight,id
 			_this.playerCache.objectIds[params.id][key] = params[key];
 		}
+	}, true);
+	
+	this.mithril.io.on("obj.object.applyToObj", function(path, params){
+		_this.playerCache.objectIds[params.id].appliedToObject = params.applyTo;
+	}, true);
+	
+	this.mithril.io.on("obj.object.detachFromObj", function(path, params){
+		_this.playerCache.objectIds[params.id].appliedToObject = null;
 	}, true);
 	
 	this.mithril.io.on("obj.object.data.edit", function(path, params){
