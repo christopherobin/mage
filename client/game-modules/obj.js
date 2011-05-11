@@ -9,8 +9,8 @@ MithrilGameModObj.prototype.setup = function(cb)
 {
 	var _this = this;
 	
-	this.mithril.io.on("obj.collection.object.add", function(path, params){
-
+	this.mithril.io.on("obj.collection.object.add", function(path, params)
+	{
 		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
 		var len = collection.objects.length;
 		
@@ -28,8 +28,8 @@ MithrilGameModObj.prototype.setup = function(cb)
 		collection.addObject(_this.mithril.obj.getObjectById(params.objectId), params.slot);
 	}, true);
 	
-	this.mithril.io.on("obj.collection.object.del", function(path, params){
-		
+	this.mithril.io.on("obj.collection.object.del", function(path, params)
+	{
 		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
 		var obj = null;
 		
@@ -47,12 +47,57 @@ MithrilGameModObj.prototype.setup = function(cb)
 		if (!collection.delObject(obj.object.id)) return false;
 	}, true);
 	
+	this.mithril.io.on("obj.collection.add", function(path, params){
+		var collection = new MithrilGameModObj_Collection(params);
+		_this.playerCache.collections.push(collection);
+	});
+	
+	this.mithril.io.on("obj.collection.del", function(path, params){
+		_this.playerCache.collections = _this.playerCache.collections.filter(function(collection){
+			if(collection.id != params.collectionId) { return true; } else { return false; }
+		});
+	});
+	
+	this.mithril.io.on("obj.collection.edit", function(path, params){
+		for(var i=0;i<_this.playerCache.collections.length;i++)
+		{
+			if(params.collectionId == _this.playerCache.collections[i].id)
+			{
+				if (collectionType in params) { _this.playerCache.collections[i].type = params.collectionType; }
+				if (parent in params) { _this.playerCache.collections[i].parent = params.parent; }
+				if (slotCount in params) { _this.playerCache.collections[i].slotCount = params.slotCount; }
+				if (maxWeight in params) { _this.playerCache.collections[i].maxWeight = params.maxWeight; }
+			}
+		}
+	});
+	
 	this.mithril.io.on("obj.collection.object", function(path, params){
 		console.log(path, params);
 	}, true);
 	
 	this.mithril.io.on("obj.collection", function(path, params){
 		//console.log(path, params);
+	}, true);
+	
+	this.mithril.io.on("obj.object.edit", function(path, params){
+		for(var key in params)
+		{	//name,weight,id
+			_this.playerCache.objectIds[params.id][key] = params[key];
+		}
+	}, true);
+	
+	this.mithril.io.on("obj.object.data.edit", function(path, params){
+		for(var key in params.data)
+		{
+			_this.playerCache.objectIds[params.id].data[key] = params.data[key];
+		}
+	}, true);
+	
+	this.mithril.io.on("obj.object.data.del", function(path, params){
+		for(var i=0;i<params.data.length;i++)
+		{
+			delete _this.playerCache.objectIds[params.id].data[params.data[i]];
+		}
 	}, true);
 	
 	this.mithril.io.on("obj", function(path, params){
