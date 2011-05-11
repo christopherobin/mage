@@ -47,6 +47,22 @@ exports.getCollectionsByType = function(state, type, max, cb)
 };
 
 
+exports.getFullCollectionByType = function(state, type, owner, cb)
+{
+	var query = 'SELECT id FROM obj_collection WHERE type = ? AND owner = ? LIMIT 1';
+
+	state.datasources.db.getOne(query, [type, owner], true, errors.ERROR_CONST, function(error, result) {
+		if (error)
+		{
+			if (cb) cb(error);
+			return;
+		}
+
+		exports.getFullCollection(state, result.id, cb);
+	});
+};
+
+
 exports.getFullCollection = function(state, collectionId, cb)
 {
 	var query = 'SELECT parent, type, slotCount, maxWeight, owner FROM obj_collection WHERE id = ?';
@@ -58,6 +74,8 @@ exports.getFullCollection = function(state, collectionId, cb)
 			if (cb) cb(error);
 			return;
 		}
+
+		collection.id = collectionId;
 
 		query = 'SELECT o.id, co.slot, o.appliedToObject, o.weight, o.name FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? ORDER BY co.slot ASC';
 		params = [collectionId];
@@ -239,12 +257,12 @@ exports.getChildCollections = function(state, collectionId, objOptions, cb)
 exports.addObjectToCollection = function(state, objectId, collectionId, options, cb)
 {
 	if (!options) options = {};
-	
+
 	var owner = null;
 
 	var sql = "SELECT owner from obj_collection WHERE id = ?";
 	var params = [collectionId];
-	
+
 	state.datasources.db.getOne(sql, params, true, errors.ERROR_CONST, function(err, data)
 	{
 		if (err)
@@ -336,7 +354,7 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, req
 			if (cb) cb(errors.ERROR_CONST);
 			return;
 		}
-		
+
 		var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
 		state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, info) {
 			if (error)
@@ -368,14 +386,14 @@ exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner
 			if (cb) cb(err);
 			return;
 		}
-		
+
 		if (requiredOwner && data.owner != requiredOwner)
 		{
 			state.error(1234);
 			if (cb) cb(errors.ERROR_CONST);
 			return;
 		}
-		
+
 		var sql = "DELETE FROM obj_collection_object WHERE collection = ? AND slot = ?";
 		var params = [collectionId, slot];
 
@@ -390,7 +408,7 @@ exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner
 				{
 					state.emit(data.owner, 'obj.collection.object.del', { collectionId: collectionId, slot: slot });
 				}
-	
+
 				if (cb) cb(null);
 			}
 		});
@@ -435,7 +453,7 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 	state.datasources.db.wrapTransaction(function(db)
 	{
 		if (!optSlot && optSlot !== 0) optSlot = null;
-		
+
 		var query = "SELECT * from obj_object WHERE id = ?";
 		db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,data)
 		{
