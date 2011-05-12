@@ -1,8 +1,5 @@
-/* Objects Module. TF April 2011
+/* Objects Module. TF April 2011 */
 
-TODO: Emit events for every db action that affects an actor.
-
-*/
 var errors = {
 	ERROR_CONST: { module: 'objects', code: 0000, log: { msg: 'Default error.', method: 'error' } }
 };
@@ -48,16 +45,18 @@ exports.getCollectionsByType = function(state, type, max, cb)
 
 exports.getFullCollectionByType = function(state, type, owner, cb)
 {
-	var query = 'SELECT id FROM obj_collection WHERE type = ? AND owner = ? LIMIT 1';
+	async.waterfall(
+	[
+		function(callback) {
+			var query = 'SELECT id FROM obj_collection WHERE type = ? AND owner = ? LIMIT 1';
 
-	state.datasources.db.getOne(query, [type, owner], true, errors.ERROR_CONST, function(error, result) {
-		if (error)
-		{
-			if (cb) cb(error);
-			return;
+			state.datasources.db.getOne(query, [type, owner], true, errors.ERROR_CONST, callback);
+		},
+		function(result, callback) {
+			exports.getFullCollection(state, result.id, callback);
 		}
-		exports.getFullCollection(state, result.id, cb);
-	});
+	],
+	cb);
 };
 
 
