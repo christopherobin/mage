@@ -234,7 +234,7 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 			if (error) { if (cb) { cb(error); return; } }
 			if(owner)
 			{
-				state.emit(owner, 'obj.collection.edit', emmission);
+				state.emit(owner, 'obj.collection.edit', emmission); //untested
 			}
 			if (cb) cb(null, info);
 		});
@@ -256,7 +256,7 @@ exports.delCollection = function(state, collectionId, objOptions, cb)
 			if (error) { if (cb) { cb(error);} }
 			if(data.owner)
 			{
-				state.emit(data.owner, 'obj.collection.del', { collectionId: data.id, owner:data.owner });
+				state.emit(data.owner, 'obj.collection.del', { collectionId: data.id, owner:data.owner }); //untested
 			}
 			if (cb) cb(null, info);
 		});
@@ -264,7 +264,7 @@ exports.delCollection = function(state, collectionId, objOptions, cb)
 };
 
 
-exports.setCollectionOwnership = function(state, collectionId, actorId, cb)
+exports.setCollectionOwnership = function(state, collectionId, actorId, cb) //untested
 {
 	var query = "SELECT id, parent, type, slotCount, maxWeight, owner FROM obj_collection WHERE id = ?";
 	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, function(err, data)
@@ -418,7 +418,7 @@ exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner
 			else
 			{	if (data.owner && info.affectedRows > 0)
 				{
-					state.emit(data.owner, 'obj.collection.object.del', { collectionId: collectionId, slot: slot });
+					state.emit(data.owner, 'obj.collection.object.del', { collectionId: collectionId, slot: slot }); //untested
 				}
 				if (cb) cb(null);
 			}
@@ -453,7 +453,7 @@ exports.editObject = function(state, id, name, weight, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.edit', { id: id, name: name, weight:weight });
+				state.emit(ownerData[i].owner, 'obj.object.edit', { id: id, name: name, weight: weight }); //untested
 			}
 			if (cb) {cb(null, info); }
 		});
@@ -508,7 +508,7 @@ exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb) 
 			if(error) { if(cb) { cb(error); return; }}
 			if(data.owner)
 			{
-				state.emit(data.owner, 'obj.collection.object.setObjectSlot', { objectId: objectId, collectionId: collectionId, slot: slotNumber });
+				state.emit(data.owner, 'obj.collection.object.setObjectSlot', { objectId: objectId, collectionId: collectionId, slot: slotNumber }); //untested
 			}
 			if(cb) { cb(null, info); }
 		});
@@ -528,7 +528,7 @@ exports.applyObjectToObject = function(state, objectId, applyToObjectId, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.applyToObj', { id: objectId, applyTo: applyToObjectId });
+				state.emit(ownerData[i].owner, 'obj.object.applyToObj', { id: objectId, applyTo: applyToObjectId }); //untested
 			}
 			if(cb) { cb(null, info); }
 		});
@@ -548,7 +548,7 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.detachFromObj', { id: objectId });
+				state.emit(ownerData[i].owner, 'obj.object.detachFromObj', { id: objectId }); //untested
 			}
 			if(cb) { cb(null, info); }
 		});
@@ -599,17 +599,12 @@ exports.setObjectData = function(state, objectId, data, cb)
 
 		for (var property in data)
 		{
-			console.dir('Setting ' + property + ' to ' + data[property] + ' on object ' + objectId);
-
 			var params = [objectId, property, data[property]];
-			state.datasources.db.exec(sql, params, errors.ERROR_CONST);
+			state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
 		}
 
-		console.log('Getting ready to emit state. Receivers:');
-		console.dir(ownerData);
-
 		var len = ownerData.length;
-		for (var i=0; i < len; i++)
+		for (var i=0;i<len;i++) //untested
 		{
 			state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
 		}
@@ -639,10 +634,8 @@ exports.delObjectData = function(state, objectId, properties, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: properties });
+				state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: properties }); //untested
 			}
-
-
 			if(cb) { cb(null); }
 		}
 	});
