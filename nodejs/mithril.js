@@ -9,10 +9,11 @@ var rootPath = path.dirname(module.filename);
 
 var paths = {
 	root:        rootPath,
-	extlib:      rootPath + '/extlib',
 	lib:         rootPath + '/lib',
 	gameModules: rootPath + '/game-modules'
 };
+
+global.async = require('async');
 
 exports.core.paths = paths;
 exports.core.state = require(paths.lib + '/state.js');

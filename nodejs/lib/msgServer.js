@@ -12,7 +12,7 @@ var MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
 exports.start = function(httpServer)
 {
-	var io = require(mithril.core.paths.extlib + '/socket.io').listen(httpServer, { log: null });
+	var io = require('socket.io').listen(httpServer, { log: null });
 
 	io.on('connection', function(client) {
 		// resolve session object

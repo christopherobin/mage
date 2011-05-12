@@ -62,7 +62,7 @@ var mysql = null;
 
 function connectToMySql(config)
 {
-	if (mysql === null) mysql = require(mithril.core.paths.extlib + '/mysql');
+	if (mysql === null) mysql = require('mysql');
 
 	var client = new mysql.Client();
 	client.user = config.user;
