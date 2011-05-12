@@ -599,7 +599,7 @@ exports.setObjectData = function(state, objectId, data, cb)
 		for (var property in data)
 		{
 			var params = [objectId, property, data[property]];
-			state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
+			state.datasources.db.exec(sql, params, errors.ERROR_CONST);
 		}
 
 		var len = ownerData.length;
