@@ -116,6 +116,7 @@ exports.getFullCollection = function(state, collectionId, cb)
 	});
 };
 
+
 exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 {
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE obj_collection.id = ?" ;
@@ -146,6 +147,7 @@ exports.getCollection = function(state, collectionId, fields, objOptions, cb)
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
+
 exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 {
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'obj_collection', joins) + " WHERE obj_collection.owner = ?" ;
@@ -175,11 +177,13 @@ exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
+
 exports.getActorObjects = function(state, ownerId, cb)
 {
 	var query = "SELECT oo.id, oo.name, oo.weight, appliedToObject FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
 	state.datasources.db.getMany(query, [ownerId], errors.ERROR_CONST, cb);
 };
+
 
 exports.addCollection = function(state, type, slotCount, maxWeight, parentCollection, owner, cb)
 {
@@ -196,6 +200,7 @@ exports.addCollection = function(state, type, slotCount, maxWeight, parentCollec
 		}
 	});
 };
+
 
 exports.editCollection = function(state, collectionId, objFields, cb)
 {	//TODO: deal with change of ownership, or disallow it here
@@ -237,6 +242,7 @@ exports.editCollection = function(state, collectionId, objFields, cb)
 	});
 };
 
+
 exports.delCollection = function(state, collectionId, objOptions, cb)
 {
 	//TODO: parse options: removeObjects, allowOrphanChildCollections, removeChildCollections, etc - cascade can take care of this for now.
@@ -256,6 +262,7 @@ exports.delCollection = function(state, collectionId, objOptions, cb)
 		});
 	});
 };
+
 
 exports.setCollectionOwnership = function(state, collectionId, actorId, cb)
 {
@@ -282,11 +289,13 @@ exports.setCollectionOwnership = function(state, collectionId, actorId, cb)
 	});
 };
 
+
 exports.getChildCollections = function(state, collectionId, objOptions, cb)
 {
 	var query = "SELECT * FROM obj_collection WHERE parent = ?";
 	state.datasources.db.getMany(query, [collectionId], errors.ERROR_CONST, cb);
 };
+
 
 exports.addObjectToCollection = function(state, objectId, collectionId, options, cb)
 {
@@ -358,6 +367,7 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 	cb);
 };
 
+
 exports.removeObjectFromCollection = function(state, objectId, collectionId, requiredOwner, cb)
 {
 	var query = "SELECT owner from obj_collection WHERE id = ?";
@@ -384,6 +394,7 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, req
 		});
 	});
 };
+
 
 exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner, cb)
 {
@@ -415,11 +426,13 @@ exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner
 	});
 };
 
+
 exports.getCollectionMembers = function(state, collectionId, cb)
 {
 	var query = "SELECT object, collection, slot FROM obj_collection_object WHERE collection = ? ORDER BY slot";
 	state.datasources.db.getMany(query, [collectionId], errors.ERROR_CONST, cb);
 };
+
 
 exports.addObject = function(state, name, weight,  cb)
 {
@@ -427,9 +440,10 @@ exports.addObject = function(state, name, weight,  cb)
 	state.datasources.db.exec(sql, [name, weight], errors.ERROR_CONST, cb);
 };
 
+
 exports.editObject = function(state, id, name, weight, cb)
 {
-	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
+	exports.getObjectOwners(state, objectId, function(err, ownerData){
 		if(err) { if(cb) {cb(err); return; }}
 
 		var sql = "UPDATE obj_object SET name = ?, weight = ? WHERE id = ? ";
@@ -439,12 +453,13 @@ exports.editObject = function(state, id, name, weight, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.edit', { id: id , name: name, weight:weight });
+				state.emit(ownerData[i].owner, 'obj.object.edit', { id: id, name: name, weight:weight });
 			}
 			if (cb) {cb(null, info); }
 		});
 	});
 };
+
 
 exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollectionId, optSlot, cb)
 {	/*TODO: deal with properties; TEST*/
@@ -463,7 +478,7 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 		var query = "SELECT * from obj_object WHERE id = ?";
 		db.getOne(query, [objectId], true, errors.ERROR_CONST, function(err,data)
 		{
-			var sql = "INSERT INTO obj_object (name, weight, appliedToObject) VALUES ( ? , ?, ? )";
+			var sql = "INSERT INTO obj_object (name, weight, appliedToObject) VALUES (?, ?, ?)";
 			var params = [data.name, data.weight, data.appliedToObject];
 			db.exec(sql, params, errors.ERROR_CONST, function(err, info)
 			{
@@ -480,6 +495,7 @@ exports.cloneObject = function(state, objectId, objPropertiesToIgnore, newCollec
 	}, function(err) { if (cb) cb(err, newData); });
 };
 
+
 exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb) //effectively a move within a collection.  may want to add more checks
 {
 	var query = "SELECT owner FROM obj_collection INNER JOIN obj_collection_obj ON obj_collection.id = obj_collection_obj.collection WHERE collectionId = ? AND objectId = ? ";
@@ -492,16 +508,17 @@ exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb) 
 			if(error) { if(cb) { cb(error); return; }}
 			if(data.owner)
 			{
-				state.emit(data.owner, 'obj.collection.object.setObjectSlot', { objectId: objectId , collectionId: collectionId, slot:slotNumber });
+				state.emit(data.owner, 'obj.collection.object.setObjectSlot', { objectId: objectId, collectionId: collectionId, slot: slotNumber });
 			}
 			if(cb) { cb(null, info); }
 		});
 	});
 };
 
+
 exports.applyObjectToObject = function(state, objectId, applyToObjectId, cb)
 {
-	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
+	exports.getObjectOwners(state, objectId, function(err, ownerData){
 		if(err) { if(cb) { cb(err); return; }}
 
 		var sql = "UPDATE obj_object SET appliedToObject = ? WHERE id = ?";
@@ -511,16 +528,17 @@ exports.applyObjectToObject = function(state, objectId, applyToObjectId, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.applyToObj', { id: objectId , applyTo: applyToObjectId });
+				state.emit(ownerData[i].owner, 'obj.object.applyToObj', { id: objectId, applyTo: applyToObjectId });
 			}
 			if(cb) { cb(null, info); }
 		});
 	});
 };
 
+
 exports.detachObjectFromObject = function(state, objectId, cb)
 {
-	_this.mithril.obj.getObjectOwners(state, objectId, function(err, ownerData){
+	exports.getObjectOwners(state, objectId, function(err, ownerData){
 		if(err) { if(cb) { cb(err); return; }}
 
 		var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?";
@@ -537,6 +555,7 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 	});
 };
 
+
 exports.getObjectData = function(state, objectId, properties, cb)
 {	//requested properties is ['name',...].  If props undefined, [] or null, all come back.
 	var params = [objectId];
@@ -549,17 +568,16 @@ exports.getObjectData = function(state, objectId, properties, cb)
 		for (var i=0; i < properties.length; i++)
 		{
 			params.push(properties[i]);
-			query += "? ,";
+			query += '?, ';
 		}
 
 		query = query.substr(0, query.length - 2);
 		query += ")";
 	}
-	state.datasources.db.getMany(query, [id], errors.ERROR_CONST, function(error, data) {
-		if (error) { if (cb) {cb(error); }}
-		else       { if (cb) { cb(null, data); }}
-	});
+
+	state.datasources.db.getMany(query, [id], errors.ERROR_CONST, cb);
 };
+
 
 exports.getObjectDataByOwner = function(state, ownerId, cb)
 {
@@ -567,41 +585,52 @@ exports.getObjectDataByOwner = function(state, ownerId, cb)
 	state.datasources.db.getMany(query, [ownerId], errors.ERROR_CONST, cb);
 };
 
-exports.setObjectData = function(state, objectId, data, cb)
-{	// data is {}
-	var sql = 'INSERT INTO obj_object_data VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
-	_this.mithril.obj.getObjectOwners(state, objectId, function(error, ownerData){
-		if(error) { if(cb) {cb(error)}}
-		else
+exports.setObjectData = function(state, objectId, data, cb)
+{	// data is { key: value, key2: value2, ... }
+	console.dir('setObjectData started');
+
+	exports.getObjectOwners(state, objectId, function(error, ownerData) {
+		if (error) { if (cb) cb(error); return; }
+
+		console.dir('Found owners');
+
+		var sql = 'INSERT INTO obj_object_data VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)';
+
+		for (var property in data)
 		{
-			for(var property in data)
-			{
-				var params = [objectId, property, data[property]];
-				state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
-			}
-			var len = ownerData.length;
-			for(var i=0;i<len;i++)
-			{
-				state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId , data: data });  //happy, happy, joy, joy
-			}
-			if(cb) { cb(null); }
+			console.dir('Setting ' + property + ' to ' + data[property] + ' on object ' + objectId);
+
+			var params = [objectId, property, data[property]];
+			state.datasources.db.exec(sql, params, errors.ERROR_CONST);
 		}
+
+		console.log('Getting ready to emit state. Receivers:');
+		console.dir(ownerData);
+
+		var len = ownerData.length;
+		for (var i=0; i < len; i++)
+		{
+			state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
+		}
+
+		if (cb) { cb(null); }
 	});
 };
+
 
 exports.delObjectData = function(state, objectId, properties, cb)
 {	//properties should be []
 	sql = "DELETE FROM obj_object_data WHERE object = ? and property IN (";
 	for(var i=0;i<properties.length;i++)
 	{
-		sql += "? ,";
+		sql += '?, ';
 	}
 	sql = sql.substr(0,sql.length - 2);
 	sql += ")";
 	properties.unshift(objectId);
 
-	_this.mithril.obj.getObjectOwners(state, objectId, function(error, ownerData){
+	exports.getObjectOwners(state, objectId, function(error, ownerData){
 		if(error) { if(cb) {cb(error)}}
 		else
 		{
@@ -610,7 +639,7 @@ exports.delObjectData = function(state, objectId, properties, cb)
 			var len = ownerData.length;
 			for(var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId , data: properties });
+				state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: properties });
 			}
 
 
@@ -619,8 +648,10 @@ exports.delObjectData = function(state, objectId, properties, cb)
 	});
 };
 
+
 exports.getObjectOwners = function(state, objectId, cb)
 {
 	var query = "SELECT DISTINCT oc.owner FROM obj_collection AS oc INNER JOIN obj_collection_object AS oco ON oc.id = oco.collection WHERE oco.object = ? ";
 	state.datasources.db.getMany(query, [objectId], errors.ERROR_CONST, cb);
-}
+};
+
