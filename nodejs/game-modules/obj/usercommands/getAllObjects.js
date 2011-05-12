@@ -25,6 +25,7 @@ exports.execute = function(state, p, cb)
 				var collectionId = acData[i].collectionId;
 				returnData.collections[collectionId] = acData[i];
 				returnData.collections[collectionId].members = [];
+				returnData.collections[collectionId].owner = parseInt(state.actorId);
 
 				mithril.obj.getCollectionMembers(state, collectionId, function(err, cMdata) {
 					for (var l=0; l < cMdata.length; l++)

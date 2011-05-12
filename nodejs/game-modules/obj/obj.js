@@ -42,7 +42,6 @@ exports.getCollectionsByType = function(state, type, max, cb)
 	{
 		query += ' LIMIT ' + parseInt(max);
 	}
-
 	state.datasources.db.getMany(query, [type], errors.ERROR_CONST, cb);
 };
 
@@ -57,7 +56,6 @@ exports.getFullCollectionByType = function(state, type, owner, cb)
 			if (cb) cb(error);
 			return;
 		}
-
 		exports.getFullCollection(state, result.id, cb);
 	});
 };
