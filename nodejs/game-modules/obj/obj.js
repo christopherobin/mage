@@ -47,12 +47,13 @@ exports.getFullCollectionByType = function(state, type, owner, cb)
 {
 	async.waterfall(
 	[
-		function(callback) {
+		function(callback) 
+		{
 			var query = 'SELECT id FROM obj_collection WHERE type = ? AND owner = ? LIMIT 1';
-
 			state.datasources.db.getOne(query, [type, owner], true, errors.ERROR_CONST, callback);
 		},
-		function(result, callback) {
+		function(result, callback)
+		{
 			exports.getFullCollection(state, result.id, callback);
 		}
 	],
@@ -62,29 +63,28 @@ exports.getFullCollectionByType = function(state, type, owner, cb)
 
 exports.getFullCollection = function(state, collectionId, cb)
 {
-	var query = 'SELECT parent, type, slotCount, maxWeight, owner FROM obj_collection WHERE id = ?';
-	var params = [collectionId];
+	var collection = null;
+	var objects = {};	// quick object ID based lookup
 
-	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, function(error, collection) {
-		if (error)
+	async.waterfall(
+	[
+		function(callback)
 		{
-			if (cb) cb(error);
-			return;
-		}
-
-		collection.id = collectionId;
-
-		query = 'SELECT o.id, co.slot, o.appliedToObject, o.weight, o.name FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? ORDER BY co.slot ASC';
-		params = [collectionId];
-
-		state.datasources.db.getMany(query, params, errors.ERROR_CONST, function(error, data) {
-			if (error)
-			{
-				if (cb) cb(error);
-				return;
-			}
+			var query = 'SELECT parent, type, slotCount, maxWeight, owner FROM obj_collection WHERE id = ?';
+			var params = [collectionId];
+			state.datasources.db.getOne(query, params, true, errors.ERROR_CONST,callback);
+		},
+		function(data, callback)
+		{
+			collection = data;
+			collection.id = collectionId;
+			query = 'SELECT o.id, co.slot, o.appliedToObject, o.weight, o.name FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? ORDER BY co.slot ASC';
+			params = [collectionId];
+			state.datasources.db.getMany(query, params, errors.ERROR_CONST,callback);
+		},
+		function(data, callback)
+		{
 			collection.objects = data;
-			var objects = {};
 			var len = data.length;
 			for (var i=0; i < len; i++)
 			{
@@ -94,25 +94,23 @@ exports.getFullCollection = function(state, collectionId, cb)
 			}
 			query = 'SELECT d.object, d.property, d.value FROM obj_object_data AS d JOIN obj_collection_object AS co ON co.object = d.object WHERE co.collection = ?';
 			params = [collectionId];
-			state.datasources.db.getMany(query, params, errors.ERROR_CONST, function(error, data) {
-				if (error)
+			state.datasources.db.getMany(query, params, errors.ERROR_CONST, callback);
+		},
+		function(data, callback)
+		{
+			var len = data.length;
+			for (var i=0; i < len; i++)
+			{
+				var entry = data[i];
+				if (entry.object in objects)
 				{
-					if (cb) cb(error);
-					return;
+					objects[entry.object].data[entry.property] = entry.value;
 				}
-				var len = data.length;
-				for (var i=0; i < len; i++)
-				{
-					var entry = data[i];
-					if (entry.object in objects)
-					{
-						objects[entry.object].data[entry.property] = entry.value;
-					}
-				}
-				if (cb) cb(null, collection);
-			});
-		});
-	});
+			}
+			console.log("COLLECTION:", collection);
+			if (cb) cb(null, collection);
+		}
+	]);
 };
 
 
