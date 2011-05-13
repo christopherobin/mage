@@ -14,4 +14,3 @@ MithrilGameModPlayer.prototype.getPlayer = function(playerId, fields, cb)
 {
 	this.mithril.io.send('getPlayer', { playerId: playerId, fields: fields }, cb);
 };
-
