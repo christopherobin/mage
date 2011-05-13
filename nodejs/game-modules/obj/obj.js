@@ -571,7 +571,7 @@ exports.setObjectData = function(state, objectId, data, cb)
 {	// data is {}
 	var sql = 'INSERT INTO obj_object_data VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
-	_this.mithril.obj.getObjectOwners(state, objectId, function(error, ownerData){
+	exports.mithril.obj.getObjectOwners(state, objectId, function(error, ownerData){
 		if(error) { if(cb) {cb(error)}}
 		else
 		{
