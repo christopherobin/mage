@@ -12,10 +12,21 @@ var MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
 exports.start = function(httpServer)
 {
+	function sessionlessError(client, msg, error)
+	{
+		var msgClient = new MsgClient(client);
+		msgClient.respond(msg.id || null, null, [error]);
+		msgClient.send();
+		msgClient.cleanup();
+	}
+
+
 	var io = require('socket.io').listen(httpServer, { log: null });
 
 	io.on('connection', function(client) {
 		// resolve session object
+
+		mithril.core.logger.info('Message server accepted connection.');
 
 		var session = null;
 		var resolvingSession = false;
@@ -47,9 +58,11 @@ exports.start = function(httpServer)
 
 
 		client.on('message', function(msg) {
+
+			mithril.core.logger.info('Message server received message: ' + msg);
+
 			try { msg = JSON.parse(msg); } catch (e) { return; }
 			if (!msg) return;
-
 
 			// if session is not yet known, we must expect this to be revealed by the first message
 
@@ -57,8 +70,9 @@ exports.start = function(httpServer)
 			{
 				if (!resolvingSession && !msg.sessionId)
 				{
-					mithril.core.logger.debug(msg);
-					mithril.core.warn(errors.SESSION_EXPECTED, client);
+					mithril.core.logger.info('Message server received message without session ID, while not resolving a session.');
+
+					sessionlessError(client, msg, 1);
 					return;
 				}
 
@@ -70,7 +84,12 @@ exports.start = function(httpServer)
 
 					mithril.player.sessions.resolve(msg.sessionId, function(error, result) {
 						if (error)
-							mithril.core.warn(error, client);
+						{
+							mithril.core.logger.info('Could not resolve session: ' + msg.sessionId);
+							sessionlessError(client, msg, 2);
+							msgQueue = [];
+							resolvingSession = false;
+						}
 						else
 						{
 							session = result;
@@ -79,11 +98,11 @@ exports.start = function(httpServer)
 								session.msgClient.rebind(client);
 							else
 								session.msgClient = new MsgClient(client);
+
+							resolvingSession = false;
+
+							handleMessageQueue();
 						}
-
-						resolvingSession = false;
-
-						handleMessageQueue();
 					});
 
 					delete msg.sessionId;

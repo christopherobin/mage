@@ -90,8 +90,7 @@ State.prototype.commit = function()
 	{
 		if (msgClient)
 		{
-			var errors = (this.errors.length > 0) ? this.errors : null;
-			msgClient.respond(this.id, this.response, errors);
+			msgClient.respond(this.id, this.response);
 		}
 		else
 		{
@@ -104,7 +103,6 @@ State.prototype.commit = function()
 
 	this.events = [];
 	this.response = null;
-	this.errors = [];
 };
 
 
@@ -115,8 +113,7 @@ State.prototype.rollBack = function()
 		var msgClient = (this.session && this.session.msgClient) ? this.session.msgClient : null;
 		if (msgClient)
 		{
-			var errors = (this.errors.length > 0) ? this.errors : null;
-			msgClient.respond(this.id, this.response, errors);
+			msgClient.respond(this.id, null, this.errors);
 
 			if (msgClient)
 				msgClient.send();
