@@ -18,8 +18,12 @@ function Mithril(config, sessionId)
 Mithril.prototype.start = function(cb)
 {
 	var _this = this;
+
 	this.io.start(function(error) {
-		if (error) { cb(error); }
+		if (error)
+		{
+			cb(error);
+		}
 		else
 		{
 			_this.setupModules(cb);
@@ -49,11 +53,11 @@ Mithril.prototype.setupModules = function(cb)
 				if (cb) { cb(error); cb = null; }
 			}
 			else
-				done++;
-
-			if (done == modules.length)
 			{
-				cb(null);
+				if (++done == modules.length)
+				{
+					if (cb) { cb(null); cb = null; }
+				}
 			}
 		});
 	}
