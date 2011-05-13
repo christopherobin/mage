@@ -107,7 +107,6 @@ exports.getFullCollection = function(state, collectionId, cb)
 					objects[entry.object].data[entry.property] = entry.value;
 				}
 			}
-			console.log("COLLECTION:", collection);
 			if (cb) cb(null, collection);
 		}
 	]);
@@ -250,7 +249,7 @@ exports.delCollection = function(state, collectionId, objOptions, cb)
 
 		var sql = "DELETE FROM obj_collection WHERE id = ?";
 		state.datasources.db.exec(sql, [collectionId], errors.ERROR_CONST, function(error, info){
-			if (error) { if (cb) { cb(error);} }
+			if (error) { if (cb) { cb(error); return; } }
 			if(data.owner)
 			{
 				state.emit(data.owner, 'obj.collection.del', { collectionId: data.id, owner:data.owner }); //untested
@@ -269,19 +268,16 @@ exports.setCollectionOwnership = function(state, collectionId, actorId, cb) //un
 		if (err) { if (cb) { cb(err);} }
 		var sql = "UPDATE obj_collection SET owner = ? WHERE id = ?";
 		state.datasources.db.exec(sql,[actorId, collectionId], errors.ERROR_CONST, function(error,info){
-			if (error) { if (cb) { cb(error);} }
-			else
+			if (error) { if (cb) { cb(error); return; } }
+			if(data.owner) //could be unowned
 			{
-				if(data.owner) //could be unowned
-				{
-					state.emit(data.owner, 'obj.collection.del', { collectionId: data.id, owner:data.owner });  //tell old owner he lost his stuff
-				}
-				if(actorId) //could be setting to unowned
-				{
-					state.emit(actorId, 'obj.collection.add', { collectionId: data.id, collectionType: data.type, slotCount: data.slotCount, maxWeight:data.maxWeight, parentId:data.parent, owner:actorId });
-				}
-				if (cb) cb(null, info);
+				state.emit(data.owner, 'obj.collection.del', { collectionId: data.id, owner:data.owner });  //tell old owner he lost his stuff
 			}
+			if(actorId) //could be setting to unowned
+			{
+				state.emit(actorId, 'obj.collection.add', { collectionId: data.id, collectionType: data.type, slotCount: data.slotCount, maxWeight:data.maxWeight, parentId:data.parent, owner:actorId });
+			}
+			if (cb) cb(null, info);
 		});
 	});
 };
