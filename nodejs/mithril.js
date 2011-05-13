@@ -13,6 +13,8 @@ var paths = {
 	gameModules: rootPath + '/game-modules'
 };
 
+var shutdown = false;
+
 global.async = require('async');
 
 exports.core.paths = paths;
@@ -23,6 +25,7 @@ exports.core.testing = require(paths.lib + '/testing.js');
 // import game modules
 
 var modules = {
+	manage: paths.gameModules + '/manage/manage.js',
 	actor:  paths.gameModules + '/actor/actor.js',
 	player: paths.gameModules + '/player/player.js',
 	sns:    paths.gameModules + '/sns/sns.js',
@@ -160,6 +163,16 @@ exports.start = function()
 
 
 	exports.core.httpServer = require('http').createServer(function(request, response) {
+		// if we're shutting down, don't accept the request
+
+		if (shutdown)
+		{
+			response.writeHead(404);
+			response.end('Server going down for maintenance.');
+			return;
+		}
+
+
 		// parse URL
 
 		var url = request.url.split('?', 2);
@@ -169,32 +182,36 @@ exports.start = function()
 		if (path.substr(-1) === '/') path = path.slice(0, -1);	// drop last slash
 
 
-		// routing
+		// if no route found for this path, return 404
 
-		if (path in routes)
-		{
-			// parse parameters and call the function in routes[path]
-
-			var result = {};
-
-			params = params.split('&');
-			for (var i=0; i < params.length; i++)
-			{
-				var p = params[i].split('=', 2);
-				if (p.length == 2)
-				{
-					result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
-				}
-			}
-
-			routes[path](request, response, result);
-		}
-		else
+		if (!(path in routes))
 		{
 			response.writeHead(404);
 			response.end('404 Not found');
+			return;
 		}
+
+
+		// parse parameters
+
+		var result = {};
+
+		params = params.split('&');
+		for (var i=0; i < params.length; i++)
+		{
+			var p = params[i].split('=', 2);
+			if (p.length == 2)
+			{
+				result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+			}
+		}
+
+
+		// call the function in routes[path]
+
+		routes[path](request, response, result);
 	});
+
 
 	exports.core.httpServer.listen(exports.core.config.server.port, exports.core.config.server.host);
 
@@ -203,6 +220,22 @@ exports.start = function()
 	exports.core.msgServer = require(paths.lib + '/msgServer.js');
 	exports.core.msgServer.start(exports.core.httpServer);
 };
+
+
+exports.quit = function()
+{
+	exports.core.logger.info('Shutting down Mithril...');
+
+	shutdown = true;
+
+	exports.core.httpServer.close();
+
+	setTimeout(function() {
+		exports.core.logger.info('Shutdown.');
+		process.exit(0);
+	}, 3000);
+};
+
 
 
 // Clock. Updated every second.
