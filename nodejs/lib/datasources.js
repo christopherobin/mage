@@ -78,7 +78,6 @@ function connectToMySql(config)
 function MySqlDatabase(config)
 {
 	this.config = config;
-	this.inTransaction = false;
 	this.connRW = null;
 	this.connRO = null;
 	this.transaction = null;
@@ -107,7 +106,7 @@ MySqlDatabase.prototype.close = function()
 
 MySqlDatabase.prototype.source = function(readonly)
 {
-	if (this.inTransaction)
+	if (this.transaction)
 	{
 		return this.rw();
 	}
