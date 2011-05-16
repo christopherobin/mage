@@ -9,9 +9,10 @@ exports.errors = errors;
 var State = require(mithril.core.paths.lib + '/state.js').State;
 
 
-function Session(playerId)
+function Session(playerId, language)
 {
 	this.playerId = playerId;
+	this.language = language || 'JA';
 	this.key = null;
 	this.creationTime = mithril.core.time;
 	this.lastTouchTime = this.creationTime;
@@ -21,6 +22,8 @@ function Session(playerId)
 Session.prototype.touch = function()
 {
 	this.lastTouchTime = mithril.core.time;
+
+	// TODO: push this timestamp to DB
 };
 
 
@@ -97,7 +100,7 @@ exports.resolve = function(key, cb)
 		// session not found locally, check DB
 
 		var state = new State;
-		var query = 'SELECT creationTime, lastTouchTime FROM player_session WHERE player = ? AND sessionId = ?';
+		var query = 'SELECT p.language, s.creationTime, s.lastTouchTime FROM player_session AS s JOIN player AS p ON p.actor = s.player WHERE s.player = ? AND s.sessionId = ?';
 		var params = [playerId, sessionKey];
 
 		state.datasources.db.getOne(query, params, true, errors.SESSION_NOTFOUND, function(err, result) {
@@ -105,9 +108,10 @@ exports.resolve = function(key, cb)
 				cb(err);
 			else
 			{
-				var session = new Session(playerId);
+				var session = new Session(playerId, result.language);
 				session.key = sessionKey;
 				session.creationTime = result.creationTime;
+				session.lastTouchTime = result.lastTouchTime;
 				sessions[playerId] = session;
 
 				mithril.core.logger.debug('Session found in DB. Registered in local cache.');
@@ -129,6 +133,8 @@ exports.resolve = function(key, cb)
 
 exports.find = function(playerId, cb)
 {
+	// TODO: add DB check if session not found
+
 	if (playerId in sessions)
 	{
 		cb(null, sessions[playerId]);
@@ -140,8 +146,6 @@ exports.find = function(playerId, cb)
 
 exports.register = function(playerId, cb)
 {
-	// generate a key
-
 	var session = new Session(playerId);
 
 	session.register(function(error) {
