@@ -7,12 +7,16 @@ var errors = {
 
 exports.errors = errors;
 
+exports.userCommands = {
+	getPlayer: __dirname + '/usercommands/getPlayer.js'
+};
 
 // queryable model structure
 
 var allowedFields = {
 	playerId: 'id',
 	vipLevel: 'vipLevel',
+	language: 'language',
 	lastLoginTime: 'lastLoginTime'
 };
 
