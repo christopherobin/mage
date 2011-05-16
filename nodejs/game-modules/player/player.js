@@ -29,12 +29,12 @@ exports.getPlayer = function(state, id, fields, cb)
 };
 
 
-exports.addPlayer = function(state, actorId, vipLevel, cb)
+exports.addPlayer = function(state, actorId, vipLevel, language, cb)
 {
 	var lastLoginTime = mithril.core.time;
-	
-	var query = 'INSERT INTO player(actor, vipLevel, lastLoginTime) VALUES(?, ?, ?)';
-	var params = [actorId, vipLevel, lastLoginTime];
+
+	var query = 'INSERT INTO player(actor, vipLevel, language, lastLoginTime) VALUES(?, ?, ?, ?)';
+	var params = [actorId, vipLevel, language, lastLoginTime];
 
 	state.datasources.db.exec(query, params, errors.PLAYER_ADD_FAILED, function(err) {
 		if (err)
@@ -43,7 +43,7 @@ exports.addPlayer = function(state, actorId, vipLevel, cb)
 		}
 		else
 		{
-			if (cb) cb(null, { playerId: actorId, vipLevel: vipLevel, lastLoginTime: lastLoginTime });
+			if (cb) cb(null, { playerId: actorId, vipLevel: vipLevel, language: language, lastLoginTime: lastLoginTime });
 		}
 	});
 };
