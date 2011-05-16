@@ -104,8 +104,6 @@ exports.start = function(httpServer)
 							handleMessageQueue();
 						}
 					});
-
-					delete msg.sessionId;
 				}
 			}
 			else
