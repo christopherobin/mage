@@ -3,6 +3,7 @@ function MsgClient(client)
 	this.client = client;
 	this.responses = [];
 	this.events = [];
+	this.eventCount = 0;
 }
 
 
@@ -33,7 +34,19 @@ MsgClient.prototype.respond = function(id, response, errors)
 
 MsgClient.prototype.emit = function(path, data)
 {
-	this.events.push([path, data]);
+	this.events.push([path, data, ++this.eventCount]);
+};
+
+
+MsgClient.prototype.emitAsync = function(path, data)
+{
+	/* This method emits an event directly to the client, without that event becoming part of the transaction */
+
+	if (!this.client) return;
+
+	var o = { events: [ [path, data, ++this.eventCount] ] };
+
+	this.client.send(JSON.stringify(o));
 };
 
 
