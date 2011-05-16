@@ -5,6 +5,7 @@ function MithrilIo(mithril)
 	this.queries = {};
 	this.queryId = 0;
 	this.eventListeners = [{}, {}];
+	this.eventLog = [];
 }
 
 
@@ -46,11 +47,6 @@ MithrilIo.prototype.start = function(cb)
 				_this.receivedEvent(result.events[i]);
 			}
 		}
-
-		if (result.errors)
-		{
-			// TODO
-		}
 	});
 
 	this.socket.connect();
@@ -60,7 +56,7 @@ MithrilIo.prototype.start = function(cb)
 MithrilIo.prototype.on = function(path, cb, priority)
 {
 	var group = priority ? 0 : 1;
-	
+
 	if (!(path in this.eventListeners[group])) this.eventListeners[group][path] = [];
 
 	this.eventListeners[group][path].push({ cb: cb });
@@ -70,7 +66,7 @@ MithrilIo.prototype.on = function(path, cb, priority)
 MithrilIo.prototype.once = function(path, cb, priority)
 {
 	var group = priority ? 0 : 1;
-	
+
 	if (!(path in this.eventListeners[group])) this.eventListeners[group][path] = [];
 
 	this.eventListeners[group][path].push({ cb: cb, once: true });
@@ -81,6 +77,7 @@ MithrilIo.prototype.receivedEvent = function(evt)
 {
 	var path = evt[0];
 	var data = evt[1];
+	var id   = evt[2];
 
 	var result = null;
 
@@ -91,39 +88,41 @@ MithrilIo.prototype.receivedEvent = function(evt)
 		do
 		{
 			var listenerPath = pathElements.join('.');
-	
+
 			var listeners = this.eventListeners[i][listenerPath];
-	
+
 			if (listeners)
 			{
 				var dropped = false;
 				var n = listeners.length;
-	
+
 				for (j=0; j < n; j++)
 				{
 					var listener = listeners[j];
-	
+
 					result = listener.cb(path, data);
-	
+
 					if (listener.once)
 					{
 						delete listeners[j];
 						dropped = true;
 					}
-					
+
 					if (result === false) break;
 				}
-	
+
 				if (dropped)
 					this.eventListeners[i][listenerPath] = listeners.filter(function(elm) { return elm; });
 
 				if (result === false) return;
 			}
-	
+
 			pathElements.pop();
 		}
 		while (pathElements.length);
 	}
+
+	this.eventLog.push(evt);
 };
 
 
@@ -133,7 +132,7 @@ MithrilIo.prototype.receivedQueryResult = function(result)
 
 	var id = result[0];
 	var response = result[1];
-	var errors = (result.length >= 3) ? result[2] : null;
+	var errors = result[2] || null;
 
 	if (id in this.queries)
 	{
@@ -142,6 +141,24 @@ MithrilIo.prototype.receivedQueryResult = function(result)
 
 		cb(errors, response);
 	}
+};
+
+
+MithrilIo.prototype.lastEventId = function(path, ignoreId)
+{
+	ignoreId = parseInt(ignoreId);
+
+	var found = this.eventLog.reduceRight(function(prev, current) {
+		// eventlog entry: [ path, data, event ID ]
+
+		if (current[0] !== path) return prev;	// paths don't match, ignore
+		if (current[2] === ignoreId) return prev;	// ignored event ID
+		if (prev && current[2] < prev[2]) return prev;	// found event is older than the stored one, so ignore
+
+		return current;
+	}, null);
+
+	return found;
 };
 
 
