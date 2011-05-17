@@ -4,7 +4,8 @@ var errors = {
 	GC_LOAD_DATA_FAILED:          { module: 'gc', code: 1002, log: { msg: 'Loading game content data failed.', method: 'error' } },
 	GC_LOAD_INCONNECTORS_FAILED:  { module: 'gc', code: 1003, log: { msg: 'Loading game content in-connectors.', method: 'error' } },
 	GC_LOAD_OUTCONNECTORS_FAILED: { module: 'gc', code: 1004, log: { msg: 'Loading game content out-connectors.', method: 'error' } },
-	SET_STATE_FAILED:             { module: 'gc', code: 2000, log: { msg: 'Setting game content state failed.', method: 'error' } }
+	SET_STATE_FAILED:             { module: 'gc', code: 2000, log: { msg: 'Setting game content state failed.', method: 'error' } },
+	DEL_STATE_FAILED:             { module: 'gc', code: 2001, log: { msg: 'Deleting game content state failed.', method: 'error' } }
 };
 
 exports.errors = errors;
@@ -145,6 +146,18 @@ exports.setNodeState = function(state, nodeId, newState, cb)
 	state.datasources.db.exec(sql, params, errors.SET_STATE_FAILED, cb);
 };
 
+
+exports.delNodeState = function(state, nodeId, cb)
+{
+	var time = mithril.core.time;
+
+	state.emit(state.actorId, 'gc.node.progress.del', { nodeId: nodeId });
+
+	var sql = 'DELETE FROM gc_progress WHERE actor = ? AND node = ?';
+	var params = [state.actorId, nodeId];
+
+	state.datasources.db.exec(sql, params, errors.DEL_STATE_FAILED, cb);
+};
 
 
 exports.loadNodes = function(state, options, cb)
