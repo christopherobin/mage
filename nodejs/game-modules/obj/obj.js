@@ -73,6 +73,19 @@ exports.getFullCollectionByType = function(state, type, owner, cb)
 };
 
 
+exports.getCollectionIdByType = function(state, type, owner, cb)
+{
+	var query = 'SELECT id FROM obj_collection WHERE type = ? AND owner ' + (owner !== null ? '=' : ' IS ') + ' ? LIMIT 1';
+
+	state.datasources.db.getOne(query, [type, owner], true, errors.ERROR_CONST, function(error, collection) {
+		if (error)
+			cb(error);
+		else
+			cb(null, collection.id);
+	});
+};
+
+
 exports.getFullCollection = function(state, collectionId, cb)
 {
 	var collection = null;
@@ -196,8 +209,16 @@ exports.getActorCollections = function(state, ownerId, fields, objOptions, cb)
 
 exports.getActorObjects = function(state, ownerId, cb)
 {
-	var query = "SELECT oo.id, oo.name, oo.weight, appliedToObject FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
+	var query = "SELECT oo.id, oo.name, oo.weight, oo.appliedToObject FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
 	state.datasources.db.getMany(query, [ownerId], errors.ERROR_CONST, cb);
+};
+
+
+exports.getActorObject = function(state, ownerId, objectId, cb)
+{
+	var query = "SELECT oo.id, oo.name, oo.weight, appliedToObject FROM obj_object AS oo JOIN obj_collection_object AS oco ON oo.id = oco.object JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oo.id = ? AND oc.owner = ? GROUP BY oo.id";
+
+	state.datasources.db.getOne(query, [objectId, ownerId], true, errors.ERROR_CONST, cb);
 };
 
 
@@ -390,7 +411,7 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 
 exports.removeObjectFromCollection = function(state, objectId, collectionId, requiredOwner, cb)
 {
-	var query = "SELECT owner from obj_collection WHERE id = ?";
+	var query = 'SELECT owner from obj_collection WHERE id = ?';
 	state.datasources.db.getOne(query, [collectionId], true, errors.ERROR_CONST, function(err, data)
 	{
 		if (err) { if (cb) cb(err); return; }
@@ -402,7 +423,7 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, req
 			return;
 		}
 
-		var sql = "DELETE FROM obj_collection_object WHERE object = ? AND collection = ?";
+		var sql = 'DELETE FROM obj_collection_object WHERE object = ? AND collection = ?';
 		state.datasources.db.exec(sql, [objectId, collectionId], errors.ERROR_CONST, function(error, info) {
 			if (error) { if (cb) cb(error); return; }
 
@@ -565,17 +586,44 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 	exports.getObjectOwners(state, objectId, function(err, ownerData){
 		if (err) { if (cb) cb(err); return; }
 
-		var sql = "UPDATE obj_object SET appliedToObject = null WHERE id = ?";
+		var sql = "UPDATE obj_object SET appliedToObject = NULL WHERE id = ?";
 		state.datasources.db.exec(sql, [objectId], errors.ERROR_CONST, function(error, info){
-			if(error) { if(cb) { cb(error); return; }}
+			if (error) { if (cb) cb(error); return; }
 
 			var len = ownerData.length;
-			for(var i=0;i<len;i++)
+			for (var i=0;i<len;i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.detachFromObj', { id: objectId }); //untested
+				state.emit(ownerData[i].owner, 'obj.object.appliedToObject.del', { id: objectId }); // untested
 			}
-			if(cb) { cb(null, info); }
+
+			if (cb) { cb(null, info); }
 		});
+	});
+};
+
+
+exports.detachObjectChildren = function(state, objectId, cb)
+{
+	// TODO: IMPLEMENT
+
+	// notify all owners about the detaching
+
+	cb(null);
+};
+
+
+exports.getObjectProperty = function(state, objectId, property, fallback, cb)
+{	//requested properties is ['name',...].  If props undefined, [] or null, all come back.
+	var query = 'SELECT value FROM obj_object_data WHERE object = ? AND property = ?';
+	var params = [objectId, property];
+
+	state.datasources.db.getOne(query, params, false, errors.ERROR_CONST, function(error, row) {
+		if (error)
+		{
+			cb(error);
+		}
+		else
+			cb(null, row ? row.value : fallback);
 	});
 };
 
@@ -599,7 +647,7 @@ exports.getObjectData = function(state, objectId, properties, cb)
 		query += ")";
 	}
 
-	state.datasources.db.getMany(query, [id], errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(query, params, errors.ERROR_CONST, cb);
 };
 
 
@@ -624,7 +672,7 @@ exports.setObjectData = function(state, objectId, data, cb)
 		}
 
 		var len = ownerData.length;
-		for (var i=0;i<len;i++) //untested
+		for (var i=0;i<len;i++) // UNTESTED
 		{
 			state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
 		}
@@ -636,13 +684,15 @@ exports.setObjectData = function(state, objectId, data, cb)
 
 exports.delObjectData = function(state, objectId, properties, cb)
 {	//properties should be []
-	sql = "DELETE FROM obj_object_data WHERE object = ? and property IN (";
-	for (var i=0;i < properties.length; i++)
+	var sql = "DELETE FROM obj_object_data WHERE object = ? AND property IN (";
+	for (var i=0; i < properties.length; i++)
 	{
 		sql += '?, ';
 	}
+
 	sql = sql.substr(0, sql.length - 2);
 	sql += ")";
+
 	properties.unshift(objectId);
 
 	exports.getObjectOwners(state, objectId, function(error, ownerData){
@@ -653,10 +703,38 @@ exports.delObjectData = function(state, objectId, properties, cb)
 		var len = ownerData.length;
 		for (var i=0; i < len; i++)
 		{
-			state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: properties }); //untested
+			state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: properties }); // UNTESTED + KNOWN BUG: properties contains objectId
 		}
-		if (cb) { cb(null); }
+
+		if (cb) cb(null);
 	});
+};
+
+
+exports.delObject = function(state, objectId, cb)
+{
+	exports.getObjectOwners(state, objectId, function(error, owners) {
+		if (error) { if (cb) cb(error); return; }
+
+		// detach all attached objects
+
+		exports.detachObjectChildren(state, objectId, function(error) {
+			if (error) { if (cb) cb(error); return; }
+
+			// notify all owners
+
+			owners.forEach(function(row) {
+				state.emit(row.owner, 'obj.object.del', { objectId: objectId });
+			});
+
+			// remove the object from the DB
+
+			var sql = 'DELETE FROM obj_object WHERE id = ?';
+			var params = [objectId];
+			state.datasources.db.exec(sql, params, errors.ERROR_CONST, cb);
+		});
+	});
+
 };
 
 
