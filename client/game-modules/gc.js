@@ -1,7 +1,7 @@
 function MithrilGameModGc(mithril)
 {
 	this.mithril = mithril;
-	this.cache = null;
+	this.cache = {};
 }
 
 
