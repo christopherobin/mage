@@ -23,6 +23,12 @@ MithrilGameModPlayer.prototype.setup = function(cb)
 };
 
 
+MithrilGameModPlayer.prototype.myLanguage = function()
+{
+	return (this.me && this.me.language) ? this.me.language : 'JA';
+};
+
+
 MithrilGameModPlayer.prototype.getPlayer = function(playerId, fields, cb)
 {
 	this.mithril.io.send('player.getPlayer', { playerId: playerId, fields: fields }, cb);
