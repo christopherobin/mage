@@ -13,12 +13,14 @@ MithrilGameModObj.prototype.setup = function(cb)
 	{
 		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
 		var len = collection.objects.length;
-
-		for (var i=0;i<len;i++) //check there is nothing in this slot
+		if(params.slot)
 		{
-			if(collection.objects[i].slot == params.slot)
+			for (var i=0;i<len;i++) //check there is nothing in this slot
 			{
-				return false;
+				if(collection.objects[i].slot == params.slot)
+				{
+					return false;
+				}
 			}
 		}
 		if (collection.contains(params.objectId))
@@ -96,6 +98,10 @@ MithrilGameModObj.prototype.setup = function(cb)
 	}, true);
 
 	this.mithril.io.on("obj.collection", function(path, params){
+	}, true);
+
+	this.mithril.io.on("obj.object.add", function(path, params){ //untested
+		_this.playerCache.objectIds[params.id] = params;
 	}, true);
 
 	this.mithril.io.on("obj.object.edit", function(path, params){
@@ -222,7 +228,7 @@ function MithrilGameModObj_Collection(collection)
 
 MithrilGameModObj_Collection.prototype.addObject = function(object, slot)
 {
-	this.objects.push({ slot: parseInt(slot), object: object });
+	this.objects.push({ slot: (slot) ? parseInt(slot) : null, object: object });
 };
 
 
