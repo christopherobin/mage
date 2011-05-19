@@ -476,10 +476,118 @@ exports.getCollectionMembers = function(state, collectionId, cb)
 };
 
 
-exports.addObject = function(state, name, weight,  cb)
+exports.addObject = function(state, collections, name, weight, data, cb)
 {
-	var sql = "INSERT INTO obj_object (name, weight) VALUES ( ?, ? )";
-	state.datasources.db.exec(sql, [name, weight], errors.ERROR_CONST, cb);
+	// collections: [ { id: 3, slot: 5 }, { id: 10 } ]
+
+	var id = null;
+	var obj = { id: null, name: name, weight: weight, data: data };
+
+	async.waterfall([
+		function(callback)
+		{
+			// create the object
+
+			var sql = 'INSERT INTO obj_object (name, weight) VALUES (?, ?)';
+			state.datasources.db.exec(sql, [obj.name, obj.weight], errors.ERROR_CONST, callback);
+		},
+		function(info, callback)
+		{
+			// remember the ID
+
+			obj.id = info.insertId;
+
+			// store properties
+
+			var records = [];
+			var params = [];
+
+			for (var property in data)
+			{
+				records.push('(?, ?, ?)');
+				params.push(obj.id);
+				params.push(property);
+				params.push(data[property]);
+			}
+
+			if (records.length > 0)
+			{
+				var sql = 'INSERT INTO obj_object_data VALUES ' + records.join(', ');
+				state.datasources.db.exec(sql, params, errors.ERROR_CONST, callback);
+			}
+			else
+				callback();
+		},
+		function(info, callback)
+		{
+			// store collection links
+
+			if (collections.length == 0)
+			{
+				callback();
+				return;
+			}
+
+			var sql = 'SELECT id, owner FROM obj_collection WHERE owner IS NOT NULL AND id IN (' + collections.map(function(coll) { return '?'; }).join(', ') + ')';
+			var params = collections.map(function(coll) { return coll.id; });
+
+			state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, ownedCollections) {
+				if (error) { callback(error); return; }
+
+				var records = [];
+				var params = [];
+
+				for (var i=0; i < collections.length; i++)
+				{
+					var coll = collections[i];
+
+					records.push('(?, ?, ?)');
+					params.push(coll.id);
+					params.push(obj.id);
+					params.push((coll.slot === undefined) ? null : coll.slot);
+
+					// emit everything that happens to the owner
+
+					ownedCollections.forEach(function(row) {
+						if (row.id != coll.id) return;
+
+						// new object
+
+						state.emit(row.owner, 'obj.object.add', obj);
+
+						// collection/object link
+
+						var co = { objectId: obj.id, collectionId: coll.id };
+
+						if (coll.slot !== undefined && coll.slot !== null)
+						{
+							co.slot = coll.slot;
+						}
+
+						state.emit(row.owner, 'obj.collection.object.add', co);
+					});
+				}
+
+				if (records.length > 0)
+				{
+					var sql = 'INSERT INTO obj_collection_object VALUES ' + records.join(', ');
+					state.datasources.db.exec(sql, params, errors.ERROR_CONST, callback);
+				}
+				else
+					callback();
+			});
+		}
+	],
+	function(err) {
+		if (err)
+		{
+			if (cb) cb(err);
+		}
+		else
+		{
+			if (cb) cb(null, obj);
+		}
+	});
 };
 
 
@@ -497,7 +605,7 @@ exports.editObject = function(state, id, name, weight, cb)
 			{
 				state.emit(ownerData[i].owner, 'obj.object.edit', { id: id, name: name, weight: weight }); //untested
 			}
-			if (cb) {cb(null, info); }
+			if (cb) { cb(null, info); }
 		});
 	});
 };

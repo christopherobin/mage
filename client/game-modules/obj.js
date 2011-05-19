@@ -29,7 +29,13 @@ MithrilGameModObj.prototype.setup = function(cb)
 			return false;
 		}
 
-		collection.addObject(_this.getObject(params.objectId), params.slot);
+		var obj = _this.getObject(params.objectId);
+		if (!obj)
+		{
+			return false;
+		}
+
+		collection.addObject(obj, params.slot);
 	}, true);
 
 
@@ -103,9 +109,13 @@ MithrilGameModObj.prototype.setup = function(cb)
 		}
 	}, true);
 
-	this.mithril.io.on("obj.object.add", function(path, params){ //untested
+
+	this.mithril.io.on('obj.object.add', function(path, params)
+	{
 		_this.playerCache.objectIds[params.id] = params;
+		_this.playerCache.objects.push(params);
 	}, true);
+
 
 	this.mithril.io.on("obj.object.edit", function(path, params){ //untested
 		for(var key in params)
