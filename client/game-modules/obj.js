@@ -9,59 +9,73 @@ MithrilGameModObj.prototype.setup = function(cb)
 {
 	var _this = this;
 
-	this.mithril.io.on("obj.collection.object.add", function(path, params)
+
+	this.mithril.io.on('obj.collection.object.add', function(path, params)
 	{
-		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
-		var len = collection.objects.length;
-		if(params.slot)
+		var collection = _this.getMyCollectionById(params.collectionId);
+		if (!collection) return false;
+
+		if (params.slot !== undefined && params.slot !== null)
 		{
-			for (var i=0;i<len;i++) //check there is nothing in this slot
-			{
-				if(collection.objects[i].slot == params.slot)
-				{
-					return false;
-				}
-			}
+			// make sure that there is nothing in this slot
+
+			if (collection.getObjectBySlotNumber(params.slot) !== null) return false;
 		}
+
+		// make sure this object is not already a member
+
 		if (collection.contains(params.objectId))
-		{	//check this object is not already a member
+		{
 			return false;
 		}
-		collection.addObject(_this.mithril.obj.getObjectById(params.objectId), params.slot);
+
+		var obj = _this.getObject(params.objectId);
+		if (!obj)
+		{
+			return false;
+		}
+
+		collection.addObject(obj, params.slot);
 	}, true);
 
-	this.mithril.io.on("obj.collection.object.del", function(path, params)
+
+	this.mithril.io.on('obj.collection.object.del', function(path, params)
 	{
-		var collection = _this.mithril.obj.getMyCollectionById(params.collectionId)
+		var collection = _this.getMyCollectionById(params.collectionId)
 		var obj = null;
 
-		if ('objectId' in params)
+		if (params.objectId)
 		{
-			obj = collection.getObjectById(params.objectId);
+			obj = collection.getObject(params.objectId);
 		}
 		else if ('slot' in params)
 		{
 			obj = collection.getObjectBySlotNumber(params.slot);
 		}
+
 		if (!obj) return false;
+
 		params.slot = obj.slot;
 
 		if (!collection.delObject(obj.object.id)) return false;
 	}, true);
 
-	this.mithril.io.on("obj.collection.add", function(path, params){
+
+	this.mithril.io.on('obj.collection.add', function(path, params)
+	{
 		var collection = new MithrilGameModObj_Collection(params);
 		_this.playerCache.collections.push(collection);
-	});
+	}, true);
 
-	this.mithril.io.on("obj.collection.del", function(path, params){ //untested
-		_this.playerCache.collections = _this.playerCache.collections.filter(function(collection){
-			if(collection.id != params.collectionId) { return true; } else { return false; }
-		});
-	});
+
+	this.mithril.io.on('obj.collection.del', function(path, params)
+	{
+		_this.playerCache.collections = _this.playerCache.collections.filter(function(collection) { return (collection.id != params.collectionId); });
+	}, true);
+
 
 	this.mithril.io.on("obj.collection.edit", function(path, params){
-		for(var i=0;i<_this.playerCache.collections.length;i++) //untested
+		for(var i=0; i < _this.playerCache.collections.length; i++) //untested
 		{
 			if(params.collectionId == _this.playerCache.collections[i].id)
 			{
@@ -71,7 +85,8 @@ MithrilGameModObj.prototype.setup = function(cb)
 				if (maxWeight in params) { _this.playerCache.collections[i].maxWeight = params.maxWeight; }
 			}
 		}
-	});
+	}, true);
+
 
 	this.mithril.io.on("obj.collection.object.setObjectSlot", function(path, params){ //this is quite brutal and is untested
 		var slot;
@@ -94,18 +109,16 @@ MithrilGameModObj.prototype.setup = function(cb)
 		}
 	}, true);
 
-	this.mithril.io.on("obj.collection.object", function(path, params){
-	}, true);
 
-	this.mithril.io.on("obj.collection", function(path, params){
-	}, true);
-
-	this.mithril.io.on("obj.object.add", function(path, params){ //untested
+	this.mithril.io.on('obj.object.add', function(path, params)
+	{
 		_this.playerCache.objectIds[params.id] = params;
+		_this.playerCache.objects.push(params);
 	}, true);
 
-	this.mithril.io.on("obj.object.edit", function(path, params){
-		for(var key in params)  //untested
+
+	this.mithril.io.on("obj.object.edit", function(path, params){ //untested
+		for(var key in params)
 		{	//name,weight,id
 			_this.playerCache.objectIds[params.id][key] = params[key];
 		}
@@ -131,9 +144,6 @@ MithrilGameModObj.prototype.setup = function(cb)
 		{
 			delete _this.playerCache.objectIds[params.id].data[params.data[i]];
 		}
-	}, true);
-
-	this.mithril.io.on("obj", function(path, params){
 	}, true);
 
 
@@ -164,7 +174,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 			for (var i=0; i<len; i++)
 			{
 				var slot = info.members[i].slot
-				var object = _this.getObjectById(info.members[i].id);
+				var object = _this.getObject(info.members[i].id);
 				collection.addObject(object, slot);
 			}
 
@@ -177,7 +187,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 };
 
 
-MithrilGameModObj.prototype.getObjectById = function(objectId)
+MithrilGameModObj.prototype.getObject = function(objectId)
 {
 	if (objectId in this.playerCache.objectIds)
 	{
@@ -228,7 +238,14 @@ function MithrilGameModObj_Collection(collection)
 
 MithrilGameModObj_Collection.prototype.addObject = function(object, slot)
 {
-	this.objects.push({ slot: (slot) ? parseInt(slot) : null, object: object });
+	var info = { object: object };
+
+	if (slot !== undefined && slot !== null)
+	{
+		info.slot = parseInt(slot);
+	}
+
+	this.objects.push(info);
 };
 
 
@@ -255,9 +272,41 @@ MithrilGameModObj_Collection.prototype.delObject = function(objectId)
 };*/
 
 
+MithrilGameModObj_Collection.prototype.getObject = function(objectId)
+{
+	var n = this.objects.length;
+	while (n--)
+	{
+		if (this.objects[n].object.id == objectId) return this.objects[n];
+	}
+	return null;
+};
+
 MithrilGameModObj_Collection.prototype.contains = function(objectId)
 {
 	return this.objects.some(function(info) { return info.object.id == objectId; });
+};
+
+MithrilGameModObj_Collection.prototype.containsName = function(objectName)
+{
+	return this.objects.some(function(info) { return info.object.name.match(objectName); });
+};
+
+MithrilGameModObj_Collection.prototype.getObjectsByName = function(objectName)
+{
+	return this.objects.filter(function(info) { return info.object.name.match(objectName); });
+};
+
+MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
+{
+	slot = parseInt(slot);
+
+	var n = this.objects.length;
+	while (n--)
+	{
+		if (this.objects[n].slot === slot) return this.objects[n];
+	}
+	return null;
 };
 
 MithrilGameModObj_Collection.prototype.nbUniqueObj = function()
@@ -273,34 +322,3 @@ MithrilGameModObj_Collection.prototype.nbUniqueObj = function()
 	});
 	return count;
 };
-
-MithrilGameModObj_Collection.prototype.containsName = function(objectName)
-{
-	return this.objects.some(function(info) { return info.object.name == objectName; });
-};
-
-MithrilGameModObj_Collection.prototype.getObjectsByName = function(objectName)
-{
-	return this.objects.filter(function(info) { return info.object.name.match(objectName); });
-};
-
-MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
-{
-	var n = this.objects.length;
-	while (n--)
-	{
-		if (this.objects[n].slot == slot) return this.objects[n];
-	}
-	return null;
-};
-
-MithrilGameModObj_Collection.prototype.getObjectById = function(objectId)
-{
-	var n = this.objects.length;
-	while (n--)
-	{
-		if (this.objects[n].object.id == objectId) return this.objects[n];
-	}
-	return null;
-};
-
