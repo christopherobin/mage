@@ -854,8 +854,8 @@ exports.getObjectOwners = function(state, objectId, cb)
 
 exports.getObjectById = function(state, objectId, cb)
 {	
-	var query = "SELECT * FROM obj_object WHERE id = "
-	state.datasources.db.getOne(query, params, false, errors.ERROR_CONST,cb);
+	var query = "SELECT * FROM obj_object WHERE id = ?"
+	state.datasources.db.getOne(query, [objectId], false, errors.ERROR_CONST,cb);
 };
 
 
@@ -867,12 +867,12 @@ exports.getObjectByPropertyValues = function(state, property, arrValues, cb)
 	{
 		cb (errors.ERROR_BADIPT, null);
 	}
-	query = "SELECT * FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? query AND od.value = ? ";
+	query = "SELECT * FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? AND od.value = ? ";
 	
 	for (var i=1;i<len;i++)
 	{
 		query += " OR od.value = ? "
 	}
 	params = [property].concat(arrValues);
-	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, cb);
+	state.datasources.db.getOne(query, params, false, errors.ERROR_CONST, cb);
 }
