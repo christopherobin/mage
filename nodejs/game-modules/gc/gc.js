@@ -134,27 +134,25 @@ exports.filterNodes = function(filter, nextMatch)
 };
 
 
-exports.setNodeState = function(state, nodeId, newState, cb)
+exports.setNodeState = function(state, actorId, nodeId, newState, cb)
 {
 	var time = mithril.core.time;
 
-	state.emit(state.actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState, stateTime: time });
+	state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState, stateTime: time });
 
 	var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
-	var params = [state.actorId, nodeId, newState, time];
+	var params = [actorId, nodeId, newState, time];
 
 	state.datasources.db.exec(sql, params, errors.SET_STATE_FAILED, cb);
 };
 
 
-exports.delNodeState = function(state, nodeId, cb)
+exports.delNodeState = function(state, actorId, nodeId, cb)
 {
-	var time = mithril.core.time;
-
-	state.emit(state.actorId, 'gc.node.progress.del', { nodeId: nodeId });
+	state.emit(actorId, 'gc.node.progress.del', { nodeId: nodeId });
 
 	var sql = 'DELETE FROM gc_progress WHERE actor = ? AND node = ?';
-	var params = [state.actorId, nodeId];
+	var params = [actorId, nodeId];
 
 	state.datasources.db.exec(sql, params, errors.DEL_STATE_FAILED, cb);
 };
