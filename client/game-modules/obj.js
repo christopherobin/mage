@@ -309,16 +309,16 @@ MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
 	return null;
 };
 
-MithrilGameModObj_Collection.prototype.nbUniqueObj = function()
+MithrilGameModObj_Collection.prototype.uniqueNames = function()
 {
-	var count = 0; 
-	var unique = {}; 
+	var unique = {};
+	var names = [];
 	this.objects.forEach(function(obj) { 
 		if (obj.object.name in unique) 
 			return;
 		
 		unique[obj.object.name] = null;
-		count++; 
+		types.push(obj.object.name);
 	});
-	return count;
+	return names;
 };
