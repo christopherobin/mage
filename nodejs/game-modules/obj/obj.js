@@ -1,7 +1,8 @@
 /* Objects Module. TF April 2011 */
 
 var errors = {
-	ERROR_CONST: { module: 'objects', code: 0000, log: { msg: 'Default error.', method: 'error' } }
+	ERROR_CONST: { module: 'objects', code: 0000, log: { msg: 'Default error.', method: 'error' } },
+	ERROR_BADIPT: { module: 'objects', code: 0001, log: { msg: 'This function expects at least one value as an input.', method: 'error' } }
 };
 
 var joins = {
@@ -431,7 +432,6 @@ exports.removeObjectFromCollection = function(state, objectId, collectionId, req
 			{
 				state.emit(data.owner, 'obj.collection.object.del', { objectId: objectId, collectionId: collectionId });
 			}
-
 			if (cb) cb(null);
 		});
 	});
@@ -444,7 +444,6 @@ exports.removeObjectFromSlot = function(state, collectionId, slot, requiredOwner
 	state.datasources.db.getOne(query, [collectionId], true, errors.ERROR_CONST, function(err, data)
 	{
 		if (err) { if (cb) cb(err); return; }
-
 		if (requiredOwner && data.owner != requiredOwner)
 		{
 			state.error(1234);
@@ -476,7 +475,7 @@ exports.getCollectionMembers = function(state, collectionId, cb)
 };
 
 
-exports.addObject = function(state, name, weight,  cb)
+exports.addObject = function(state, name, weight, cb)
 {
 	var sql = "INSERT INTO obj_object (name, weight) VALUES ( ?, ? )";
 	state.datasources.db.exec(sql, [name, weight], errors.ERROR_CONST, cb);
@@ -744,3 +743,28 @@ exports.getObjectOwners = function(state, objectId, cb)
 	state.datasources.db.getMany(query, [objectId], errors.ERROR_CONST, cb);
 };
 
+
+exports.getObjectById = function(state, objectId, cb)
+{	
+	var query = "SELECT * FROM obj_object WHERE id = "
+	state.datasources.db.getOne(query, params, false, errors.ERROR_CONST,cb);
+};
+
+
+exports.getObjectByPropertyValues = function(state, property, arrValues, cb)
+{
+	//arrValues acts as an OR
+	var len = arrValues.length;
+	if(len <1)
+	{
+		cb (errors.ERROR_BADIPT, null);
+	}
+	query = "SELECT * FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? query AND od.value = ? ";
+	
+	for (var i=1;i<len;i++)
+	{
+		query += " OR od.value = ? "
+	}
+	params = [property].concat(arrValues);
+	state.datasources.db.getOne(query, params, true, errors.ERROR_CONST, cb);
+}
