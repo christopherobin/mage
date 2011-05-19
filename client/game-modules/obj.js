@@ -318,7 +318,7 @@ MithrilGameModObj_Collection.prototype.uniqueNames = function()
 			return;
 		
 		unique[obj.object.name] = null;
-		types.push(obj.object.name);
+		names.push(obj.object.name);
 	});
 	return names;
 };
