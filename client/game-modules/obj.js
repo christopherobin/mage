@@ -287,7 +287,6 @@ MithrilGameModObj_Collection.prototype.contains = function(objectId)
 	return this.objects.some(function(info) { return info.object.id == objectId; });
 };
 
-
 MithrilGameModObj_Collection.prototype.containsName = function(objectName)
 {
 	return this.objects.some(function(info) { return info.object.name.match(objectName); });
@@ -310,3 +309,16 @@ MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
 	return null;
 };
 
+MithrilGameModObj_Collection.prototype.nbUniqueObj = function()
+{
+	var count = 0; 
+	var unique = {}; 
+	this.objects.forEach(function(obj) { 
+		if (obj.object.name in unique) 
+			return;
+		
+		unique[obj.object.name] = null;
+		count++; 
+	});
+	return count;
+};
