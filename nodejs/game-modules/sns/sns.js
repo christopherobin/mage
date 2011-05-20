@@ -1,145 +1,308 @@
 // Social Networking Services Module. TF April 2011
 
 var errors = {
-	ERROR_CONST: { module: 'sns', code: 0000, log: { msg: 'Default error.', method: 'error' } }
+	ERROR_CONST: { module: 'sns', code: 1, log: { msg: 'Default error.', method: 'error' } },
+	NO_SUCH_TYPE: { module: 'sns', code: 2, log: { msg: '', method: 'error' } }
 };
 
-var joins = {
-	actorActor:  { sql: 'JOIN actor AS ? ON sns_friend.actor = ?.id' },
-	friendActor: { sql: 'LEFT JOIN actor AS ? ON sns_friend.friend = ?.id' } //, requires: ['actorActor']
-}
 
-var allowedFields = {
-	count:				'count (*)',
-	actorId:            'actorId',
-	actorName:          ['actorActor', 'name'],
-	actorCreationTime:  ['actorActor', 'creationTime'],
-	friendName:         ['friendActor', 'name'],
-	friendCreationTime: ['friendActor', 'creationTime']
-}
+var types = {};
 
-exports.getFriends = function(state, actorId, fields, cb)
+
+exports.registerRelationType = function(type, bidirectional, requiresApproval)
 {
-	/* GETS ACTOR'S FRIENDS
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - integer representing actor's ID
-	fields - an array containing the fields required
-	cb - callback function executed when db operation is done or on error(first param)
-	*/
-	
-	var query = state.datasources.db.buildSelect(fields, allowedFields, 'sns_friend', joins) + " WHERE actor = ?" ;
+	// sets up a relation type (config)
 
-	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
-}
+	types[type] = { bidirectional: bidirectional, requiresApproval: requiresApproval };
+};
 
-exports.areFriends = function(state, actorId, otherActorId, cb)
+
+exports.getRelationRequests = function(state, type, actorId, targetActorId, cb)
 {
-	/* TESTS IF 2 ACTORS ARE FRIENDS
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - this actor's ID
-	otherActorId - whom you want to test against
-	cb - callback on complete or error.
-	*/
-	
-	var query = "SELECT count(*) AS amount FROM sns_friend WHERE actor = ? AND friend = ?"
-	
-	state.datasources.db.getOne(query, [actorId, otherActorId], true, errors.ERROR_CONST, function(err, data) {
-		if(err || data.amount == 0)
+	// returns all relation requests of type "type" from actorId to targetActorId.
+	// if type is omitted, relation requests of any type are returned.
+	// if actorId is omitted, all relation requests to targetActorId will be returned.
+	// if targetActorId is omitted, all relation requests from actorId will be returned.
+
+	var sql = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest';
+
+	var where = [];
+	var params = [];
+
+	if (type)
+	{
+		where.push('type = ?');
+		params.push(type);
+	}
+
+	if (actorId)
+	{
+		where.push('actor = ?');
+		params.push(actorId);
+	}
+
+	if (targetActorId)
+	{
+		where.push('targetActor = ?');
+		params.push(targetActorId);
+	}
+
+	if (where.length > 0)
+	{
+		sql += ' WHERE ' + where.join(' AND ');
+	}
+
+	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+};
+
+
+exports.relationRequestExists = function(state, type, actorId, targetActorId, cb)
+{
+	// Returns true if a relation request for this type and these actors exists. False otherwise.
+
+	exports.getRelationRequests(state, type, actorId, targetActorId, function(error, results) {
+		if (error) { if (cb) cb(error); return; }
+
+		cb(null, results.length > 0);
+	});
+};
+
+
+exports.getRelationRequest = function(state, requestId, cb)
+{
+	// returns a relation request by ID.
+
+	var sql = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest WHERE id = ?';
+	var params = [requestId];
+
+	state.datasources.db.getOne(sql, params, true, errors.ERROR_CONST, cb);
+};
+
+
+exports.requestRelation = function(state, type, actorId, targetActorId, cb)
+{
+	// Registers a relation request.
+	// If it's a bidirectional relation type and the other actor also requested this type of relation, instantly connect the two actors instead.
+	// If this relation type does not require approval, also instantly connect the two actors.
+
+	if (!types[type]) { if (cb) cb(errors.NO_SUCH_TYPE); return; }
+
+	if (!types[type].requiresApproval)
+	{
+		// immediately connect
+
+		exports.createRelation(state, type, actorId, targetActorId, cb);
+	}
+	else
+	{
+		if (types[type].bidirectional)
 		{
-			cb(ERROR_CONST);
+			// if targetActor has already issued a relation request of this type, auto-connect
+
+			exports.relationRequestExists(state, type, targetActorId, actorId, function(error, exists) {
+				if (error) { if (cb) cb(error); return; }
+
+				if (exists)
+					exports.createRelation(state, type, actorId, targetActorId, cb);
+				else
+					createRelationRequest(state, type, actorId, targetActorId, cb);
+			});
 		}
 		else
 		{
-			cb(null, true);
+			// create the request
+
+			createRelationRequest(state, type, actorId, targetActorId, cb);
 		}
+	}
+};
+
+
+exports.delRelationRequest = function(state, requestId, cb)
+{
+	// drop the request
+	// emit event to actor and targetActor
+
+	exports.getRelationRequest(state, requestId, function(error, request) {
+		if (error) { if (cb) cb(error); return; }
+
+		var sql = 'DELETE FROM sns_relationrequest WHERE id = ?';
+		var params = [requestId];
+
+		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+			state.emit(request.actor,       'sns.relationrequest.del', requestId);
+			state.emit(request.targetActor, 'sns.relationrequest.del', requestId);
+
+			cb();
+		});
+	});
+};
+
+
+function createRelationRequest(state, type, actorId, targetActorId, cb)
+{
+	// directly creates a relation request, without condition checks
+	// Emit event to actor and targetActor
+
+	var time = mithril.core.time;
+
+	var sent = {
+		type: type,
+		toActor: targetActorId,
+		creationTime: time
+	};
+
+	var received = {
+		type: type,
+		fromActor: actorId,
+		creationTime: time
+	};
+
+	var sql = 'INSERT INTO sns_relationrequest VALUES(NULL, ?, ?, ?, ?)';
+	var params = [type, actorId, targetActorId, time];
+
+	state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+		if (error) { if (cb) cb(error); return; }
+
+		sent.id = received.id = info.insertId;
+
+		state.emit(actorId,       'sns.relationrequest.outbox.add', sent);
+		state.emit(targetActorId, 'sns.relationrequest.inbox.add',  received);
+
+		cb(null, info.insertId);
 	});
 }
 
-exports.requestFriend = function(state, actorId, otherActorId, cb)
-{
-	/* ACTOR A REQUESTS ACTOR B's FRIENDSHIP
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - this actor's ID
-	otherActorId - whom you want to link with
-	cb - callback on complete or error.
-	*/
-	
-	var query = "INSERT INTO sns_friendrequest (actor, targetActor) VALUES ( ?, ? )";
-	
-	state.datasources.db.exec(query, [actorId, otherActorId], errors.ERROR_CONST, cb);
-	
-}
 
-exports.getRecievedFriendRequests = function(state, actorId, cb)
+exports.getRelations = function(state, type, actorId, cb)
 {
-	/* GETS FRIEND REQUESTS FOR AN ACTOR
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - this actor's ID
-	cb - callback on complete or error gives back records of actors requesting actorID's friendship.
-	*/
-	
-	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.actor = actor.id WHERE targetActor = ?";
-	
-	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
-}
+	// returns all relations where actorA or actorB is actorId
+	// type is optional
 
-exports.getSentFriendRequests = function(state, actorId, cb)
-{
-	/* GETS ACTORS TO WHOM UNACCEPTED REQUESTS HAVE BEEN SENT
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - this actor's ID
-	cb - callback on complete or error gives back records of actors to who actor Id has sent an unaccepted request
-	*/
-	
-	var query = "SELECT actor, targetActor, actor.name FROM sns_friendrequest INNER JOIN actor ON sns_friendrequest.targetActor = actor.id WHERE sns_friendrequest.actor = ?";
-	
-	state.datasources.db.getMany(query, [actorId], errors.ERROR_CONST, cb);
-}
+	var sql = 'SELECT id, type, IF(actorA = ?, actorB, actorA) AS actor, creationTime FROM sns_relation WHERE ? IN (actorA, actorB)';
+	var params = [actorId, actorId];
 
-exports.acceptFriendRequest = function(state, actorId, otherActorId, cb)
+	if (type)
+	{
+		sql += ' AND type = ?';
+		params.push(type);
+	}
+
+	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+};
+
+
+exports.getRelation = function(state, relationId, cb)
 {
-	/* ACTOR A ACCEPTS ACTOR B's FRIENDSHIP
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - this actor's ID
-	otherActorId - whom link up with
-	cb - callback on complete or error.
-	*/
-	
-	var sqlTestRequested = "SELECT count (*) as request FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
-	
-	state.datasources.db.getOne(sqlTestRequested, [actorId, otherActorId, otherActorId, actorId], true, errors.ERROR_CONST, function(err, data) {
-		if(err || data.request != 1)
-		{
-			cb(ERROR_CONST);
-		}
-		else
-		{
-			state.datasources.db.wrapTransaction(function(db){
-				
-				var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
-				db.exec(sqlCleanup, [actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, null);
-				
-				var sqlMakeFriends = "INSERT INTO sns_friends (actor, friend) VALUES ( ? , ? )";
-				db.exec(sqlMakeFriends, [actorId, otherActorId], errors.ERROR_CONST, null);
-				
-				db.unwrapTransaction();
-				
-			}, cb);  //cb gets err only in this case.
-		}
+	var sql = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE id = ?';
+	var params = [relationId];
+
+	state.datasources.db.getOne(sql, params, true, errors.ERROR_CONST, cb);
+};
+
+
+exports.getRelationsFromActor = function(state, type, actorId, cb)
+{
+	// gets all relations where actorA is actorId
+	// type is optional
+
+	var sql = 'SELECT id, type, actorB AS actor, creationTime FROM sns_relation WHERE actorA = ?';
+	var params = [actorId];
+
+	if (type)
+	{
+		sql += ' AND type = ?';
+		params.push(type);
+	}
+
+	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+};
+
+
+exports.getRelationsToActor = function(state, type, actorId, cb)
+{
+	// gets all relations where actorB is actorId
+	// type is optional
+
+	var sql = 'SELECT id, type, actorA AS actor, creationTime FROM sns_relation WHERE actorB = ?';
+	var params = [actorId];
+
+	if (type)
+	{
+		sql += ' AND type = ?';
+		params.push(type);
+	}
+
+	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+};
+
+
+exports.createRelation = function(state, type, actorA, actorB, cb)
+{
+	// Create a relation between 2 actors
+	// Delete any existing requests
+	// Emit event to both actors
+	// This function may be called externally, but should not be needed.
+	// Normal flow would use requestRelation()
+
+	if (!types[type]) { if (cb) cb(errors.NO_SUCH_TYPE); return; }
+
+	var time = mithril.core.time;
+
+	var forA = {
+		type: type,
+		creationTime: time
+	};
+
+	var forB = {
+		type: type,
+		creationTime: time
+	};
+
+	if (types[type].bidirectional)
+	{
+		forA.actorId: actorB;
+		forB.actorId: actorA;
+	}
+	else
+	{
+		forA.to = actorB;
+		forB.from = actorA;
+	}
+
+	var sql = 'INSERT INTO sns_relation VALUES(NULL, ?, ?, ?, ?)';
+	var params = [type, actorA, actorB, time];
+
+	state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+		if (error) { if (cb) cb(error); return; }
+
+		forA.id = forB.id = info.insertId;
+
+		state.emit(actorA, 'sns.relation.add', forA);
+		state.emit(actorB, 'sns.relation.add', forB);
+
+		cb(null, info.insertId);
 	});
-	
-}
+};
 
-exports.rejectFriendRequest = function(state, actorId, otherActorId, cb)
+
+exports.delRelation = function(state, relationId, cb)
 {
-	/* ACTOR A REJECTS ACTOR B's FRIENDSHIP REQUEST
-	state - tossable object containing actors's particulars, session, dbconn etc
-	actorId - this actor's ID
-	otherActorId - whom link up with
-	cb - callback on complete or error.
-	*/
-	
-	var sqlCleanup = "DELETE FROM sns_friendrequest where actor = ? AND targetActor = ? OR actor = ? AND targetActor = ?";
-	state.datasources.db.exec(sqlCleanup,[actorId, otherActorId, otherActorId, actorId], errors.ERROR_CONST, cb);
-	
-}
+	// drop the relation
+	// emit event to both actors
+
+	exports.getRelation(state, relationId, function(error, relation) {
+		if (error) { if (cb) cb(error); return; }
+
+		var sql = 'DELETE FROM sns_relation WHERE id = ?';
+		var params = [relationId];
+
+		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+			state.emit(relation.actorA, 'sns.relation.del', relationId);
+			state.emit(relation.actorB, 'sns.relation.del', relationId);
+
+			cb();
+		});
+	});
+};
+
