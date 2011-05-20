@@ -8,11 +8,19 @@ MithrilGameModSns.prototype.setup = function(cb)
 {
 	var _this = this;
 
-	this.mithril.io.on('sns.relationrequest.add', function(path, params) {
+	this.mithril.io.on('sns.relationrequest.inbox.add', function(path, params) {
 		_this.relationcache.requests[params.id] = params;
 	});
 	
-	this.mithril.io.on('sns.relationrequest.del', function(path, params) {
+	this.mithril.io.on('sns.relationrequest.outbox.add', function(path, params) {
+		_this.relationcache.requests[params.id] = params;
+	});
+	
+	this.mithril.io.on('sns.relationrequest.inbox.del', function(path, params) {
+		delete _this.relationcache.requests[params.id];
+	});
+	
+	this.mithril.io.on('sns.relationrequest.outbox.del', function(path, params) {
 		delete _this.relationcache.requests[params.id];
 	});
 	
