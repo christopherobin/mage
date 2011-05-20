@@ -9,7 +9,7 @@ function Mithril(config, sessionId)
 
 	if (typeof MithrilGameModActor  != 'undefined') this.actor  = new MithrilGameModActor(this);
 	if (typeof MithrilGameModPlayer != 'undefined') this.player = new MithrilGameModPlayer(this);
-//	if (typeof MithrilGameModSns    != 'undefined') this.sns    = new MithrilGameModSns(this);
+	if (typeof MithrilGameModSns    != 'undefined') this.sns    = new MithrilGameModSns(this);
 	if (typeof MithrilGameModObj    != 'undefined') this.obj    = new MithrilGameModObj(this);
 	if (typeof MithrilGameModGc     != 'undefined') this.gc     = new MithrilGameModGc(this);
 }

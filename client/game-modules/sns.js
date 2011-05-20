@@ -1,10 +1,10 @@
-function MithrilGameModPlayer(mithril)
+function MithrilGameModSns(mithril)
 {
 	this.mithril = mithril;
 	this.relationcache = { relations: {}, requests: {} };	
 }
 
-MithrilGameModPlayer.prototype.setup = function(cb)
+MithrilGameModSns.prototype.setup = function(cb)
 {
 	var _this = this;
 
@@ -30,7 +30,7 @@ MithrilGameModPlayer.prototype.setup = function(cb)
 	
 };
 
-MithrilGameModPlayer.prototype.requestRelation = function(type, actorId, cb){
+MithrilGameModSns.prototype.requestRelation = function(type, actorId, cb){
 	var _this = this;
 	
 	this.mithril.io.send('sns.requestRelation', { type: type, actorId: actorId }, function(err,data){
@@ -39,7 +39,7 @@ MithrilGameModPlayer.prototype.requestRelation = function(type, actorId, cb){
 	});
 };
 
-MithrilGameModPlayer.prototype.deleteRelationRequest = function(requestId, cb){
+MithrilGameModSns.prototype.deleteRelationRequest = function(requestId, cb){
 	var _this = this;
 	
 	this.mithril.io.send('sns.deleteRelationRequest', { requestId: requestId }, function(err,data){
@@ -48,7 +48,7 @@ MithrilGameModPlayer.prototype.deleteRelationRequest = function(requestId, cb){
 	});
 };
 
-MithrilGameModPlayer.prototype.deleteRelationRequest = function(relationId, cb){
+MithrilGameModSns.prototype.deleteRelationRequest = function(relationId, cb){
 	var _this = this;
 	
 	this.mithril.io.send('sns.deleteRelation', { relationId: relationId }, function(err,data){
