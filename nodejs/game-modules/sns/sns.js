@@ -5,6 +5,12 @@ var errors = {
 	NO_SUCH_TYPE: { module: 'sns', code: 2, log: { msg: '', method: 'error' } }
 };
 
+exports.userCommands = {
+	loadAll:			__dirname + '/usercommands/loadAll.js',
+	requestRelation: 	__dirname + '/usercommands/requestRelation.js',
+	delRelationRequest:	__dirname + '/usercommands/delRelationRequest.js',
+	delRelation: 		__dirname + '/usercommands/delRelation.js'
+};
 
 var types = {};
 
