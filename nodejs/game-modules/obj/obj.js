@@ -770,21 +770,30 @@ exports.setObjectData = function(state, objectId, data, cb)
 	exports.getObjectOwners(state, objectId, function(error, ownerData) {
 		if (error) { if (cb) cb(error); return; }
 
-		var sql = 'INSERT INTO obj_object_data VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)';
+		var sql = 'INSERT INTO obj_object_data VALUES ';
+
+		var values = [];
+		var params = [];
 
 		for (var property in data)
 		{
-			var params = [objectId, property, data[property]];
-			state.datasources.db.exec(sql, params, errors.ERROR_CONST);
+			values.push('(?, ?, ?)');
+			params.push(objectId, property, data[property]);
 		}
 
-		var len = ownerData.length;
-		for (var i=0;i<len;i++) // UNTESTED
-		{
-			state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
-		}
+		sql += values.join(', ') + ' ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
-		if (cb) { cb(null); }
+		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(err,data){
+			if (err) { if (cb) cb(err); return; }
+			
+			var len = ownerData.length;
+			for (var i=0;i<len;i++) // UNTESTED
+			{
+				state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
+			}
+	
+			if (cb) { cb(null); }
+		});
 	});
 };
 
@@ -867,12 +876,15 @@ exports.getObjectByPropertyValues = function(state, property, arrValues, cb)
 	{
 		cb (errors.ERROR_BADIPT, null);
 	}
-	query = "SELECT * FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? AND od.value = ? ";
+	query = "SELECT * FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? AND (od.value = ? ";
 	
 	for (var i=1;i<len;i++)
 	{
 		query += " OR od.value = ? "
 	}
+
+	query += ')';
+	
 	params = [property].concat(arrValues);
 	state.datasources.db.getOne(query, params, false, errors.ERROR_CONST, cb);
 }
