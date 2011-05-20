@@ -261,8 +261,8 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 
 	if (types[type].bidirectional)
 	{
-		forA.actorId: actorB;
-		forB.actorId: actorA;
+		forA.actorId = actorB;
+		forB.actorId = actorA;
 	}
 	else
 	{
