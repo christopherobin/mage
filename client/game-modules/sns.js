@@ -23,7 +23,7 @@ MithrilGameModSns.prototype.setup = function(cb)
 	}, true);
 
 	this.mithril.io.on('sns.relation.add', function(path, params) {
-		_this.relationcache.relations.push(params);
+		cache.relations.push(params);
 	}, true);
 
 	this.mithril.io.on('sns.relation.del', function(path, params) {
@@ -31,8 +31,7 @@ MithrilGameModSns.prototype.setup = function(cb)
 	}, true);
 
 	this.mithril.io.send('sns.loadAll', {}, function(error, response) {
-		_this.relationcache = response;
-		console.log(response);
+		cache = _this.relationcache = response;
 		cb();
 	}, true);
 };
@@ -62,7 +61,7 @@ MithrilGameModSns.prototype.requestRelation = function(type, actorId, cb) {
 
 MithrilGameModSns.prototype.delRelationRequest = function(requestId, cb) {
 	this.mithril.io.send('sns.delRelationRequest', { requestId: requestId }, function(err,data) {
-		if(err) { if(cb) { cb(err); } return; }
+		if (err) { if (cb) { cb(err); } return; }
 		if (cb) cb(null, data);
 	});
 };

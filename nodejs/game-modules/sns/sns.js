@@ -69,7 +69,12 @@ exports.relationRequestExists = function(state, type, actorId, targetActorId, cb
 	exports.getRelationRequests(state, type, actorId, targetActorId, function(error, results) {
 		if (error) { if (cb) cb(error); return; }
 
-		cb(null, results.length > 0);
+		if (results.length > 0)
+		{
+			cb(null, results[0]);
+		}
+		else
+			cb(null, false);
 	});
 };
 
@@ -87,7 +92,7 @@ exports.getRelationRequest = function(state, requestId, cb)
 
 exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 {
-	// Registers a relation request.
+	// Registers/Accepts a relation request.
 	// If it's a bidirectional relation type and the other actor also requested this type of relation, instantly connect the two actors instead.
 	// If this relation type does not require approval, also instantly connect the two actors.
 
@@ -109,7 +114,13 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 				if (error) { if (cb) cb(error); return; }
 
 				if (exists)
-					exports.createRelation(state, type, actorId, targetActorId, cb);
+				{
+					exports.delRelationRequest(state, exists.id, function(error) {
+						if (error) { if (cb) cb(error); return; }
+
+						exports.createRelation(state, type, actorId, targetActorId, cb);
+					});
+				}
 				else
 					createRelationRequest(state, type, actorId, targetActorId, cb);
 			});
@@ -136,8 +147,8 @@ exports.delRelationRequest = function(state, requestId, cb)
 		var params = [requestId];
 
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
-			state.emit(request.actor,       'sns.relationrequest.del', requestId);
-			state.emit(request.targetActor, 'sns.relationrequest.del', requestId);
+			state.emit(request.actor,       'sns.relationrequest.del', { id: requestId });
+			state.emit(request.targetActor, 'sns.relationrequest.del', { id: requestId });
 
 			cb();
 		});
@@ -284,6 +295,8 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 
 		forA.id = forB.id = info.insertId;
 
+		// events that describe the new relation
+
 		state.emit(actorA, 'sns.relation.add', forA);
 		state.emit(actorB, 'sns.relation.add', forB);
 
@@ -304,8 +317,8 @@ exports.delRelation = function(state, relationId, cb)
 		var params = [relationId];
 
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
-			state.emit(relation.actorA, 'sns.relation.del', relationId);
-			state.emit(relation.actorB, 'sns.relation.del', relationId);
+			state.emit(relation.actorA, 'sns.relation.del', { id: relationId });
+			state.emit(relation.actorB, 'sns.relation.del', { id: relationId });
 
 			cb();
 		});
