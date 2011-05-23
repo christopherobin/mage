@@ -54,9 +54,9 @@ exports.findUnreferencedNodes = function(nodes, connectorType)
 	for (var i=0; i < len; i++)
 	{
 		var node = nodes[i];
-		if (node.out && node.out[connectorType])
+		if (node.cout && node.cout[connectorType])
 		{
-			var connector = node.out[connectorType];
+			var connector = node.cout[connectorType];
 
 			for (var onState in connector)
 			{
@@ -343,7 +343,7 @@ exports.loadNodeInConnectors = function(state, nodes, cb)
 {
 	for (var id in nodes)
 	{
-		nodes[id].in = {};
+		nodes[id].cin = {};
 	}
 
 	var query = 'SELECT c.node, c.type, c.andGroup, ct.targetNode, ct.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_target AS ct ON ct.connector = c.id';
@@ -363,10 +363,10 @@ exports.loadNodeInConnectors = function(state, nodes, cb)
 
 				if (row.node in nodes)
 				{
-					if (!(row.type     in nodes[row.node].in          )) nodes[row.node].in[row.type] = {};
-					if (!(row.andGroup in nodes[row.node].in[row.type])) nodes[row.node].in[row.type][row.andGroup] = [];
+					if (!(row.type     in nodes[row.node].cin          )) nodes[row.node].cin[row.type] = {};
+					if (!(row.andGroup in nodes[row.node].cin[row.type])) nodes[row.node].cin[row.type][row.andGroup] = [];
 
-					nodes[row.node].in[row.type][row.andGroup].push({ targetNode: row.targetNode, onState: row.onState });
+					nodes[row.node].cin[row.type][row.andGroup].push({ targetNode: row.targetNode, onState: row.onState });
 				}
 			}
 
@@ -380,7 +380,7 @@ exports.loadNodeOutConnectors = function(state, nodes, cb)
 {
 	for (var id in nodes)
 	{
-		nodes[id].out = {};
+		nodes[id].cout = {};
 	}
 
 	var query = 'SELECT c.node, c.type, c.onState, ct.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_target AS ct ON ct.connector = c.id';
@@ -400,10 +400,10 @@ exports.loadNodeOutConnectors = function(state, nodes, cb)
 
 				if (row.node in nodes)
 				{
-					if (!(row.type    in nodes[row.node].out          )) nodes[row.node].out[row.type] = {};
-					if (!(row.onState in nodes[row.node].out[row.type])) nodes[row.node].out[row.type][row.onState] = [];
+					if (!(row.type    in nodes[row.node].cout          )) nodes[row.node].cout[row.type] = {};
+					if (!(row.onState in nodes[row.node].cout[row.type])) nodes[row.node].cout[row.type][row.onState] = [];
 
-					nodes[row.node].out[row.type][row.onState].push(row.targetNode);
+					nodes[row.node].cout[row.type][row.onState].push(row.targetNode);
 				}
 			}
 

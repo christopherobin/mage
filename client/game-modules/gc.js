@@ -18,7 +18,7 @@ MithrilGameModGc.prototype.setup = function(cb)
 			var node = _this.getNode(params.nodeId);
 			params.type = node.type;
 		}
-		
+
 	}, true);
 
 
@@ -47,9 +47,9 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 
 	var node = this.cache[nodeId];
 
-	if (node.in && node.in[type])
+	if (node.cin && node.cin[type])
 	{
-		var connectors = node.in[type];
+		var connectors = node.cin[type];
 		var required = [];
 
 		for (var groupId in connectors)
