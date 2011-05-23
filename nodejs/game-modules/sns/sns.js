@@ -98,6 +98,8 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 
 	if (!types[type]) { if (cb) cb(errors.NO_SUCH_TYPE); return; }
 
+	// TODO: If this type of relation already exists, throw an error. Make sure that the bidirectionality is checked.
+
 	if (!types[type].requiresApproval)
 	{
 		// immediately connect
@@ -127,7 +129,7 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 		}
 		else
 		{
-			// create the request
+			// unidirectional, so just create the request
 
 			createRelationRequest(state, type, actorId, targetActorId, cb);
 		}
