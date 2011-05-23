@@ -33,7 +33,7 @@ MithrilGameModSns.prototype.setup = function(cb)
 	this.mithril.io.send('sns.loadAll', {}, function(error, response) {
 		cache = _this.relationcache = response;
 		cb();
-	});
+	}, true);
 };
 
 MithrilGameModSns.prototype.requestRelation = function(type, actorId, cb) {
