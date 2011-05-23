@@ -785,13 +785,13 @@ exports.setObjectData = function(state, objectId, data, cb)
 
 		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(err,data){
 			if (err) { if (cb) cb(err); return; }
-			
+
 			var len = ownerData.length;
 			for (var i=0;i<len;i++) // UNTESTED
 			{
 				state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
 			}
-	
+
 			if (cb) { cb(null); }
 		});
 	});
@@ -862,7 +862,7 @@ exports.getObjectOwners = function(state, objectId, cb)
 
 
 exports.getObjectById = function(state, objectId, cb)
-{	
+{
 	var query = "SELECT * FROM obj_object WHERE id = ?"
 	state.datasources.db.getOne(query, [objectId], false, errors.ERROR_CONST,cb);
 };
@@ -877,14 +877,14 @@ exports.getObjectByPropertyValues = function(state, property, arrValues, cb)
 		cb (errors.ERROR_BADIPT, null);
 	}
 	query = "SELECT * FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? AND (od.value = ? ";
-	
+
 	for (var i=1;i<len;i++)
 	{
 		query += " OR od.value = ? "
 	}
 
 	query += ')';
-	
+
 	params = [property].concat(arrValues);
 	state.datasources.db.getOne(query, params, false, errors.ERROR_CONST, cb);
 }

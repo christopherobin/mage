@@ -181,44 +181,35 @@ exports.loadNodes = function(state, options, cb)
 			}
 			else
 			{
-				for (var i=0; i < results.length; i++)
-				{
-					var node = results[i];
-
-					nodes[node.id] = node;
-
-					var nextCb = (cb && i == results.length - 1) ? function() { cb(null, nodes); } : null;
-
-					exports.loadNodeInformation(state, node, options, nextCb);
-				}
+				exports.loadNodeInformation(state, nodes, options, cb);
 			}
 		}
 	});
 };
 
 
-exports.loadNodeInformation = function(state, node, options, cb)
+exports.loadNodeInformation = function(state, nodes, options, cb)
 {
 	var queue = [];
 
 	if (options.loadNodeData)
 	{
-		queue.push(function(nextCb) { exports.loadNodeData(state, node, nextCb); });
+		queue.push(function(nextCb) { exports.loadNodeData(state, nodes, nextCb); });
 	}
 
 	if (options.loadInConnectors)
 	{
-		queue.push(function(nextCb) { exports.loadNodeInConnectors(state, node, nextCb); });
+		queue.push(function(nextCb) { exports.loadNodeInConnectors(state, nodes, nextCb); });
 	}
 
 	if (options.loadOutConnectors)
 	{
-		queue.push(function(nextCb) { exports.loadNodeOutConnectors(state, node, nextCb); });
+		queue.push(function(nextCb) { exports.loadNodeOutConnectors(state, nodes, nextCb); });
 	}
 
 	if (options.loadProgressForActor)
 	{
-		queue.push(function(nextCb) { exports.loadNodeProgress(state, node, options.loadProgressForActor, nextCb); });
+		queue.push(function(nextCb) { exports.loadNodeProgress(state, nodes, options.loadProgressForActor, nextCb); });
 	}
 
 	var funcCount = queue.length;
@@ -232,21 +223,27 @@ exports.loadNodeInformation = function(state, node, options, cb)
 };
 
 
-exports.loadNodeProgress = function(state, node, actorId, cb)
+exports.loadNodeProgress = function(state, nodes, actorId, cb)
 {
-	var query = 'SELECT state, stateTime FROM gc_progress WHERE node = ? AND actor = ?';
-	var params = [node.id, actorId];
+	var query = 'SELECT node, state, stateTime FROM gc_progress WHERE actor = ?';
+	var params = [actorId];
 
-	state.datasources.db.getOne(query, params, false, errors.GC_LOAD_PROGRESS_FAILED, function(err, result) {
+	state.datasources.db.getMany(query, params, errors.GC_LOAD_PROGRESS_FAILED, function(err, results) {
 		if (err)
 		{
 			if (cb) cb(err);
 		}
 		else
 		{
-			if (result)
+			var len = results.length;
+			for (var i=0; i < len; i++)
 			{
-				node.progress = result;
+				var row = results[i];
+
+				if (row.node in nodes)
+				{
+					nodes[row.node].progress = { state: row.state, stateTime: row.stateTime };
+				}
 			}
 
 			if (cb) cb(null);
@@ -294,10 +291,15 @@ exports.getNodesProgress = function(state, nodes, actorId, cb)
 };
 
 
-exports.loadNodeData = function(state, node, cb)
+exports.loadNodeData = function(state, nodes, cb)
 {
-	var query = 'SELECT property, value FROM gc_node_data WHERE node = ?';
-	var params = [node.id];
+	for (var id in nodes)
+	{
+		nodes[id].data = {};
+	}
+
+	var query = 'SELECT node, property, value FROM gc_node_data';
+	var params = [];
 
 	state.datasources.db.getMany(query, params, errors.GC_LOAD_DATA_FAILED, function(err, results) {
 		if (err)
@@ -306,11 +308,15 @@ exports.loadNodeData = function(state, node, cb)
 		}
 		else
 		{
-			node.data = {};
-
-			for (var i=0; i < results.length; i++)
+			var len = results.length;
+			for (var i=0; i < len; i++)
 			{
-				node.data[results[i].property] = results[i].value;
+				var row = results[i];
+
+				if (row.node in nodes)
+				{
+					nodes[row.node].data[row.property] = row.value;
+				}
 			}
 
 			if (cb) cb(null);
@@ -319,10 +325,15 @@ exports.loadNodeData = function(state, node, cb)
 };
 
 
-exports.loadNodeInConnectors = function(state, node, cb)
+exports.loadNodeInConnectors = function(state, nodes, cb)
 {
-	var query = 'SELECT c.type, c.andGroup, ct.targetNode, ct.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_target AS ct ON ct.connector = c.id WHERE c.node = ?';
-	var params = [node.id];
+	for (var id in nodes)
+	{
+		nodes[id].in = {};
+	}
+
+	var query = 'SELECT c.node, c.type, c.andGroup, ct.targetNode, ct.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_target AS ct ON ct.connector = c.id';
+	var params = [];
 
 	state.datasources.db.getMany(query, params, errors.GC_LOAD_INCONNECTORS_FAILED, function(err, results) {
 		if (err)
@@ -331,39 +342,35 @@ exports.loadNodeInConnectors = function(state, node, cb)
 		}
 		else
 		{
-			var count = results.length;
-
-			if (count > 0)
+			var len = results.length;
+			for (var i=0; i < len; i++)
 			{
-				node.in = {};
+				var row = results[i];
 
-				for (var i=0; i < count; i++)
+				if (row.node in nodes)
 				{
-					var result = results[i];
+					if (!(row.type     in nodes[row.node].in          )) nodes[row.node].in[row.type] = {};
+					if (!(row.andGroup in nodes[row.node].in[row.type])) nodes[row.node].in[row.type][row.andGroup] = [];
 
-					if (!(result.type in node.in))
-					{
-						node.in[result.type] = {};
-					}
-
-					if (!(result.andGroup in node.in[result.type]))
-					{
-						node.in[result.type][result.andGroup] = [];
-					}
-
-					node.in[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
+					nodes[row.node].in[row.type][row.andGroup].push({ targetNode: row.targetNode, onState: row.onState });
 				}
 			}
+
 			if (cb) cb(null);
 		}
 	});
 };
 
 
-exports.loadNodeOutConnectors = function(state, node, cb)
+exports.loadNodeOutConnectors = function(state, nodes, cb)
 {
-	var query = 'SELECT c.type, c.onState, ct.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_target AS ct ON ct.connector = c.id WHERE c.node = ?';
-	var params = [node.id];
+	for (var id in nodes)
+	{
+		nodes[id].out = {};
+	}
+
+	var query = 'SELECT c.node, c.type, c.onState, ct.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_target AS ct ON ct.connector = c.id';
+	var params = [];
 
 	state.datasources.db.getMany(query, params, errors.GC_LOAD_OUTCONNECTORS_FAILED, function(err, results) {
 		if (err)
@@ -372,27 +379,17 @@ exports.loadNodeOutConnectors = function(state, node, cb)
 		}
 		else
 		{
-			var count = results.length;
-
-			if (count > 0)
+			var len = results.length;
+			for (var i=0; i < len; i++)
 			{
-				node.out = {};
+				var row = results[i];
 
-				for (var i=0; i < count; i++)
+				if (row.node in nodes)
 				{
-					var result = results[i];
+					if (!(row.type    in nodes[row.node].out          )) nodes[row.node].out[row.type] = {};
+					if (!(row.onState in nodes[row.node].out[row.type])) nodes[row.node].out[row.type][row.onState] = [];
 
-					if (!(result.type in node.out))
-					{
-						node.out[result.type] = {};
-					}
-
-					if (!(result.onState in node.out[result.type]))
-					{
-						node.out[result.type][result.onState] = [];
-					}
-
-					node.out[result.type][result.onState].push(result.targetNode);
+					nodes[row.node].out[row.type][row.onState].push(row.targetNode);
 				}
 			}
 
