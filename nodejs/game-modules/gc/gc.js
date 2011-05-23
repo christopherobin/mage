@@ -181,7 +181,21 @@ exports.loadNodes = function(state, options, cb)
 			}
 			else
 			{
-				exports.loadNodeInformation(state, nodes, options, cb);
+				var len = results.length;
+
+				for (var i=0; i < len; i++)
+				{
+					var row = results[i];
+
+					nodes[row.id] = row;
+				}
+
+				exports.loadNodeInformation(state, nodes, options, function(error) {
+					if (error)
+						cb(error);
+					else
+						cb(null, nodes);
+				});
 			}
 		}
 	});
