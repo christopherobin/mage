@@ -54,9 +54,9 @@ exports.findUnreferencedNodes = function(nodes, connectorType)
 	for (var i=0; i < len; i++)
 	{
 		var node = nodes[i];
-		if (node.outConnectors && node.outConnectors[connectorType])
+		if (node.out && node.out[connectorType])
 		{
-			var connector = node.outConnectors[connectorType];
+			var connector = node.out[connectorType];
 
 			for (var onState in connector)
 			{
@@ -335,23 +335,23 @@ exports.loadNodeInConnectors = function(state, node, cb)
 
 			if (count > 0)
 			{
-				node.inConnectors = {};
+				node.in = {};
 
 				for (var i=0; i < count; i++)
 				{
 					var result = results[i];
 
-					if (!(result.type in node.inConnectors))
+					if (!(result.type in node.in))
 					{
-						node.inConnectors[result.type] = {};
+						node.in[result.type] = {};
 					}
 
-					if (!(result.andGroup in node.inConnectors[result.type]))
+					if (!(result.andGroup in node.in[result.type]))
 					{
-						node.inConnectors[result.type][result.andGroup] = [];
+						node.in[result.type][result.andGroup] = [];
 					}
 
-					node.inConnectors[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
+					node.in[result.type][result.andGroup].push({ targetNode: result.targetNode, onState: result.onState });
 				}
 			}
 			if (cb) cb(null);
@@ -376,23 +376,23 @@ exports.loadNodeOutConnectors = function(state, node, cb)
 
 			if (count > 0)
 			{
-				node.outConnectors = {};
+				node.out = {};
 
 				for (var i=0; i < count; i++)
 				{
 					var result = results[i];
 
-					if (!(result.type in node.outConnectors))
+					if (!(result.type in node.out))
 					{
-						node.outConnectors[result.type] = {};
+						node.out[result.type] = {};
 					}
 
-					if (!(result.onState in node.outConnectors[result.type]))
+					if (!(result.onState in node.out[result.type]))
 					{
-						node.outConnectors[result.type][result.onState] = [];
+						node.out[result.type][result.onState] = [];
 					}
 
-					node.outConnectors[result.type][result.onState].push(result.targetNode);
+					node.out[result.type][result.onState].push(result.targetNode);
 				}
 			}
 

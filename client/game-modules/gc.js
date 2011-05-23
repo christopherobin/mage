@@ -47,9 +47,9 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 
 	var node = this.cache[nodeId];
 
-	if (node.inConnectors && node.inConnectors[type])
+	if (node.in && node.in[type])
 	{
-		var connectors = node.inConnectors[type];
+		var connectors = node.in[type];
 		var required = [];
 
 		for (var groupId in connectors)
