@@ -282,6 +282,14 @@ MithrilGameModObj_Collection.prototype.getObject = function(objectId)
 	return null;
 };
 
+MithrilGameModObj_Collection.prototype.getObjectByWeight = function(from, to)
+{
+	if (to == null) to = from;
+	
+	return this.objects.filter(function(info) { return (info.object.weight >= from && (info.object.weight <= to || to == "max")) });
+};
+
+
 MithrilGameModObj_Collection.prototype.contains = function(objectId)
 {
 	return this.objects.some(function(info) { return info.object.id == objectId; });

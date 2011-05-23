@@ -14,7 +14,7 @@ exports.execute = function(state, p, cb)
 		mithril.sns.getRelationRequests(state, null, null, state.actorId, function(error, requests) {
 			if (error) { state.error(1235); cb(); return; }
 
-			result.inbox = requests.map(function(request) { return { id: request.id, type: request.type, fromActor: request.actorId, creationTime: request.creationTime }; });
+			result.inbox = requests.map(function(request) { return { id: request.id, type: request.type, fromActor: request.actor, creationTime: request.creationTime }; });
 
 
 			// existing relations
