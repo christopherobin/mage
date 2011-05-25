@@ -185,10 +185,6 @@ MySqlDatabase.prototype.getMany = function(sql, params, errorCode, cb)
 	mithril.core.logger.debug('DB: getMany ' + sql + ' using', params);
 
 	db.query(sql, params, function(error, results) {
-console.dir("error: " + error);
-console.dir("result: " + results);
-		
-		
 		if (error)
 		{
 			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
