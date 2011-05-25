@@ -1,7 +1,8 @@
 function MithrilGameModGc(mithril)
 {
 	this.mithril = mithril;
-	this.cache = {};
+	this.cacheMap = {};
+	this.cacheArr = [];
 }
 
 
@@ -10,34 +11,36 @@ MithrilGameModGc.prototype.setup = function(cb)
 	var _this = this;
 
 	this.mithril.io.on('gc.node.progress.edit', function(path, params) {
-		if (!_this.cache) return;
-
-		if (params.nodeId in _this.cache)
+		if (params.nodeId in _this.cacheMap)
 		{
-			_this.cache[params.nodeId].progress = { state: params.state, stateTime: params.stateTime };
+			_this.cacheMap[params.nodeId].progress = { state: params.state, stateTime: params.stateTime };
 			var node = _this.getNode(params.nodeId);
 			params.type = node.type;
 		}
-
 	}, true);
 
 
 	this.mithril.io.send('gc.loadNodes', { options: { loadProgressForActor: true, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true } }, function(error, response) {
 		if (error)
 		{
-			cb(error);
-			return;
+			return cb(error);
 		}
 
-		_this.cache = response;
-		cb(null);
+		_this.cacheMap = response;
+
+		for (var id in response)
+		{
+			_this.cacheArr.push(response[id]);
+		}
+
+		cb();
 	});
 };
 
 
 MithrilGameModGc.prototype.getNode = function(nodeId)
 {
-	return (nodeId in this.cache) ? this.cache[nodeId] : null;
+	return this.cacheMap[nodeId] || null;
 };
 
 
@@ -45,7 +48,7 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 {
 	// checks if the given node's inConnector of type "type" is set true/false based on the inConnector's requirements.
 
-	var node = this.cache[nodeId];
+	var node = this.cacheMap[nodeId];
 
 	if (node.cin && node.cin[type])
 	{
@@ -60,11 +63,11 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 			for (var i=0; i < group.length; i++)
 			{
 				var cond = group[i];
-				var progress = this.cache[cond.targetNode].progress;
+				var progress = this.cacheMap[cond.targetNode].progress;
 
 				if (!(progress && progress.state == cond.onState))
 				{
-					groupRequired.push(this.cache[cond.targetNode]);
+					groupRequired.push(this.cacheMap[cond.targetNode]);
 				}
 			}
 
@@ -80,22 +83,24 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 };
 
 
-MithrilGameModGc.prototype.filterNodes = function(filter, nextMatch)
+MithrilGameModGc.prototype.filterNodes = function(filter, nextMatch, nodes)
 {
 	// filter nodes to only the required ones
 
 	var result = [];
 
-	for (var nodeId in this.cache)
+	if (!nodes) nodes = this.cacheArr;
+
+	if (filter)
 	{
-		var node = this.cache[nodeId];
-		if (filter(node))
-			result.push(node);
+		result = nodes.filter(filter);
 	}
 
 	var count = result.length;
-
-	if (!nextMatch || count == 0) return result;
+	if (count == 0 || !nextMatch)
+	{
+		return result;
+	}
 
 	// sort nodes
 
@@ -113,7 +118,7 @@ MithrilGameModGc.prototype.filterNodes = function(filter, nextMatch)
 		var nextNodeId = nextMatch(node);
 		if (nextNodeId)
 		{
-			var nextNode = _this.cache[nextNodeId];
+			var nextNode = _this.cacheMap[nextNodeId];
 
 			index = out.indexOf(nextNode);
 			if (index == -1)
