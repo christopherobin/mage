@@ -96,8 +96,13 @@ MithrilGameModGc.prototype.filterNodes = function(filter, nextMatch, nodes)
 		result = nodes.filter(filter);
 	}
 
+	if (!nextMatch)
+	{
+		return result;
+	}
+
 	var count = result.length;
-	if (count == 0 || !nextMatch)
+	if (count == 0)
 	{
 		return result;
 	}
