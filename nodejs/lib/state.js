@@ -1,5 +1,8 @@
 function State(actorId, msg, session)
 {
+	const ERR_RESTART  = 1;
+	const ERR_INTERNAL = 100;
+
 	// behaves like a transaction, and will send off everything that happened after commit() is called.
 
 	this.actorId = actorId || null;
@@ -12,7 +15,8 @@ function State(actorId, msg, session)
 
 	this.session = session || null;
 
-	this.datasources = new mithril.core.datasources.DataSources;
+	this.datasources = new mithril.core.datasources.DataSources(this);
+	this.datasources.autoTransaction({ write: true, read: false });
 
 	this.events = [];
 	this.response = null;
@@ -29,9 +33,18 @@ State.prototype.emit = function(actorId, path, data)
 };
 
 
-State.prototype.error = function(error)
+State.prototype.error = function(userCode, logDetails, cb)
 {
-	this.errors.push(error);
+	if (logDetails)
+		mithril.core.logger.error(logDetails);
+
+	if (!userCode)
+		userCode = this.ERR_INTERNAL;
+
+	this.errors.push(userCode);
+
+	if (cb)
+		cb(userCode);
 };
 
 
@@ -43,8 +56,8 @@ State.prototype.respond = function(response)
 
 State.prototype._emitForOtherPlayer = function(actorId, path, data)
 {
-	mithril.player.sessions.find(actorId, function(error, sess) {
-		if (!error && sess && sess.msgClient)
+	mithril.player.sessions.find(actorId, function(sess) {
+		if (sess && sess.msgClient)
 		{
 			sess.msgClient.emit(path, data);
 			sess.msgClient.send();
@@ -53,18 +66,20 @@ State.prototype._emitForOtherPlayer = function(actorId, path, data)
 };
 
 
-State.prototype.finish = function()
+State.prototype.close = function()
 {
+	var _this = this;
+
 	if (this.errors.length > 0)
 	{
-		this.rollBack();
+		this.rollBack(function() { _this._cleanup(); });
 	}
 	else
-		this.commit();
+		this.commit(function() { _this._cleanup(); });
 };
 
 
-State.prototype.commit = function()
+State.prototype.commit = function(cb)
 {
 	var msgClient = (this.session && this.session.msgClient) ? this.session.msgClient : null;
 
@@ -103,10 +118,12 @@ State.prototype.commit = function()
 
 	this.events = [];
 	this.response = null;
+
+	this.datasources.commit(cb);
 };
 
 
-State.prototype.rollBack = function()
+State.prototype.rollBack = function(cb)
 {
 	if (this.id)
 	{
@@ -127,10 +144,12 @@ State.prototype.rollBack = function()
 	this.events = [];
 	this.response = null;
 	this.errors = [];
+
+	this.datasources.rollBack(cb);
 };
 
 
-State.prototype.cleanup = function()
+State.prototype._cleanup = function()
 {
 	this.datasources.close();
 

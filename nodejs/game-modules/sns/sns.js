@@ -1,9 +1,4 @@
-// Social Networking Services Module. TF April 2011
-
-var errors = {
-	ERROR_CONST: { module: 'sns', code: 1, log: { msg: 'Default error.', method: 'error' } },
-	NO_SUCH_TYPE: { module: 'sns', code: 2, log: { msg: '', method: 'error' } }
-};
+// Social Networking Services Module.
 
 exports.userCommands = {
 	loadAll:			__dirname + '/usercommands/loadAll.js',
@@ -58,7 +53,7 @@ exports.getRelationRequests = function(state, type, actorId, targetActorId, cb)
 		sql += ' WHERE ' + where.join(' AND ');
 	}
 
-	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(sql, params, null, cb);
 };
 
 
@@ -67,7 +62,7 @@ exports.relationRequestExists = function(state, type, actorId, targetActorId, cb
 	// Returns true if a relation request for this type and these actors exists. False otherwise.
 
 	exports.getRelationRequests(state, type, actorId, targetActorId, function(error, results) {
-		if (error) { if (cb) cb(error); return; }
+		if (error) return cb(error);
 
 		if (results.length > 0)
 		{
@@ -86,7 +81,7 @@ exports.getRelationRequest = function(state, requestId, cb)
 	var sql = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest WHERE id = ?';
 	var params = [requestId];
 
-	state.datasources.db.getOne(sql, params, true, errors.ERROR_CONST, cb);
+	state.datasources.db.getOne(sql, params, true, null, cb);
 };
 
 
@@ -96,7 +91,7 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 	// If it's a bidirectional relation type and the other actor also requested this type of relation, instantly connect the two actors instead.
 	// If this relation type does not require approval, also instantly connect the two actors.
 
-	if (!types[type]) { if (cb) cb(errors.NO_SUCH_TYPE); return; }
+	if (!types[type]) return state.error(state.ERR_INTERNAL, 'Unknown relation type: ' + type, cb);
 
 	// TODO: If this type of relation already exists, throw an error. Make sure that the bidirectionality is checked.
 
@@ -113,12 +108,12 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 			// if targetActor has already issued a relation request of this type, auto-connect
 
 			exports.relationRequestExists(state, type, targetActorId, actorId, function(error, exists) {
-				if (error) { if (cb) cb(error); return; }
+				if (error) return cb(error);
 
 				if (exists)
 				{
 					exports.delRelationRequest(state, exists.id, function(error) {
-						if (error) { if (cb) cb(error); return; }
+						if (error) return cb(error);
 
 						exports.createRelation(state, type, actorId, targetActorId, cb);
 					});
@@ -143,12 +138,12 @@ exports.delRelationRequest = function(state, requestId, cb)
 	// emit event to actor and targetActor
 
 	exports.getRelationRequest(state, requestId, function(error, request) {
-		if (error) { if (cb) cb(error); return; }
+		if (error) return cb(error);
 
 		var sql = 'DELETE FROM sns_relationrequest WHERE id = ?';
 		var params = [requestId];
 
-		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+		state.datasources.db.exec(sql, params, null, function(error, info) {
 			state.emit(request.actor,       'sns.relationrequest.del', { id: requestId });
 			state.emit(request.targetActor, 'sns.relationrequest.del', { id: requestId });
 
@@ -180,8 +175,8 @@ function createRelationRequest(state, type, actorId, targetActorId, cb)
 	var sql = 'INSERT INTO sns_relationrequest VALUES(NULL, ?, ?, ?, ?)';
 	var params = [type, actorId, targetActorId, time];
 
-	state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
-		if (error) { if (cb) cb(error); return; }
+	state.datasources.db.exec(sql, params, null, function(error, info) {
+		if (error) return cb(error);
 
 		sent.id = received.id = info.insertId;
 
@@ -207,7 +202,7 @@ exports.getRelations = function(state, type, actorId, cb)
 		params.push(type);
 	}
 
-	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(sql, params, null, cb);
 };
 
 
@@ -216,7 +211,7 @@ exports.getRelation = function(state, relationId, cb)
 	var sql = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE id = ?';
 	var params = [relationId];
 
-	state.datasources.db.getOne(sql, params, true, errors.ERROR_CONST, cb);
+	state.datasources.db.getOne(sql, params, true, null, cb);
 };
 
 
@@ -234,7 +229,7 @@ exports.getRelationsFromActor = function(state, type, actorId, cb)
 		params.push(type);
 	}
 
-	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(sql, params, null, cb);
 };
 
 
@@ -252,7 +247,7 @@ exports.getRelationsToActor = function(state, type, actorId, cb)
 		params.push(type);
 	}
 
-	state.datasources.db.getMany(sql, params, errors.ERROR_CONST, cb);
+	state.datasources.db.getMany(sql, params, null, cb);
 };
 
 
@@ -264,7 +259,7 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 	// This function may be called externally, but should not be needed.
 	// Normal flow would use requestRelation()
 
-	if (!types[type]) { if (cb) cb(errors.NO_SUCH_TYPE); return; }
+	if (!types[type]) return state.error(state.ERR_INTERNAL, 'Unknown relation type: ' + type, cb);
 
 	var time = mithril.core.time;
 
@@ -292,8 +287,8 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 	var sql = 'INSERT INTO sns_relation VALUES(NULL, ?, ?, ?, ?)';
 	var params = [type, actorA, actorB, time];
 
-	state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
-		if (error) { if (cb) cb(error); return; }
+	state.datasources.db.exec(sql, params, null, function(error, info) {
+		if (error) return cb(error);
 
 		forA.id = forB.id = info.insertId;
 
@@ -313,12 +308,14 @@ exports.delRelation = function(state, relationId, cb)
 	// emit event to both actors
 
 	exports.getRelation(state, relationId, function(error, relation) {
-		if (error) { if (cb) cb(error); return; }
+		if (error) return cb(error);
 
 		var sql = 'DELETE FROM sns_relation WHERE id = ?';
 		var params = [relationId];
 
-		state.datasources.db.exec(sql, params, errors.ERROR_CONST, function(error, info) {
+		state.datasources.db.exec(sql, params, null, function(error) {
+			if (error) return cb(error);
+
 			state.emit(relation.actorA, 'sns.relation.del', { id: relationId });
 			state.emit(relation.actorB, 'sns.relation.del', { id: relationId });
 

@@ -49,8 +49,7 @@ exports.start = function(httpServer)
 			var state = new State(session.playerId, msg, session);
 
 			mithril.core.userCommandCenter.execute(state, function() {
-				state.finish();
-				state.cleanup();
+				state.close();
 
 				if (cb) cb();
 			});
@@ -83,7 +82,7 @@ exports.start = function(httpServer)
 					resolvingSession = true;
 
 					mithril.player.sessions.resolve(msg.sessionId, function(error, result) {
-						if (error)
+						if (error || !result)
 						{
 							mithril.core.logger.info('Could not resolve session: ' + msg.sessionId);
 							sessionlessError(client, msg, 2);

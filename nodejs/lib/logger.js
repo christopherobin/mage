@@ -3,18 +3,26 @@ var util = require('util');
 
 exports.add = function(name, output)
 {
-	exports[name] = function(obj)
+	exports[name] = function()
 	{
 		if (output instanceof stream.Stream)
 		{
-			output.write((typeof obj == 'string' ? obj : util.inspect(obj)) + '\n', 'utf8');
+			var out = [];
+
+			for (var i=0; i < arguments.length; i++)
+			{
+				var obj = arguments[i];
+				out.push(typeof obj == 'string' ? obj : util.inspect(obj));
+			}
+
+			output.write(out.join(' ') + '\n', 'utf8');
 		}
 		else
 		{
 			switch (output)
 			{
-				case 'stdout': console.log(obj); break;
-				case 'stderr': console.error(obj); break;
+				case 'stdout': console.log.apply(this, arguments); break;
+				case 'stderr': console.error.apply(this, arguments); break;
 			}
 		}
 	};

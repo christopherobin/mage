@@ -1,12 +1,3 @@
-var errors = {
-	ACTOR_NOTFOUND: { module: 'actor', code: 1000, log: { msg: 'Actor not found.', method: 'error' } },
-	ACTOR_ADD_FAILED: { module: 'actor', code: 1001, log: { msg: 'Actor creation failed.', method: 'error' } },
-	ACTOR_EDIT_FAILED: { module: 'actor', code: 1002, log: { msg: 'Actor update failed.', method: 'error' } },
-	ACTOR_DEL_FAILED: { module: 'actor', code: 1003, log: { msg: 'Actor deletion failed.', method: 'error' } }
-};
-
-exports.errors = errors;
-
 exports.userCommands = {
 	getActor: __dirname + '/usercommands/getActor.js'
 };
@@ -29,7 +20,7 @@ exports.getActor = function(state, id, fields, cb)
 	var query = state.datasources.db.buildSelect(fields, allowedFields, 'actor', joins) + ' WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.getOne(query, params, true, errors.ACTOR_NOTFOUND, cb);
+	state.datasources.db.getOne(query, params, true, null, cb);
 };
 
 
@@ -40,11 +31,10 @@ exports.addActor = function(state, name, cb)
 	var query = 'INSERT INTO actor (name, creationTime) VALUES (?, ?)';
 	var params = [name, time];
 
-	state.datasources.db.exec(query, params, errors.ACTOR_ADD_FAILED, function(err, info) {
-		if (err)
-			cb(err);
-		else
-			cb(null, { actorId: info.insertId, creationTime: time, name: name });
+	state.datasources.db.exec(query, params, null, function(error, info) {
+		if (error) return cb(error);
+
+		cb(null, { actorId: info.insertId, creationTime: time, name: name });
 	});
 };
 
@@ -54,7 +44,7 @@ exports.setActorName = function(state, id, name, cb)
 	var query = 'UPDATE actor SET name = ? WHERE id = ?';
 	var params = [name, id];
 
-	state.datasources.db.exec(query, params, errors.ACTOR_EDIT_FAILED, cb);
+	state.datasources.db.exec(query, params, null, cb);
 };
 
 
@@ -63,6 +53,6 @@ exports.delActor = function(state, id, cb)
 	var query = 'DELETE FROM actor WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.exec(query, params, errors.ACTOR_DEL_FAILED, cb);
+	state.datasources.db.exec(query, params, null, cb);
 };
 

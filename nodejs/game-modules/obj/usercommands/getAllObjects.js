@@ -7,37 +7,36 @@ exports.execute = function(state, p, cb)
 	var collectionMembers = null;
 
 
-	var sendBackData = function()
-	{
-		state.respond(returnData);
-		cb();
-	};
-
-
 	mithril.obj.getActorCollections(state, state.actorId, ['collectionId', 'parentId', 'collectionType', 'slotCount', 'maxWeight'], {}, function(error, data) {	// get player collections
-		if (!error)
-		{
-			returnData.collections = {};
+		if (error) return cb();
 
-			for (var i = 0; i < data.length; i++)
-			{
-				var acData = data
-				var collectionId = acData[i].collectionId;
-				returnData.collections[collectionId] = acData[i];
-				returnData.collections[collectionId].members = [];
-				returnData.collections[collectionId].owner = parseInt(state.actorId);
+		returnData.collections = {};
 
-				mithril.obj.getCollectionMembers(state, collectionId, function(err, cMdata) {
+		async.forEachSeries(
+			data,
+			function(coll, callback) {
+				coll.members = [];
+				coll.owner = state.actorId;
+
+				returnData.collections[coll.collectionId] = coll;
+
+				mithril.obj.getCollectionMembers(state, coll.collectionId, function(err, cMdata) {
+					if (err) { callback(err); return; }
+
 					for (var l=0; l < cMdata.length; l++)
 					{
-						returnData.collections[cMdata[l].collection].members.push({ id: cMdata[l].object, slot: cMdata[l].slot });
+						coll.members.push({ id: cMdata[l].object, slot: cMdata[l].slot });
 					}
-				});
-			}
 
-			mithril.obj.getActorObjects(state, state.actorId, function(error, data) {  // get player objects
-				if(!error)
-				{
+					callback();
+				});
+			},
+			function(error) {
+				if (error) return cb(error);
+
+				mithril.obj.getActorObjects(state, state.actorId, function(error, data) {  // get player objects
+					if (error) return cb();
+
 					returnData.objects = {}
 					for (var j = 0; j < data.length; j++)
 					{
@@ -45,24 +44,24 @@ exports.execute = function(state, p, cb)
 					}
 
 					mithril.obj.getObjectDataByOwner(state, state.actorId, function(err, data) {  // get object dataMulti
-						if(!error)
-						{ //map data to objects
+						if (err) return cb();
 
-							for(var k = 0; k < data.length; k++)
+						for (var k=0; k < data.length; k++)
+						{
+							if (!returnData.objects[data[k].object].data)
 							{
-								if(!returnData.objects[data[k].object].data)
-								{
-									returnData.objects[data[k].object].data = {};
-								}
-
-								returnData.objects[data[k].object].data[data[k].property] = data[k].value;
+								returnData.objects[data[k].object].data = {};
 							}
-							sendBackData();
+
+							returnData.objects[data[k].object].data[data[k].property] = data[k].value;
 						}
+
+						state.respond(returnData);
+						cb();
 					});
-				}
-			});
-		}
+				});
+			}
+		);
 	});
 };
 

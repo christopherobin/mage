@@ -8,9 +8,7 @@ exports.execute = function(state, p, cb)
 	}
 
 	mithril.gc.loadNodes(state, options, function(error, nodes) {
-		if (error)
-			state.error(1234);
-		else
+		if (!error)
 			state.respond(nodes);
 
 		cb();

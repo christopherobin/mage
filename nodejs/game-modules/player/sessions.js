@@ -1,11 +1,3 @@
-var errors = {
-	SESSION_NOTFOUND:     { module: 'session', code: 1000 },
-	SESSION_REGISTRATION: { module: 'session', code: 1001 }
-};
-
-exports.errors = errors;
-
-
 var State = require(mithril.core.paths.lib + '/state.js').State;
 
 
@@ -59,13 +51,13 @@ Session.prototype.register = function(cb)
 	var sql = 'REPLACE INTO player_session VALUES (?, ?, ?, ?, ?)';
 	var params = [this.playerId, key, this.creationTime, this.lastTouchTime, 'active'];
 
-	state.datasources.db.exec(sql, params, errors.SESSION_REGISTRATION, function(err, result) {
+	state.datasources.db.exec(sql, params, null, function(err, result) {
 		if (err)
 			cb(err);
 		else
-			cb(null);
+			cb();
 
-		state.cleanup();
+		state.close();
 	});
 };
 
@@ -93,8 +85,7 @@ exports.resolve = function(key, cb)
 		{
 			mithril.core.logger.debug('Session found in local cache.');
 
-			cb(null, session);
-			return;
+			return cb(null, session);
 		}
 
 		// session not found locally, check DB
@@ -103,9 +94,15 @@ exports.resolve = function(key, cb)
 		var query = 'SELECT p.language, s.creationTime, s.lastTouchTime FROM player_session AS s JOIN player AS p ON p.actor = s.player WHERE s.player = ? AND s.sessionId = ?';
 		var params = [playerId, sessionKey];
 
-		state.datasources.db.getOne(query, params, true, errors.SESSION_NOTFOUND, function(err, result) {
+		state.datasources.db.getOne(query, params, false, null, function(err, result) {
 			if (err)
-				cb(err);
+			{
+				cb(err, false);
+			}
+			else if (!result)
+			{
+				cb(null, false);
+			}
 			else
 			{
 				var session = new Session(playerId, result.language);
@@ -119,13 +116,13 @@ exports.resolve = function(key, cb)
 				cb(null, session);
 			}
 
-			state.cleanup();
+			state.close();
 		});
 
 		return;
 	}
 
-	cb(errors.SESSION_NOTFOUND);
+	cb(null, false);
 };
 
 
@@ -137,10 +134,10 @@ exports.find = function(playerId, cb)
 
 	if (playerId in sessions)
 	{
-		cb(null, sessions[playerId]);
+		cb(sessions[playerId]);
 	}
 	else
-		cb(errors.SESSION_NOTFOUND);
+		cb(false);
 };
 
 
