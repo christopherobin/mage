@@ -41,12 +41,12 @@ MithrilGameModSns.prototype.getRelations = function(type)
 	return this.relationcache.relations.filter(function(relation){ return relation.type = type; });
 }
 
-MithrilGameModSns.prototype.getRelationRequestsTo = function(type)
+MithrilGameModSns.prototype.getRelationRequestsFrom = function(type)
 {
 	return this.relationcache.outbox.filter(function(relation){ return relation.type = type; });
 }
 
-MithrilGameModSns.prototype.getRelationRequestsFrom = function(type)
+MithrilGameModSns.prototype.getRelationRequestsTo = function(type)
 {
 	return this.relationcache.inbox.filter(function(relation){ return relation.type = type; });
 }
