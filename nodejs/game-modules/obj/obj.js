@@ -515,12 +515,11 @@ exports.addObject = function(state, collections, name, weight, data, cb)
 				state.datasources.db.exec(sql, params, errors.ERROR_CONST, callback);
 			}
 			else
-				callback();
+				callback(null, null);
 		},
 		function(info, callback)
 		{
 			// store collection links
-
 			if (collections.length == 0)
 			{
 				callback();
