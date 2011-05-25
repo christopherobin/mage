@@ -1,7 +1,7 @@
 function State(actorId, msg, session)
 {
-	const ERR_RESTART  = 1;
-	const ERR_INTERNAL = 100;
+	this.ERR_RESTART  = 1;
+	this.ERR_INTERNAL = 100;
 
 	// behaves like a transaction, and will send off everything that happened after commit() is called.
 
