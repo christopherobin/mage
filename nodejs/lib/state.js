@@ -56,8 +56,8 @@ State.prototype.respond = function(response)
 
 State.prototype._emitForOtherPlayer = function(actorId, path, data)
 {
-	mithril.player.sessions.find(actorId, function(sess) {
-		if (sess && sess.msgClient)
+	mithril.player.sessions.find(this, actorId, function(error, sess) {
+		if (!error && sess && sess.msgClient)
 		{
 			sess.msgClient.emit(path, data);
 			sess.msgClient.send();
