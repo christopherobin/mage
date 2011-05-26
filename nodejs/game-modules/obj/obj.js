@@ -792,11 +792,11 @@ exports.setObjectData = function(state, objectId, data, cb)
 
 		sql += values.join(', ') + ' ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
-		state.datasources.db.exec(sql, params, null, function(err, data) {
+		state.datasources.db.exec(sql, params, null, function(err) {
 			if (err) return cb(err);
 
 			var len = ownerData.length;
-			for (var i=0; i < len; i++) // UNTESTED
+			for (var i=0; i < len; i++)
 			{
 				state.emit(ownerData[i].owner, 'obj.object.data.edit', { id: objectId, data: data });
 			}
