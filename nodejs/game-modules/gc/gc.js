@@ -3,8 +3,8 @@ exports.userCommands = {
 };
 
 
-var allNodesArr = null;
 var allNodesMap = null;
+var allNodesArr = null;
 
 
 exports.setup = function(cb)
@@ -282,16 +282,16 @@ exports.getNodesProgress = function(state, nodeIds, actorId, cb)
 
 exports.loadNodeData = function(state, nodesMap, cb)
 {
-	for (var id in nodesMap)
-	{
-		nodesMap[id].data = {};
-	}
-
 	var query = 'SELECT node, property, value FROM gc_node_data';
 	var params = [];
 
 	state.datasources.db.getMany(query, params, null, function(err, results) {
 		if (err) return cb(err);
+
+		for (var id in nodesMap)
+		{
+			nodesMap[id].data = {};
+		}
 
 		var len = results.length;
 		for (var i=0; i < len; i++)
@@ -311,16 +311,16 @@ exports.loadNodeData = function(state, nodesMap, cb)
 
 exports.loadNodeInConnectors = function(state, nodesMap, cb)
 {
-	for (var id in nodesMap)
-	{
-		nodesMap[id].cin = {};
-	}
-
 	var query = 'SELECT c.node, c.type, c.andGroup, ct.targetNode, ct.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_target AS ct ON ct.connector = c.id';
 	var params = [];
 
 	state.datasources.db.getMany(query, params, null, function(err, results) {
 		if (err) return cb(err);
+
+		for (var id in nodesMap)
+		{
+			nodesMap[id].cin = {};
+		}
 
 		var len = results.length;
 		for (var i=0; i < len; i++)
@@ -345,16 +345,16 @@ exports.loadNodeInConnectors = function(state, nodesMap, cb)
 
 exports.loadNodeOutConnectors = function(state, nodesMap, cb)
 {
-	for (var id in nodesMap)
-	{
-		nodesMap[id].cout = {};
-	}
-
 	var query = 'SELECT c.node, c.type, c.onState, ct.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_target AS ct ON ct.connector = c.id';
 	var params = [];
 
 	state.datasources.db.getMany(query, params, null, function(err, results) {
 		if (err) return cb(err);
+
+		for (var id in nodesMap)
+		{
+			nodesMap[id].cout = {};
+		}
 
 		var len = results.length;
 		for (var i=0; i < len; i++)
