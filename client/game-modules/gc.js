@@ -13,9 +13,11 @@ MithrilGameModGc.prototype.setup = function(cb)
 	this.mithril.io.on('gc.node.progress.edit', function(path, params) {
 		if (params.nodeId in _this.cacheMap)
 		{
-			_this.cacheMap[params.nodeId].progress = { state: params.state, stateTime: params.stateTime };
 			var node = _this.getNode(params.nodeId);
-			params.node = node;
+
+			node.progress = { state: params.state, stateTime: params.stateTime };
+			params.type = node.type;
+
 		}
 	}, true);
 
@@ -80,6 +82,42 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 	}
 
 	return true;
+};
+
+
+MithrilGameModGc.prototype.findInEffectedNodes = function(nodeId, type)
+{
+	var checkNode = function(node, result)
+	{
+		if (node.id != nodeId && node.cin && node.cin[type])
+		{
+			var connectors = node.cin[type];
+
+			for (var groupId in connectors)
+			{
+				var group = connectors[groupId];
+
+				for (var j=0; j < group.length; j++)
+				{
+					if (group[j].targetNode == nodeId)
+					{
+						result.push(node.id);
+						return;
+					}
+				}
+			}
+		}
+	};
+
+	var result = [];
+	var len = this.cacheArr.length;
+
+	for (var i=0; i < len; i++)
+	{
+		checkNode(this.cacheArr[i], result);
+	}
+
+	return result;
 };
 
 

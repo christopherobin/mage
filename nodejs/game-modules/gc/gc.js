@@ -312,11 +312,15 @@ exports.getNodesProgress = function(state, nodeIds, actorId, cb)
 		return cb(null, {});
 	}
 
+	var result = {};
+
 	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (';
 	var params = [actorId];
 
 	for (var i=0; i < nodeIds.length; i++)
 	{
+		result[nodeIds[i]] = null;	// those not returned will be null
+
 		params.push(nodeIds[i]);
 		query += '? ,';
 	}
@@ -326,8 +330,6 @@ exports.getNodesProgress = function(state, nodeIds, actorId, cb)
 
 	state.datasources.db.getMany(query, params, null, function(err, data) {
 		if (err) return cb(err);
-
-		var result = {};
 
 		for (var i=0; i < data.length; i++)
 		{
