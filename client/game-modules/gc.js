@@ -16,8 +16,8 @@ MithrilGameModGc.prototype.setup = function(cb)
 			var node = _this.getNode(params.nodeId);
 
 			node.progress = { state: params.state, stateTime: params.stateTime };
+			params.node = node;
 
-			params.type = node.type;
 		}
 	}, true);
 
@@ -82,6 +82,42 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 	}
 
 	return true;
+};
+
+
+MithrilGameModGc.prototype.findInEffectedNodes = function(nodeId, type)
+{
+	var checkNode = function(node, result)
+	{
+		if (node.id != nodeId && node.cin && node.cin[type])
+		{
+			var connectors = node.cin[type];
+
+			for (var groupId in connectors)
+			{
+				var group = connectors[groupId];
+
+				for (var j=0; j < group.length; j++)
+				{
+					if (group[j].targetNode == nodeId)
+					{
+						result.push(node.id);
+						return;
+					}
+				}
+			}
+		}
+	};
+
+	var result = [];
+	var len = this.cacheArr.length;
+
+	for (var i=0; i < len; i++)
+	{
+		checkNode(this.cacheArr[i], result);
+	}
+
+	return result;
 };
 
 
