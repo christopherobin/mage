@@ -13,8 +13,10 @@ MithrilGameModGc.prototype.setup = function(cb)
 	this.mithril.io.on('gc.node.progress.edit', function(path, params) {
 		if (params.nodeId in _this.cacheMap)
 		{
-			_this.cacheMap[params.nodeId].progress = { state: params.state, stateTime: params.stateTime };
 			var node = _this.getNode(params.nodeId);
+
+			node.progress = { state: params.state, stateTime: params.stateTime };
+
 			params.type = node.type;
 		}
 	}, true);
