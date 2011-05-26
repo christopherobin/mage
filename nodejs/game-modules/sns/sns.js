@@ -26,7 +26,6 @@ exports.getRelationRequests = function(state, type, actorId, targetActorId, cb)
 	// if targetActorId is omitted, all relation requests from actorId will be returned.
 
 	var sql = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest';
-
 	var where = [];
 	var params = [];
 
@@ -35,24 +34,20 @@ exports.getRelationRequests = function(state, type, actorId, targetActorId, cb)
 		where.push('type = ?');
 		params.push(type);
 	}
-
 	if (actorId)
 	{
 		where.push('actor = ?');
 		params.push(actorId);
 	}
-
 	if (targetActorId)
 	{
 		where.push('targetActor = ?');
 		params.push(targetActorId);
 	}
-
 	if (where.length > 0)
 	{
 		sql += ' WHERE ' + where.join(' AND ');
 	}
-
 	state.datasources.db.getMany(sql, params, null, cb);
 };
 
@@ -92,13 +87,13 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 	// If this relation type does not require approval, also instantly connect the two actors.
 
 	if (!types[type]) return state.error(state.ERR_INTERNAL, 'Unknown relation type: ' + type, cb);
+	if (!targetActorId) return state.error(state.ERR_INTERNAL, 'Invalid target Actor: ' + targetActorId, cb);
 
 	// TODO: If this type of relation already exists, throw an error. Make sure that the bidirectionality is checked.
 
 	if (!types[type].requiresApproval)
 	{
 		// immediately connect
-
 		exports.createRelation(state, type, actorId, targetActorId, cb);
 	}
 	else
