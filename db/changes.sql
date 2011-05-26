@@ -39,5 +39,30 @@ CREATE TABLE `sns_relationrequest` (
 ENGINE = InnoDB;
 
 
+-- 2011-05-26: match log -> history
+
+DROP TABLE `match_log_actor`, `match_log`;
+
+CREATE TABLE `history_event` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(255) NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `key_history_event_type` (`type`(10) ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `history_event_data` (
+  `event` INT UNSIGNED NOT NULL ,
+  `actor` INT UNSIGNED NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  INDEX `fk_history_event_data_event` (`event` ASC) ,
+  INDEX `fk_history_event_data_actor` (`actor` ASC) ,
+  PRIMARY KEY (`event`, `actor`, `property`) ,
+  CONSTRAINT `fk_history_event_data_event` FOREIGN KEY (`event` ) REFERENCES `history_event` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_history_event_data_actor` FOREIGN KEY (`actor` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
