@@ -7,6 +7,9 @@ function MithrilGameModSns(mithril)
 MithrilGameModSns.prototype.setup = function(cb)
 {
 	var _this = this;
+
+	// setup event listeners
+
 	var cache = this.relationcache;
 
 	this.mithril.io.on('sns.relationrequest.inbox.add', function(path, params) {
@@ -30,8 +33,14 @@ MithrilGameModSns.prototype.setup = function(cb)
 		cache.relations = cache.relations.filter(function(relation) { return (relation.id != params.id); });
 	}, true);
 
-	this.mithril.io.send('sns.loadAll', {}, function(error, response) {
+
+	// load all sns data
+
+	this.mithril.io.send('sns.loadAll', {}, function(errors, response) {
+		if (errors) return cb(errors);
+
 		cache = _this.relationcache = response;
+
 		cb();
 	}, true);
 };

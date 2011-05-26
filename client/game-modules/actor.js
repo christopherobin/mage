@@ -17,7 +17,7 @@ MithrilGameModActor.prototype.setup = function(cb)
 		else
 		{
 			_this.me.name = result.name;
-			cb(null);
+			cb();
 		}
 	});
 };

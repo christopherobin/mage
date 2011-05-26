@@ -9,6 +9,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 {
 	var _this = this;
 
+	// setup event listeners
 
 	this.mithril.io.on('obj.collection.object.add', function(path, params)
 	{
@@ -75,14 +76,14 @@ MithrilGameModObj.prototype.setup = function(cb)
 
 
 	this.mithril.io.on("obj.collection.edit", function(path, params){
-		for(var i=0; i < _this.playerCache.collections.length; i++) //untested
+		for (var i=0; i < _this.playerCache.collections.length; i++) //untested
 		{
-			if(params.collectionId == _this.playerCache.collections[i].id)
+			if (params.collectionId == _this.playerCache.collections[i].id)
 			{
-				if (collectionType in params) { _this.playerCache.collections[i].type = params.collectionType; }
-				if (parent in params) { _this.playerCache.collections[i].parent = params.parent; }
-				if (slotCount in params) { _this.playerCache.collections[i].slotCount = params.slotCount; }
-				if (maxWeight in params) { _this.playerCache.collections[i].maxWeight = params.maxWeight; }
+				if ('collectionType' in params) { _this.playerCache.collections[i].type = params.collectionType; }
+				if ('parent' in params) { _this.playerCache.collections[i].parent = params.parent; }
+				if ('slotCount' in params) { _this.playerCache.collections[i].slotCount = params.slotCount; }
+				if ('maxWeight' in params) { _this.playerCache.collections[i].maxWeight = params.maxWeight; }
 			}
 		}
 	}, true);
@@ -124,13 +125,16 @@ MithrilGameModObj.prototype.setup = function(cb)
 		}
 	}, true);
 
+
 	this.mithril.io.on("obj.object.applyToObj", function(path, params){ //untested
 		_this.playerCache.objectIds[params.id].appliedToObject = params.applyTo;
 	}, true);
 
+
 	this.mithril.io.on("obj.object.detachFromObj", function(path, params){ //untested
 		_this.playerCache.objectIds[params.id].appliedToObject = null;
 	}, true);
+
 
 	this.mithril.io.on("obj.object.data.edit", function(path, params){ //untested
 		for(var key in params.data)
@@ -138,6 +142,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 			_this.playerCache.objectIds[params.id].data[key] = params.data[key];
 		}
 	}, true);
+
 
 	this.mithril.io.on("obj.object.data.del", function(path, params){ //untested
 		for(var i=0;i<params.data.length;i++)
@@ -150,7 +155,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 	// retrieve all actor's collections
 
 	this.mithril.io.send('obj.getAllObjects', {}, function(errors, response) {
-		if (errors) { cb(errors); return; }
+		if (errors) { return cb(errors); }
 
 		// cache results
 		_this.playerCache = {
@@ -181,8 +186,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 			_this.playerCache.collections.push(collection);
 		}
 
-		// call cb
-		cb(null);
+		cb();
 	});
 };
 
@@ -285,7 +289,7 @@ MithrilGameModObj_Collection.prototype.getObject = function(objectId)
 MithrilGameModObj_Collection.prototype.getObjectByWeight = function(from, to)
 {
 	if (to == null) to = from;
-	
+
 	return this.objects.filter(function(info) { return (info.object.weight >= from && (info.object.weight <= to || to == "max")) });
 };
 
@@ -321,10 +325,10 @@ MithrilGameModObj_Collection.prototype.uniqueNames = function()
 {
 	var unique = {};
 	var names = [];
-	this.objects.forEach(function(obj) { 
-		if (obj.object.name in unique) 
+	this.objects.forEach(function(obj) {
+		if (obj.object.name in unique)
 			return;
-		
+
 		unique[obj.object.name] = null;
 		names.push(obj.object.name);
 	});

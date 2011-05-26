@@ -3,16 +3,24 @@ function Mithril(config, sessionId)
 	this.config = config;
 	this.io = new MithrilIo(this);
 	this.sessionId = sessionId;
+	this.modules = [];
 
 	// config options:
 	//   config.server.host, config.server.port
 
-	if (typeof MithrilGameModActor  != 'undefined') this.actor  = new MithrilGameModActor(this);
-	if (typeof MithrilGameModPlayer != 'undefined') this.player = new MithrilGameModPlayer(this);
-	if (typeof MithrilGameModSns    != 'undefined') this.sns    = new MithrilGameModSns(this);
-	if (typeof MithrilGameModObj    != 'undefined') this.obj    = new MithrilGameModObj(this);
-	if (typeof MithrilGameModGc     != 'undefined') this.gc     = new MithrilGameModGc(this);
+	if (typeof MithrilGameModActor  != 'undefined') this.registerModule('actor',  new MithrilGameModActor(this));
+	if (typeof MithrilGameModPlayer != 'undefined') this.registerModule('player', new MithrilGameModPlayer(this));
+	if (typeof MithrilGameModSns    != 'undefined') this.registerModule('sns',    new MithrilGameModSns(this));
+	if (typeof MithrilGameModObj    != 'undefined') this.registerModule('obj',    new MithrilGameModObj(this));
+	if (typeof MithrilGameModGc     != 'undefined') this.registerModule('gc',     new MithrilGameModGc(this));
 }
+
+
+Mithril.prototype.registerModule = function(name, module)
+{
+	this.modules.push({ name: name, module: module });
+	this[name] = module;
+};
 
 
 Mithril.prototype.start = function(cb)
@@ -35,31 +43,33 @@ Mithril.prototype.start = function(cb)
 Mithril.prototype.setupModules = function(cb)
 {
 	var done = 0;
-	var modules = [];
-
-	if (this.actor)  modules.push(this.actor);
-	if (this.player) modules.push(this.player);
-	if (this.sns)    modules.push(this.sns);
-	if (this.obj)    modules.push(this.obj);
-	if (this.gc)     modules.push(this.gc);
 
 	var _this = this;
 
-	for (var i=0; i < modules.length; i++)
+	var tasks = [];
+
+	for (var i=0; i < this.modules.length; i++)
 	{
-		modules[i].setup(function(error) {
-			if (error)
-			{
-				if (cb) { cb(error); cb = null; }
-			}
-			else
-			{
-				if (++done == modules.length)
-				{
-					if (cb) { cb(null); cb = null; }
-				}
-			}
-		});
+		if (this.modules[i].module.setup)
+		{
+			tasks.push(this.modules[i].module);
+		}
 	}
+
+	if (tasks.length == 0) return cb();
+
+	var next = function(error)
+	{
+		if (error)
+			return cb(error);
+
+		var task = tasks.shift();
+		if (task)
+			task.setup.call(task, next);
+		else
+			cb();
+	};
+
+	next();
 };
 

@@ -17,7 +17,7 @@ MithrilGameModPlayer.prototype.setup = function(cb)
 		else
 		{
 			_this.me.language = response.language;
-			cb(null);
+			cb();
 		}
 	});
 };

@@ -128,16 +128,16 @@ exports.resolve = function(key, cb)
 
 // find(playerId) returns a session object to the callback for the given player, or false if not found
 
-exports.find = function(playerId, cb)
+exports.find = function(state, playerId, cb)
 {
 	// TODO: add DB check if session not found
 
 	if (playerId in sessions)
 	{
-		cb(sessions[playerId]);
+		cb(null, sessions[playerId]);
 	}
 	else
-		cb(false);
+		cb(null, false);
 };
 
 
