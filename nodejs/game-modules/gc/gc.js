@@ -124,6 +124,65 @@ exports.filterNodes = function(filter, nextMatch, nodesArr)
 };
 
 
+exports.getInRequirements = function(state, actorId, nodeId, type, cb)
+{
+	var node = allNodesMap[nodeId];
+
+	if (!node) return state.error(null, 'Node not found: ' + nodeId, cb);
+
+	if (node.cin && node.cin[type])
+	{
+		// load all states for nodes that are involved
+
+		var connectors = node.cin[type];
+		var nodeIds = [];
+
+		for (groupId in connectors)
+		{
+			var group = connectors[groupId];
+
+			for (var i=0; i < group.length; i++)
+			{
+				nodeIds.push(group[i].targetNode);
+			}
+		}
+
+		exports.getNodesProgress(state, nodeIds, actorId, function(error, nodeStates) {
+			if (error) return cb(error);
+
+			var required = [];
+
+			for (groupId in connectors)
+			{
+				var group = connectors[groupId];
+				var groupRequired = [];
+
+				for (var i=0; i < group.length; i++)
+				{
+					var cond = group[i];
+
+					if (nodeStates[cond.targetNode] != cond.onState)
+					{
+						groupRequired.push(allNodesMap[cond.targetNode]);
+					}
+				}
+
+				if (groupRequired.length == 0)
+				{
+					return cb(null, true);
+				}
+
+				required.push(groupRequired);
+			}
+
+			cb(null, required);
+		});
+	}
+	else
+		cb(null, true);
+};
+
+
 exports.setNodeState = function(state, actorId, nodeId, newState, cb)
 {
 	var time = mithril.core.time;
