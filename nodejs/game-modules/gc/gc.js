@@ -3,20 +3,23 @@ exports.userCommands = {
 };
 
 
-var allNodes = null;
+var allNodesArr = null;
+var allNodesMap = null;
 
 
 exports.setup = function(cb)
 {
 	var state = new mithril.core.state.State();
 
-	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodes) {
+	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesArr) {
 		if (error)
 			cb(error);
 		else
 		{
-			allNodes = nodes;
-			cb(null);
+			allNodesMap = nodesMap;
+			allNodesArr = nodesArr;
+
+			cb();
 		}
 
 		state.close();
@@ -26,22 +29,23 @@ exports.setup = function(cb)
 
 exports.getNode = function(nodeId)
 {
-	if (nodeId in allNodes)
+	if (nodeId in allNodesMap)
 	{
-		return allNodes[nodeId];
+		return allNodesMap[nodeId];
 	}
 	return null;
 };
 
 
-exports.findUnreferencedNodes = function(nodes, connectorType)
+exports.findUnreferencedNodes = function(nodesArr, connectorType)
 {
 	var referenced = [];
 
-	var len = nodes.length;
+	var len = nodesArr.length;
 	for (var i=0; i < len; i++)
 	{
-		var node = nodes[i];
+		var node = nodesArr[i];
+
 		if (node.cout && node.cout[connectorType])
 		{
 			var connector = node.cout[connectorType];
@@ -56,26 +60,24 @@ exports.findUnreferencedNodes = function(nodes, connectorType)
 		}
 	}
 
-	return nodes.filter(function(node) { return (referenced.indexOf(node.id) == -1); });
+	return nodesArr.filter(function(node) { return (referenced.indexOf(node.id) == -1); });
 };
 
 
-exports.filterNodes = function(filter, nextMatch)
+exports.filterNodes = function(filter, nextMatch, nodesArr)
 {
 	// filter nodes to only the required ones
 
-	var result = [];
+	if (!nodesArr) nodesArr = allNodesArr;
 
-	for (var nodeId in allNodes)
+	if (filter)
 	{
-		var node = allNodes[nodeId];
-		if (filter(node))
-			result.push(node);
+		nodesArr = nodesArr.filter(filter);
 	}
 
-	var count = result.length;
+	var count = nodesArr.length;
 
-	if (!nextMatch || count == 0) return result;
+	if (!nextMatch || count == 0) return nodesArr;
 
 	// sort nodes
 
@@ -91,7 +93,7 @@ exports.filterNodes = function(filter, nextMatch)
 		var nextNodeId = nextMatch(node);
 		if (nextNodeId)
 		{
-			var nextNode = allNodes[nextNodeId];
+			var nextNode = allNodesMap[nextNodeId];
 
 			index = out.indexOf(nextNode);
 			if (index == -1)
@@ -116,7 +118,7 @@ exports.filterNodes = function(filter, nextMatch)
 	var out = [];
 
 	for (var i=0; i < count; i++)
-		addToResult(out, result, i);
+		addToResult(out, nodesArr, i);
 
 	return out;
 };
@@ -153,62 +155,62 @@ exports.loadNodes = function(state, options, cb)
 
 	if (!options) options = {};
 
-	var nodes = {};
+	var nodesMap = {};
 
 	var query = 'SELECT id, identifier, type FROM gc_node';
 	var params = [];
 
-	state.datasources.db.getMany(query, params, null, function(err, results) {
+	state.datasources.db.getMany(query, params, null, function(err, nodesArr) {
 		if (err) return cb(err);
 
-		if (results.length == 0)
+		if (nodesArr.length == 0)
 		{
-			cb(null, nodes);
+			cb(null, nodesMap, nodesArr);
 		}
 		else
 		{
-			var len = results.length;
+			var len = nodesArr.length;
 
 			for (var i=0; i < len; i++)
 			{
-				var row = results[i];
+				var node = nodesArr[i];
 
-				nodes[row.id] = row;
+				nodesMap[node.id] = node;
 			}
 
-			exports.loadNodeInformation(state, nodes, options, function(error) {
+			exports.loadNodeInformation(state, nodesMap, options, function(error) {
 				if (error)
 					cb(error);
 				else
-					cb(null, nodes);
+					cb(null, nodesMap, nodesArr);
 			});
 		}
 	});
 };
 
 
-exports.loadNodeInformation = function(state, nodes, options, cb)
+exports.loadNodeInformation = function(state, nodesMap, options, cb)
 {
 	var tasks = [];
 
 	if (options.loadNodeData)
 	{
-		tasks.push(function(callback) { exports.loadNodeData(state, nodes, callback); });
+		tasks.push(function(callback) { exports.loadNodeData(state, nodesMap, callback); });
 	}
 
 	if (options.loadInConnectors)
 	{
-		tasks.push(function(callback) { exports.loadNodeInConnectors(state, nodes, callback); });
+		tasks.push(function(callback) { exports.loadNodeInConnectors(state, nodesMap, callback); });
 	}
 
 	if (options.loadOutConnectors)
 	{
-		tasks.push(function(callback) { exports.loadNodeOutConnectors(state, nodes, callback); });
+		tasks.push(function(callback) { exports.loadNodeOutConnectors(state, nodesMap, callback); });
 	}
 
 	if (options.loadProgressForActor)
 	{
-		tasks.push(function(callback) { exports.loadNodeProgress(state, nodes, options.loadProgressForActor, callback); });
+		tasks.push(function(callback) { exports.loadNodeProgress(state, nodesMap, options.loadProgressForActor, callback); });
 	}
 
 	if (tasks.length > 0)
@@ -220,7 +222,7 @@ exports.loadNodeInformation = function(state, nodes, options, cb)
 };
 
 
-exports.loadNodeProgress = function(state, nodes, actorId, cb)
+exports.loadNodeProgress = function(state, nodesMap, actorId, cb)
 {
 	var query = 'SELECT node, state, stateTime FROM gc_progress WHERE actor = ?';
 	var params = [actorId];
@@ -233,9 +235,9 @@ exports.loadNodeProgress = function(state, nodes, actorId, cb)
 		{
 			var row = results[i];
 
-			if (row.node in nodes)
+			if (row.node in nodesMap)
 			{
-				nodes[row.node].progress = { state: row.state, stateTime: row.stateTime };
+				nodesMap[row.node].progress = { state: row.state, stateTime: row.stateTime };
 			}
 		}
 
@@ -244,21 +246,19 @@ exports.loadNodeProgress = function(state, nodes, actorId, cb)
 };
 
 
-exports.getNodesProgress = function(state, nodes, actorId, cb)
-{	//nodes should be an array
-
-	if (nodes.length == 0)
+exports.getNodesProgress = function(state, nodeIds, actorId, cb)
+{
+	if (nodeIds.length == 0)
 	{
-		cb(null, {});
-		return;
+		return cb(null, {});
 	}
 
 	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (';
 	var params = [actorId];
 
-	for (var i=0; i < nodes.length; i++) //loop, add ?, push params;
+	for (var i=0; i < nodeIds.length; i++)
 	{
-		params.push(nodes[i]);
+		params.push(nodeIds[i]);
 		query += '? ,';
 	}
 
@@ -266,10 +266,11 @@ exports.getNodesProgress = function(state, nodes, actorId, cb)
 	query += ')';
 
 	state.datasources.db.getMany(query, params, null, function(err, data) {
-		if (err) cb(err);
+		if (err) return cb(err);
 
 		var result = {};
-		for (var i=0;i<data.length;i++) //loop , dump in object
+
+		for (var i=0; i < data.length; i++)
 		{
 			result[data[i].node] = data[i].state;
 		}
@@ -279,11 +280,11 @@ exports.getNodesProgress = function(state, nodes, actorId, cb)
 };
 
 
-exports.loadNodeData = function(state, nodes, cb)
+exports.loadNodeData = function(state, nodesMap, cb)
 {
-	for (var id in nodes)
+	for (var id in nodesMap)
 	{
-		nodes[id].data = {};
+		nodesMap[id].data = {};
 	}
 
 	var query = 'SELECT node, property, value FROM gc_node_data';
@@ -297,9 +298,9 @@ exports.loadNodeData = function(state, nodes, cb)
 		{
 			var row = results[i];
 
-			if (row.node in nodes)
+			if (row.node in nodesMap)
 			{
-				nodes[row.node].data[row.property] = row.value;
+				nodesMap[row.node].data[row.property] = row.value;
 			}
 		}
 
@@ -308,11 +309,11 @@ exports.loadNodeData = function(state, nodes, cb)
 };
 
 
-exports.loadNodeInConnectors = function(state, nodes, cb)
+exports.loadNodeInConnectors = function(state, nodesMap, cb)
 {
-	for (var id in nodes)
+	for (var id in nodesMap)
 	{
-		nodes[id].cin = {};
+		nodesMap[id].cin = {};
 	}
 
 	var query = 'SELECT c.node, c.type, c.andGroup, ct.targetNode, ct.onState FROM gc_node_connector_in AS c JOIN gc_node_connector_in_target AS ct ON ct.connector = c.id';
@@ -326,12 +327,14 @@ exports.loadNodeInConnectors = function(state, nodes, cb)
 		{
 			var row = results[i];
 
-			if (row.node in nodes)
+			if (row.node in nodesMap)
 			{
-				if (!(row.type     in nodes[row.node].cin          )) nodes[row.node].cin[row.type] = {};
-				if (!(row.andGroup in nodes[row.node].cin[row.type])) nodes[row.node].cin[row.type][row.andGroup] = [];
+				var node = nodesMap[row.node];
 
-				nodes[row.node].cin[row.type][row.andGroup].push({ targetNode: row.targetNode, onState: row.onState });
+				if (!(row.type     in node.cin          )) node.cin[row.type] = {};
+				if (!(row.andGroup in node.cin[row.type])) node.cin[row.type][row.andGroup] = [];
+
+				node.cin[row.type][row.andGroup].push({ targetNode: row.targetNode, onState: row.onState });
 			}
 		}
 
@@ -340,11 +343,11 @@ exports.loadNodeInConnectors = function(state, nodes, cb)
 };
 
 
-exports.loadNodeOutConnectors = function(state, nodes, cb)
+exports.loadNodeOutConnectors = function(state, nodesMap, cb)
 {
-	for (var id in nodes)
+	for (var id in nodesMap)
 	{
-		nodes[id].cout = {};
+		nodesMap[id].cout = {};
 	}
 
 	var query = 'SELECT c.node, c.type, c.onState, ct.targetNode FROM gc_node_connector_out AS c JOIN gc_node_connector_out_target AS ct ON ct.connector = c.id';
@@ -358,12 +361,14 @@ exports.loadNodeOutConnectors = function(state, nodes, cb)
 		{
 			var row = results[i];
 
-			if (row.node in nodes)
+			if (row.node in nodesMap)
 			{
-				if (!(row.type    in nodes[row.node].cout          )) nodes[row.node].cout[row.type] = {};
-				if (!(row.onState in nodes[row.node].cout[row.type])) nodes[row.node].cout[row.type][row.onState] = [];
+				var node = nodesMap[row.node];
 
-				nodes[row.node].cout[row.type][row.onState].push(row.targetNode);
+				if (!(row.type    in node.cout          )) node.cout[row.type] = {};
+				if (!(row.onState in node.cout[row.type])) node.cout[row.type][row.onState] = [];
+
+				node.cout[row.type][row.onState].push(row.targetNode);
 			}
 		}
 
