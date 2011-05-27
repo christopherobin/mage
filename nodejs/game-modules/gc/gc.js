@@ -7,10 +7,8 @@ var allNodesMap = null;
 var allNodesArr = null;
 
 
-exports.setup = function(cb)
+exports.setup = function(state, cb)
 {
-	var state = new mithril.core.state.State();
-
 	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesArr) {
 		if (error)
 			cb(error);
@@ -21,8 +19,6 @@ exports.setup = function(cb)
 
 			cb();
 		}
-
-		state.close();
 	});
 };
 

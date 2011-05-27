@@ -64,10 +64,35 @@ CREATE TABLE `history_event_data` (
 ENGINE = InnoDB;
 
 
--- 2011-05-27: added 'month' to ranking, and renamed 'total' to 'alltime'
+-- 2011-05-27: revised ranking system
 
-ALTER TABLE `score_ranking` CHANGE `interval` `interval` ENUM( 'day', 'week', 'month', 'alltime' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+DROP TABLE `score_ranking`;
 
+CREATE TABLE `score_rankinglist` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `context` INT UNSIGNED NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_score_ranking_context` (`context` ASC) ,
+  CONSTRAINT `fk_score_ranking_context` FOREIGN KEY (`context` ) REFERENCES `score_context` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `score_rankinglist_ranks` (
+  `rankinglist` INT UNSIGNED NOT NULL ,
+  `rank` INT UNSIGNED NOT NULL ,
+  `actor` INT UNSIGNED NOT NULL ,
+  `score` INT SIGNED NOT NULL ,
+  PRIMARY KEY (`rankinglist`, `rank`) ,
+  INDEX `fk_score_rankinglist_ranks_rankinglist` (`rankinglist` ASC) ,
+  INDEX `fk_score_rankinglist_ranks_actor` (`actor` ASC) ,
+  CONSTRAINT `fk_score_rankinglist_ranks_rankinglist` FOREIGN KEY (`rankinglist` ) REFERENCES `score_rankinglist` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_score_rankinglist_ranks_actor` FOREIGN KEY (`actor` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+ALTER TABLE `score_log` ADD INDEX ( `receivedTime` );
+ALTER TABLE `score_log` CHANGE `points` `points` INT NOT NULL;
+ALTER TABLE `score_total` CHANGE `score` `score` INT NOT NULL;
 
 -- next change, add here.
 

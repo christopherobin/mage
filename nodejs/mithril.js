@@ -23,22 +23,23 @@ exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
 
 // import game modules
 
-var modules = {
-	manage: paths.gameModules + '/manage/manage.js',
-	actor:  paths.gameModules + '/actor/actor.js',
-	player: paths.gameModules + '/player/player.js',
-	sns:    paths.gameModules + '/sns/sns.js',
-	obj:    paths.gameModules + '/obj/obj.js',
-	gc:     paths.gameModules + '/gc/gc.js'
-};
+var modules = [
+	['manage', paths.gameModules + '/manage/manage.js'],
+	['actor',  paths.gameModules + '/actor/actor.js'],
+	['player', paths.gameModules + '/player/player.js'],
+	['sns',    paths.gameModules + '/sns/sns.js'],
+	['obj',    paths.gameModules + '/obj/obj.js'],
+	['gc',     paths.gameModules + '/gc/gc.js'],
+	['score',  paths.gameModules + '/score/score.js']
+];
 
-var customModules = {
-};
+var customModules = [
+];
 
 
 exports.addModule = function(name, path)
 {
-	customModules[name] = path;
+	modules.push([name, path]);
 };
 
 
@@ -104,40 +105,42 @@ exports.setup = function(pathConfig, cb)
 
 	// expose modules
 
-	function loadModules(list, cb)
+	function loadModule(state, name, path, callback)
 	{
-		var moduleCount = 0;
-		var done = 0;
+		exports.core.logger.info('Exposing module ' + name);
 
-		for (var name in list)
+		var mod = require(path);
+
+		exports[name] = mod;
+
+		if (mod.setup)
 		{
-			exports.core.logger.info('Exposing module ' + name);
+			exports.core.logger.info('Setting up module ' + name);
 
-			exports[name] = require(list[name]);
-			moduleCount++;
+			mod.setup(state, callback);
 		}
-
-		for (var name in list)
-		{
-			if (exports[name].setup)
-			{
-				exports.core.logger.info('Setting up module ' + name);
-
-				exports[name].setup(function() { if (++done == moduleCount) cb(); });
-			}
-			else
-			{
-				if (++done == moduleCount) cb();
-			}
-		}
+		else
+			callback();
 	}
 
-	loadModules(modules, function() {
-		loadModules(customModules, function() {
-			exports.core.logger.info('Mithril setup complete.');
-			cb();
-		});
-	});
+	var state = new exports.core.state.State;
+
+	async.forEachSeries(
+		modules,
+		function(mod, callback) {
+			loadModule(state, mod[0], mod[1], callback);
+		},
+		function(error) {
+			state.close();
+
+			if (error)
+				exports.core.logger.error('Mithril setup failed.');
+			else
+				exports.core.logger.info('Mithril setup complete.');
+
+			cb(error);
+		}
+	);
 };
 
 
