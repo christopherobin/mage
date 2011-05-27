@@ -136,7 +136,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 	}, true);
 
 
-	this.mithril.io.on("obj.object.data.edit", function(path, params){ //untested
+	this.mithril.io.on("obj.object.data.edit", function(path, params){
 		for(var key in params.data)
 		{
 			_this.playerCache.objectIds[params.id].data[key] = params.data[key];
@@ -153,7 +153,6 @@ MithrilGameModObj.prototype.setup = function(cb)
 
 
 	// retrieve all actor's collections
-
 	this.mithril.io.send('obj.getAllObjects', {}, function(errors, response) {
 		if (errors) { return cb(errors); }
 
