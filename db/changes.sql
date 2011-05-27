@@ -64,5 +64,10 @@ CREATE TABLE `history_event_data` (
 ENGINE = InnoDB;
 
 
+-- 2011-05-27: added 'month' to ranking, and renamed 'total' to 'alltime'
+
+ALTER TABLE `score_ranking` CHANGE `interval` `interval` ENUM( 'day', 'week', 'month', 'alltime' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+
 -- next change, add here.
 
