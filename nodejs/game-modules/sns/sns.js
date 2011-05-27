@@ -188,7 +188,7 @@ exports.getRelations = function(state, type, actorId, cb)
 	// returns all relations where actorA or actorB is actorId
 	// type is optional
 
-	var sql = 'SELECT id, type, IF(actorA = ?, actorB, actorA) AS actor, creationTime FROM sns_relation WHERE ? IN (actorA, actorB)';
+	var sql = 'SELECT id, type, IF(actorA = ?, actorB, actorA) AS actorId, creationTime FROM sns_relation WHERE ? IN (actorA, actorB)';
 	var params = [actorId, actorId];
 
 	if (type)
