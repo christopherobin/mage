@@ -72,7 +72,7 @@ exports.setup = function(state, cb)
 				state.datasources.db.exec(sql, params, null, function(error, info) {
 					if (error) return callback(error);
 
-					contextMap[context] = info.insertId;
+					contextMap[context] = { id: info.insertId, resolution: parseResolution(context.resolution) };
 
 					callback();
 				});
