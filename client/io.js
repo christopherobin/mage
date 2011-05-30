@@ -30,12 +30,13 @@ MithrilIo.prototype.start = function(cb)
 
 		result = JSON.parse(result);
 
-		if (result.responses)
+		var responseCount = result.responses ? result.responses.length : 0;
+
+		if (responseCount > 0)
 		{
-			var n = result.responses.length;
-			for (var i=0; i < n; i++)
+			for (var i=0; i < responseCount; i++)
 			{
-				_this.receivedQueryResult(result.responses[i]);
+				_this.receivedQueryResult(result.responses[i], false);
 			}
 		}
 
@@ -45,6 +46,14 @@ MithrilIo.prototype.start = function(cb)
 			for (var i=0; i < n; i++)
 			{
 				_this.receivedEvent(result.events[i]);
+			}
+		}
+
+		if (responseCount > 0)
+		{
+			for (var i=0; i < responseCount; i++)
+			{
+				_this.receivedQueryResult(result.responses[i], true);
 			}
 		}
 	});
@@ -126,9 +135,9 @@ MithrilIo.prototype.receivedEvent = function(evt)
 };
 
 
-MithrilIo.prototype.receivedQueryResult = function(result)
+MithrilIo.prototype.receivedQueryResult = function(result, isAfterEvents)
 {
-	console.log('Received query result', result);
+	console.log('Received query result', result, isAfterEvents);
 
 	var id = result[0];
 	var response = result[1];
@@ -136,10 +145,13 @@ MithrilIo.prototype.receivedQueryResult = function(result)
 
 	if (id in this.queries)
 	{
-		var cb = this.queries[id];
-		delete this.queries[id];
+		var query = this.queries[id];
+		if (query.onAfterEvents == isAfterEvents)
+		{
+			delete this.queries[id];
 
-		cb(errors, response);
+			query.cb(errors, response);
+		}
 	}
 };
 
@@ -162,14 +174,14 @@ MithrilIo.prototype.lastEventId = function(path, ignoreId)
 };
 
 
-MithrilIo.prototype.send = function(command, parameters, cb)
+MithrilIo.prototype.send = function(command, parameters, cb, onBeforeEvents)
 {
 	var obj = { cmd: command, p: parameters };
 
 	if (cb)
 	{
 		obj.id = ++this.queryId;
-		this.queries[obj.id] = cb;
+		this.queries[obj.id] = { cb: cb, onAfterEvents: !onBeforeEvents };
 	}
 
 	console.log('Sending ', obj);
