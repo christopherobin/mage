@@ -168,7 +168,8 @@ exports.getLatestRankingListByContext = function(state, contextName, listName, c
 		return state.error(null, 'Score context ' + contextName + ' not found.', cb);
 	}
 
-	// this does not load the ranks 
+	// TODO: This does NOT yet check for the latest rankinglist. If there's more than 1 (or none) it breaks.
+
 	var query = "SELECT id, name, context FROM score_rankinglist WHERE context = ? AND name = ?";
 	state.datasources.db.getOne(query, [context.id, listName], true, null, cb);
 };
