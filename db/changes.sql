@@ -94,5 +94,47 @@ ALTER TABLE `score_log` ADD INDEX ( `receivedTime` );
 ALTER TABLE `score_log` CHANGE `points` `points` INT NOT NULL;
 ALTER TABLE `score_total` CHANGE `score` `score` INT NOT NULL;
 
+
+-- 2011-05-27: actor data table, and moving the existing actor names into this table
+
+CREATE TABLE `actor_data` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` CHAR(2) NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`actor`, `property`, `language`) ,
+  INDEX `fk_actor_data_actor` (`actor` ASC) ,
+  CONSTRAINT `fk_actor_data_actor` FOREIGN KEY (`actor` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+INSERT INTO `actor_data` SELECT `id`, 'name', '', `name` FROM `actor`;
+
+ALTER TABLE `actor` DROP `name`;
+
+
+-- 2011-05-27: npc module
+
+CREATE TABLE `npc` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `identifier` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`actor`) ,
+  INDEX `fk_npc_actor` (`actor` ASC) ,
+  CONSTRAINT `fk_npc_actor` FOREIGN KEY (`actor` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `npc_data` (
+  `npc` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` CHAR(2) NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`npc`, `property`, `language`) ,
+  INDEX `fk_npc_data_npc` (`npc` ASC) ,
+  CONSTRAINT `fk_npc_data_npc` FOREIGN KEY (`npc` ) REFERENCES `npc` (`actor` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+
+
+
 -- next change, add here.
 

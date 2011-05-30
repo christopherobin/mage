@@ -9,14 +9,14 @@ MithrilGameModActor.prototype.setup = function(cb)
 {
 	var _this = this;
 
-	this.mithril.io.send('actor.getActor', { fields: ['name'] }, function(errors, result) {
+	this.mithril.io.send('actor.getActor', {}, function(errors, result) {
 		if (errors)
 		{
 			cb(errors);
 		}
 		else
 		{
-			_this.me.name = result.name;
+			_this.me = result;
 			cb();
 		}
 	});

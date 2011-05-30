@@ -1,13 +1,15 @@
 function MithrilGameModPlayer(mithril)
 {
 	this.mithril = mithril;
-	this.me = { actor: this.mithril.actor.me };
+	this.me = {};
 }
 
 
 MithrilGameModPlayer.prototype.setup = function(cb)
 {
 	var _this = this;
+
+	this.me.actor = this.mithril.actor.me;
 
 	this.mithril.io.send('player.getPlayer', { fields: ['language'] }, function(errors, response) {
 		if (errors)

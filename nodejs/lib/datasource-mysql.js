@@ -148,8 +148,6 @@ MySqlDatabase.prototype.rollBack = function(cb)
 
 MySqlDatabase.prototype.getOne = function(sql, params, required, errorCode, cb)
 {
-	// TODO: make debug() allow any amount of arguments, if we don't debug, ignore them all. This way we don't have to do JSON stringify needlessly if we don't debug.
-
 	var _this = this;
 	var db = this.source(true);
 
@@ -177,8 +175,6 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, errorCode, cb)
 
 MySqlDatabase.prototype.getMany = function(sql, params, errorCode, cb)
 {
-	// TODO: make debug() allow any amount of arguments, if we don't debug, ignore them all. This way we don't have to do JSON stringify needlessly if we don't debug.
-
 	var _this = this;
 	var db = this.source(true);
 
@@ -197,10 +193,46 @@ MySqlDatabase.prototype.getMany = function(sql, params, errorCode, cb)
 };
 
 
+MySqlDatabase.prototype.getMapped = function(sql, params, map, errorCode, cb)
+{
+	var _this = this;
+	var db = this.source(true);
+
+	mithril.core.logger.debug('DB: getMapped ' + sql + ' using', params);
+
+	db.query(sql, params, function(error, results) {
+		if (error)
+		{
+			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
+		}
+		else
+		{
+			var len = results.length;
+			var out = {};
+
+			for (var i=0; i < len; i++)
+			{
+				var row = results[i];
+
+				if (map.value)
+				{
+					out[row[map.key]] = row[map.value];
+				}
+				else
+				{
+					out[row[map.key]] = row;
+					delete row[map.key];
+				}
+			}
+
+			cb(null, out);
+		}
+	});
+};
+
+
 MySqlDatabase.prototype.exec = function(sql, params, errorCode, cb)
 {
-	// TODO: make debug() allow any amount of arguments, if we don't debug, ignore them all. This way we don't have to do JSON stringify needlessly if we don't debug.
-
 	var _this = this;
 	var db = this.source(false);
 

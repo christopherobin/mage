@@ -5,51 +5,109 @@ exports.userCommands = {
 
 // queryable model structure
 
-var allowedFields = {
-	actorId: 'id',
-	creationTime: 'creationTime',
-	name: 'name'
-};
-
-var joins = {
-};
-
-
-exports.getActor = function(state, id, fields, cb)
+exports.getActor = function(state, id, cb)
 {
-	var query = state.datasources.db.buildSelect(fields, allowedFields, 'actor', joins) + ' WHERE id = ?';
+	id = parseInt(id);
+
+	var sql = 'SELECT creationTime FROM actor WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.getOne(query, params, true, null, cb);
+	state.datasources.db.getOne(sql, params, true, null, function(error, actor) {
+		if (error) return cb(error);
+
+		actor.id = id;
+
+		// If a property is defined with the language AND without a language, one will overwrite the other without any guarantee about which is returned.
+		// This is by design.
+
+		sql = 'SELECT property, value FROM actor_data WHERE actor = ? AND language IN (?, ?)';
+		params = [id, state.language(), ''];
+
+		state.datasources.db.getMapped(sql, params, { key: 'property', value: 'value' }, null, function(error, data) {
+			if (error) return cb(error);
+
+			actor.data = data;
+
+			cb(null, actor);
+		});
+	});
 };
 
 
 exports.addActor = function(state, name, cb)
 {
+	// name may be:
+	//   string
+	//   { lang: string, lang: string, ..., lang: string }
+
 	var time = mithril.core.time;
 
-	var query = 'INSERT INTO actor (name, creationTime) VALUES (?, ?)';
-	var params = [name, time];
+	var query = 'INSERT INTO actor (creationTime) VALUES (?, ?)';
+	var params = [time];
 
 	state.datasources.db.exec(query, params, null, function(error, info) {
 		if (error) return cb(error);
 
-		cb(null, { actorId: info.insertId, creationTime: time, name: name });
+		var actor = { id: info.insertId, creationTime: time, data: {} };
+
+		var properties = [];
+
+		if (typeof name == 'string')
+		{
+			properties.push({ property: name, value: name });
+			actor.data.name = name;
+		}
+		else
+		{
+			for (var language in name)
+			{
+				properties.push({ property: name, language: language, value: name });
+
+				if (language == state.language())
+				{
+					actor.data.name = name;
+				}
+			}
+		}
+
+		exports.setProperties(state, actor.id, properties, function(error) {
+			if (error) return cb(error);
+
+			cb(null, actor);
+		});
 	});
 };
 
 
-exports.setActorName = function(state, id, name, cb)
+exports.setProperties = function(state, actorId, properties, cb)
 {
-	var query = 'UPDATE actor SET name = ? WHERE id = ?';
-	var params = [name, id];
+	var sql = 'INSERT INTO actor_data VALUES';
 
-	state.datasources.db.exec(query, params, null, cb);
+	var values = [];
+	var params = [];
+
+	for (var i=0; i < properties.length; i++)
+	{
+		var prop = properties[i];
+
+		values.push('(?, ?, ?, ?)');
+		params.push(actorId, prop.property, prop.language || '', prop.value);
+	}
+
+	sql += values.join(', ') + ' ON DUPLICATE KEY UPDATE value = VALUES(value)'
+
+	state.datasources.db.exec(sql, params, null, function(error) {
+		if (error) return cb(error);
+
+		cb();
+	});
 };
 
 
 exports.delActor = function(state, id, cb)
 {
+	// TODO: removing an actor involves more than just this record. Eg: objects would remain intact.
+
 	var query = 'DELETE FROM actor WHERE id = ?';
 	var params = [id];
 

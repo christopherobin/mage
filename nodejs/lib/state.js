@@ -27,6 +27,12 @@ function State(actorId, msg, session)
 exports.State = State;
 
 
+State.prototype.language = function()
+{
+	return this.session ? this.session.language : 'JA';
+};
+
+
 State.prototype.emit = function(actorId, path, data)
 {
 	this.events.push({ actorId: actorId, path: path, data: data });
