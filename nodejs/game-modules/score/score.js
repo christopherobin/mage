@@ -156,7 +156,16 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 
 // ranking system:
 
-exports.getFullRankingLists = function(state, context, name, cb)
+exports.getLatestFullRankingList = function(state, context, name, cb)
+{
+	// loads the latest ranking list
+	// this loads the full ranks
+
+	// TODO
+};
+
+
+exports.getFullRankingLists = function(state, context, name, onlyLatest, cb)
 {
 	// both context and name are optional
 	// this loads the full ranks
