@@ -16,8 +16,8 @@ MithrilGameModGc.prototype.setup = function(cb)
 			var node = _this.getNode(params.nodeId);
 
 			node.progress = { state: params.state, stateTime: params.stateTime };
+			params.node = node;
 
-			params.type = node.type;
 		}
 	}, true);
 

@@ -809,6 +809,7 @@ exports.setObjectData = function(state, objectId, data, cb)
 
 exports.delObjectData = function(state, objectId, properties, cb)
 {	//properties should be []
+	var propCopy = [].concat(properties) //copy before destroy ;)
 
 	exports.getObjectOwners(state, objectId, function(error, ownerData) {
 		if (error) return cb(error);
@@ -830,7 +831,7 @@ exports.delObjectData = function(state, objectId, properties, cb)
 			var len = ownerData.length;
 			for (var i=0; i < len; i++)
 			{
-				state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: properties }); // UNTESTED + KNOWN BUG: properties contains objectId
+				state.emit(ownerData[i].owner, 'obj.object.data.del', { id: objectId, data: propCopy }); 
 			}
 
 			cb();
