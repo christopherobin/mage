@@ -20,6 +20,8 @@ global.async = require('async');
 exports.core.paths = paths;
 exports.core.state = require(paths.lib + '/state.js');
 exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
+exports.core.propertyMap = require(paths.lib + '/propertyMap.js');
+
 
 // import game modules
 
@@ -27,6 +29,7 @@ var modules = [
 	['manage', paths.gameModules + '/manage/manage.js'],
 	['actor',  paths.gameModules + '/actor/actor.js'],
 	['player', paths.gameModules + '/player/player.js'],
+	['npc',    paths.gameModules + '/npc/npc.js'],
 	['sns',    paths.gameModules + '/sns/sns.js'],
 	['obj',    paths.gameModules + '/obj/obj.js'],
 	['gc',     paths.gameModules + '/gc/gc.js'],
