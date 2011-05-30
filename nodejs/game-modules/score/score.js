@@ -1,3 +1,9 @@
+
+exports.userCommands = {
+	loadRanking: __dirname + '/usercommands/loadRanking.js'
+};
+
+
 var contextMap = {};	// name: { id: 1, resolution: sec }
 
 
@@ -146,7 +152,6 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 
 					state.emit(row.actor, 'score.total.edit', { to: row.score });
 				}
-
 				cb();
 			});
 		});
@@ -154,14 +159,45 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 };
 
 
-// ranking system:
+exports.getLatestRankingListByContext = function(state, context, name, cb)
+{
+	// this does not load the ranks 
+	var query = "SELECT id, name, context FROM score_rankinglist WHERE context = ? AND name = ?";
+	state.datasources.db.getOne(query, [contextMap[context].id, name], true, null, cb);
+};
 
-exports.getLatestFullRankingList = function(state, context, name, cb)
+
+exports.getLatestRankingListById = function(state, id, cb)
+{
+	// this does not load the ranks
+	// TODO
+};
+
+
+exports.getRankingLists = function(state, context, name, cb)
+{
+	// both context and name are optional
+	// this does not load the ranks
+	// TODO
+};
+
+
+exports.getRankingData = function(state, id, range, cb)
 {
 	// loads the latest ranking list
-	// this loads the full ranks
+	// this loads the full ranks - range is like: { from: min, to: max }
+	
+	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ?";
+	var params = ['name', id];
 
-	// TODO
+	if(range)
+	{
+		query += ' AND srs.rank BETWEEN ? AND ? '	
+		params.push(range.from);
+		params.push(range.to);
+	}
+	
+	state.datasources.db.getMany(query, params, null, cb);
 };
 
 
@@ -171,16 +207,6 @@ exports.getFullRankingLists = function(state, context, name, onlyLatest, cb)
 	// this loads the full ranks
 
 	// TODO
-};
-
-
-exports.getRankingLists = function(state, context, name, onlyLatest, cb)
-{
-	// both context and name are optional
-	// this does not load the ranks
-
-	// TODO
-
 };
 
 
