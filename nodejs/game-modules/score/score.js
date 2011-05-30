@@ -1,6 +1,7 @@
 
 exports.userCommands = {
-	loadRanking: __dirname + '/usercommands/loadRanking.js'
+	loadRanking: __dirname + '/usercommands/loadRanking.js',
+	getActorRanking: __dirname + '/usercommands/getActorRanking.js'
 };
 
 
@@ -170,7 +171,8 @@ exports.getLatestRankingListByContext = function(state, context, name, cb)
 exports.getLatestRankingListById = function(state, id, cb)
 {
 	// this does not load the ranks
-	// TODO
+	var query = "SELECT id, name, context FROM score_rankinglist WHERE id = ?";
+	state.datasources.db.getOne(query, [id], true, null, cb);
 };
 
 
@@ -196,8 +198,16 @@ exports.getRankingData = function(state, id, range, cb)
 		params.push(range.from);
 		params.push(range.to);
 	}
-	
 	state.datasources.db.getMany(query, params, null, cb);
+};
+
+
+exports.getRankingDataByActor = function(state, id, cb)
+{
+	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ? AND ad.actor = ?";
+	var params = ['name', id, state.actorId];
+	
+	state.datasources.db.getOne(query, params, true, null, cb);
 };
 
 
