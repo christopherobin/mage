@@ -10,44 +10,18 @@ exports.setup = function(state, cb)
 };
 
 
-setInterval(
-	function() {
-		var state = new mithril.core.state.State;
-
-		exports.send(
-			state,
-			null,
-			null,
-			null,
-			'welcome',
-			[{ language: 'JA', title: 'yokoso', body: 'カードゲーム' }, { language: 'EN', title: 'welcome!', body: 'Cardgame!' }],
-			{ somenumber: [{ value: 3 }], npcName: [{ language: 'JA', value: '田中' }, { language: 'EN', value: 'Herman' }] },
-			function(error)
-			{
-				if (error)
-					state.error(null, 'Error while sending message.');
-
-				state.close();
-			}
-		);
-	},
-	15000
-);
-
-
-
 exports.loadInbox = function(state, actorId, cb)
 {
 	var time = mithril.core.time;
 
-	var sql = 'SELECT m.id, m.fromActorId, m.creationTime, m.expirationTime, m.type, c.title, c.body FROM msg AS m JOIN msg_content AS c ON c.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE c.language IN (?, ?) AND ta.actorId IN (NULL, ?) AND (m.expirationTime IS NULL OR m.expirationTime >= ?)';
+	var sql = 'SELECT m.id, m.fromActorId, m.creationTime, m.expirationTime, m.type, c.title, c.body FROM msg AS m JOIN msg_content AS c ON c.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE c.language IN (?, ?) AND (ta.actorId = ? OR ta.actorId IS NULL) AND (m.expirationTime IS NULL OR m.expirationTime >= ?)';
 	var params = [state.language(), '', actorId, time];
 
 	state.datasources.db.getMapped(sql, params, { key: 'id', keepKey: true }, null, function(error, messages) {
 		if (error) return cb(error);
 
-		var sql = 'SELECT d.msgId, d.property, d.type, d.value FROM msg_data AS d JOIN msg AS m ON d.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE ta.actorId IN (NULL, ?) AND (m.expirationTime IS NULL OR m.expirationTime >= ?) AND d.language IN (NULL, ?)';
-		var params = [actorId, time, state.language()];
+		var sql = 'SELECT d.msgId, d.property, d.type, d.value FROM msg_data AS d JOIN msg AS m ON d.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE (ta.actorId = ? OR ta.actorId IS NULL) AND (m.expirationTime IS NULL OR m.expirationTime >= ?) AND d.language IN (?, ?)';
+		var params = [actorId, time, '', state.language()];
 
 		state.datasources.db.getMany(sql, params, null, function(error, results) {
 			if (error) return cb(error);
@@ -120,6 +94,7 @@ function getMessageVersions(msg)
 
 	languages.forEach(function(language) {
 		var newMsg = {
+			id: msg.id,
 			fromActorId: msg.fromActorId,
 			creationTime: msg.creationTime,
 			expirationTime: msg.expirationTime,
@@ -167,7 +142,7 @@ exports.send = function(state, fromActorId, toActorIds, expirationTime, type, co
 	// toActorIds:		optional array of actor IDs to which the message is being sent. May be empty or left out, in the case of announcements for example. In that case the event will be emitted to every player in the system.
 	// expirationTime:	optional unix timestamp of when the message should auto-delete.
 	// type:			optional string that characterizes the type of message this is. eg: "announcement", "mail", "news", "friendrequest". Any value is allowed.
-	// content:			object of structure: [{ language: string, title: string, body: string }, ...], where title and langCode are optional. Every language code given must be unique.
+	// content:			object of structure: [{ language: langCode, title: string, body: string }, ...], where title and langCode are optional. Every language code given must be unique.
 	// data:			optional property/value storage of structure: { propertyName: [{ language: langCode, value: value }], propertyName: [{ value: value }] }.
 
 	var msg = {
@@ -239,6 +214,11 @@ exports.send = function(state, fromActorId, toActorIds, expirationTime, type, co
 		},
 		function(callback) {
 			// link up message receivers
+
+			if (!toActorIds || toActorIds.length == 0)
+			{
+				return callback();
+			}
 
 			var sql = 'INSERT INTO msg_to_actor VALUES ';
 			var params = [];
