@@ -42,7 +42,7 @@ exports.addActor = function(state, name, cb)
 
 	var time = mithril.core.time;
 
-	var query = 'INSERT INTO actor (creationTime) VALUES (?, ?)';
+	var query = 'INSERT INTO actor (creationTime) VALUES (?)';
 	var params = [time];
 
 	state.datasources.db.exec(query, params, null, function(error, info) {
