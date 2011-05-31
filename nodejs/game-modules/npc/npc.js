@@ -11,7 +11,6 @@ exports.setup = function(state, cb)
 		if (error) return cb(error);
 
 		npcArr = npcs;
-		console.dir(npcs);
 		cb();
 	});
 };

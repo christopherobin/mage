@@ -10,11 +10,10 @@ exports.userCommands = {
 var types = {};
 
 
-exports.registerRelationType = function(type, bidirectional, requiresApproval)
+exports.setup = function(state, cb)
 {
-	// sets up a relation type (config)
-
-	types[type] = { bidirectional: bidirectional, requiresApproval: requiresApproval };
+	types = (mithril.core.config.game && mithril.core.config.game.sns && mithril.core.config.game.sns.relationTypes) ? mithril.core.config.game.score.relationTypes : {};
+	cb();
 };
 
 

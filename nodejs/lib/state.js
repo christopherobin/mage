@@ -39,6 +39,43 @@ State.prototype.emit = function(actorId, path, data)
 };
 
 
+State.prototype.emitToMany = function(filter, path, data, cb)
+{
+	var sql = 'SELECT actor FROM player';
+	var params = [];
+	var where = [];
+
+	if (filter.actorIds)
+	{
+		where.push('actor IN (' + filter.actorIds.map(function() { return '?'; }).join(', ') + ')');
+		params = params.concat(filter.actorIds);
+	}
+
+	if (filter.language)
+	{
+		where.push('language = ?');
+		params.push(filter.language);
+	}
+
+	if (where.length > 0)
+	{
+		sql += ' WHERE ' + where.join(' AND ');
+	}
+
+	var _this = this;
+
+	this.datasources.db.getMany(sql, params, null, function(error, players) {
+		if (error) return cb(error);
+
+		var len = players.length;
+		for (var i=0; i < len; i++)
+			_this.emit(players[i].actor, path, data);
+
+		cb();
+	});
+};
+
+
 State.prototype.error = function(userCode, logDetails, cb)
 {
 	if (logDetails)

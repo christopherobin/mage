@@ -33,6 +33,7 @@ var modules = [
 	['sns',    paths.gameModules + '/sns/sns.js'],
 	['obj',    paths.gameModules + '/obj/obj.js'],
 	['gc',     paths.gameModules + '/gc/gc.js'],
+	['msg',    paths.gameModules + '/msg/msg.js'],
 	['score',  paths.gameModules + '/score/score.js']
 ];
 
