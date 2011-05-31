@@ -15,7 +15,7 @@ exports.start = function(httpServer)
 	function sessionlessError(client, msg, error)
 	{
 		var msgClient = new MsgClient(client);
-		msgClient.respond(msg.id || null, null, [error]);
+		msgClient.respond(msg.id, {sessionError:errors.SESSION_NOTFOUND.code});
 		msgClient.send();
 		msgClient.cleanup();
 	}
