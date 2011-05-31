@@ -160,11 +160,18 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 };
 
 
-exports.getLatestRankingListByContext = function(state, context, name, cb)
+exports.getLatestRankingListByContext = function(state, contextName, listName, cb)
 {
-	// this does not load the ranks 
+	var context = contextMap[contextName];
+	if (!context)
+	{
+		return state.error(null, 'Score context ' + contextName + ' not found.', cb);
+	}
+
+	// TODO: This does NOT yet check for the latest rankinglist. If there's more than 1 (or none) it breaks.
+
 	var query = "SELECT id, name, context FROM score_rankinglist WHERE context = ? AND name = ?";
-	state.datasources.db.getOne(query, [contextMap[context].id, name], true, null, cb);
+	state.datasources.db.getOne(query, [context.id, listName], true, null, cb);
 };
 
 
