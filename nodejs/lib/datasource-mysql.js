@@ -221,7 +221,9 @@ MySqlDatabase.prototype.getMapped = function(sql, params, map, errorCode, cb)
 				else
 				{
 					out[row[map.key]] = row;
-					delete row[map.key];
+
+					if (!map.keepKey)
+						delete row[map.key];
 				}
 			}
 

@@ -133,6 +133,63 @@ CREATE TABLE `npc_data` (
 ENGINE = InnoDB;
 
 
+-- 2011-05-30: relation limits
+
+CREATE TABLE `sns_relation_limit` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `type` VARCHAR(20) NOT NULL ,
+  `relationLimit` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`actor`, `type`) ,
+  INDEX `fk_sns_relation_limit_actor` (`actor` ASC) ,
+  CONSTRAINT `fk_sns_relation_limit_actor` FOREIGN KEY (`actor` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-05-30: notifications/messages refactored
+
+DROP TABLE `msg_context_actor`, `msg_context_trade`, `msg_from_actor`, `msg_from_system`, `msg_to_actor`, `msg`;
+
+CREATE TABLE `msg` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `fromActorId` INT UNSIGNED NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  `expirationTime` INT UNSIGNED NULL ,
+  `type` VARCHAR(20) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_msg_fromActorId` (`fromActorId` ASC) ,
+  CONSTRAINT `fk_msg_fromActorId` FOREIGN KEY (`fromActorId` ) REFERENCES `actor` (`id` ) ON DELETE SET NULL ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `msg_to_actor` (
+  `msgId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`msgId`, `actorId`) ,
+  INDEX `fk_msg_to_actor_actorId` (`actorId` ASC) ,
+  INDEX `fk_msg_to_actor_msgId` (`msgId` ASC) ,
+  CONSTRAINT `fk_msg_to_actor_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_msg_to_actor_msgId` FOREIGN KEY (`msgId` ) REFERENCES `msg` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `msg_content` (
+  `msgId` INT UNSIGNED NOT NULL ,
+  `language` CHAR(2) NOT NULL ,
+  `title` VARCHAR(255) NOT NULL ,
+  `body` MEDIUMTEXT NOT NULL ,
+  PRIMARY KEY (`msgId`, `language`) ,
+  INDEX `fk_msg_content_msgId` (`msgId` ASC) ,
+  CONSTRAINT `fk_msg_content_msgId` FOREIGN KEY (`msgId` ) REFERENCES `msg` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `msg_data` (
+  `msgId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` CHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`msgId`, `property`, `language`) ,
+  INDEX `fk_msg_data` (`msgId` ASC) ,
+  CONSTRAINT `fk_msg_data` FOREIGN KEY (`msgId` ) REFERENCES `msg` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
 
 
 
