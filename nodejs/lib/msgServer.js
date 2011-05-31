@@ -1,9 +1,3 @@
-var errors = {
-	SESSION_NOTFOUND: { module: 'msg-server', code: 1000, type: 'restart', desc: 'Authentication error. Please restart.', log: { msg: 'Session not found.', method: 'error' } },
-	SESSION_EXPECTED: { module: 'msg-server', code: 1001, type: 'restart', desc: 'Authentication error. Please restart.', log: { msg: 'Session expected.', method: 'error' } }
-};
-
-
 var State     = require(__dirname + '/state.js').State;
 var MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
