@@ -54,14 +54,14 @@ exports.addActor = function(state, name, cb)
 
 		if (typeof name == 'string')
 		{
-			properties.push({ property: name, value: name });
+			properties.push({ property: 'name', value: name });
 			actor.data.name = name;
 		}
 		else
 		{
 			for (var language in name)
 			{
-				properties.push({ property: name, language: language, value: name });
+				properties.push({ property: 'name', language: language, value: name });
 
 				if (language == state.language())
 				{
@@ -81,6 +81,8 @@ exports.addActor = function(state, name, cb)
 
 exports.setProperties = function(state, actorId, properties, cb)
 {
+console.log("PROPS", properties)	
+	
 	var sql = 'INSERT INTO actor_data VALUES';
 
 	var values = [];
