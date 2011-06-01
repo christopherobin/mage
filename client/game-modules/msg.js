@@ -9,7 +9,7 @@ MithrilGameModMsg.prototype.setup = function(cb)
 {
 	var _this = this;
 
-	this.mithril.io.on('msg.inbox.add', this.onInboxAdd, true);
+	this.mithril.io.on('msg.inbox.add', function(path, data) { _this.onInboxAdd(path, data); }, true);
 
 	this.mithril.io.send('msg.loadInbox', {}, function(errors, result) {
 		if (errors)

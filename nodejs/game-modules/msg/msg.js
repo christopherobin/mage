@@ -108,7 +108,8 @@ function getMessageVersions(msg)
 
 			if (!content.language || content.language == language)
 			{
-				newMsg.content = { title: content.title || '', body: content.body };
+				newMsg.title = content.title || '';
+				newMsg.body = content.body || '';
 				break;
 			}
 		}
