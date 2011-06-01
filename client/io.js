@@ -6,7 +6,7 @@ function MithrilIo(mithril)
 	this.queryId = 0;
 	this.eventListeners = [{}, {}];
 	this.eventLog = [];
-	this.handleBadSession = function(){ alert("Session is bad.") };
+	this.handleBadSession = function(numWhy){ alert(numWhy + ": Session is bad. ") };
 }
 
 
@@ -33,9 +33,9 @@ MithrilIo.prototype.start = function(cb)
 
 		var responseCount = result.responses ? result.responses.length : 0;
 
-		if(result.responses && result.responses[0] && result.responses[0][1] && 'sessionError' in result.responses[0][1])
-		{	//the horror. TODO: Find a better way to do this.
-			_this.handleBadSession();
+		if(result.responses[0].length == 3)
+		{	
+			_this.handleBadSession(result.responses[0][2]);
 			return;	
 		}
 

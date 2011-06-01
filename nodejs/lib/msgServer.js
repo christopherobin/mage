@@ -1,7 +1,3 @@
-var errors = {
-	SESSION_NOTFOUND: { module: 'msg-server', code: 1000, type: 'restart', desc: 'Authentication error. Please restart.', log: { msg: 'Session not found.', method: 'error' } },
-	SESSION_EXPECTED: { module: 'msg-server', code: 1001, type: 'restart', desc: 'Authentication error. Please restart.', log: { msg: 'Session expected.', method: 'error' } }
-};
 
 
 var State     = require(__dirname + '/state.js').State;
@@ -15,7 +11,7 @@ exports.start = function(httpServer)
 	function sessionlessError(client, msg, error)
 	{
 		var msgClient = new MsgClient(client);
-		msgClient.respond(msg.id, {sessionError:errors.SESSION_NOTFOUND.code});
+		msgClient.respond(msg.id || null, null, error);
 		msgClient.send();
 		msgClient.cleanup();
 	}
