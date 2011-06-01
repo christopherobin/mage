@@ -33,7 +33,7 @@ MithrilIo.prototype.start = function(cb)
 
 		var responseCount = result.responses ? result.responses.length : 0;
 
-		if(result.responses[0].length == 3 && result.responses[0][2] < 5)
+		if(result.responses && result.responses[0].length == 3 && result.responses[0][2] < 5)
 		{	
 			_this.handleBadSession(result.responses[0][2]);
 			return;	
