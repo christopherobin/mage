@@ -47,8 +47,6 @@ exports.loadInbox = function(state, actorId, cb)
 				result.push(messages[id]);
 			}
 
-			result.sort(function(a, b) { return a.creationTime - b.creationTime; });
-
 			cb(null, result);
 		});
 	});
