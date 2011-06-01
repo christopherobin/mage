@@ -17,13 +17,7 @@ exports.getActor = function(state, id, cb)
 
 		actor.id = id;
 
-		// If a property is defined with the language AND without a language, one will overwrite the other without any guarantee about which is returned.
-		// This is by design.
-
-		sql = 'SELECT property, value FROM actor_data WHERE actor = ? AND language IN (?, ?)';
-		params = [id, state.language(), ''];
-
-		state.datasources.db.getMapped(sql, params, { key: 'property', value: 'value' }, null, function(error, data) {
+		exports.getProperties(state, id, null, function(error, data) {
 			if (error) return cb(error);
 
 			actor.data = data;
@@ -79,10 +73,30 @@ exports.addActor = function(state, name, cb)
 };
 
 
+exports.getProperties = function(state, actorId, properties, cb)
+{
+	// If a property is defined with the language AND without a language, one will overwrite the other without any guarantee about which is returned.
+	// This is by design.
+
+	var sql = 'SELECT property, value FROM actor_data WHERE actor = ? AND language IN (?, ?)';
+	var params = [actorId, state.language(), ''];
+
+	if (properties && properties.length > 0)
+	{
+		sql += ' AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
+		params = params.concat(properties);
+	}
+
+	state.datasources.db.getMapped(sql, params, { key: 'property', value: 'value' }, null, function(error, data) {
+		if (error) return cb(error);
+
+		cb(null, data);
+	});
+};
+
+
 exports.setProperties = function(state, actorId, properties, cb)
 {
-console.log("PROPS", properties)	
-	
 	var sql = 'INSERT INTO actor_data VALUES';
 
 	var values = [];
@@ -96,7 +110,7 @@ console.log("PROPS", properties)
 		params.push(actorId, prop.property, prop.language || '', prop.value);
 	}
 
-	sql += values.join(', ') + ' ON DUPLICATE KEY UPDATE value = VALUES(value)'
+	sql += values.join(', ') + ' ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
 	state.datasources.db.exec(sql, params, null, function(error) {
 		if (error) return cb(error);
