@@ -79,7 +79,7 @@ exports.start = function(httpServer)
 						if (error || !result)
 						{
 							mithril.core.logger.info('Could not resolve session: ' + msg.sessionId);
-							sessionlessError(client, msg, 2);
+							sessionlessError(client, msg, 1);
 							msgQueue = [];
 							resolvingSession = false;
 						}

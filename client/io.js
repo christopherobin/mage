@@ -6,8 +6,29 @@ function MithrilIo(mithril)
 	this.queryId = 0;
 	this.eventListeners = [{}, {}];
 	this.eventLog = [];
-	this.handleBadSession = function(numWhy){ alert(numWhy + ": Session is bad. ") };
+
+	this.sessionSent = false;
+
+	this.ERR_RESTART = 1;
+	this.ERR_INTERNAL = 100;
 }
+
+
+MithrilIo.prototype.handleErrors = function(errorCodes)
+{
+	var msg;
+
+	if (errorCodes.indexOf(this.ERR_RESTART) != -1)
+	{
+		msg = 'You have timed out, or there is a problem with your connection. Please restart the game.';
+	}
+	else
+	{
+		msg = 'Error while trying to execute your request. Please try again. If the problem persists, please check your connection and try restarting the game.';
+	}
+
+	alert(msg);
+};
 
 
 MithrilIo.prototype.start = function(cb)
@@ -17,7 +38,7 @@ MithrilIo.prototype.start = function(cb)
 	var _this = this;
 
 	this.socket.on('connect', function() {
-		_this.socket.send(JSON.stringify({ sessionId: _this.mithril.sessionId }));
+		_this.sessionSent = false;
 
 		if (cb)
 		{
@@ -32,12 +53,6 @@ MithrilIo.prototype.start = function(cb)
 		result = JSON.parse(result);
 
 		var responseCount = result.responses ? result.responses.length : 0;
-
-		if(result.responses && result.responses[0].length == 3 && result.responses[0][2] < 5)
-		{	
-			_this.handleBadSession(result.responses[0][2]);
-			return;	
-		}
 
 		if (responseCount > 0)
 		{
@@ -152,10 +167,17 @@ MithrilIo.prototype.receivedQueryResult = function(result, isAfterEvents)
 
 	if (id in this.queries)
 	{
+		var _this = this;
+
 		var query = this.queries[id];
 		if (query.onAfterEvents == isAfterEvents)
 		{
 			delete this.queries[id];
+
+			if (errors)
+			{
+				_this.handleErrors(errors);
+			}
 
 			query.cb(errors, response);
 		}
@@ -189,6 +211,12 @@ MithrilIo.prototype.send = function(command, parameters, cb, onBeforeEvents)
 	{
 		obj.id = ++this.queryId;
 		this.queries[obj.id] = { cb: cb, onAfterEvents: !onBeforeEvents };
+	}
+
+	if (!this.sessionSent)
+	{
+		obj.sessionId = this.mithril.sessionId;
+		this.sessionSent = true;
 	}
 
 	console.log('Sending ', obj);
