@@ -170,7 +170,7 @@ exports.getLatestRankingListByContext = function(state, contextName, listName, c
 
 	// TODO: This does NOT yet check for the latest rankinglist. If there's more than 1 (or none) it breaks.
 
-	var query = "SELECT id, name, context FROM score_rankinglist WHERE context = ? AND name = ?";
+	var query = "SELECT id, name, context FROM score_rankinglist WHERE context = ? AND name = ? ORDER BY creationTime DESC LIMIT 1";
 	state.datasources.db.getOne(query, [context.id, listName], true, null, cb);
 };
 
