@@ -124,6 +124,14 @@ MithrilGameModObj.prototype.setup = function(cb)
 			_this.playerCache.objectIds[params.id][key] = params[key];
 		}
 	}, true);
+	
+	
+	this.mithril.io.on("obj.object.del", function(path, params){ //untested
+		for(var key in params)
+		{	
+			delete _this.playerCache.objectIds[params.objectId];  //may want to remove from other cache locations too.
+		}
+	}, true);
 
 
 	this.mithril.io.on("obj.object.applyToObj", function(path, params){ //untested
