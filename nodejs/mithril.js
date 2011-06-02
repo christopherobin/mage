@@ -90,23 +90,6 @@ exports.setup = function(pathConfig, cb)
 	exports.core.logger = logger;
 
 
-	exports.core.warn = function(error, client)
-	{
-		if (error.log)
-		{
-			logger[error.log.method](error.module + ', code ' + error.code + ': ' + error.log.msg);
-		}
-
-		if (client && client.connected)
-		{
-			var userError = { error: { type: error.type }};
-			if (error.usermsg) userError.error.msg = error.usermsg;
-
-			client.send(JSON.stringify(userError));
-		}
-	};
-
-
 	// expose modules
 
 	function loadModule(state, name, path, callback)

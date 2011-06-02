@@ -1,5 +1,5 @@
 var stream = require('stream');
-var util = require('util');
+//var util = require('util'); util.inspect() is nice, but doesn't go deep into objects
 
 exports.add = function(name, output)
 {
@@ -12,7 +12,7 @@ exports.add = function(name, output)
 			for (var i=0; i < arguments.length; i++)
 			{
 				var obj = arguments[i];
-				out.push(typeof obj == 'string' ? obj : util.inspect(obj));
+				out.push(typeof obj == 'string' ? obj : JSON.stringify(obj));
 			}
 
 			output.write(out.join(' ') + '\n', 'utf8');
