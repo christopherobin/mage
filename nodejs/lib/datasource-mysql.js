@@ -27,7 +27,7 @@ MySqlDatabase.prototype._connect = function(config)
 	client.host = config.host;
 	client.port = config.port;
 	client.database = config.dbname;
-	client.connect(function() { mithril.core.logger.info('DB: Connected to MySQL server at ' + client.host + ':' + client.port); });
+	client.connect(function() { mithril.core.logger.debug('DB: Connected to MySQL server at ' + client.host + ':' + client.port); });
 	return client;
 };
 

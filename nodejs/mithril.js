@@ -64,7 +64,7 @@ exports.setup = function(pathConfig, cb)
 
 	if (config.debug && config.debug.log)
 	{
-		paths.log = path.resolve(gamePath, config.logPath);
+		paths.log = path.resolve(gamePath, config.debug.logPath);
 
 		var logger = require(paths.lib + '/logger.js');
 

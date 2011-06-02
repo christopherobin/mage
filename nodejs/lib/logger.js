@@ -15,7 +15,9 @@ exports.add = function(name, output)
 				out.push(typeof obj == 'string' ? obj : JSON.stringify(obj));
 			}
 
-			output.write(out.join(' ') + '\n', 'utf8');
+			var time = new Date;
+
+			output.write(time.toJSON() + ' : ' + out.join(' ') + '\n', 'utf8');
 		}
 		else
 		{
