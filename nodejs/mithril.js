@@ -79,7 +79,7 @@ exports.setup = function(pathConfig, cb)
 		}
 
 		process.on('uncaughtException', function(error) {
-			logger.error(error.stack);
+			logger.error(error);
 		});
 	}
 
