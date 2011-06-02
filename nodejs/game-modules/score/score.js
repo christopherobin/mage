@@ -172,14 +172,15 @@ exports.getLatestRankingListByContext = function(state, contextName, listName, c
 	state.datasources.db.getOne(query, [context.id, listName], false, null, cb);
 };
 
-
-exports.getLatestRankingListById = function(state, id, cb)
+exports.getRankingListById = function(state, id, cb)
 {
+	// TODO: untested
+
 	// this does not load the ranks
+
 	var query = "SELECT id, name, context FROM score_rankinglist WHERE id = ?";
 	state.datasources.db.getOne(query, [id], true, null, cb);
 };
-
 
 exports.getRankingLists = function(state, context, name, cb)
 {
@@ -193,13 +194,13 @@ exports.getRankingData = function(state, id, range, cb)
 {
 	// loads the latest ranking list
 	// this loads the full ranks - range is like: { from: min, to: max }
-	
+
 	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ?";
 	var params = ['name', id];
 
 	if(range)
 	{
-		query += ' AND srs.rank BETWEEN ? AND ? '	
+		query += ' AND srs.rank BETWEEN ? AND ? '
 		params.push(range.from);
 		params.push(range.to);
 	}
@@ -209,10 +210,10 @@ exports.getRankingData = function(state, id, range, cb)
 
 exports.getRankingDataByActor = function(state, id, cb)
 {
-	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ? AND ad.actor = ?";
-	var params = ['name', id, state.actorId];
-	
-	state.datasources.db.getOne(query, params, true, null, cb);
+	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ? AND ad.actor = ? AND ad.language IN (?, ?)";
+	var params = ['name', id, state.actorId, '', state.language()];
+
+	state.datasources.db.getOne(query, params, false, null, cb);
 };
 
 
