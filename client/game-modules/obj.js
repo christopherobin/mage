@@ -126,10 +126,17 @@ MithrilGameModObj.prototype.setup = function(cb)
 	}, true);
 	
 	
-	this.mithril.io.on("obj.object.del", function(path, params){ //untested
+	this.mithril.io.on("obj.object.del", function(path, params){ 
 		for(var key in params)
 		{	
-			delete _this.playerCache.objectIds[params.objectId];  //may want to remove from other cache locations too.
+			delete _this.playerCache.objectIds[params.objectId]; 
+			for (var i=0;i<_this.playerCache.collections.length;i++)
+			{
+				_this.playerCache.collections[i].objects = _this.playerCache.collections[i].objects.filter(function(obj){
+					return obj.object.id != params.objectId;
+				});
+			}
+			_this.playerCache.objects = _this.playerCache.objects.filter(function(obj){ return obj.id != params.objectId });
 		}
 	}, true);
 
