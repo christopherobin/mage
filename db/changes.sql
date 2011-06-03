@@ -192,6 +192,20 @@ CREATE TABLE `msg_data` (
 ENGINE = InnoDB;
 
 
+-- 2011-06-03: Gree module
+
+CREATE TABLE `gree_user` (
+  `playerId` INT UNSIGNED NOT NULL ,
+  `viewerId` INT UNSIGNED NOT NULL ,
+  `token` VARCHAR(255) NOT NULL ,
+  `tokenSecret` VARCHAR(255) NOT NULL ,
+  `status` ENUM('installed', 'suspended', 'uninstalled') NOT NULL ,
+  PRIMARY KEY (`playerId`) ,
+  INDEX `fk_gree_user_playerId` (`playerId` ASC) ,
+  INDEX `key_viewerId` (`viewerId` ASC) ,
+  CONSTRAINT `fk_gree_user_playerId` FOREIGN KEY (`playerId` ) REFERENCES `player` (`actor` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
 
 -- next change, add here.
 

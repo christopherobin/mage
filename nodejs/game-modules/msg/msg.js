@@ -169,6 +169,8 @@ exports.send = function(state, fromActorId, toActorIds, expirationTime, type, co
 		function(callback) {
 			// insert the message title/body
 
+			if (!msg.content) return state.error(null, 'No content given for message ', callback);
+
 			var sql = 'INSERT INTO msg_content VALUES ';
 			var params = [];
 			var values = [];

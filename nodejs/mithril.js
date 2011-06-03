@@ -21,28 +21,63 @@ exports.core.paths = paths;
 exports.core.state = require(paths.lib + '/state.js');
 exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
 exports.core.propertyMap = require(paths.lib + '/propertyMap.js');
+exports.core.lib = {};
+exports.core.modules = {};
 
 
-// import game modules
+// available libraries and modules
 
-var modules = [
-	['manage', paths.gameModules + '/manage/manage.js'],
-	['actor',  paths.gameModules + '/actor/actor.js'],
-	['player', paths.gameModules + '/player/player.js'],
-	['npc',    paths.gameModules + '/npc/npc.js'],
-	['sns',    paths.gameModules + '/sns/sns.js'],
-	['obj',    paths.gameModules + '/obj/obj.js'],
-	['gc',     paths.gameModules + '/gc/gc.js'],
-	['msg',    paths.gameModules + '/msg/msg.js'],
-	['score',  paths.gameModules + '/score/score.js']
-];
+var coreLibraries = {
+};
 
-var customModules = [
-];
+var coreModules = {
+	manage: paths.gameModules + '/manage/manage.js',
+	gree:   paths.gameModules + '/gree/gree.js',
+	actor:  paths.gameModules + '/actor/actor.js',
+	player: paths.gameModules + '/player/player.js',
+	npc:    paths.gameModules + '/npc/npc.js',
+	sns:    paths.gameModules + '/sns/sns.js',
+	obj:    paths.gameModules + '/obj/obj.js',
+	gc:     paths.gameModules + '/gc/gc.js',
+	msg:    paths.gameModules + '/msg/msg.js',
+	score:  paths.gameModules + '/score/score.js'
+};
 
+
+// requiring libraries and modules
+
+var modules = [];
+
+exports.useLibrary = function(name)
+{
+	// loading specific libraries
+
+	if (!coreLibraries[name])
+	{
+		console.error('Library ' + name + ' not found.');
+		process.exit(1);
+	}
+
+	exports.core.lib[name] = require(coreLibraries[name]);
+};
+
+exports.useModule = function(name)
+{
+	// using mithril modules
+
+	if (!coreModules[name])
+	{
+		console.error('Module ' + name + ' not found.');
+		process.exit(1);
+	}
+
+	modules.push([name, coreModules[name]]);
+};
 
 exports.addModule = function(name, path)
 {
+	// adding custom game-specific modules
+
 	modules.push([name, path]);
 };
 
@@ -79,7 +114,7 @@ exports.setup = function(pathConfig, cb)
 		}
 
 		process.on('uncaughtException', function(error) {
-			logger.error(error);
+			logger.error(error.stack);
 		});
 	}
 
@@ -98,7 +133,7 @@ exports.setup = function(pathConfig, cb)
 
 		var mod = require(path);
 
-		exports[name] = mod;
+		exports[name] = exports.core.modules[name] = mod;
 
 		if (mod.setup)
 		{
@@ -121,11 +156,14 @@ exports.setup = function(pathConfig, cb)
 			state.close();
 
 			if (error)
+			{
 				exports.core.logger.error('Mithril setup failed.');
+				process.exit(1);
+			}
 			else
 				exports.core.logger.info('Mithril setup complete.');
 
-			cb(error);
+			cb();
 		}
 	);
 };
@@ -134,21 +172,23 @@ exports.setup = function(pathConfig, cb)
 // start() starts all services that allow users to connect
 
 
-var routes = {};
+var routes = [];
 
-exports.route = function(path, fn)
+exports.addRoute = function(pathMatch, fn)
 {
+	// pathMatch is a regexp or string to match on
+
 	// registered functions NEED to call response.end!
 
-	if (path.substr(-1) === '/') path = path.slice(0, -1);	// drop last slash
+	if (typeof pathMatch === 'string' && pathMatch.substr(-1) === '/') pathMatch = pathMatch.slice(0, -1);	// drop last slash
 
-	routes[path] = fn;
+	routes.push({ pathMatch: pathMatch, handler: fn });
 };
 
 
 exports.start = function()
 {
-	exports.core.logger.debug('Starting HTTP service at http://' + exports.core.config.server.host + ':' + exports.core.config.server.port + '/');
+	exports.core.logger.debug('Starting HTTP service at http://' + exports.core.config.server.expose.host + ':' + exports.core.config.server.expose.port + '/');
 
 
 	exports.core.httpServer = require('http').createServer(function(request, response) {
@@ -173,8 +213,23 @@ exports.start = function()
 
 		// if no route found for this path, return 404
 
-		if (!(path in routes))
+		var handler = null;
+		var routeCount = routes.length;
+		for (var i=0; i < routeCount; i++)
 		{
+			var route = routes[i];
+
+			if (path.match(route.pathMatch))
+			{
+				handler = route.handler;
+				break;
+			}
+		}
+
+		if (!handler)
+		{
+			mithril.core.logger.debug('No handler found for path: ' + path);
+
 			response.writeHead(404);
 			response.end('404 Not found');
 			return;
@@ -185,26 +240,38 @@ exports.start = function()
 
 		var result = {};
 
-		params = params.split('&');
-		for (var i=0; i < params.length; i++)
+		if (params)
 		{
-			var p = params[i].split('=', 2);
-			if (p.length == 2)
+			params = params.split('&');
+			for (var i=0; i < params.length; i++)
 			{
-				result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+				var p = params[i].split('=', 2);
+				if (p.length == 2)
+				{
+					result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+				}
 			}
 		}
 
 
-		// call the function in routes[path]
+		// call the function in route handler
 
-		routes[path](request, response, result);
+		handler(request, path, result, function(httpCode, out, headers) {
+			if (httpCode === false)
+			{
+				httpCode = 404;
+				if (!out) out = '404 Not found';
+			}
+
+			response.writeHead(httpCode, headers);
+			response.end(out);
+		});
 	});
 
 
-	exports.core.httpServer.listen(exports.core.config.server.port, exports.core.config.server.host);
+	exports.core.httpServer.listen(exports.core.config.server.bind.port, exports.core.config.server.bind.host);
 
-	exports.core.logger.info('Server running at http://' + exports.core.config.server.host + ':' + exports.core.config.server.port + '/');
+	exports.core.logger.info('Server running at http://' + exports.core.config.server.expose.host + ':' + exports.core.config.server.expose.port + '/');
 
 	exports.core.msgServer = require(paths.lib + '/msgServer.js');
 	exports.core.msgServer.start(exports.core.httpServer);

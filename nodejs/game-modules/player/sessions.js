@@ -30,7 +30,7 @@ Session.prototype.getFullKey = function()
 };
 
 
-Session.prototype.register = function(cb)
+Session.prototype.register = function(state, cb)
 {
 	const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 	const charCount = chars.length;
@@ -47,7 +47,6 @@ Session.prototype.register = function(cb)
 
 	// register session to DB
 
-	var state = new State;
 	var sql = 'REPLACE INTO player_session VALUES (?, ?, ?, ?, ?)';
 	var params = [this.playerId, key, this.creationTime, this.lastTouchTime, 'active'];
 
@@ -56,8 +55,6 @@ Session.prototype.register = function(cb)
 			cb(err);
 		else
 			cb();
-
-		state.close();
 	});
 };
 
@@ -141,11 +138,11 @@ exports.find = function(state, playerId, cb)
 };
 
 
-exports.register = function(playerId, cb)
+exports.register = function(state, playerId, cb)
 {
 	var session = new Session(playerId);
 
-	session.register(function(error) {
+	session.register(state, function(error) {
 		if (!error)
 		{
 			sessions[playerId] = session;
