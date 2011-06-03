@@ -313,7 +313,7 @@ MithrilGameModObj_Collection.prototype.containsName = function(objectName)
 
 MithrilGameModObj_Collection.prototype.getObjectsByName = function(objectName)
 {
-	return this.objects.filter(function(info) { return info.object.name.match(objectName); });
+	return this.objects.filter(function(info) { return info.object.name == objectName; });
 };
 
 MithrilGameModObj_Collection.prototype.getObjectBySlotNumber = function(slot)
@@ -332,10 +332,12 @@ MithrilGameModObj_Collection.prototype.uniqueNames = function()
 {
 	var unique = {};
 	var names = [];
-	this.objects.forEach(function(obj) {
+	this.objects.forEach(function(obj)
+	{
 		if (obj.object.name in unique)
+		{
 			return;
-
+		}
 		unique[obj.object.name] = null;
 		names.push(obj.object.name);
 	});
