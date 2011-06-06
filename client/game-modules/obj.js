@@ -124,12 +124,12 @@ MithrilGameModObj.prototype.setup = function(cb)
 			_this.playerCache.objectIds[params.id][key] = params[key];
 		}
 	}, true);
-	
-	
-	this.mithril.io.on("obj.object.del", function(path, params){ 
+
+
+	this.mithril.io.on("obj.object.del", function(path, params){	// TODO: Tom, try again (hint 1: you don't have to filter collections, hint 2: what's the point of looping through params?)
 		for(var key in params)
-		{	
-			delete _this.playerCache.objectIds[params.objectId]; 
+		{
+			delete _this.playerCache.objectIds[params.objectId];
 			for (var i=0;i<_this.playerCache.collections.length;i++)
 			{
 				_this.playerCache.collections[i].objects = _this.playerCache.collections[i].objects.filter(function(obj){
