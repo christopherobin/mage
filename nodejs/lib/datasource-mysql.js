@@ -120,9 +120,11 @@ MySqlDatabase.prototype.commit = function(cb)
 {
 	if (this.connTransaction)
 	{
-		mithril.core.logger.debug('DB: Commit');
+		this.connTransaction.query('COMMIT', [], function() {
+			mithril.core.logger.debug('DB: Commit');
+			cb();
+		});
 
-		this.connTransaction.query('COMMIT', [], function() { cb(); });
 		this.connTransaction = null;
 	}
 	else
@@ -134,9 +136,11 @@ MySqlDatabase.prototype.rollBack = function(cb)
 {
 	if (this.connTransaction)
 	{
-		mithril.core.logger.debug('DB: Rollback');
+		this.connTransaction.query('ROLLBACK', [], function() {
+			mithril.core.logger.debug('DB: Rollback');
+			cb();
+		});
 
-		this.connTransaction.query('ROLLBACK', [], function() { cb(); });
 		this.connTransaction = null;
 	}
 	else
@@ -151,9 +155,9 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, errorCode, cb)
 	var _this = this;
 	var db = this.source(true);
 
-	mithril.core.logger.debug('DB: getOne ' + sql + ' using', params);
-
 	db.query(sql, params, function(error, results) {
+		mithril.core.logger.debug('DB: getOne ' + sql + ' using', params);
+
 		if (error)
 		{
 			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
@@ -178,9 +182,9 @@ MySqlDatabase.prototype.getMany = function(sql, params, errorCode, cb)
 	var _this = this;
 	var db = this.source(true);
 
-	mithril.core.logger.debug('DB: getMany ' + sql + ' using', params);
-
 	db.query(sql, params, function(error, results) {
+		mithril.core.logger.debug('DB: getMany ' + sql + ' using', params);
+
 		if (error)
 		{
 			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
@@ -198,9 +202,9 @@ MySqlDatabase.prototype.getMapped = function(sql, params, map, errorCode, cb)
 	var _this = this;
 	var db = this.source(true);
 
-	mithril.core.logger.debug('DB: getMapped ' + sql + ' using', params);
-
 	db.query(sql, params, function(error, results) {
+		mithril.core.logger.debug('DB: getMapped ' + sql + ' using', params);
+
 		if (error)
 		{
 			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
@@ -216,7 +220,10 @@ MySqlDatabase.prototype.getMapped = function(sql, params, map, errorCode, cb)
 
 				if (map.value)
 				{
-					out[row[map.key]] = row[map.value];
+					if (map.type)
+						out[row[map.key]] = mithril.core.PropertyMap.unserialize(row[map.type], row[map.value]);
+					else
+						out[row[map.key]] = row[map.value];
 				}
 				else
 				{
@@ -238,9 +245,9 @@ MySqlDatabase.prototype.exec = function(sql, params, errorCode, cb)
 	var _this = this;
 	var db = this.source(false);
 
-	mithril.core.logger.debug('DB: exec ' + sql + ' using', params);
-
 	db.query(sql, params, function(error, info) {
+		mithril.core.logger.debug('DB: exec ' + sql + ' using', params);
+
 		if (error)
 		{
 			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);

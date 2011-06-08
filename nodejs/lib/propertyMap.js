@@ -1,69 +1,364 @@
-function PropertyMap(serializedProperties)
+function PropertyMap()
 {
-	this.values = {};
-	this.serializedProperties = serializedProperties || [];
+	this.data = {};
+	this.required = [];
+}
+
+
+PropertyMap.unserialize = function(type, value)
+{
+	switch (type)
+	{
+		case 'object':
+			try
+			{
+				if (value === '')
+					value = null;
+				else
+					value = JSON.parse(value);
+			}
+			catch (err)
+			{
+				mithril.core.logger.error('Could not unserialize object from string:', value);
+				value = {};
+			}
+			break;
+
+		case 'number':
+			value = new Number(value);
+			break;
+
+		case 'boolean':
+			value = (value == 'false' || value == '0') ? false : new Boolean(value);
+			break;
+
+		// string remains a string
+	}
+
+	return value;
 };
 
 
-PropertyMap.prototype.add = function(property, language, value)
+PropertyMap.serialize = function(value)
 {
-	if (!language) language = 'default';
+	var result = { type: typeof value };
 
-	if (!this.values[property]) this.values[property] = {};
-
-	if (property in this.serializedProperties)
+	switch (result.type)
 	{
-		try
+		case 'object': result.value = JSON.stringify(value); break;
+		case 'boolean': result.value = value ? '1' : '0'; break;
+		default: result.value = value; break;
+	}
+
+	return result;
+};
+
+
+PropertyMap.prototype.addOne = function(property, value, language, tag, meta)
+{
+	var obj = { value: value };
+
+	if (language) obj.language = language;
+	if (tag) obj.tag = tag;
+	if (meta) obj.meta = meta;
+
+	if (property in this.data)
+	{
+		var props = this.data[property];
+		var len = props.length;
+		for (var i=0; i < len; i++)
 		{
-			value = JSON.parse(value);
+			// overwrite if language/tag combination already exists for this property
+
+			if (props[i].language == obj.language && props[i].tag == obj.tag)	// works for undefined as well as defined values
+			{
+				props[i] = obj;
+				return;
+			}
 		}
-		catch (err)
+
+		this.data[property].push(obj);
+	}
+	else
+		this.data[property] = [obj];
+};
+
+
+PropertyMap.prototype.require = function(property, language, tag, optional)
+{
+	this.required.push({ property: property, language: language, tag: tag, optional: optional });
+};
+
+
+PropertyMap.prototype.hasRequirements = function()
+{
+	return (this.required.length > 0);
+};
+
+
+PropertyMap.prototype.fillRequirements = function(srcMap, fnFilter)
+{
+	while (this.required.length > 0)
+	{
+		var req = this.required.pop();
+		if (req.property in srcMap.data)
 		{
-			mithril.core.logger.error('Failed parsing value as JSON', value);
+			if (!this.data[req.property]) this.data[req.property] = [];
+
+			var props = srcMap.data[req.property];
+			var len = props.length;
+
+			for (var i=0; i < len; i++)
+			{
+				var prop = props[i];
+
+				if (req.language && req.language !== true && prop.language !== req.language) continue;	// language relevant and no match
+				if (req.tag && prop.tag !== req.tag) continue;			// tag relevant and no match
+
+				if (!fnFilter || fnFilter(prop))
+				{
+					var obj = { value: prop.value };
+					if (prop.language) obj.language = prop.language;
+
+					this.data[req.property].push(obj);
+				}
+			}
+		}
+		else
+		{
+			if (!req.optional) return false;
 		}
 	}
 
-	this.values[property][language] = value;
+	return true;
 };
 
 
-PropertyMap.prototype.get = function(property, language)
+PropertyMap.prototype.importOne = function(property, type, value, language, tag, meta)
 {
-	if (property in this.values)
+	this.addOne(property, PropertyMap.unserialize(type, value), language, tag, meta);
+};
+
+
+PropertyMap.prototype.importFromMap = function(srcMap, language, tags, fnFilter, overwrite)
+{
+	var map = srcMap.getAllFull(language, tags, fnFilter);
+	for (var property in map)
 	{
-		var obj = this.values[property];
-
-		if (!language) language = 'default';
-
-		if (language in obj)
+		if (!(property in this.data) || overwrite)
 		{
-			return obj[language];
+			this.data[property] = map[property];
+		}
+	}
+};
+
+
+PropertyMap.prototype.getMetaData = function(property, language, tags, fnFilter, fallback)
+{
+	var props = this.data[property];
+	if (!props) return fallback;
+
+	var len = props.length;
+
+	for (var i=0; i < len; i++)
+	{
+		var prop = props[i];
+
+		if (prop.language && prop.language !== language) continue;
+		if (prop.tag && tags && tags.indexOf(prop.tag) == -1) continue;
+
+		if (!fnFilter || fnFilter(prop))
+		{
+			return prop.meta;
 		}
 	}
 
-	return null;
+	return fallback;
 };
 
 
-PropertyMap.prototype.getAll = function(language)
+PropertyMap.prototype.getOne = function(property, language, tags, fnFilter, fallback)
+{
+	var props = this.data[property];
+	if (!props) return fallback;
+
+	var len = props.length;
+
+	for (var i=0; i < len; i++)
+	{
+		var prop = props[i];
+
+		if (prop.language && prop.language !== language) continue;
+		if (prop.tag && tags && tags.indexOf(prop.tag) == -1) continue;
+
+		if (!fnFilter || fnFilter(prop))
+		{
+			return prop.value;
+		}
+	}
+
+	return fallback;
+};
+
+
+PropertyMap.prototype.getOneFull = function(property, language, tags, fallback)
+{
+	// if language === true, returns all versions regardless of language
+	// if tags === true, returns all versions regardless of tags
+
+	var props = this.data[property];
+	if (!props) return fallback;
+
+	var result = [];
+
+	var len = props.length;
+
+	for (var i=0; i < len; i++)
+	{
+		var prop = props[i];
+
+		if (language !== true && prop.language && prop.language !== language) continue;
+		if (tags !== true && prop.tag && tags && tags.indexOf(prop.tag) == -1) continue;
+
+		var obj = { value: prop.value };
+
+		if (prop.language) obj.language = prop.language;
+		if (prop.tag) obj.tag = prop.tag;
+
+		result.push(obj);
+	}
+
+	return result;
+};
+
+
+PropertyMap.prototype.getAll = function(language, tags, fnFilter)
 {
 	var result = {};
 
-	for (var property in this.values)
+	for (var property in this.data)
 	{
-		var obj = this.value;
+		var props = this.data[property];
+		var len = props.length;
 
-		if (language in obj)
+		for (var i=0; i < len; i++)
 		{
-			result[property] = obj[language];
-		}
+			var prop = props[i];
 
-		if (obj.default)
-		{
-			result[property] = obj.default;
+			if (prop.language && prop.language !== language) continue;
+			if (prop.tag && tags && tags.indexOf(prop.tag) == -1) continue;
+
+			if (!fnFilter || fnFilter(prop))
+			{
+				result[property] = prop.value;
+			}
+			break;
 		}
 	}
+
+	return result;
 };
 
-exports.PropertyMap = PropertyMap;
+
+PropertyMap.prototype.getAllFull = function(language, tags, fnFilter)
+{
+	// if language === true, returns all versions regardless of language
+	// if tags === true, returns all versions regardless of tags
+
+	if (language === true && tags === true && !fnFilter) return this.data;
+
+	var result = {};
+
+	for (var property in this.data)
+	{
+		var props = this.data[property];
+		var len = props.length;
+
+		for (var i=0; i < len; i++)
+		{
+			var prop = props[i];
+
+			if (language !== true && prop.language && prop.language !== language) continue;
+			if (tags !== true && prop.tag && tags && tags.indexOf(prop.tag) == -1) continue;
+
+			if (!fnFilter || fnFilter(prop))
+			{
+				var obj = { value: prop.value };
+
+				if (prop.language) obj.language = prop.language;
+				if (prop.tag) obj.tag = prop.tag;
+
+				if (property in result)
+				{
+					result[property].push(obj);
+				}
+				else
+					result[property] = [obj];
+			}
+		}
+	}
+
+	return result;
+};
+
+
+PropertyMap.prototype.getAllFlat = function(language, tags, fnFilter)
+{
+	var result = [];
+	var mapped = this.getAllFull(language, tags, fnFilter);
+
+	for (var property in mapped)
+	{
+		var len = mapped[property].length;
+		for (var i=0; i < len; i++)
+		{
+			var prop = mapped[property][i];
+
+			if (language !== true && prop.language && prop.language !== language) continue;
+			if (tags !== true && prop.tag && tags && tags.indexOf(prop.tag) == -1) continue;
+
+			if (!fnFilter || fnFilter(prop))
+			{
+				var obj = PropertyMap.serialize(prop.value);
+
+				obj.property = property;
+
+				if (prop.language) obj.language = prop.language;
+				if (prop.tag) obj.tag = prop.tag;
+
+				result.push(obj);
+			}
+		}
+	}
+
+	return result;
+};
+
+
+PropertyMap.prototype.exportOne = function(property, language, tags, fnFilter, fallback)
+{
+	var result = this.getOne(property, language, tags, fnFilter);
+	if (result === undefined)
+	{
+		return fallback;
+	}
+
+	return PropertyMap.serialize(result, fallback);
+};
+
+
+PropertyMap.prototype.exportAll = function(language, tags, fnFilter)
+{
+	var result = this.getAll(language, tags, fnFilter);
+
+	for (var property in result)
+	{
+		result[property] = PropertyMap.serialize(result[property]);
+	}
+
+	return result;
+};
+
+
+module.exports = PropertyMap;
 

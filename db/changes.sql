@@ -207,5 +207,35 @@ CREATE TABLE `gree_user` (
 ENGINE = InnoDB;
 
 
+-- 2011-06-06: object classes
+
+CREATE TABLE `obj_class` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `weight` INT UNSIGNED NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name`(20) ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `obj_class_data` (
+  `classId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `tag` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `behavior` ENUM('copy','inherit','none') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`classId`, `property`, `tag`, `language`) ,
+  INDEX `fk_obj_class_data_classId` (`classId` ASC) ,
+  CONSTRAINT `fk_obj_class_data_classId` FOREIGN KEY (`classId` ) REFERENCES `obj_class` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+ALTER TABLE `obj_object_data` CHANGE `property` `property` VARCHAR( 30 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `obj_object_data` ADD `language` VARCHAR( 2 ) NOT NULL AFTER `property`;
+ALTER TABLE `obj_object_data` DROP PRIMARY KEY, ADD PRIMARY KEY ( `object` , `property` , `language` );
+ALTER TABLE `obj_object_data` ADD `type` ENUM( 'number', 'boolean', 'object', 'string' ) NOT NULL AFTER `language`;
+UPDATE `obj_object_data` SET `type` = 'string';
+
+
 -- next change, add here.
 

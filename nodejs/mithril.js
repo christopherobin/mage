@@ -20,7 +20,7 @@ global.async = require('async');
 exports.core.paths = paths;
 exports.core.state = require(paths.lib + '/state.js');
 exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
-exports.core.propertyMap = require(paths.lib + '/propertyMap.js');
+exports.core.PropertyMap = require(paths.lib + '/propertyMap.js');
 exports.core.lib = {};
 exports.core.modules = {};
 

@@ -7,7 +7,7 @@ exports.execute = function(state, p, cb)
 	var collectionMembers = null;
 
 
-	mithril.obj.getActorCollections(state, state.actorId, ['collectionId', 'parentId', 'collectionType', 'slotCount', 'maxWeight'], {}, function(error, data) {	// get player collections
+	mithril.obj.getActorCollections(state, state.actorId, ['collectionId', 'parentId', 'collectionType', 'slotCount', 'maxWeight'], function(error, data) {	// get player collections
 		if (error) return cb();
 
 		returnData.collections = {};

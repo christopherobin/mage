@@ -38,7 +38,7 @@ exports.loadInbox = function(state, actorId, cb)
 
 				if (!msg.data) msg.data = {};
 
-				msg.data[row.property] = state.datasources.unpackProperty(row.value, row.type);
+				msg.data[row.property] = mithril.core.PropertyMap.unserialize(row.type, row.value);
 			}
 
 			var result = [];
@@ -197,7 +197,7 @@ exports.send = function(state, fromActorId, toActorIds, expirationTime, type, co
 			for (var property in msg.data)
 			{
 				msg.data[property].forEach(function(item) {
-					var packed = state.datasources.packProperty(item.value);
+					var packed = mithril.core.PropertyMap.serialize(item.value);
 
 					values.push('(?, ?, ?, ?, ?)');
 					params.push(msg.id, property, item.language || '', packed.type, packed.value);

@@ -35,7 +35,7 @@ exports.loadNpcs = function(state, cb)
 
 			for (var i=0; i < npcsLen; i++)
 			{
-				npcs[i].data = new mithril.core.propertyMap.PropertyMap([]);
+				npcs[i].data = new mithril.core.PropertyMap();
 			}
 
 			for (var i=0; i < dataLen; i++)
@@ -46,7 +46,7 @@ exports.loadNpcs = function(state, cb)
 				{
 					if (npcs[j].actor != prop.npc) continue;
 
-					npcs[j].data.add(prop.property, prop.language, prop.value);
+					npcs[j].data.addOne(prop.property, prop.language, prop.value);
 				}
 			}
 
