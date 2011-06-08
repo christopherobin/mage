@@ -46,7 +46,7 @@ exports.loadNpcs = function(state, cb)
 				{
 					if (npcs[j].actor != prop.npc) continue;
 
-					npcs[j].data.addOne(prop.property, prop.language, prop.value);
+					npcs[j].data.add(prop.property, prop.language, prop.value);
 				}
 			}
 

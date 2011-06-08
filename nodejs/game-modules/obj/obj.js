@@ -1,5 +1,3 @@
-/* Objects Module. TF April 2011 */
-
 var joins = {
 	collectionOwner:	{ sql: 'LEFT JOIN actor AS ? ON obj_collection.owner = ?.id' },
 	collectionObject:	{ sql: 'JOIN obj_collection_object AS ? ON obj_collection.id = ?.collection' },
@@ -769,12 +767,12 @@ exports.getFullCollection = function(state, collectionId, cb)
 			var len = data.length;
 			for (var i=0; i < len; i++)
 			{
-				var entry = data[i];
-				entry.data = {};
-				objects[entry.id] = entry;
+				var row = data[i];
+				row.data = new mithril.core.PropertyMap;
+				objects[row.id] = row;
 			}
 
-			var query = 'SELECT d.object, d.property, d.value FROM obj_object_data AS d JOIN obj_collection_object AS co ON co.object = d.object WHERE co.collection = ?';
+			var query = 'SELECT d.object, d.property, d.type, d.language, d.value FROM obj_object_data AS d JOIN obj_collection_object AS co ON co.object = d.object WHERE co.collection = ?';
 			var params = [collectionId];
 			state.datasources.db.getMany(query, params, null, callback);
 		},
@@ -783,10 +781,10 @@ exports.getFullCollection = function(state, collectionId, cb)
 			var len = data.length;
 			for (var i=0; i < len; i++)
 			{
-				var entry = data[i];
-				if (entry.object in objects)
+				var row = data[i];
+				if (row.object in objects)
 				{
-					objects[entry.object].data[entry.property] = entry.value;
+					objects[row.object].data.importOne(row.property, row.type, row.value, row.language);
 				}
 			}
 			callback();
@@ -1017,7 +1015,8 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 			{
 				state.emit(owner, 'obj.collection.object.add', { objectId: objectId, collectionId: collectionId, slot: options.slot });
 			}
-			var sql = "INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)";
+
+			var sql = 'INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)';
 			var params = [collectionId, objectId, options.slot];
 
 			state.datasources.db.exec(sql, params, null, cb);

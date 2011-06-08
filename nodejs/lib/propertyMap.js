@@ -54,7 +54,7 @@ PropertyMap.serialize = function(value)
 };
 
 
-PropertyMap.prototype.addOne = function(property, value, language, tag, meta)
+PropertyMap.prototype.add = function(property, value, language, tag, meta)
 {
 	var obj = { value: value };
 
@@ -136,7 +136,7 @@ PropertyMap.prototype.fillRequirements = function(srcMap, fnFilter)
 
 PropertyMap.prototype.importOne = function(property, type, value, language, tag, meta)
 {
-	this.addOne(property, PropertyMap.unserialize(type, value), language, tag, meta);
+	this.add(property, PropertyMap.unserialize(type, value), language, tag, meta);
 };
 
 
