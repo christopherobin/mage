@@ -1016,7 +1016,7 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 				state.emit(owner, 'obj.collection.object.add', { objectId: objectId, collectionId: collectionId, slot: options.slot });
 			}
 
-			var sql = 'INSERT into obj_collection_object (collection, object, slot) VALUES (?, ?, ?)';
+			var sql = 'INSERT INTO obj_collection_object (collection, object, slot) VALUES (?, ?, ?)';
 			var params = [collectionId, objectId, options.slot];
 
 			state.datasources.db.exec(sql, params, null, cb);
@@ -1037,7 +1037,7 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 
 		queries.push(createLink);
 
-		async.series(queries, cb);
+		async.series(queries, function(error) { cb(error); });
 	});
 };
 
