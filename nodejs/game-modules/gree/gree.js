@@ -1,5 +1,6 @@
 exports.userCommands = {
-	getFriends: __dirname + '/usercommands/getFriends.js'
+	getFriends: __dirname + '/usercommands/getFriends.js',
+	getPeople:  __dirname + '/usercommands/getPeople.js'
 };
 
 var crypto = require('crypto');
@@ -212,27 +213,129 @@ exports.getActorIds = function(state, viewerIds, cb)
 
 exports.rest = {};
 
-exports.rest.getUserInfo = function(user, aboutUser, fields, cb)
+
+exports.rest.getUserInfo = function(state, user, aboutUserId, fields, cb)
 {
-	var path = 'people/@me/' + ((aboutUser.viewerId == user.viewerId) ? '@self' : '@all/' + aboutUser.viewerId);
-	var params = {};
+	if (aboutUserId == user.viewerId)
+	{
+		this.getUsersInfo(state, user, null, 'self', false, { fields: fields }, cb);
+	}
+	else
+	{
+		var users = {};
+		users[aboutUserId] = null;
 
-	if (fields) params.fields = fields.join(',');
+		this.getUsersInfo(state, user, { users: users }, 'all', false, { fields: fields }, cb);
+	}
+};
 
-	exports.send('GET', user, path, params, null, function(error, statusCode, result) {
+
+exports.lookupPeopleIds = function(state, about, cb)
+{
+	// about: { users: { userId: null, userId: actorId, ... }, actors: { actorId: userId, actorId: null, ... } }
+	// fills in the blanks in about.actors and about.users
+	// guarantees to yield all mentioned users and actors, in both about.actors and about.users, mapped in both directions.
+
+	if (!about) return cb();
+
+	var actorIds = [];
+	var userIds = [];
+
+	if (!about.actors) about.actors = {};
+	if (!about.users)  about.users  = {};
+
+	for (var actorId in about.actors)
+	{
+		var userId = about.actors[actorId];
+
+		actorId = ~~actorId;
+
+		if (userId)
+			about.users[userId] = actorId;
+		else
+		{
+			if (users[actorId])		// module wide cache
+				about.users[users[actorId].viewerId] = actorId;
+			else
+				actorIds.push(actorId);
+		}
+	}
+
+	for (var userId in about.users)
+	{
+		var actorId = about.users[userId];
+
+		userId = ~~userId;
+
+		if (actorId)
+			about.actors[actorId] = userId;
+		else
+			userIds.push(userId);
+	}
+
+	if (actorIds.length == 0 && userIds.length == 0)
+	{
+		// nothing to lookup
+
+		return cb();
+	}
+
+	// lookup all missing data
+
+	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE ';
+	var where = [];
+	var params = [];
+
+	if (actorIds.length > 0)
+	{
+		where.push('playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')');
+		params = params.concat(actorIds);
+	}
+
+	if (userIds.length > 0)
+	{
+		where.push('viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')');
+		params = params.concat(userIds);
+	}
+
+	sql += where.join(' OR ');
+
+	state.datasources.db.getMany(sql, params, null, function(error, results) {
 		if (error) return cb(error);
 
-		cb(null, result.entry);
+		var len = results.length;
+		for (var i=0; i < len; i++)
+		{
+			var row = results[i];
+
+			about.actors[row.playerId] = row.viewerId;
+			about.users[row.viewerId] = row.playerId;
+		}
+
+		cb();
 	});
 };
 
 
-exports.rest.getFriends = function(state, user, addActorIds, options, cb)
+exports.rest.getUsersInfo = function(state, user, about, group, addActorIds, options, cb)
 {
+	// about: { users:  { userId: actorId, userId: actorId }
+	//  OR
+	// about: { actors: { actorId: userId, actorId: userId }
+
 	// TODO: pagination
 	// TODO: take ignoring into account
 
-	var path = 'people/@me/@friends';
+	var path = 'people/@me/@' + group;
+
+	if (about)
+	{
+		var userIds = [];
+		for (var userId in about.users) userIds.push(~~userId);
+
+		path += '/' + userIds.join(',');
+	}
+
 	var params = {};
 
 	if (options.fields)
@@ -258,50 +361,89 @@ exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 		params.filterValue = 'true';
 	}
 
-	mithril.gree.send('GET', user, path, params, null, function(error, statusCode, result) {
+	exports.send('GET', user, path, params, null, function(error, statusCode, result) {
 		if (error) return cb(error);
 
-		if (result)
+		var results = result.entry;
+		var len = results.length;
+
+		// rewrite strings to decent types
+
+		for (var i=0; i < len; i++)
 		{
-			var friends = result.entry;
-			if (friends && friends.length)
+			var user = results[i];
+			if (typeof user.id     === 'string') user.id = ~~user.id;
+			if (typeof user.age    === 'string') user.age = ~~user.age;
+			if (typeof user.hasApp === 'string') user.hasApp = (user.hasApp === 'true');
+		}
+
+		if (addActorIds)
+		{
+			if (!about)
 			{
-				var viewerIds = [];
+				about = { users: {} };
 
-				var friendCount = friends.length;
-				for (var i=0; i < friendCount; i++)
+				for (var i=0; i < len; i++)
 				{
-					var friend = friends[i];
-					friend.id = parseInt(friend.id);
+					about.users[results[i].id] = null;
+				}
 
-					if (friend.hasApp === 'true' || friend.hasApp === true)
+				exports.lookupPeopleIds(state, about, function(error) {
+					if (error) return cb(error);
+
+					for (var i=0; i < len; i++)
 					{
-						viewerIds.push(friend.id);
-					}
-				}
-
-				if (viewerIds.length > 0)
-				{
-					exports.getActorIds(state, viewerIds, function(error, actorIds) {
-						if (error) return cb(error);
-
-						for (var i=0; i < friendCount; i++)
+						var user = results[i];
+						if (about.users[user.id])
 						{
-							var friend = friends[i];
-
-							if (actorIds[friend.id]) friend.actorId = actorIds[friend.id];
+							user.actorId = about.users[user.id];
 						}
+						else
+							if (user.hasApp) user.hasApp = false;
+					}
 
-						cb(null, friends);
-					});
-					return;
+					cb(null, results);
+				});
+				return;
+			}
+
+			for (var i=0; i < len; i++)
+			{
+				var user = results[i];
+				if (about.users[user.id])
+				{
+					user.actorId = about.users[user.id];
 				}
-
-				return cb(null, friends);
+				else
+					if (user.hasApp) user.hasApp = false;
 			}
 		}
 
-		cb(null, []);
+		cb(null, results);
+	});
+};
+
+
+exports.rest.getFriends = function(state, user, addActorIds, options, cb)
+{
+	this.getUsersInfo(state, user, null, 'friends', addActorIds, options, cb);
+}
+
+
+exports.rest.getPeople = function(state, user, actorIds, options, cb)
+{
+	var about = { actors: {} };
+
+	var len = actorIds.length;
+	for (var i=0; i < len; i++)
+	{
+		about.actors[actorIds[i]] = null;
+	}
+
+	exports.lookupPeopleIds(state, about, function(error, people) {
+		if (error) return cb(error);
+
+		exports.rest.getUsersInfo(state, user, about, 'all', true, options, cb);
 	});
 }
 
@@ -432,7 +574,7 @@ exports.send = function(httpMethod, user, path, getParams, postData, cb)
 
 function encodeRfc3986(str)
 {
-	return encodeURIComponent(str).replace(/\!/g,'%21').replace(/\*/g,'%2A').replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/\'/g,'%27');
+	return encodeURIComponent(str).replace(/\!/g,'%21').replace(/\*/g,'%2A').replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/\'/g,'%27'); //.replace(/%2C/g, ',');	// gree doesn't like escaped commas
 };
 
 

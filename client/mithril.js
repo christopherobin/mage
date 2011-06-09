@@ -10,6 +10,7 @@ function Mithril(config, sessionId)
 
 	if (typeof MithrilGameModActor  != 'undefined') this.registerModule('actor',  new MithrilGameModActor(this));
 	if (typeof MithrilGameModPlayer != 'undefined') this.registerModule('player', new MithrilGameModPlayer(this));
+	if (typeof MithrilGameModGree   != 'undefined') this.registerModule('gree',   new MithrilGameModGree(this));
 	if (typeof MithrilGameModSns    != 'undefined') this.registerModule('sns',    new MithrilGameModSns(this));
 	if (typeof MithrilGameModObj    != 'undefined') this.registerModule('obj',    new MithrilGameModObj(this));
 	if (typeof MithrilGameModGc     != 'undefined') this.registerModule('gc',     new MithrilGameModGc(this));
