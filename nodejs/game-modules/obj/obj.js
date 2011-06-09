@@ -660,7 +660,7 @@ exports.getObjectById = function(state, objectId, cb)
 /*
  * removed, too dangerous, ownership is not taken into account
  * besides, this should use the class definitions
- *
+ */
 exports.getObjectByPropertyValues = function(state, property, values, cb)
 {
 	// values acts as an OR
@@ -674,7 +674,7 @@ exports.getObjectByPropertyValues = function(state, property, values, cb)
 
 	state.datasources.db.getOne(query, params, false, null, cb);
 };
-*/
+
 
 
 // object collections
