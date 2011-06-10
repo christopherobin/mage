@@ -297,7 +297,11 @@ exports.addObject = function(state, collections, name, weight, propertyMap, cb)
 			});
 		}
 	],
-	cb);
+	function(error) {
+		if (error) return cb(error);
+
+		cb(null, objectId);
+	});
 };
 
 /*
@@ -414,9 +418,7 @@ exports.detachObjectFromObject = function(state, objectId, cb)
 };
 */
 
-/*
- * not used
- *
+
 exports.detachObjectChildren = function(state, objectId, cb)
 {
 	// TODO: IMPLEMENT
@@ -425,7 +427,7 @@ exports.detachObjectChildren = function(state, objectId, cb)
 
 	cb(null);
 };
-*/
+
 
 
 exports.getObjectProperty = function(state, objectId, property, fallback, cb)
