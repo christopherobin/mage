@@ -37,10 +37,6 @@ function MithrilGameModGree_People(gree)
 
 MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, returnChunks, cb)
 {
-	//	var isMe = (!actorId || actorId == this.gree.mithril.actor.me.id);
-
-	// fields: "thumbnailUrl", "thumbnailUrlSmall", "thumbnailUrlLarge"
-
 	var knownUsers = [];
 	var unknownActorIds = [];
 
@@ -67,6 +63,8 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 	{
 		tasks.push(function(callback) {
 			greepf.requestThumbnail(knownUsers, function(response) {
+				// TODO: untested, and probably doesn't work
+
 				var thumbnails = [];	// { actorId: url }
 				var data = response.getData();
 
@@ -87,17 +85,26 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 	if (unknownActorIds.length > 0)
 	{
 		var _this = this;
-		var field = 'thumbnailUrl' + (size ? size[0].toUpperCase() + size.substring(1) : '');
+		var field = null;
+
+		switch (size)
+		{
+			case 'normal': field = 'thumbnailUrl'; break;
+			case 'small':  field = 'thumbnailUrlSmall'; break;
+			case 'large':  field = 'thumbnailUrlLarge'; break;
+			case 'huge':   field = 'thumbnailUrlHuge'; break;
+		}
 
 		tasks.push(function(callback) {
 			_this.gree.mithril.io.send('gree.getPeople', { actorIds: unknownActorIds, fields: [field] }, function(error, people) {
-				var thumbnails = [];	// { actorId: url }
+				var thumbnails = [];
 
 				var len = people.length;
 				for (var i=0; i < len; i++)
 				{
-					var thumb = {};
-					thumb[people[i].actorId] = people[i][field];
+					var info = people[i];
+
+					var thumb = { actorId: info.actorId, url: info[field], size: size };
 
 					thumbnails.push(thumb);
 				}
