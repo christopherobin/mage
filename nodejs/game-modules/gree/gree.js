@@ -1,6 +1,6 @@
 exports.userCommands = {
 	getFriends: __dirname + '/usercommands/getFriends.js',
-	getPeople:  __dirname + '/usercommands/getPeople.js'
+	getUserIds:  __dirname + '/usercommands/getUserIds.js'
 };
 
 var crypto = require('crypto');
@@ -200,12 +200,21 @@ exports.getGadgetXml = function()
 };
 
 
-exports.getActorIds = function(state, viewerIds, cb)
+exports.getActorIds = function(state, userIds, cb)
 {
-	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE viewerId IN (' + viewerIds.map(function() { return '?'; }).join(', ') + ')';
-	var params = viewerIds;
+	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
+	var params = userIds;
 
 	state.datasources.db.getMapped(sql, params, { key: 'viewerId', value: 'playerId' }, null, cb);
+};
+
+
+exports.getUserIds = function(state, actorIds, cb)
+{
+	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')';
+	var params = actorIds;
+
+	state.datasources.db.getMapped(sql, params, { key: 'playerId', value: 'viewerId' }, null, cb);
 };
 
 
@@ -222,14 +231,11 @@ exports.rest.getUserInfo = function(state, user, aboutUserId, fields, cb)
 	}
 	else
 	{
-		var users = {};
-		users[aboutUserId] = null;
-
-		this.getUsersInfo(state, user, { users: users }, 'all', false, { fields: fields }, cb);
+		this.getUsersInfo(state, user, aboutUserId, 'all', false, { fields: fields }, cb);
 	}
 };
 
-
+/*
 exports.lookupPeopleIds = function(state, about, cb)
 {
 	// about: { users: { userId: null, userId: actorId, ... }, actors: { actorId: userId, actorId: null, ... } }
@@ -315,42 +321,26 @@ exports.lookupPeopleIds = function(state, about, cb)
 		cb();
 	});
 };
+*/
 
-
-exports.rest.getUsersInfo = function(state, user, about, group, addActorIds, options, cb)
+exports.rest.getUsersInfo = function(state, user, aboutUserId, group, options, cb)
 {
-	// about: { users:  { userId: actorId, userId: actorId }
-	//  OR
-	// about: { actors: { actorId: userId, actorId: userId }
+	// aboutUserId is optional
 
 	// TODO: pagination
 	// TODO: take ignoring into account
 
 	var path = 'people/@me/@' + group;
 
-	if (about)
+	if (aboutUserId)
 	{
-		var userIds = [];
-		for (var userId in about.users) userIds.push(~~userId);
-
-		if (userIds.length == 0)
-		{
-			return cb(null, []);
-		}
-
-		path += '/' + userIds.join(',');
+		path += '/' + aboutUserId;
 	}
 
 	var params = {};
 
 	if (options.fields)
 	{
-		if (addActorIds)
-		{
-			if (options.fields.indexOf('id')     == -1) options.fields.push('id');
-			if (options.fields.indexOf('hasApp') == -1) options.fields.push('hasApp');
-		}
-
 		params.fields = options.fields.join(',');
 	}
 
@@ -382,48 +372,6 @@ exports.rest.getUsersInfo = function(state, user, about, group, addActorIds, opt
 			if (typeof user.hasApp === 'string') user.hasApp = (user.hasApp === 'true');
 		}
 
-		if (addActorIds)
-		{
-			if (!about)
-			{
-				about = { users: {} };
-
-				for (var i=0; i < len; i++)
-				{
-					about.users[results[i].id] = null;
-				}
-
-				exports.lookupPeopleIds(state, about, function(error) {
-					if (error) return cb(error);
-
-					for (var i=0; i < len; i++)
-					{
-						var user = results[i];
-						if (about.users[user.id])
-						{
-							user.actorId = about.users[user.id];
-						}
-						else
-							if (user.hasApp) user.hasApp = false;
-					}
-
-					cb(null, results);
-				});
-				return;
-			}
-
-			for (var i=0; i < len; i++)
-			{
-				var user = results[i];
-				if (about.users[user.id])
-				{
-					user.actorId = about.users[user.id];
-				}
-				else
-					if (user.hasApp) user.hasApp = false;
-			}
-		}
-
 		cb(null, results);
 	});
 };
@@ -431,10 +379,49 @@ exports.rest.getUsersInfo = function(state, user, about, group, addActorIds, opt
 
 exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 {
-	this.getUsersInfo(state, user, null, 'friends', addActorIds, options, cb);
-}
+	if (!addActorIds)
+	{
+		return this.getUsersInfo(state, user, null, 'friends', options, cb);
+	}
 
+	// add actor IDs to the result set
 
+	if (options.fields.indexOf('id')     == -1) options.fields.push('id');
+	if (options.fields.indexOf('hasApp') == -1) options.fields.push('hasApp');
+
+	this.getUsersInfo(state, user, null, 'friends', options, function(error, results) {
+		if (error) return cb(error);
+
+		// nobody found:
+
+		if (results.length == 0) return cb(null, results);
+
+		// resolve actor IDs
+
+		var userIds = results.map(function(friend) { return ~~friend.id; });
+
+		var sql = 'SELECT playerId, viewerId FROM gree_user WHERE viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
+		var params = userIds;
+
+		state.datasources.db.getMany(sql, params, null, function(error, rows) {
+			var len = rows.length;
+
+			for (var i=0; i < len; i++)
+			{
+				var row = rows[i];
+				var index = userIds.indexOf(~~row.viewerId);
+
+				if (index == -1) continue;
+
+				results[index].actorId = row.playerId;
+			}
+
+			cb(null, results);
+		});
+	});
+};
+
+/*
 exports.rest.getPeople = function(state, user, actorIds, options, cb)
 {
 	var about = { actors: {} };
@@ -451,7 +438,7 @@ exports.rest.getPeople = function(state, user, actorIds, options, cb)
 		exports.rest.getUsersInfo(state, user, about, 'all', true, options, cb);
 	});
 }
-
+*/
 
 exports.send = function(httpMethod, user, path, getParams, postData, cb)
 {
