@@ -440,7 +440,7 @@ exports.rest.getPeople = function(state, user, actorIds, options, cb)
 		about.actors[actorIds[i]] = null;
 	}
 
-	exports.lookupPeopleIds(state, about, function(error, people) {
+	exports.lookupPeopleIds(state, about, function(error) {
 		if (error) return cb(error);
 
 		exports.rest.getUsersInfo(state, user, about, 'all', true, options, cb);
