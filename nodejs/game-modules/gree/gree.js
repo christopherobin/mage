@@ -333,6 +333,11 @@ exports.rest.getUsersInfo = function(state, user, about, group, addActorIds, opt
 		var userIds = [];
 		for (var userId in about.users) userIds.push(~~userId);
 
+		if (userIds.length == 0)
+		{
+			return cb(null, []);
+		}
+
 		path += '/' + userIds.join(',');
 	}
 
