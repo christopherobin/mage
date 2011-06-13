@@ -210,12 +210,12 @@ MithrilGameModObj.prototype.setup = function(cb)
 
 MithrilGameModObj.prototype.getObjectProperty = function(obj, property)
 {
-	if (property in obj.data)
+	if (obj.data && property in obj.data)
 	{
 		return obj.data[property];
 	}
 
-	if (obj.name in this.classesMap && property in this.classesMap[obj.name].data)
+	if (obj.name in this.classesMap && this.classesMap[obj.name].data && property in this.classesMap[obj.name].data)
 	{
 		return this.classesMap[obj.name].data[property];
 	}

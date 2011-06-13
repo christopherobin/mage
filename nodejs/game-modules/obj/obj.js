@@ -659,10 +659,6 @@ exports.getObjectById = function(state, objectId, cb)
 	state.datasources.db.getOne(query, [objectId], false, null, cb);
 };
 
-/*
- * removed, too dangerous, ownership is not taken into account
- * besides, this should use the class definitions
- */
  
 exports.getClassByPropertyValues = function(state, property, values, cb)
 {
