@@ -659,19 +659,16 @@ exports.getObjectById = function(state, objectId, cb)
 	state.datasources.db.getOne(query, [objectId], false, null, cb);
 };
 
-/*
- * removed, too dangerous, ownership is not taken into account
- * besides, this should use the class definitions
- */
-exports.getObjectByPropertyValues = function(state, property, values, cb)
+ 
+exports.getClassByPropertyValues = function(state, property, values, cb)
 {
 	// values acts as an OR
 	if (!values || values.length < 1)
 	{
-		return state.error(null, 'No values given for property ' + property + ' in obj.getObjectByPropertyValues()', cb);
+		return state.error(null, 'No values given for property ' + property + ' in obj.getClassByPropertyValues()', cb);
 	}
 
-	var query = 'SELECT id, name, appliedToObject, weight FROM obj_object AS oo JOIN obj_object_data AS od ON od.object = oo.id WHERE od.property = ? AND od.value IN (' + values.map(function() { return '?'; }).join(', ') + ') LIMIT 1';
+	var query = 'SELECT oc.id, oc.name, oc.weight FROM obj_class AS oc JOIN obj_class_data AS ocd ON ocd.classId = oc.id WHERE ocd.property = ? AND ocd.value IN (' + values.map(function() { return '?'; }).join(', ') + ') LIMIT 1';
 	var params = [property].concat(values);
 
 	state.datasources.db.getOne(query, params, false, null, cb);
