@@ -237,5 +237,20 @@ ALTER TABLE `obj_object_data` ADD `type` ENUM( 'number', 'boolean', 'object', 's
 UPDATE `obj_object_data` SET `type` = 'string';
 
 
+-- 2011-06-14: persistent data
+
+CREATE TABLE `persistent_data` (
+  `actorId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` MEDIUMTEXT NOT NULL ,
+  `expirationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`actorId`, `property`, `language`) ,
+  INDEX `fk_persistent_data_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_persistent_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
