@@ -1,7 +1,7 @@
 function MithrilGameModGree(mithril)
 {
 	this.mithril = mithril;
-	this.userIdMap = {};	// cache for actorId -> userId lookup
+	this.userIdMap = {};	// cache for friends' actorId / Gree userId
 }
 
 
@@ -39,23 +39,23 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 {
 	var knownUsers = [];
 	var unknownActorIds = [];
-	
-	if (typeof greepf !== 'undefined' && greepf.requestThumbnail)
-	{
-		var len = actorIds.length;
-		for (var i=0; i < len; i++)
-		{
-			var actorId = actorIds[i];
-			var userId = this.gree.actorIdToUserId(actorId);
 
-			if (userId)
-				knownUsers.push({ userId: userId });
-			else
-				unknownActorIds.push(actorId);
-		}
+	if (typeof greepf === 'undefined' || !greepf.requestThumbnail)
+	{
+		return cb(null, []);
 	}
-	else
-		unknownActorIds = actorIds;
+
+	var len = actorIds.length;
+	for (var i=0; i < len; i++)
+	{
+		var actorId = actorIds[i];
+		var userId = this.gree.actorIdToUserId(actorId);
+
+		if (userId)
+			knownUsers.push({ userId: userId });
+		else
+			unknownActorIds.push(actorId);
+	}
 
 	var tasks = [];
 
@@ -96,18 +96,30 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 		}
 
 		tasks.push(function(callback) {
-			_this.gree.mithril.io.send('gree.getPeople', { actorIds: unknownActorIds, fields: [field] }, function(error, people) {
-				var thumbnails = [];
+			_this.gree.mithril.io.send('gree.getUserIds', { actorIds: unknownActorIds }, function(error, people) {
+				var users = [];
 
-				var len = people.length;
-				for (var i=0; i < len; i++)
+				for (var actorId in people)
 				{
-					var info = people[i];
-
-					var thumb = { actorId: info.actorId, url: info[field], size: size };
-
-					thumbnails.push(thumb);
+					var userId = people[actorId];
+					users.push({ userId: userId });
 				}
+
+				greepf.requestThumbnail(users, function(response) {
+					var thumbnails = [];	// { actorId: url }
+					var data = response.getData();
+
+					if (data.urls)
+					{
+						var len = data.urls.length;
+						for (var i=0; i < len; i++)
+						{
+							thumbnails.push(data.urls[i]);
+						}
+					}
+
+					callback(thumbnails);
+				});
 
 				callback(thumbnails);
 			});

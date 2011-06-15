@@ -31,16 +31,17 @@ var coreLibraries = {
 };
 
 var coreModules = {
-	manage: paths.gameModules + '/manage/manage.js',
-	gree:   paths.gameModules + '/gree/gree.js',
-	actor:  paths.gameModules + '/actor/actor.js',
-	player: paths.gameModules + '/player/player.js',
-	npc:    paths.gameModules + '/npc/npc.js',
-	sns:    paths.gameModules + '/sns/sns.js',
-	obj:    paths.gameModules + '/obj/obj.js',
-	gc:     paths.gameModules + '/gc/gc.js',
-	msg:    paths.gameModules + '/msg/msg.js',
-	score:  paths.gameModules + '/score/score.js'
+	manage:     paths.gameModules + '/manage/manage.js',
+	gree:       paths.gameModules + '/gree/gree.js',
+	actor:      paths.gameModules + '/actor/actor.js',
+	player:     paths.gameModules + '/player/player.js',
+	persistent: paths.gameModules + '/persistent/persistent.js',
+	npc:        paths.gameModules + '/npc/npc.js',
+	sns:        paths.gameModules + '/sns/sns.js',
+	obj:        paths.gameModules + '/obj/obj.js',
+	gc:         paths.gameModules + '/gc/gc.js',
+	msg:        paths.gameModules + '/msg/msg.js',
+	score:      paths.gameModules + '/score/score.js'
 };
 
 
