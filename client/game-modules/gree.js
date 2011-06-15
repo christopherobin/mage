@@ -39,7 +39,7 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 {
 	var knownUsers = [];
 	var unknownActorIds = [];
-
+	
 	if (typeof greepf !== 'undefined' && greepf.requestThumbnail)
 	{
 		var len = actorIds.length;
