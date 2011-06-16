@@ -138,8 +138,8 @@ exports.delRelationRequest = function(state, requestId, cb)
 		var params = [requestId];
 
 		state.datasources.db.exec(sql, params, null, function(error, info) {
-			state.emit(request.actor,       'sns.relationrequest.del', { id: requestId });
-			state.emit(request.targetActor, 'sns.relationrequest.del', { id: requestId });
+			state.emit(request.actor,       'sns.relationrequest.del', { id: requestId, actorId: request.targetActor });
+			state.emit(request.targetActor, 'sns.relationrequest.del', { id: requestId, actorId: request.actor });
 
 			cb();
 		});
