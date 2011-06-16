@@ -1,6 +1,7 @@
 exports.userCommands = {
-	buyItem:  __dirname + '/usercommands/buyItem.js',
-	buyItems: __dirname + '/usercommands/buyItems.js'
+	buyItem:     __dirname + '/usercommands/buyItem.js',
+	buyItems :   __dirname + '/usercommands/buyItems.js',
+	getAllItems: __dirname + '/usercommands/getAllItems.js'
 };
 
 
@@ -74,12 +75,20 @@ exports.getCurrencyId = function(state, identifier, cb)
 
 exports.getItems = function(state, itemIds, cb)
 {
-	var qm = itemIds.map(function() { return '?'; }).join(', ');
+	// if no itemIds given, all items will be returned
 
-	var sql = 'SELECT i.id, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id WHERE i.id IN (' + qm + ')';
-	var params = [].concat(itemIds);	// need to copy because mysql extension kills the original
+	var sql = 'SELECT i.id, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id';
+	var params = [];
+	var qm = null;
 
-	state.datasources.db.getMany(sql, params, null, function(error, rows) {
+	if (itemIds)
+	{
+		qm = itemIds.map(function() { return '?'; }).join(', ');
+		sql += ' WHERE i.id IN (' + qm + ')';
+		params = params.concat(itemIds);
+	}
+
+	state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 		if (error) return cb(error);
 
 		// make item objects
@@ -99,10 +108,13 @@ exports.getItems = function(state, itemIds, cb)
 
 		// for each item, get data
 
-		sql = 'SELECT itemId, property, language, type, value FROM shop_item_data WHERE itemId IN (' + qm + ')';
-		params = [].concat(itemIds);    // need to copy because mysql extension kills the original
+		sql = 'SELECT itemId, property, language, type, value FROM shop_item_data';
+		if (qm)
+		{
+			sql += ' WHERE itemId IN (' + qm + ')';
+		}
 
-		state.datasources.db.getMany(sql, params, null, function(error, rows) {
+		state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 			if (error) return cb(error);
 
 			var len = rows.length;
@@ -117,10 +129,13 @@ exports.getItems = function(state, itemIds, cb)
 
 			// for each item, get object instantiation info
 
-			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object WHERE itemId IN (' + qm + ')';
-			params = [].concat(itemIds);
+			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object';
+			if (qm)
+			{
+				sql += ' WHERE itemId IN (' + qm + ')';
+			}
 
-			state.datasources.db.getMany(sql, params, null, function(error, rows) {
+			state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 				if (error) return cb(error);
 
 				var len = rows.length;
