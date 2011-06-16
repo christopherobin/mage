@@ -25,11 +25,11 @@ PropertyMap.unserialize = function(type, value)
 			break;
 
 		case 'number':
-			value = new Number(value);
+			value = parseFloat(value);
 			break;
 
 		case 'boolean':
-			value = (value == 'false' || value == '0') ? false : new Boolean(value);
+			value = (value === 'false' || value === '0' || value === '') ? false : true
 			break;
 
 		// string remains a string

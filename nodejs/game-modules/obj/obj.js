@@ -26,6 +26,13 @@ exports.userCommands = {
 };
 
 
+exports.hooks = {
+	// chooseObjectCollections returns: [ { id: 3, slot: 5 }, { id: 10 } ]
+
+	chooseObjectCollections: function(state, objectName, cb) { return state.error(null, 'obj.hooks.chooseObjectCollections not defined.', cb); }
+};
+
+
 var allClassesMap = {};
 var allClassesArr = [];
 
@@ -164,11 +171,14 @@ exports.getActorObject = function(state, ownerId, objectId, cb)
 };
 
 
-exports.addObject = function(state, collections, name, weight, propertyMap, cb)
+exports.addObject = function(state, collections, name, weight, propertyMap, tags, quantity, cb)
 {
 	// collections: [ { id: 3, slot: 5 }, { id: 10 } ]
 
-	var objectId = null;
+	var objectIds = [];
+	var objLen = 0;
+
+	if (!quantity) quantity = 1;
 
 	// check class definition for "name", so that if it exists, we can apply its logic to this new object
 
@@ -184,7 +194,8 @@ exports.addObject = function(state, collections, name, weight, propertyMap, cb)
 		{
 			// augment data with class data
 
-			propertyMap.fillRequirements(objClass.data, function(prop) { return prop.meta.behavior === 'copy'; });
+			// propertyMap.fillRequirements(objClass.data, function(prop) { return prop.meta.behavior === 'copy'; });
+			propertyMap.importFromMap(objClass.data, true, tags, function(prop) { return prop.meta.behavior === 'copy'; });
 		}
 	}
 
@@ -196,13 +207,23 @@ exports.addObject = function(state, collections, name, weight, propertyMap, cb)
 			// create the object
 
 			var sql = 'INSERT INTO obj_object (name, weight) VALUES (?, ?)';
-			state.datasources.db.exec(sql, [name, weight], null, callback);
-		},
-		function(info, callback)
-		{
-			// remember the ID
 
-			objectId = info.insertId;
+			var count = 0;
+			async.whilst(
+				function() { return count < quantity; },
+				function(subcallback) {
+					count++;
+					state.datasources.db.exec(sql, [name, weight], null, function(error, info) {
+						if (!error) objectIds.push(info.insertId);
+						subcallback(error);
+					});
+				},
+				callback
+			);
+		},
+		function(callback)
+		{
+ 			objLen = objectIds.length;
 
 			// store properties
 
@@ -210,29 +231,36 @@ exports.addObject = function(state, collections, name, weight, propertyMap, cb)
 			var params = [];
 
 			var props = propertyMap.getAllFlat();
-			var len = props.length;
+			var propsLen = props.length;
 
-			for (var i=0; i < len; i++)
+			for (var j=0; j < objLen; j++)
 			{
-				var prop = props[i];
+				var objectId = objectIds[j];
 
-				records.push('(?, ?, ?, ?, ?)');
-				params.push(objectId, prop.property, prop.language || '', prop.type, prop.value);
+				for (var i=0; i < propsLen; i++)
+				{
+					var prop = props[i];
+
+					records.push('(?, ?, ?, ?, ?)');
+					params.push(objectId, prop.property, prop.language || '', prop.type, prop.value);
+				}
 			}
 
 			if (records.length > 0)
 			{
 				var sql = 'INSERT INTO obj_object_data VALUES ' + records.join(', ');
-				state.datasources.db.exec(sql, params, null, callback);
+				state.datasources.db.exec(sql, params, null, function(error) { callback(error); });
 			}
 			else
-				callback(null, null);
+				callback();
 		},
-		function(info, callback)
+		function(callback)
 		{
 			// store collection links
 
-			if (collections.length == 0)
+			var colLen = collections.length;
+
+			if (colLen == 0)
 			{
 				callback();
 				return;
@@ -247,44 +275,49 @@ exports.addObject = function(state, collections, name, weight, propertyMap, cb)
 				var records = [];
 				var params = [];
 
-				for (var i=0; i < collections.length; i++)
+				for (var j=0; j < objLen; j++)
 				{
-					var coll = collections[i];
+					var objectId = objectIds[j];
 
-					records.push('(?, ?, ?)');
-					params.push(coll.id);
-					params.push(objectId);
-					params.push((coll.slot === undefined) ? null : coll.slot);
+					for (var i=0; i < colLen; i++)
+					{
+						var coll = collections[i];
 
-					// emit everything that happens to the owner
+						records.push('(?, ?, ?)');
+						params.push(coll.id);
+						params.push(objectId);
+						params.push((coll.slot === undefined || j > 0) ? null : coll.slot);		// if multiple instances, then we only save the slot on the first object
 
-					ownedCollections.forEach(function(row) {
-						if (row.id != coll.id) return;
+						// emit everything that happens to the owner
 
-						// new object
+						ownedCollections.forEach(function(row) {
+							if (row.id != coll.id) return;
 
-						var obj = {
-							id: objectId,
-							name: name,
-							weight: weight
-						};
+							// new object
 
-						if (propertyMap)
-							obj.data = propertyMap.getAll(row.language);
+							var obj = {
+								id: objectId,
+								name: name,
+								weight: weight
+							};
 
-						state.emit(row.owner, 'obj.object.add', obj);
+							if (propertyMap)
+								obj.data = propertyMap.getAll(row.language);
 
-						// collection/object link
+							state.emit(row.owner, 'obj.object.add', obj);
 
-						var co = { objectId: objectId, collectionId: coll.id };
+							// collection/object link
 
-						if (coll.slot !== undefined && coll.slot !== null)
-						{
-							co.slot = coll.slot;
-						}
+							var co = { objectId: objectId, collectionId: coll.id };
 
-						state.emit(row.owner, 'obj.collection.object.add', co);
-					});
+							if (coll.slot !== undefined && coll.slot !== null)
+							{
+								co.slot = coll.slot;
+							}
+
+							state.emit(row.owner, 'obj.collection.object.add', co);
+						});
+					}
 				}
 
 				if (records.length > 0)
@@ -300,7 +333,7 @@ exports.addObject = function(state, collections, name, weight, propertyMap, cb)
 	function(error) {
 		if (error) return cb(error);
 
-		cb(null, objectId);
+		cb(null, objectIds);
 	});
 };
 
@@ -659,7 +692,7 @@ exports.getObjectById = function(state, objectId, cb)
 	state.datasources.db.getOne(query, [objectId], false, null, cb);
 };
 
- 
+
 exports.getClassByPropertyValues = function(state, property, values, cb)
 {
 	// values acts as an OR

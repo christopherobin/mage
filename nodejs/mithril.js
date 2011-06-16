@@ -32,6 +32,7 @@ var coreLibraries = {
 
 var coreModules = {
 	manage:     paths.gameModules + '/manage/manage.js',
+	shop:       paths.gameModules + '/shop/shop.js',
 	gree:       paths.gameModules + '/gree/gree.js',
 	actor:      paths.gameModules + '/actor/actor.js',
 	player:     paths.gameModules + '/player/player.js',
@@ -128,22 +129,30 @@ exports.setup = function(pathConfig, cb)
 
 	// expose modules
 
-	function loadModule(state, name, path, callback)
-	{
+	modules.forEach(function(info) {
+		var name = info[0];
+		var path = info[1];
+
 		exports.core.logger.info('Exposing module ' + name);
 
-		var mod = require(path);
+		exports[name] = exports.core.modules[name] = require(path);
+	});
 
-		exports[name] = exports.core.modules[name] = mod;
+
+	// setup modules
+
+	function setupModule(state, name, cb)
+	{
+		var mod = exports.core.modules[name];
 
 		if (mod.setup)
 		{
 			exports.core.logger.info('Setting up module ' + name);
 
-			mod.setup(state, callback);
+			mod.setup(state, cb);
 		}
 		else
-			callback();
+			cb();
 	}
 
 	var state = new exports.core.state.State;
@@ -151,7 +160,7 @@ exports.setup = function(pathConfig, cb)
 	async.forEachSeries(
 		modules,
 		function(mod, callback) {
-			loadModule(state, mod[0], mod[1], callback);
+			setupModule(state, mod[0], callback);
 		},
 		function(error) {
 			state.close();
@@ -249,7 +258,7 @@ exports.start = function()
 				var p = params[i].split('=', 2);
 				if (p.length == 2)
 				{
-					result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+					result[decodeURIComponent(p[0]).replace(/\+/g, ' ')] = decodeURIComponent(p[1]).replace(/\+/g, ' ');
 				}
 			}
 		}

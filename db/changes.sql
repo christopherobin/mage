@@ -252,5 +252,115 @@ CREATE TABLE `persistent_data` (
 ENGINE = InnoDB;
 
 
+-- 2011-06-15: class name length restriction
+
+ALTER TABLE `obj_class` CHANGE `name` `name` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `obj_object` CHANGE `name` `name` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `obj_object` DROP INDEX `key_name`, ADD INDEX `key_name` ( `name` ( 20 ) );
+
+
+-- 2011-06-16: shop
+
+CREATE TABLE `shop_purchase` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `playerId` INT UNSIGNED NOT NULL ,
+  `forActorId` INT UNSIGNED NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  `purchaseTime` INT UNSIGNED ,
+  `status` ENUM('new','paid','cancelled','expired') NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_shop_purchase_playerId` (`playerId` ASC) ,
+  INDEX `fk_shop_purchase_forActorId` (`forActorId` ASC) ,
+  CONSTRAINT `fk_shop_purchase_playerId` FOREIGN KEY (`playerId` ) REFERENCES `player` (`actor` ) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_shop_purchase_forActorId` FOREIGN KEY (`forActorId` ) REFERENCES `actor` (`id` ) ON DELETE RESTRICT ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `shop_currency` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `identifier` VARCHAR(20) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `identifier_UNIQUE` (`identifier` ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `shop_item` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `identifier` VARCHAR(255) NOT NULL ,
+  `status` ENUM('visible','invisible','unavailable') NOT NULL ,
+  `sortIndex` INT UNSIGNED NOT NULL ,
+  `currencyId` INT UNSIGNED NOT NULL ,
+  `unitPrice` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_shop_item_currencyId` (`currencyId` ASC) ,
+  CONSTRAINT `fk_shop_item_currencyId` FOREIGN KEY (`currencyId` ) REFERENCES `shop_currency` (`id` ) ON DELETE RESTRICT ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `shop_item_data` (
+  `itemId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`itemId`, `property`, `language`) ,
+  INDEX `fk_shop_item_data_itemId` (`itemId` ASC) ,
+  CONSTRAINT `fk_shop_item_data_itemId` FOREIGN KEY (`itemId` ) REFERENCES `shop_item` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `shop_purchase_item` (
+  `purchaseId` INT UNSIGNED NOT NULL ,
+  `itemId` INT UNSIGNED NOT NULL ,
+  `currencyId` INT UNSIGNED NOT NULL ,
+  `unitPrice` INT UNSIGNED NOT NULL ,
+  `quantity` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`purchaseId`, `itemId`) ,
+  INDEX `fk_shop_purchase_item_purchaseId` (`purchaseId` ASC) ,
+  INDEX `fk_shop_purchase_item_itemId` (`itemId` ASC) ,
+  INDEX `fk_shop_purchase_item_currencyId` (`currencyId` ASC) ,
+  CONSTRAINT `fk_shop_purchase_item_purchaseId` FOREIGN KEY (`purchaseId` ) REFERENCES `shop_purchase` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_shop_purchase_item_itemId` FOREIGN KEY (`itemId` ) REFERENCES `shop_item` (`id` ) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_shop_purchase_item_currencyId` FOREIGN KEY (`currencyId` ) REFERENCES `shop_currency` (`id` ) ON DELETE RESTRICT ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `shop_item_object` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `itemId` INT UNSIGNED NOT NULL ,
+  `className` VARCHAR(50) NOT NULL ,
+  `quantity` INT UNSIGNED NOT NULL ,
+  `tags` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_shop_item_object` (`itemId` ASC) ,
+  CONSTRAINT `fk_shop_item_object` FOREIGN KEY (`itemId` ) REFERENCES `shop_item` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-06-16: gree payment
+
+CREATE TABLE `gree_payment` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `playerId` INT UNSIGNED NOT NULL ,
+  `paymentId` VARCHAR(50) NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  `orderedTime` INT UNSIGNED NULL ,
+  `status` ENUM('new','paid','cancelled','expired') NOT NULL ,
+  `shopPurchaseId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_gree_payment_playerId` (`playerId` ASC) ,
+  INDEX `fk_gree_payment_shopPurchaseId` (`shopPurchaseId` ASC) ,
+  INDEX `key_paymentId` (`paymentId`(20) ASC) ,
+  CONSTRAINT `fk_gree_payment_playerId` FOREIGN KEY (`playerId` ) REFERENCES `gree_user` (`playerId` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_gree_payment_shopPurchaseId` FOREIGN KEY (`shopPurchaseId` ) REFERENCES `shop_purchase` (`id` ) ON DELETE RESTRICT ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `gree_payment_item` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `paymentId` INT UNSIGNED NOT NULL ,
+  `description` VARCHAR(255) NOT NULL ,
+  `unitPriceCoin` INT UNSIGNED NOT NULL ,
+  `quantity` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_gree_payment_item_paymentId` (`paymentId` ASC) ,
+  CONSTRAINT `fk_gree_payment_item_paymentId` FOREIGN KEY (`paymentId` ) REFERENCES `gree_payment` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 

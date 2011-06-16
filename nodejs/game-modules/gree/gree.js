@@ -14,6 +14,12 @@ exports.onLogin = null;		// function(state, playerId, isNewPlayer, cb) { ... }	-
 exports.onLoginFail = null;	// function(cb) { ... }						-> cb('Sorry');
 
 
+const PAYMENT_NEW = 1;
+const PAYMENT_PAID = 2;
+const PAYMENT_CANCELLED = 3;
+const PAYMENT_EXPIRED = 4;
+
+
 exports.setup = function(state, cb)
 {
 	var cfg = mithril.core.config.api.gree;
@@ -29,6 +35,19 @@ exports.setup = function(state, cb)
 	}
 
 	oauth = new CustomOAuth(cfg.endpoint, cfg.appId, cfg.consumer);
+
+	if (mithril.shop)
+	{
+		mithril.shop.enforceCurrency(state, 'greecoin', { validate: exports.paymentValidate, start: exports.paymentStart }, cb);
+	}
+	else
+		cb();
+};
+
+
+exports.paymentValidate = function(state, totalPrice, cb)
+{
+	// We cannot guess the total available coin, so we allow any transaction
 
 	cb();
 };
@@ -47,6 +66,8 @@ exports.handleHttpRequest = function(request, path, params, cb)
 		exports.tryLogin(state, request, path, params, function(error, user, playerId) {
 			if (error)
 			{
+				mithril.core.logger.error('Authentication failed:', error);
+
 				state.close();
 
 				if (exports.onLoginFail)
@@ -88,6 +109,17 @@ exports.handleHttpRequest = function(request, path, params, cb)
 		});
 		return;
 	}
+
+
+	// payment confirmation
+
+	if (path == apiPaths.paymentConfirm)
+	{
+		exports.paymentConfirm(request, path, params, function() { cb(200, 'OK'); });
+
+		return;
+	}
+
 
 	// gadget.xml request
 
@@ -218,6 +250,141 @@ exports.getUserIds = function(state, actorIds, cb)
 };
 
 
+exports.paymentStart = function(state, purchase, cb)
+{
+	// Initiates the payment
+
+	// prepare the data
+
+	var message = mithril.shop.hooks.getGenericPurchaseMessage(state.language());
+
+	var items = [];
+
+	for (var itemId in purchase.items)
+	{
+		var item = purchase.items[itemId];
+
+		items.push({
+			itemId: item.id,
+			itemName: item.data.getOne('name', state.language(), null, null, 'item'),
+			unitPrice: item.unitPrice,
+			quantity: item.quantity,
+			imageUrl: item.data.getOne('imageUrl', state.language(), null, null, null),
+			description: item.data.getOne('desc', state.language(), null, null, '')
+		});
+	}
+
+	exports.resolvePlayer(state, state.actorId, function(error, user) {
+		if (error) return cb(error);
+
+		exports.rest.startPayment(state, user, purchase, message, items, cb);
+	});
+};
+
+
+var paymentPaid = function(state, paymentId, orderedTime, shopPurchaseId, cb)
+{
+	var sql = 'UPDATE gree_payment SET status = ?, orderedTime = ? WHERE id = ?';
+	var params = ['paid', orderedTime, paymentId];
+
+	state.datasources.db.exec(sql, params, null, function(error) {
+		if (error) return cb(error);
+
+		mithril.shop.purchasePaid(state, shopPurchaseId, cb);
+	});
+};
+
+
+var paymentCancelled = function(state, paymentId, shopPurchaseId, cb)
+{
+	var sql = 'UPDATE gree_payment SET status = ? WHERE id = ?';
+	var params = ['cancelled', paymentId];
+
+	state.datasources.db.exec(sql, params, null, function(error) {
+		if (error) return cb(error);
+
+		mithril.shop.purchaseCancelled(state, shopPurchaseId, cb);
+	});
+};
+
+
+var paymentExpired = function(state, paymentId, shopPurchaseId, cb)
+{
+	var sql = 'UPDATE gree_payment SET status = ? WHERE id = ?';
+	var params = ['expired', paymentId];
+
+	state.datasources.db.exec(sql, params, null, function(error) {
+		if (error) return cb(error);
+
+		mithril.shop.purchaseExpired(state, shopPurchaseId, cb);
+	});
+};
+
+
+exports.paymentConfirm = function(request, path, params, cb)
+{
+	var state = new mithril.core.state.State;
+
+	var callback = function(error, response) {
+		state.close();
+		cb(error, response);
+	};
+
+	if (!mithril.shop)
+	{
+		return state.error(null, 'Mithril module shop not found.', callback);
+	}
+
+	if (!oauth.isValidAppId(params.opensocial_app_id) || !oauth.isValidSignature(request.method, 'http://' + request.headers.host + path, params, request.headers.authorization))
+	{
+		return state.error(null, 'OAuth failed.', callback);
+	}
+
+	var paymentStatus = ~~params.status;
+	var greePaymentId = params.paymentId;
+	var userId = params.opensocial_viewer_id;
+
+	if ([PAYMENT_PAID, PAYMENT_CANCELLED, PAYMENT_EXPIRED].indexOf(paymentStatus) == -1)
+	{
+		return state.error(null, 'Unrecognized payment status: ' + params.status, callback);
+	}
+
+
+	var sql = 'SELECT gp.id, gp.playerId, gp.shopPurchaseId FROM gree_payment AS gp JOIN gree_user AS u ON u.playerId = gp.playerId WHERE gp.paymentId = ? AND u.viewerId = ?';
+	var params = [greePaymentId, userId];
+
+	state.datasources.db.getOne(sql, params, true, null, function(error, row) {
+		if (error) return callback(error);
+
+		var paymentId = row.id;
+		var playerId = row.playerId;
+		var shopPurchaseId = row.shopPurchaseId;
+
+		state.actorId = playerId;
+
+		switch (paymentStatus)
+		{
+			case PAYMENT_PAID:
+				var orderedTime = params.orderedTime ? ~~(Date.parse(params.orderedTime) / 1000) : mithril.core.time;
+				paymentPaid(state, paymentId, orderedTime, shopPurchaseId, callback);
+				break;
+
+			case PAYMENT_CANCELLED:
+				paymentCancelled(state, paymentId, shopPurchaseId, callback);
+				break;
+
+			case PAYMENT_EXPIRED:
+				paymentExpired(state, paymentId, shopPurchaseId, callback);
+				break;
+
+			default:
+				state.error(null, 'Unrecognized payment status: ' + paymentStatus, callback);
+				break;
+		}
+	});
+};
+
+
 // GREE REST API
 
 exports.rest = {};
@@ -235,93 +402,6 @@ exports.rest.getUserInfo = function(state, user, aboutUserId, fields, cb)
 	}
 };
 
-/*
-exports.lookupPeopleIds = function(state, about, cb)
-{
-	// about: { users: { userId: null, userId: actorId, ... }, actors: { actorId: userId, actorId: null, ... } }
-	// fills in the blanks in about.actors and about.users
-	// guarantees to yield all mentioned users and actors, in both about.actors and about.users, mapped in both directions.
-
-	if (!about) return cb();
-
-	var actorIds = [];
-	var userIds = [];
-
-	if (!about.actors) about.actors = {};
-	if (!about.users)  about.users  = {};
-
-	for (var actorId in about.actors)
-	{
-		var userId = about.actors[actorId];
-
-		actorId = ~~actorId;
-
-		if (userId)
-			about.users[userId] = actorId;
-		else
-		{
-			if (users[actorId])		// module wide cache
-				about.users[users[actorId].viewerId] = actorId;
-			else
-				actorIds.push(actorId);
-		}
-	}
-
-	for (var userId in about.users)
-	{
-		var actorId = about.users[userId];
-
-		userId = ~~userId;
-
-		if (actorId)
-			about.actors[actorId] = userId;
-		else
-			userIds.push(userId);
-	}
-
-	if (actorIds.length == 0 && userIds.length == 0)
-	{
-		// nothing to lookup
-
-		return cb();
-	}
-
-	// lookup all missing data
-
-	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE ';
-	var where = [];
-	var params = [];
-
-	if (actorIds.length > 0)
-	{
-		where.push('playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')');
-		params = params.concat(actorIds);
-	}
-
-	if (userIds.length > 0)
-	{
-		where.push('viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')');
-		params = params.concat(userIds);
-	}
-
-	sql += where.join(' OR ');
-
-	state.datasources.db.getMany(sql, params, null, function(error, results) {
-		if (error) return cb(error);
-
-		var len = results.length;
-		for (var i=0; i < len; i++)
-		{
-			var row = results[i];
-
-			about.actors[row.playerId] = row.viewerId;
-			about.users[row.viewerId] = row.playerId;
-		}
-
-		cb();
-	});
-};
-*/
 
 exports.rest.getUsersInfo = function(state, user, aboutUserId, group, options, cb)
 {
@@ -421,24 +501,69 @@ exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 	});
 };
 
-/*
-exports.rest.getPeople = function(state, user, actorIds, options, cb)
+
+exports.rest.startPayment = function(state, user, purchase, message, items, cb)
 {
-	var about = { actors: {} };
+	var url = 'http://' + mithril.core.config.server.expose.host + ':' + mithril.core.config.server.expose.port;
 
-	var len = actorIds.length;
-	for (var i=0; i < len; i++)
-	{
-		about.actors[actorIds[i]] = null;
-	}
+	var cfg = mithril.core.config.api.gree;
 
-	exports.lookupPeopleIds(state, about, function(error) {
-		if (error) return cb(error);
+	var postData = {
+		callbackUrl:   url + apiPaths.paymentConfirm,
+		finishPageUrl: url + apiPaths.login,
+		message:       message,
+		paymentItems:  items
+	};
 
-		exports.rest.getUsersInfo(state, user, about, 'all', true, options, cb);
+	exports.send('POST', user, 'payment/@me/@self/@app', null, postData, function(error, statusCode, result) {
+
+		if (error) return state.error(null, 'Received error ' + error + ' during payment attempt.', cb);
+
+		if (!result.entry || !result.entry[0]) return state.error(null, 'Did not receive error, but also did not receive payment feedback from GREE.', cb);
+
+		var payment = result.entry[0];
+
+
+		// now store the payment in the GREE model
+
+		var sql = 'INSERT INTO gree_payment VALUES(?, ?, ?, ?, ?, ?, ?)';
+		var params = [null, state.actorId, payment.paymentId, mithril.core.time, null, 'new', purchase.id];
+
+		state.datasources.db.exec(sql, params, null, function(error, info) {
+			if (error) return cb(error);
+
+			// store payment items
+
+			var id = info.insertId;
+
+			var sql = 'INSERT INTO gree_payment_item VALUES ';
+			var values = [];
+			var params = [];
+
+			var len = items.length;
+			for (var i=0; i < len; i++)
+			{
+				var item = items[i];
+
+				values.push('(?, ?, ?, ?, ?)');
+				params.push(null, id, item.description, item.unitPrice, item.quantity);
+			}
+
+			sql += values.join(', ');
+
+			state.datasources.db.exec(sql, params, null, function(error) {
+				if (error) return cb(error);
+
+				// now return the redirect URL
+
+				cb(null, { redirect: payment.transactionUrl });
+			});
+		});
 	});
-}
-*/
+};
+
+
+// communicating with GREE
 
 exports.send = function(httpMethod, user, path, getParams, postData, cb)
 {
