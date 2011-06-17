@@ -66,8 +66,6 @@ exports.handleHttpRequest = function(request, path, params, cb)
 		exports.tryLogin(state, request, path, params, function(error, user, playerId) {
 			if (error)
 			{
-				mithril.core.logger.error('Authentication failed:', error);
-
 				state.close();
 
 				if (exports.onLoginFail)
@@ -151,22 +149,27 @@ exports.tryLogin = function(state, request, path, params, cb)
 		tokenSecret: params.oauth_token_secret
 	};
 
-	if (oauth.isValidAppId(params.opensocial_app_id) && oauth.isValidSignature(request.method, 'http://' + request.headers.host + path, params, request.headers.Authorization))
+	if (!oauth.isValidAppId(params.opensocial_app_id))
 	{
-		var sql = 'SELECT playerId FROM gree_user WHERE viewerId = ? AND token = ? AND tokenSecret = ?';
-		var params = [user.viewerId, user.token, user.tokenSecret];
-
-		state.datasources.db.getOne(sql, params, false, null, function(error, result) {
-			if (error) return cb(error);
-
-			if (result)
-				cb(null, user, result.playerId);
-			else
-				cb(null, user, null);
-		});
+		return state.error(null, 'Invalid App ID: ' + params.opensocial_app_id, cb);
 	}
-	else
-		cb(true);
+
+	if (!oauth.isValidSignature(request.method, 'http://' + request.headers.host + path, params, request.headers.Authorization))
+	{
+		return state.error(null, 'Invalid signature: ' + JSON.stringify({ method: request.method, url: 'http://' + request.headers.host + path, params: params, auth: request.headers.Authorization }), cb);
+	}
+
+	var sql = 'SELECT playerId FROM gree_user WHERE viewerId = ? AND token = ? AND tokenSecret = ?';
+	var params = [user.viewerId, user.token, user.tokenSecret];
+
+	state.datasources.db.getOne(sql, params, false, null, function(error, result) {
+		if (error) return cb(error);
+
+		if (result)
+			cb(null, user, result.playerId);
+		else
+			cb(null, user, null);
+	});
 };
 
 

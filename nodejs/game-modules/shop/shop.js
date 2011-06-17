@@ -274,60 +274,104 @@ exports.purchasePaid = function(state, purchaseId, cb)
 	// logs the paid state.
 	// creates any objects that should be spawned based on the item IDs in this purchase.
 
-	var sql = 'UPDATE shop_purchase SET status = ?, purchaseTime = ? WHERE id = ? AND status = ?';
-	var params = ['paid', mithril.core.time, purchaseId, 'new'];
+	var lastPurchase = {};
 
-	state.datasources.db.exec(sql, params, null, function(error) {
-		if (error) return cb(error);
+	async.series([
+		function(callback) {
+			// set purchase state to paid
 
-		// fetch item IDs
+			var sql = 'UPDATE shop_purchase SET status = ?, purchaseTime = ? WHERE id = ? AND status = ?';
+			var params = ['paid', mithril.core.time, purchaseId, 'new'];
 
-		var sql = 'SELECT itemId FROM shop_purchase_item WHERE purchaseId = ?';
-		var params = [purchaseId];
+			state.datasources.db.exec(sql, params, null, callback);
+		},
+		function(callback) {
+			// instantiate any objects that need to be created
 
-		state.datasources.db.getMany(sql, params, null, function(error, rows) {
-			if (error) return cb(error);
+			// fetch item IDs
 
-			var itemIds = rows.map(function(row) { return row.itemId; });
+			var sql = 'SELECT itemId, quantity FROM shop_purchase_item WHERE purchaseId = ?';
+			var params = [purchaseId];
 
-			// fetch items
+			state.datasources.db.getMany(sql, params, null, function(error, rows) {
+				if (error) return callback(error);
 
-			exports.getItems(state, itemIds, function(error, items) {
-				if (error) return cb(error);
+				var itemIds = rows.map(function(row) { return row.itemId; });
 
-				var itemsArr = [];
-				for (var itemId in items) itemsArr.push(items[itemId]);
-
-				console.dir(itemIds);
-
-				if (itemsArr.length == 0)
+				var itemQuantities = {};
+				for (var i=0; i < rows.length; i++)
 				{
-					return cb();
+					itemQuantities[rows[i].itemId] = ~~rows[i].quantity || 1;
 				}
 
-				// instantiate objects
+				// fetch items
 
-				async.forEachSeries(
-					itemsArr,
-					function(item, callback) {
-						async.forEachSeries(
-							item.objects,
-							function(object, subcallback) {
-								mithril.obj.hooks.chooseObjectCollections(state, object.className, function(error, collections) {
-									if (error) return subcallback(error);
+				exports.getItems(state, itemIds, function(error, items) {
+					if (error) return callback(error);
 
-									var tags = (object.tags.length > 0) ? object.tags.split(',') : [];
+					var itemsArr = [];
+					for (var itemId in items)
+					{
+						itemsArr.push(items[itemId]);
+						lastPurchase[itemId] = { quantity: itemQuantities[itemId] };
+					}
 
-									mithril.obj.addObject(state, collections, object.className, null, new mithril.core.PropertyMap, tags, object.quantity, subcallback);
-								});
-							},
-							callback
-						);
-					},
-					cb
-				);
+					if (itemsArr.length == 0)
+					{
+						return callback();
+					}
+
+					// instantiate objects
+
+					async.forEachSeries(
+						itemsArr,
+						function(item, callback2) {
+							async.forEachSeries(
+								item.objects,
+								function(object, callback3) {
+									mithril.obj.hooks.chooseObjectCollections(state, object.className, function(error, collections) {
+										if (error) return callback3(error);
+
+										var tags = (object.tags.length > 0) ? object.tags.split(',') : [];
+
+										mithril.obj.addObject(state, collections, object.className, null, new mithril.core.PropertyMap, tags, object.quantity * itemQuantities[item.id], function(error, ids) {
+											if (error) return callback3(error);
+
+											if (lastPurchase[item.id].objectIds)
+											{
+												lastPurchase[item.id].objectIds = lastPurchase[item.id].objectIds.concat(ids);
+											}
+											else
+												lastPurchase[item.id].objectIds = ids;
+
+											callback3();
+										});
+									});
+								},
+								callback2
+							);
+						},
+						callback
+					);
+				});
 			});
-		});
+		},
+		function(callback) {
+			// store purchase feedback in persistent module
+
+			if (mithril.persistent)
+			{
+				var propertyMap = new mithril.core.PropertyMap;
+				propertyMap.add('lastpurchase', lastPurchase);
+
+				mithril.persistent.set(state, propertyMap, null, callback);
+			}
+			else
+				callback();
+		}
+	],
+	function(error) {
+		cb(error);
 	});
 };
 
