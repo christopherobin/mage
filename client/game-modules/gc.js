@@ -14,10 +14,9 @@ MithrilGameModGc.prototype.setup = function(cb)
 		if (params.nodeId in _this.cacheMap)
 		{
 			var node = _this.getNode(params.nodeId);
+			node.progress = params.state;
 
-			node.progress = { state: params.state, stateTime: params.stateTime };
 			params.node = node;
-
 		}
 	}, true);
 
@@ -68,7 +67,7 @@ MithrilGameModGc.prototype.getInRequirements = function(nodeId, type)
 				var cond = group[i];
 				var progress = this.cacheMap[cond.targetNode].progress;
 
-				if (!(progress && progress.state == cond.onState))
+				if (progress !== cond.onState)
 				{
 					groupRequired.push(this.cacheMap[cond.targetNode]);
 				}
