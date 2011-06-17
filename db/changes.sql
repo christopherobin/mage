@@ -375,6 +375,13 @@ ALTER TABLE `gc_node_data` ADD `type` ENUM( 'number', 'boolean', 'object', 'stri
 UPDATE `gc_node_data` SET type = 'string';
 
 
+-- 2011-06-17: history module becomes type and language aware
+
+ALTER TABLE `history_event_data` ADD `language` VARCHAR( 2 ) NOT NULL AFTER `property`,
+ADD `type` ENUM( 'number', 'boolean', 'object', 'string' ) NOT NULL AFTER `language`;
+
+ALTER TABLE `history_event_data` DROP PRIMARY KEY, ADD PRIMARY KEY ( `event` , `actor` , `property` , `language` );
+
 
 -- next change, add here.
 
