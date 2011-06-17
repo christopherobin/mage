@@ -22,17 +22,18 @@ MithrilGameModGc.prototype.setup = function(cb)
 	}, true);
 
 
-	this.mithril.io.send('gc.loadNodes', { options: { loadProgressForActor: true, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true } }, function(error, response) {
-		if (error)
-		{
-			return cb(error);
-		}
+	this.mithril.io.send('gc.loadNodes', {}, function(error, response) {
+		if (error) return cb(error);
 
-		_this.cacheMap = response;
+		_this.cacheArr = response;
 
-		for (var id in response)
+		_this.cacheMap = {};
+		var len = _this.cacheArr.length;
+		for (var i=0; i < len; i++)
 		{
-			_this.cacheArr.push(response[id]);
+			var node = _this.cacheArr[i];
+
+			_this.cacheMap[node.id] = node;
 		}
 
 		cb();

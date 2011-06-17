@@ -33,6 +33,10 @@ exports.getNode = function(nodeId)
 };
 
 
+exports.getAllNodesMap = function() { return allNodesMap; };
+exports.getAllNodesArr = function() { return allNodesArr; };
+
+
 exports.findUnreferencedNodes = function(nodesArr, connectorType)
 {
 	var referenced = [];
@@ -265,7 +269,7 @@ exports.loadNodeInformation = function(state, nodesMap, options, cb)
 
 	if (options.loadProgressForActor)
 	{
-		tasks.push(function(callback) { exports.loadNodeProgress(state, nodesMap, options.loadProgressForActor, callback); });
+		tasks.push(function(callback) { exports.loadNodeProgress(state, nodesMap, options.loadProgressForActor, true, callback); });
 	}
 
 	if (tasks.length > 0)
@@ -277,7 +281,7 @@ exports.loadNodeInformation = function(state, nodesMap, options, cb)
 };
 
 
-exports.loadNodeProgress = function(state, nodesMap, actorId, cb)
+exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 {
 	var query = 'SELECT node, state, stateTime FROM gc_progress WHERE actor = ?';
 	var params = [actorId];
@@ -292,7 +296,7 @@ exports.loadNodeProgress = function(state, nodesMap, actorId, cb)
 
 			if (row.node in nodesMap)
 			{
-				nodesMap[row.node].progress = { state: row.state, stateTime: row.stateTime };
+				nodesMap[row.node].progress = includeTime ? { state: row.state, stateTime: row.stateTime } : row.state;
 			}
 		}
 
@@ -339,7 +343,7 @@ exports.getNodesProgress = function(state, nodeIds, actorId, cb)
 
 exports.loadNodeData = function(state, nodesMap, cb)
 {
-	var query = 'SELECT node, property, value FROM gc_node_data';
+	var query = 'SELECT node, property, language, type, value FROM gc_node_data';
 	var params = [];
 
 	state.datasources.db.getMany(query, params, null, function(err, results) {
@@ -347,7 +351,7 @@ exports.loadNodeData = function(state, nodesMap, cb)
 
 		for (var id in nodesMap)
 		{
-			nodesMap[id].data = {};
+			nodesMap[id].data = new mithril.core.PropertyMap;
 		}
 
 		var len = results.length;
@@ -357,7 +361,7 @@ exports.loadNodeData = function(state, nodesMap, cb)
 
 			if (row.node in nodesMap)
 			{
-				nodesMap[row.node].data[row.property] = row.value;
+				nodesMap[row.node].data.importOne(row.property, row.type, row.value, row.language);
 			}
 		}
 

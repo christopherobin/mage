@@ -367,5 +367,14 @@ ENGINE = InnoDB;
 ALTER TABLE `obj_object` ADD `creationTime` INT UNSIGNED NOT NULL;
 
 
+-- 2011-06-17: gc_node_data becomes type and language aware
+
+ALTER TABLE `gc_node_data` ADD `language` VARCHAR( 2 ) NOT NULL AFTER `property`;
+ALTER TABLE `gc_node_data` DROP PRIMARY KEY, ADD PRIMARY KEY ( `node` , `property` , `language` );
+ALTER TABLE `gc_node_data` ADD `type` ENUM( 'number', 'boolean', 'object', 'string' ) NOT NULL AFTER `language`;
+UPDATE `gc_node_data` SET type = 'string';
+
+
+
 -- next change, add here.
 
