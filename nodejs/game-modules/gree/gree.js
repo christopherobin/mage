@@ -397,11 +397,11 @@ exports.rest.getUserInfo = function(state, user, aboutUserId, fields, cb)
 {
 	if (aboutUserId == user.viewerId)
 	{
-		this.getUsersInfo(state, user, null, 'self', false, { fields: fields }, cb);
+		this.getUsersInfo(state, user, null, 'self', { fields: fields }, cb);
 	}
 	else
 	{
-		this.getUsersInfo(state, user, aboutUserId, 'all', false, { fields: fields }, cb);
+		this.getUsersInfo(state, user, aboutUserId, 'all', { fields: fields }, cb);
 	}
 };
 
