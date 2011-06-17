@@ -158,14 +158,14 @@ exports.getClassProperty = function(className, property, language, tags, behavio
 
 exports.getActorObjects = function(state, ownerId, cb)
 {
-	var sql = "SELECT oo.id, oo.name, oo.weight, oo.appliedToObject FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
+	var sql = "SELECT oo.id, oo.name, oo.weight, oo.appliedToObject, oo.creationTime FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
 	state.datasources.db.getMany(sql, [ownerId], null, cb);
 };
 
 
 exports.getActorObject = function(state, ownerId, objectId, cb)
 {
-	var sql = "SELECT oo.id, oo.name, oo.weight, appliedToObject FROM obj_object AS oo JOIN obj_collection_object AS oco ON oo.id = oco.object JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oo.id = ? AND oc.owner = ? GROUP BY oo.id";
+	var sql = "SELECT oo.id, oo.name, oo.weight, appliedToObject, creationTime FROM obj_object AS oo JOIN obj_collection_object AS oco ON oo.id = oco.object JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oo.id = ? AND oc.owner = ? GROUP BY oo.id";
 
 	state.datasources.db.getOne(sql, [objectId, ownerId], true, null, cb);
 };
@@ -206,14 +206,14 @@ exports.addObject = function(state, collections, name, weight, propertyMap, tags
 		{
 			// create the object
 
-			var sql = 'INSERT INTO obj_object (name, weight) VALUES (?, ?)';
+			var sql = 'INSERT INTO obj_object (name, weight, creationTime) VALUES (?, ?, ?)';
 
 			var count = 0;
 			async.whilst(
 				function() { return count < quantity; },
 				function(subcallback) {
 					count++;
-					state.datasources.db.exec(sql, [name, weight], null, function(error, info) {
+					state.datasources.db.exec(sql, [name, weight, mithril.core.time], null, function(error, info) {
 						if (!error) objectIds.push(info.insertId);
 						subcallback(error);
 					});
@@ -688,7 +688,7 @@ exports.getObjectOwners = function(state, objectId, cb)
 
 exports.getObjectById = function(state, objectId, cb)
 {
-	var query = 'SELECT name, appliedToObject, weight FROM obj_object WHERE id = ?';
+	var query = 'SELECT name, appliedToObject, weight, creationTime FROM obj_object WHERE id = ?';
 	state.datasources.db.getOne(query, [objectId], false, null, cb);
 };
 
@@ -788,7 +788,7 @@ exports.getFullCollection = function(state, collectionId, cb)
 			collection = data;
 			collection.id = collectionId;
 
-			var query = 'SELECT o.id, co.slot, o.appliedToObject, o.weight, o.name FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? ORDER BY co.slot ASC';
+			var query = 'SELECT o.id, co.slot, o.appliedToObject, o.weight, o.name, o.creationTime FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? ORDER BY co.slot ASC';
 			var params = [collectionId];
 			state.datasources.db.getMany(query, params, null, callback);
 		},

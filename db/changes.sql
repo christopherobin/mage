@@ -362,5 +362,10 @@ CREATE TABLE `gree_payment_item` (
 ENGINE = InnoDB;
 
 
+-- 2011-06-17: obj_object.creationTime
+
+ALTER TABLE `obj_object` ADD `creationTime` INT UNSIGNED NOT NULL;
+
+
 -- next change, add here.
 
