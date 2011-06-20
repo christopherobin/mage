@@ -36,7 +36,7 @@ MithrilGameModSns.prototype.setup = function(cb)
 
 	// load all sns data
 
-	this.mithril.io.send('sns.loadAll', {}, function(errors, response) {
+	this.mithril.io.send('sns.sync', {}, function(errors, response) {
 		if (errors) return cb(errors);
 
 		cache = _this.relationcache = response;
@@ -45,20 +45,24 @@ MithrilGameModSns.prototype.setup = function(cb)
 	}, true);
 };
 
+
 MithrilGameModSns.prototype.getRelations = function(type)
 {
-	return this.relationcache.relations.filter(function(relation){ return relation.type = type; });
-}
+	return this.relationcache.relations.filter(function(relation) { return relation.type = type; });
+};
+
 
 MithrilGameModSns.prototype.getRelationRequestsFrom = function(type)
 {
-	return this.relationcache.outbox.filter(function(relation){ return relation.type = type; });
-}
+	return this.relationcache.outbox.filter(function(relation) { return relation.type = type; });
+};
+
 
 MithrilGameModSns.prototype.getRelationRequestsTo = function(type)
 {
-	return this.relationcache.inbox.filter(function(relation){ return relation.type = type; });
-}
+	return this.relationcache.inbox.filter(function(relation) { return relation.type = type; });
+};
+
 
 MithrilGameModSns.prototype.requestRelation = function(type, actorId, cb) {
 	this.mithril.io.send('sns.requestRelation', { type: type, actorId: actorId }, function(err, request) {
@@ -68,12 +72,14 @@ MithrilGameModSns.prototype.requestRelation = function(type, actorId, cb) {
 	});
 };
 
+
 MithrilGameModSns.prototype.delRelationRequest = function(requestId, cb) {
 	this.mithril.io.send('sns.delRelationRequest', { requestId: requestId }, function(err,data) {
 		if (err) { if (cb) { cb(err); } return; }
 		if (cb) cb(null, data);
 	});
 };
+
 
 MithrilGameModSns.prototype.delRelation = function(relationId, cb) {
 	this.mithril.io.send('sns.delRelation', { relationId: relationId }, function(err,data) {

@@ -11,23 +11,19 @@ MithrilGameModPlayer.prototype.setup = function(cb)
 
 	this.me.actor = this.mithril.actor.me;
 
-	this.mithril.io.send('player.getPlayer', { fields: ['language'] }, function(errors, response) {
-		if (errors)
-		{
-			cb(errors);
-		}
-		else
-		{
-			_this.me.language = response.language;
-			cb();
-		}
+	this.mithril.io.send('player.sync', {}, function(errors, response) {
+		if (errors) return cb(errors);
+
+		_this.me = response.me;
+
+		cb();
 	});
 };
 
 
 MithrilGameModPlayer.prototype.myLanguage = function()
 {
-	return (this.me && this.me.language) ? this.me.language : 'JA';
+	return this.me.language || 'JA';
 };
 
 

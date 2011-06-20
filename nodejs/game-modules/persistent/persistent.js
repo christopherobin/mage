@@ -1,4 +1,5 @@
 exports.userCommands = {
+	sync:   __dirname + '/usercommands/sync.js',
 	getAll: __dirname + '/usercommands/getAll.js',
 	get:    __dirname + '/usercommands/get.js',
 	set:    __dirname + '/usercommands/set.js',

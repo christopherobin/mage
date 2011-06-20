@@ -7,10 +7,13 @@ function MithrilGameModPersistent(mithril)
 
 MithrilGameModPersistent.prototype.setup = function(cb)
 {
-	this.getAll(function(errors, data) {
+	var _this = this;
+
+	this.mithril.io.send('persistent.sync', {}, function(errors, data) {
 		if (errors) return cb(errors);
 
-		cb();
+		_this.data = data;
+		cb(null, data);
 	});
 };
 
@@ -22,7 +25,7 @@ MithrilGameModPersistent.prototype.getAll = function(cb)
 	this.mithril.io.send('persistent.getAll', {}, function(errors, data) {
 		if (errors) return cb(errors);
 
-		_this.data = data;
+		_this.data = data;	// also synchronizes the data
 		cb(null, data);
 	});
 };

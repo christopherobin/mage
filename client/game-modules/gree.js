@@ -1,16 +1,10 @@
 function MithrilGameModGree(mithril)
 {
 	this.mithril = mithril;
-	this.userIdMap = {};	// cache for friends' actorId / Gree userId
-}
-
-
-MithrilGameModGree.prototype.setup = function(cb)
-{
 	this.people = new MithrilGameModGree_People(this);
 
-	cb();
-};
+	this.userIdMap = {};	// cache for friends' actorId / Gree userId
+}
 
 
 MithrilGameModGree.prototype.actorIdToUserId = function(actorId)

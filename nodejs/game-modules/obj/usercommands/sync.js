@@ -56,7 +56,11 @@ exports.execute = function(state, p, cb)
 							returnData.objects[data[k].object].data[data[k].property] = data[k].value;
 						}
 
-						state.respond(returnData);
+						state.respond({
+							classData: mithril.obj.getAllClasses(state.language(), ['none', 'inherit'], true),
+							objectData: returnData
+						});
+
 						cb();
 					});
 				});

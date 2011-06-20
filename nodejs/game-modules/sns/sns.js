@@ -1,7 +1,7 @@
 // Social Networking Services Module.
 
 exports.userCommands = {
-	loadAll:			__dirname + '/usercommands/loadAll.js',
+	sync:				__dirname + '/usercommands/sync.js',
 	requestRelation: 	__dirname + '/usercommands/requestRelation.js',
 	delRelationRequest:	__dirname + '/usercommands/delRelationRequest.js',
 	delRelation: 		__dirname + '/usercommands/delRelation.js'

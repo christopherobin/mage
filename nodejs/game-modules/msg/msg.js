@@ -1,5 +1,5 @@
 exports.userCommands = {
-	loadInbox: __dirname + '/usercommands/loadInbox.js'
+	sync: __dirname + '/usercommands/sync.js'
 };
 
 exports.setup = function(state, cb)

@@ -9,16 +9,11 @@ MithrilGameModActor.prototype.setup = function(cb)
 {
 	var _this = this;
 
-	this.mithril.io.send('actor.getActor', {}, function(errors, result) {
-		if (errors)
-		{
-			cb(errors);
-		}
-		else
-		{
-			_this.me = result;
-			cb();
-		}
+	this.mithril.io.send('actor.sync', {}, function(errors, result) {
+		if (errors) return cb(errors);
+
+		_this.me = result.me;
+		cb();
 	});
 };
 

@@ -9,24 +9,12 @@ MithrilGameModShop.prototype.setup = function(cb)
 {
 	var _this = this;
 
-	this.getAllItems(function(errors, items) {
+	this.mithril.io.send('shop.sync', {}, function(errors, items) {
 		if (errors) return cb(errors);
 
 		_this.items = items;
 
 		cb();
-	});
-};
-
-
-MithrilGameModShop.prototype.getAllItems = function(cb)
-{
-	var _this = this;
-
-	this.mithril.io.send('shop.getAllItems', {}, function(errors, items) {
-		if (errors) return cb(errors);
-
-		cb(null, items);
 	});
 };
 

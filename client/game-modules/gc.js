@@ -21,12 +21,12 @@ MithrilGameModGc.prototype.setup = function(cb)
 	}, true);
 
 
-	this.mithril.io.send('gc.loadNodes', {}, function(error, response) {
+	this.mithril.io.send('gc.sync', {}, function(error, response) {
 		if (error) return cb(error);
 
 		_this.cacheArr = response;
-
 		_this.cacheMap = {};
+
 		var len = _this.cacheArr.length;
 		for (var i=0; i < len; i++)
 		{

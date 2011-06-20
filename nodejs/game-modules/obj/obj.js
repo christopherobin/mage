@@ -21,8 +21,7 @@ var allowedFields = {
 };
 
 exports.userCommands = {
-	getAllObjects: __dirname + '/usercommands/getAllObjects.js',
-	getAllClasses: __dirname + '/usercommands/getAllClasses.js'
+	sync: __dirname + '/usercommands/sync.js',
 };
 
 

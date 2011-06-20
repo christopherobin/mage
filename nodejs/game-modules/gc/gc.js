@@ -1,5 +1,5 @@
 exports.userCommands = {
-	loadNodes: __dirname + '/usercommands/loadNodes.js'
+	sync: __dirname + '/usercommands/sync.js'
 };
 
 

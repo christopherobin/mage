@@ -1,7 +1,7 @@
 exports.userCommands = {
-	buyItem:     __dirname + '/usercommands/buyItem.js',
-	buyItems :   __dirname + '/usercommands/buyItems.js',
-	getAllItems: __dirname + '/usercommands/getAllItems.js'
+	sync:      __dirname + '/usercommands/sync.js',
+	buyItem:   __dirname + '/usercommands/buyItem.js',
+	buyItems : __dirname + '/usercommands/buyItems.js'
 };
 
 

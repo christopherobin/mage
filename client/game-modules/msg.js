@@ -11,16 +11,11 @@ MithrilGameModMsg.prototype.setup = function(cb)
 
 	this.mithril.io.on('msg.inbox.add', function(path, data) { _this.onInboxAdd(path, data); }, true);
 
-	this.mithril.io.send('msg.loadInbox', {}, function(errors, result) {
-		if (errors)
-		{
-			cb(errors);
-		}
-		else
-		{
-			_this.resetInbox(result);
-			cb();
-		}
+	this.mithril.io.send('msg.sync', {}, function(errors, result) {
+		if (errors) return cb(errors);
+
+		_this.resetInbox(result.inbox);
+		cb();
 	});
 };
 

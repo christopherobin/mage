@@ -164,26 +164,31 @@ MithrilGameModObj.prototype.setup = function(cb)
 
 	// retrieve all actor's collections
 
-	this.mithril.io.send('obj.getAllObjects', {}, function(errors, response) {
+	this.mithril.io.send('obj.sync', {}, function(errors, response) {
 		if (errors) { return cb(errors); }
 
-		// cache results
+		// class data
+
+		_this.classesMap = response.classData;
+
+		// object data
+
 		_this.playerCache = {
 			collections: [],
 			objects: [],
 			objectIds: {}
 		};
 
-		for (var objectId in response.objects)
+		for (var objectId in response.objectData.objects)
 		{
-			_this.playerCache.objects.push(response.objects[objectId]);
+			_this.playerCache.objects.push(response.objectData.objects[objectId]);
 		}
 
-		_this.playerCache.objectIds = response.objects;
+		_this.playerCache.objectIds = response.objectData.objects;
 
-		for (var collectionId in response.collections)
+		for (var collectionId in response.objectData.collections)
 		{
-			var info = response.collections[collectionId];
+			var info = response.objectData.collections[collectionId];
 			var collection = new MithrilGameModObj_Collection(info);
 
 			var len = info.members.length;
@@ -197,13 +202,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 			_this.playerCache.collections.push(collection);
 		}
 
-		_this.mithril.io.send('obj.getAllClasses', { behaviors: ['none','inherit'], collapseValues: true }, function(errors, response) {
-			if (errors) return cb(errors);
-
-			_this.classesMap = response;
-
-			cb();
-		});
+		cb();
 	});
 };
 

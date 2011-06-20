@@ -1,4 +1,5 @@
 exports.userCommands = {
+	sync:      __dirname + '/usercommands/sync.js',
 	getPlayer: __dirname + '/usercommands/getPlayer.js'
 };
 
