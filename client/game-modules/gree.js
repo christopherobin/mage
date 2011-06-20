@@ -120,8 +120,6 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 
 					callback(thumbnails);
 				});
-
-				callback(thumbnails);
 			});
 		});
 	}

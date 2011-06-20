@@ -258,7 +258,8 @@ exports.start = function()
 				var p = params[i].split('=', 2);
 				if (p.length == 2)
 				{
-					result[decodeURIComponent(p[0]).replace(/\+/g, ' ')] = decodeURIComponent(p[1]).replace(/\+/g, ' ');
+					result[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+//					result[decodeURIComponent(p[0]).replace(/\+/g, ' ')] = decodeURIComponent(p[1]).replace(/\+/g, ' ');	// "+" to " " makes base64 encoded signature fail
 				}
 			}
 		}

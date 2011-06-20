@@ -208,6 +208,7 @@ MithrilGameModObj.prototype.setup = function(cb)
 };
 
 
+
 MithrilGameModObj.prototype.getObjectProperty = function(obj, property)
 {
 	if (obj.data && property in obj.data)
