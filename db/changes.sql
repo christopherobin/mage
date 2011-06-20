@@ -383,5 +383,12 @@ ADD `type` ENUM( 'number', 'boolean', 'object', 'string' ) NOT NULL AFTER `langu
 ALTER TABLE `history_event_data` DROP PRIMARY KEY, ADD PRIMARY KEY ( `event` , `actor` , `property` , `language` );
 
 
+-- 2011-06-20: NPC module data table becomes type aware
+
+ALTER TABLE `npc_data` ADD `type` ENUM( 'number', 'boolean', 'object', 'string' ) NOT NULL AFTER `language`;
+UPDATE `npc_data` SET `type` = 'string';
+
+
+
 -- next change, add here.
 

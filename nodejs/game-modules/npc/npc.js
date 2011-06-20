@@ -24,7 +24,7 @@ exports.loadNpcs = function(state, cb)
 	state.datasources.db.getMany(sql, params, null, function(error, npcs) {
 		if (error) return cb(error);
 
-		sql = 'SELECT npc, property, language, value FROM npc_data';
+		sql = 'SELECT npc, property, language, type, value FROM npc_data';
 		params = [];
 
 		state.datasources.db.getMany(sql, params, null, function(error, data) {
@@ -35,7 +35,7 @@ exports.loadNpcs = function(state, cb)
 
 			for (var i=0; i < npcsLen; i++)
 			{
-				npcs[i].data = new mithril.core.PropertyMap();
+				npcs[i].data = new mithril.core.PropertyMap;
 			}
 
 			for (var i=0; i < dataLen; i++)
@@ -46,7 +46,7 @@ exports.loadNpcs = function(state, cb)
 				{
 					if (npcs[j].actor != prop.npc) continue;
 
-					npcs[j].data.add(prop.property, prop.language, prop.value);
+					npcs[j].data.importOne(prop.property, prop.type, prop.language, prop.value);
 				}
 			}
 
