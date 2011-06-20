@@ -31,18 +31,23 @@ MithrilGameModPersistent.prototype.getAll = function(cb)
 };
 
 
-MithrilGameModPersistent.prototype.get = function(properties, cb)
+MithrilGameModPersistent.prototype.get = function(properties, removeAfterGet, cb)
 {
 	var _this = this;
 
 	if (!(properties instanceof Array)) properties = [properties];
 
-	this.mithril.io.send('persistent.get', { properties: properties }, function(errors, data) {
+	this.mithril.io.send('persistent.get', { properties: properties, removeAfterGet: !!removeAfterGet }, function(errors, data) {
 		if (errors) return cb(errors);
 
 		for (var key in data)
 		{
-			_this.data[key] = data[key];
+			if (removeAfterGet)
+			{
+				delete _this.data[key];
+			}
+			else
+				_this.data[key] = data[key];
 		}
 
 		cb(null, data);
