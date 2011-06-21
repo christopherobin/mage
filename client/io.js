@@ -137,6 +137,7 @@ MithrilIo.prototype.receivedEvent = function(evt)
 
 					if (listener.once)
 					{
+						delete listener.cb;
 						delete listeners[j];
 						dropped = true;
 					}
