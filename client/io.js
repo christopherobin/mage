@@ -112,7 +112,9 @@ MithrilIo.prototype.receivedEvent = function(evt)
 
 	var result = null;
 
-	for (var i=0; i < this.eventListeners.length; i++)
+	var len = this.eventListeners.length;
+
+	for (var i=0; i < len; i++)
 	{
 		var pathElements = path.split('.');
 
@@ -159,27 +161,26 @@ MithrilIo.prototype.receivedEvent = function(evt)
 
 MithrilIo.prototype.receivedQueryResult = function(result, isAfterEvents)
 {
-	console.log('Received query result', result, isAfterEvents);
-
 	var id = result[0];
 	var response = result[1];
 	var errors = result[2] || null;
 
 	if (id in this.queries)
 	{
-		var _this = this;
-
 		var query = this.queries[id];
 		if (query.onAfterEvents == isAfterEvents)
 		{
 			delete this.queries[id];
 
+			console.log('Received query result', result, isAfterEvents);
+
 			if (errors)
 			{
-				_this.handleErrors(errors);
+				this.handleErrors(errors);
 			}
 
 			query.cb(errors, response);
+			delete query.cb;
 		}
 	}
 };
@@ -219,7 +220,7 @@ MithrilIo.prototype.send = function(command, parameters, cb, onBeforeEvents)
 		this.sessionSent = true;
 	}
 
-	console.log('Sending ', obj);
+	console.log('Sending', obj);
 
 	this.socket.send(JSON.stringify(obj));
 };

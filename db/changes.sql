@@ -389,6 +389,11 @@ ALTER TABLE `npc_data` ADD `type` ENUM( 'number', 'boolean', 'object', 'string' 
 UPDATE `npc_data` SET `type` = 'string';
 
 
+-- 2011-06-20: Actor data table becomes type aware
+
+ALTER TABLE `actor_data` ADD `type` ENUM( 'number', 'boolean', 'object', 'string' ) NOT NULL AFTER `language`;
+UPDATE `actor_data` SET `type` = 'string';
+
 
 -- next change, add here.
 

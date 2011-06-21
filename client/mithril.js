@@ -8,15 +8,15 @@ function Mithril(config, sessionId)
 	// config options:
 	//   config.server.host, config.server.port
 
-	if (typeof MithrilGameModActor       !== 'undefined') this.registerModule('actor',       new MithrilGameModActor(this));
-	if (typeof MithrilGameModPlayer      !== 'undefined') this.registerModule('player',      new MithrilGameModPlayer(this));
-	if (typeof MithrilGameModPersistent  !== 'undefined') this.registerModule('persistent',  new MithrilGameModPersistent(this));
-	if (typeof MithrilGameModGree        !== 'undefined') this.registerModule('gree',        new MithrilGameModGree(this));
-	if (typeof MithrilGameModShop        !== 'undefined') this.registerModule('shop',        new MithrilGameModShop(this));
-	if (typeof MithrilGameModSns         !== 'undefined') this.registerModule('sns',         new MithrilGameModSns(this));
-	if (typeof MithrilGameModObj         !== 'undefined') this.registerModule('obj',         new MithrilGameModObj(this));
-	if (typeof MithrilGameModGc          !== 'undefined') this.registerModule('gc',          new MithrilGameModGc(this));
-	if (typeof MithrilGameModMsg         !== 'undefined') this.registerModule('msg',         new MithrilGameModMsg(this));
+	if (typeof MithrilGameModActor       !== 'undefined') this.registerModule('actor',      new MithrilGameModActor(this));
+	if (typeof MithrilGameModPlayer      !== 'undefined') this.registerModule('player',     new MithrilGameModPlayer(this));
+	if (typeof MithrilGameModPersistent  !== 'undefined') this.registerModule('persistent', new MithrilGameModPersistent(this));
+	if (typeof MithrilGameModGree        !== 'undefined') this.registerModule('gree',       new MithrilGameModGree(this));
+	if (typeof MithrilGameModShop        !== 'undefined') this.registerModule('shop',       new MithrilGameModShop(this));
+	if (typeof MithrilGameModSns         !== 'undefined') this.registerModule('sns',        new MithrilGameModSns(this));
+	if (typeof MithrilGameModObj         !== 'undefined') this.registerModule('obj',        new MithrilGameModObj(this));
+	if (typeof MithrilGameModGc          !== 'undefined') this.registerModule('gc',         new MithrilGameModGc(this));
+	if (typeof MithrilGameModMsg         !== 'undefined') this.registerModule('msg',        new MithrilGameModMsg(this));
 }
 
 
@@ -52,7 +52,8 @@ Mithril.prototype.setupModules = function(cb)
 
 	var tasks = [];
 
-	for (var i=0; i < this.modules.length; i++)
+	var len = this.modules.length;
+	for (var i=0; i < len; i++)
 	{
 		if (this.modules[i].module.setup)
 		{
