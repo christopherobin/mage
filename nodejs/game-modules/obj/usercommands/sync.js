@@ -1,31 +1,35 @@
 exports.execute = function(state, p, cb)
 {
-	var returnData = {};
-	var collections = null;
-	var objects = null;
-	var objectProperties = null;
-	var collectionMembers = null;
-
-
-	mithril.obj.getActorCollections(state, state.actorId, ['collectionId', 'parentId', 'collectionType', 'slotCount', 'maxWeight'], function(error, data) {	// get player collections
+	mithril.obj.getActorCollections(state, state.actorId, ['collectionId', 'parentId', 'collectionType', 'slotCount', 'maxWeight'], function(error, collections) {	// get player collections
 		if (error) return cb();
 
-		returnData.collections = {};
+		var objectData = { collections: {} };
 
 		async.forEachSeries(
-			data,
+			collections,
 			function(coll, callback) {
+
+				// trim down optional data for transport
+
+				if (!coll.parentId) delete coll.parentId;
+				if (!coll.slotCount) delete coll.slotCount;
+				if (!coll.maxWeight) delete coll.maxWeight;
+
 				coll.members = [];
 				coll.owner = state.actorId;
 
-				returnData.collections[coll.collectionId] = coll;
+				objectData.collections[coll.collectionId] = coll;
 
-				mithril.obj.getCollectionMembers(state, coll.collectionId, function(err, cMdata) {
-					if (err) { callback(err); return; }
+				mithril.obj.getCollectionMembers(state, coll.collectionId, function(err, members) {
+					if (err) return callback(err);
 
-					for (var l=0; l < cMdata.length; l++)
+					var len = members.length;
+					for (var i=0; i < len; i++)
 					{
-						coll.members.push({ id: cMdata[l].object, slot: cMdata[l].slot });
+						if (members[i].slot)
+							coll.members.push({ id: members[i].object, slot: members[i].slot });
+						else
+							coll.members.push({ id: members[i].object });
 					}
 
 					callback();
@@ -34,31 +38,44 @@ exports.execute = function(state, p, cb)
 			function(error) {
 				if (error) return cb(error);
 
-				mithril.obj.getActorObjects(state, state.actorId, function(error, data) {  // get player objects
-					if (error) return cb();
+				mithril.obj.getActorObjects(state, state.actorId, function(error, objects) {  // get player objects
+					if (error) return cb(error);
 
-					returnData.objects = {}
-					for (var j = 0; j < data.length; j++)
+					objectData.objects = objects;
+
+					var objectMap = {};
+
+					var len = objects.length;
+					for (var i=0; i < len; i++)
 					{
-						returnData.objects[data[j].id] = data[j];
+						var o = objects[i];
+
+						// trim down optional data for transport
+
+						if (!o.appliedToObject) delete o.appliedToObject;
+						if (!o.weight) delete o.weight;
+
+						objectMap[o.id] = o;
 					}
 
 					mithril.obj.getObjectDataByOwner(state, state.actorId, function(err, data) {  // get object dataMulti
-						if (err) return cb();
+						if (err) return cb(error);
 
-						for (var k=0; k < data.length; k++)
+						var len = data.length;
+						for (var i=0; i < len; i++)
 						{
-							if (!returnData.objects[data[k].object].data)
-							{
-								returnData.objects[data[k].object].data = {};
-							}
+							var prop = data[i];
+							var o = objectMap[prop.object];
 
-							returnData.objects[data[k].object].data[data[k].property] = data[k].value;
+							if (!o) continue;
+							if (!o.data) o.data = {};
+
+							o.data[prop.property] = prop.value;
 						}
 
 						state.respond({
 							classData: mithril.obj.getAllClasses(state.language(), ['none', 'inherit'], true),
-							objectData: returnData
+							objectData: objectData
 						});
 
 						cb();

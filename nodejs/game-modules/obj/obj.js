@@ -1009,66 +1009,112 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 
 	if (!options) options = {};
 
-	var owner = null;
-	var sql = "SELECT owner from obj_collection WHERE id = ?";
+	var sql = "SELECT owner, slotCount, maxWeight from obj_collection WHERE id = ?";
 	var params = [collectionId];
 
 	state.datasources.db.getOne(sql, params, true, null, function(err, data) {
 		if (err) return cb(err);
 
-		if (data.owner) { owner = data.owner; }
+		var owner     = data.owner;
+		var maxWeight = data.maxWeight;
+		var slotCount = data.slotCount;
+		var slot      = null;
+		var removeObjectFromSlot = null;
 
-		if (!options.slot && options.slot !== 0) options.slot = null; // ?
+		async.series([
+			function(callback) {
+				if (!slotCount) return callback();
 
-		var removeFromCurrentCollections = function(cb)
-		{
-			sql = 'SELECT co.collection FROM obj_collection_object AS co JOIN obj_collection AS c ON c.id = co.collection WHERE co.object = ? AND co.collection <> ? AND c.owner = ?';
-			params = [objectId, collectionId, owner];
+				// There is a slotcount, so therefore the object to be added needs to get a slot.
+				// If no slot has been specified, the first available slot should be used.
+				// If a slot has been specified, any existing object must be removed from that slot. NOTE: this is dangerous, because it may become orphaned!
+				// If no slot is available, throw an error
 
-			state.datasources.db.getMany(sql, params, null, function(err, data) {
-				if (err) { if (cb) cb(error); return; }
-
-				for (var i=0; i < data.length; i++)
+				if (options.slot)
 				{
-					exports.removeObjectFromCollection(state, objectId, data[i].collection, null);	// TODO: unsafe!!!
+
+					slot = ~~options.slot;
+
+					if (slot < 1)         return state.error(null, 'Invalid slot: ' + slot, callback);
+					if (slot > slotCount) return state.error(null, 'Invalid slot: ' + slot + ', this collection has capacity: ' + slotCount, callback);
 				}
-			});
-		};
 
-		var removeObjectFromSlot = function(cb)
-		{
-			exports.removeObjectFromSlot(state, collectionId, options.slot, owner, cb);
-		};
+				var sql = 'SELECT slot, object FROM obj_collection_object WHERE collection = ?';
+				var params = [collectionId];
 
-		var createLink = function(cb)
-		{
-			if (owner)
-			{
-				state.emit(owner, 'obj.collection.object.add', { objectId: objectId, collectionId: collectionId, slot: options.slot });
+				state.datasources.db.getMapped(sql, params, { key: 'slot', value: 'object' }, null, function(error, slots) {
+					if (error) return callback(error);
+
+					if (slot)
+					{
+						if (slots[slot])
+						{
+							removeObjectFromSlot = slots[slot];
+						}
+					}
+					else
+					{
+						// detect first available slot
+
+						for (var i=1; i <= slotCount; i++)
+						{
+							if (i in slots) continue;
+							slot = i;
+							break;
+						}
+					}
+
+					if (!slot)
+					{
+						// collection is full
+
+						return state.error(null, 'Cannot add object to collection ' + collectionId + ' because all its slots are occupied.', callback);
+					}
+
+					callback();
+				});
+			},
+			function(callback) {
+				if (!removeObjectFromSlot || !slot) return callback();
+
+				// remove the object that is currently occupying this slot from the collection
+
+				exports.removeObjectFromSlot(state, collectionId, slot, owner, callback);
+			},
+			function(callback) {
+				// register the object to this collection
+
+				if (owner)
+				{
+					state.emit(owner, 'obj.collection.object.add', { objectId: objectId, collectionId: collectionId, slot: slot });
+				}
+
+				var sql = 'INSERT INTO obj_collection_object (collection, object, slot) VALUES (?, ?, ?)';
+				var params = [collectionId, objectId, slot];
+
+				state.datasources.db.exec(sql, params, null, callback);
+			},
+			function(callback) {
+				// check if the maxWeight rule of the collection is being broken
+
+				if (!maxWeight) return callback();
+
+				var sql = 'SELECT SUM(o.weight) AS weight FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? AND o.weight IS NOT NULL';
+				var params = [collectionId];
+
+				state.datasources.db.getOne(sql, params, false, null, function(error, row) {
+					var totalWeight = ~~row.weight;
+
+					if (totalWeight > maxWeight)
+					{
+						return state.error(null, 'Max weight enforced on collection ' + collectionId, callback);
+					}
+
+					return callback();
+				});
 			}
-
-			var sql = 'INSERT INTO obj_collection_object (collection, object, slot) VALUES (?, ?, ?)';
-			var params = [collectionId, objectId, options.slot];
-
-			state.datasources.db.exec(sql, params, null, cb);
-		};
-
-
-		var queries = [];
-
-		if (options && options.removeFromCurrentCollections)
-		{
-			queries.push(removeFromCurrentCollections);
-		}
-
-		if (options.slot)
-		{
-			queries.push(removeObjectFromSlot);
-		}
-
-		queries.push(createLink);
-
-		async.series(queries, function(error) { cb(error); });
+		],
+		cb);
 	});
 };
 

@@ -162,14 +162,21 @@ MithrilGameModObj.prototype.setup = function(cb)
 	}, true);
 
 
-	// retrieve all actor's collections
+	// retrieve all object classes and the full actor's collections
 
 	this.mithril.io.send('obj.sync', {}, function(errors, response) {
 		if (errors) { return cb(errors); }
 
 		// class data
 
-		_this.classesMap = response.classData;
+		_this.classesMap = {};
+		for (var key in response.classData)
+		{
+			var cl = response.classData[key];
+			cl.name = key;
+			_this.classesMap[key] = cl;
+		}
+
 
 		// object data
 
@@ -179,24 +186,28 @@ MithrilGameModObj.prototype.setup = function(cb)
 			objectIds: {}
 		};
 
-		for (var objectId in response.objectData.objects)
+		var len = response.objectData.objects.length;
+		for (var i=0; i < len; i++)
 		{
-			_this.playerCache.objects.push(response.objectData.objects[objectId]);
-		}
+			var o = new MithrilGameModObj_Object(response.objectData.objects[i], _this);
 
-		_this.playerCache.objectIds = response.objectData.objects;
+			_this.playerCache.objects.push(o);
+			_this.playerCache.objectIds[o.id] = o;
+		}
 
 		for (var collectionId in response.objectData.collections)
 		{
 			var info = response.objectData.collections[collectionId];
+
 			var collection = new MithrilGameModObj_Collection(info);
 
 			var len = info.members.length;
 			for (var i=0; i < len; i++)
 			{
 				var slot = info.members[i].slot
-				var object = _this.getObject(info.members[i].id);
-				collection.addObject(object, slot);
+				var o = _this.getObject(info.members[i].id);
+				if (o)
+					collection.addObject(o, slot);
 			}
 
 			_this.playerCache.collections.push(collection);
@@ -283,16 +294,40 @@ MithrilGameModObj.prototype.getMyCollectionsByType = function(type)
 };
 
 
+// Object logic
+
+function MithrilGameModObj_Object(o, module)
+{
+	this.id = o.id;
+	this.name = module.classesMap[o.name] ? module.classesMap[o.name].name : o.name;
+	this.parentClass = module.classesMap[o.name];
+	this.data = o.data || {};
+	this.weight = o.weight || null;
+	this.appliedToObjectId = o.appliedToObject || null;
+	this.creationTime = o.creationTime;
+}
+
+
+MithrilGameModObj_Object.prototype.get = function(property)
+{
+	if (property in this.data) return this.data[property];
+
+	if (this.parentClass && property in this.parentClass.data) return this.parentClass.data[property];
+
+	return null;
+};
+
+
 // Collection logic
 
 function MithrilGameModObj_Collection(collection)
 {
 	this.id = collection.collectionId;
-	this.parent = collection.parentId;
+	this.parent = collection.parentId || null;
 	this.type = collection.collectionType;
-	this.slotCount = collection.slotCount;
-	this.maxWeight = collection.maxWeight;
-	this.owner = collection.owner;
+	this.slotCount = collection.slotCount || null;
+	this.maxWeight = collection.maxWeight || null;
+	this.owner = collection.owner || null;
 	this.objects = [];
 }
 
