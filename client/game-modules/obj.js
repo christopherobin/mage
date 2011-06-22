@@ -3,6 +3,7 @@ function MithrilGameModObj(mithril)
 	this.mithril = mithril;
 	this.playerCache = null;
 	this.classesMap = null;
+	this.classesArr = null;
 }
 
 
@@ -170,13 +171,15 @@ MithrilGameModObj.prototype.setup = function(cb)
 		// class data
 
 		_this.classesMap = {};
+		_this.classesArr = [];
+
 		for (var key in response.classData)
 		{
 			var cl = response.classData[key];
 			cl.name = key;
 			_this.classesMap[key] = cl;
+			_this.classesArr.push(cl);
 		}
-
 
 		// object data
 
