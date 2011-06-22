@@ -82,7 +82,7 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 	var qm = null;
 	var qs = null;
 
-	if(shopNames)
+	if (shopNames)
 	{
 		sql += 's.name AS shopName, ';
 	}
@@ -95,7 +95,7 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 		var qs = shopNames.map(function() { return '?'; }).join(', ');
 		sql += qs
 		sql += ')';
-		
+
 		params = params.concat(shopNames);
 	}
 
@@ -193,7 +193,7 @@ exports.startPurchase = function(state, forActorId, items, cb)
 		itemIds.push(~~itemId);
 	}
 
-	exports.getItems(state, itemIds, function(error, itemInfo) {
+	exports.getItems(state, itemIds, null, function(error, itemInfo) {
 		if (error) return cb(error);
 
 		// check total cost
