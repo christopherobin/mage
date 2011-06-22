@@ -143,6 +143,6 @@ MithrilGameModGree_People.prototype.getThumbnails = function(actorIds, size, ret
 
 MithrilGameModGree_People.prototype.getFriends = function(fields, cb)
 {
-	this.gree.mithril.io.send('gree.getFriends', { fields: fields, addActorIds: true }, cb);
+	this.gree.mithril.io.send('gree.getFriends', { fields: fields }, cb);
 };
 

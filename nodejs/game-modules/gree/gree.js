@@ -484,7 +484,7 @@ exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 		var userIds = results.map(function(friend) { return ~~friend.id; });
 
 		var sql = 'SELECT playerId, viewerId FROM gree_user WHERE viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
-		var params = userIds;
+		var params = userIds.concat([]);
 
 		state.datasources.db.getMany(sql, params, null, function(error, rows) {
 			var len = rows.length;
