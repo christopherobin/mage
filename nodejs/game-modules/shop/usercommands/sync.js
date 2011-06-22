@@ -1,6 +1,11 @@
 exports.execute = function(state, p, cb) {
 
-	mithril.shop.getItems(state, null, function(error, items) {
+	var cfg = mithril.core.config.game.shop;
+
+	var shopNames = (cfg && cfg.sync) ? (cfg.sync.shopNames || null) : null;
+	
+	
+	mithril.shop.getItems(state, null, shopNames, function(error, items) {
 		if (!error)
 		{
 			for (var itemId in items)

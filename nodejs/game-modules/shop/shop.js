@@ -73,13 +73,31 @@ exports.getCurrencyId = function(state, identifier, cb)
 };
 
 
-exports.getItems = function(state, itemIds, cb)
+exports.getItems = function(state, itemIds, shopNames, cb)
 {
-	// if no itemIds given, all items will be returned
+	// if no itemIds given, all items will be returned, if no shopName given, all will return
 
-	var sql = 'SELECT i.id, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id';
+	var sql = 'SELECT ';
 	var params = [];
 	var qm = null;
+	var qs = null;
+
+	if(shopNames)
+	{
+		sql += 's.name AS shopName, ';
+	}
+
+	sql += 'i.id, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id';
+
+	if(shopNames && shopNames.length > 0)
+	{
+		sql += ' JOIN shop AS s ON s.id = i.shopId AND s.name IN (';
+		var qs = shopNames.map(function() { return '?'; }).join(', ');
+		sql += qs
+		sql += ')';
+		
+		params = params.concat(shopNames);
+	}
 
 	if (itemIds)
 	{
@@ -113,6 +131,10 @@ exports.getItems = function(state, itemIds, cb)
 		{
 			sql += ' WHERE itemId IN (' + qm + ')';
 		}
+		if(qs)
+		{
+			shopNames.forEach(function(){ params.shift(); });
+		}
 
 		state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 			if (error) return cb(error);
@@ -126,9 +148,7 @@ exports.getItems = function(state, itemIds, cb)
 				result[row.itemId].data.importOne(row.property, row.type, row.value, row.language);
 			}
 
-
 			// for each item, get object instantiation info
-
 			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object';
 			if (qm)
 			{

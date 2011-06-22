@@ -1,7 +1,7 @@
 function MithrilGameModShop(mithril)
 {
 	this.mithril = mithril;
-	this.items = null;
+	this.shops = {};
 }
 
 
@@ -12,8 +12,16 @@ MithrilGameModShop.prototype.setup = function(cb)
 	this.mithril.io.send('shop.sync', {}, function(errors, items) {
 		if (errors) return cb(errors);
 
-		_this.items = items;
-
+		if(items)
+		{
+			for (var key in items)
+			{
+				shopName = (items[key].shopName) ? items[key].shopName : "defaultShop";
+				
+				if(!_this.shops[shopName]) { _this.shops[shopName] = {}; _this.shops[shopName].items = []; } //setup 
+				_this.shops[shopName].items.push(items[key]);
+			}
+		}
 		cb();
 	});
 };
