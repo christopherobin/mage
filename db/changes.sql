@@ -443,5 +443,24 @@ ALTER TABLE sns_relationrequest CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;
 ALTER TABLE trade_offer CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin;
 
 
+-- 2011-06-21: shop module gets a shop table
+
+CREATE TABLE `shop` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name`(20) ASC) )
+ENGINE = InnoDB;
+
+INSERT INTO `shop` VALUES(1, 'shop');
+
+ALTER TABLE `shop_item` ADD `shopId` INT UNSIGNED NOT NULL AFTER `id`;
+ALTER TABLE `shop_item` ADD INDEX ( `shopId` );
+UPDATE `shop_item` SET `shopId` = 1;
+
+ALTER TABLE `shop_item` ADD FOREIGN KEY ( `shopId` ) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+
+
 -- next change, add here.
 
