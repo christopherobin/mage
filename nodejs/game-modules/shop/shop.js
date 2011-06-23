@@ -81,18 +81,19 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 	var params = [];
 	var qm = null;
 	var qs = null;
+	var parseShopNames = (shopNames && shopNames.length > 0)
 
-	if (shopNames)
+	if (parseShopNames)
 	{
 		sql += 's.name AS shopName, ';
 	}
 
 	sql += 'i.id, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id';
 
-	if(shopNames && shopNames.length > 0)
+	if(parseShopNames)
 	{
 		sql += ' JOIN shop AS s ON s.id = i.shopId AND s.name IN (';
-		var qs = shopNames.map(function() { return '?'; }).join(', ');
+		qs = shopNames.map(function() { return '?'; }).join(', ');
 		sql += qs
 		sql += ')';
 
@@ -125,17 +126,16 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 		}
 
 		// for each item, get data
-
-		sql = 'SELECT itemId, property, language, type, value FROM shop_item_data';
+		sql = 'SELECT sid.itemId, sid.property, sid.language, sid.type, sid.value FROM shop_item_data AS sid';
+		if(parseShopNames)
+		{
+			sql += ' JOIN shop_item AS si on sid.itemId = si.id JOIN shop AS s ON s.id = si.shopId AND s.name IN (' + qs +')';
+			//shopNames.forEach(function(){ params.shift(); });
+		}
 		if (qm)
 		{
 			sql += ' WHERE itemId IN (' + qm + ')';
 		}
-		if(qs)
-		{
-			shopNames.forEach(function(){ params.shift(); });
-		}
-
 		state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 			if (error) return cb(error);
 
@@ -144,12 +144,16 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 			for (var i=0; i < len; i++)
 			{
 				var row = rows[i];
-
+				
 				result[row.itemId].data.importOne(row.property, row.type, row.value, row.language);
 			}
 
 			// for each item, get object instantiation info
 			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object';
+			if(parseShopNames)
+			{
+				sql += ' JOIN shop_item AS si on shop_item_object.itemId = si.id JOIN shop AS s ON s.id = si.shopId AND s.name IN (' + qs +')';
+			}
 			if (qm)
 			{
 				sql += ' WHERE itemId IN (' + qm + ')';
@@ -204,7 +208,6 @@ exports.startPurchase = function(state, forActorId, items, cb)
 		for (var itemId in itemInfo)
 		{
 			var item = itemInfo[itemId];
-
 			totalPrice += ~~item.unitPrice * ~~item.quantity;
 
 			if (currencies.indexOf(item.currencyIdentifier) == -1)
@@ -231,7 +234,6 @@ exports.startPurchase = function(state, forActorId, items, cb)
 			{
 				return cb(null, invalidResponse);
 			}
-
 
 			// store quantities on itemInfo objects
 
@@ -326,7 +328,7 @@ exports.purchasePaid = function(state, purchaseId, cb)
 
 				// fetch items
 
-				exports.getItems(state, itemIds, function(error, items) {
+				exports.getItems(state, itemIds, null, function(error, items) {
 					if (error) return callback(error);
 
 					var itemsArr = [];
