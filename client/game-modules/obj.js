@@ -117,8 +117,11 @@ MithrilGameModObj.prototype.setup = function(cb)
 
 	this.mithril.io.on('obj.object.add', function(path, params)
 	{
-		_this.playerCache.objectIds[params.id] = params;
-		_this.playerCache.objects.push(params);
+		var o = new MithrilGameModObj_Object(params, _this);
+
+		_this.playerCache.objects.push(o);
+		_this.playerCache.objectIds[o.id] = o;	
+		
 	}, true);
 
 
