@@ -461,6 +461,11 @@ UPDATE `shop_item` SET `shopId` = 1;
 ALTER TABLE `shop_item` ADD FOREIGN KEY ( `shopId` ) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 
+-- 2011-06-23: Add level data to stats, remove level property
+
+UPDATE obj_class_data SET value = CONCAT('{"level":', SUBSTRING(tag FROM 6), ',', SUBSTRING(value FROM 2)) WHERE property = 'stats';
+DELETE FROM obj_class_data WHERE property = 'level';
+
 
 -- next change, add here.
 
