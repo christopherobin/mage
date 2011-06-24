@@ -191,7 +191,7 @@ exports.startPurchase = function(state, forActorId, shopName, items, cb)
 
 	validator(state, shopName, items, function(error, itemInfo) {
 		if (error) return cb(error);
-console.log("ITEM INFO: ", itemInfo);
+
 		if (!itemInfo)
 		{
 			return cb(null, { failed: 'badchoice' });
