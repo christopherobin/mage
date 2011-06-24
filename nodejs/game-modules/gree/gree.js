@@ -439,7 +439,7 @@ exports.getUserIds = function(state, actorIds, cb)
 };
 
 
-exports.paymentStart = function(state, purchase, cb)
+exports.paymentStart = function(state, purchaseRequest, cb)
 {
 	// Initiates the payment
 
@@ -449,9 +449,9 @@ exports.paymentStart = function(state, purchase, cb)
 
 	var items = [];
 
-	for (var itemId in purchase.items)
+	for (var itemId in purchaseRequest.items)
 	{
-		var item = purchase.items[itemId];
+		var item = purchaseRequest.items[itemId];
 
 		items.push({
 			itemId: item.id,
@@ -466,7 +466,7 @@ exports.paymentStart = function(state, purchase, cb)
 	exports.resolvePlayer(state, state.actorId, function(error, user) {
 		if (error) return cb(error);
 
-		exports.rest.startPayment(state, user, purchase, message, items, cb);
+		exports.rest.startPayment(state, user, purchaseRequest, message, items, cb);
 	});
 };
 
@@ -479,7 +479,19 @@ var paymentPaid = function(state, paymentId, orderedTime, shopPurchaseId, cb)
 	state.datasources.db.exec(sql, params, null, function(error) {
 		if (error) return cb(error);
 
-		mithril.shop.purchasePaid(state, shopPurchaseId, cb);
+		mithril.shop.purchasePaid(state, shopPurchaseId, function(error, purchaseResult) {
+			if (error) return cb(error);
+
+			if (mithril.persistent)
+			{
+				var propertyMap = new mithril.core.PropertyMap;
+				propertyMap.add('lastpurchase', purchaseResult);
+
+				mithril.persistent.set(state, propertyMap, null, cb);
+			}
+			else
+				cb();
+		});
 	});
 };
 

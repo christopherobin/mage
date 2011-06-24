@@ -241,20 +241,20 @@ exports.startPurchase = function(state, forActorId, shopName, items, cb)
 
 			// register transaction in shop purchase log
 
-			var purchase = { status: 'new', shopName: shopName, items: itemInfo, time: mithril.core.time };
+			var purchaseRequest = { status: 'new', shopName: shopName, items: itemInfo, time: mithril.core.time };
 
 			if (forActorId)
 			{
-				purchase.forActorId = forActorId;
+				purchaseRequest.forActorId = forActorId;
 			}
 
 			var sql = 'INSERT INTO shop_purchase VALUES(?, ?, ?, ?, ?, ?)';
-			var params = [null, state.actorId, purchase.forActorId, purchase.time, null, purchase.status];
+			var params = [null, state.actorId, purchaseRequest.forActorId, purchaseRequest.time, null, purchaseRequest.status];
 
 			state.datasources.db.exec(sql, params, null, function(error, info) {
 				if (error) return cb(error);
 
-				purchase.id = info.insertId;
+				purchaseRequest.id = info.insertId;
 
 				// register all items in the purchase log
 
@@ -262,12 +262,12 @@ exports.startPurchase = function(state, forActorId, shopName, items, cb)
 				var values = [];
 				var params = [];
 
-				for (var itemId in purchase.items)
+				for (var itemId in purchaseRequest.items)
 				{
-					var item = purchase.items[itemId];
+					var item = purchaseRequest.items[itemId];
 
 					values.push('(?, ?, ?, ?, ?)');
-					params.push(purchase.id, item.id, item.currencyId, item.unitPrice, item.quantity);
+					params.push(purchaseRequest.id, item.id, item.currencyId, item.unitPrice, item.quantity);
 				}
 
 				sql += values.join(', ');
@@ -275,7 +275,7 @@ exports.startPurchase = function(state, forActorId, shopName, items, cb)
 				state.datasources.db.exec(sql, params, null, function(error, info) {
 					if (error) return cb(error);
 
-					currency.callbacks.start(state, purchase, function(error, response) {
+					currency.callbacks.start(state, purchaseRequest, function(error, response) {
 						if (error) return cb(error);
 
 						cb(null, response);
@@ -383,23 +383,10 @@ exports.purchasePaid = function(state, purchaseId, cb)
 					);
 				});
 			});
-		},
-		function(callback) {
-			// store purchase feedback in persistent module
-
-			if (mithril.persistent)
-			{
-				var propertyMap = new mithril.core.PropertyMap;
-				propertyMap.add('lastpurchase', lastPurchase);
-
-				mithril.persistent.set(state, propertyMap, null, callback);
-			}
-			else
-				callback();
 		}
 	],
 	function(error) {
-		cb(error);
+		cb(error, lastPurchase);
 	});
 };
 
