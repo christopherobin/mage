@@ -9,10 +9,19 @@ exports.execute = function(state, p, cb) {
 		{
 			for (var itemId in items)
 			{
+				//if item is not visible, throw it out 
 				var item = items[itemId];
-				item.data = item.data.getAll(state.language());
+				
+				if(item.status != 'visible')
+				{
+					delete items[itemId];
+				}
+				else
+				{
+					item.data = item.data.getAll(state.language());
+				}
 			}
-
+			console.log(items)
 			state.respond(items);
 		}
 

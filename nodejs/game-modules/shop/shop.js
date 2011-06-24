@@ -306,9 +306,8 @@ exports.purchasePaid = function(state, purchaseId, cb)
 		function(callback) {
 			// instantiate any objects that need to be created
 
-			// fetch item IDs
-
-			var sql = 'SELECT itemId, quantity FROM shop_purchase_item WHERE purchaseId = ?';
+			// fetch stuff for return in lastPurchase
+			var sql = 'SELECT spi.itemId, spi.quantity, s.name AS shopName FROM shop_purchase_item AS spi JOIN shop_item AS si ON spi.itemId = si.id JOIN shop as s ON si.shopId = s.id WHERE purchaseId = ?';
 			var params = [purchaseId];
 
 			state.datasources.db.getMany(sql, params, null, function(error, rows) {
@@ -317,13 +316,14 @@ exports.purchasePaid = function(state, purchaseId, cb)
 				var itemIds = rows.map(function(row) { return row.itemId; });
 
 				var itemQuantities = {};
+				var itemShops = {};
 				for (var i=0; i < rows.length; i++)
 				{
 					itemQuantities[rows[i].itemId] = ~~rows[i].quantity || 1;
+					itemShops[rows[i].itemId] = rows[i].shopName; //this should never be nonsense
 				}
 
 				// fetch items
-
 				exports.getItems(state, itemIds, null, function(error, items) {
 					if (error) return callback(error);
 
@@ -331,7 +331,7 @@ exports.purchasePaid = function(state, purchaseId, cb)
 					for (var itemId in items)
 					{
 						itemsArr.push(items[itemId]);
-						lastPurchase[itemId] = { quantity: itemQuantities[itemId] };
+						lastPurchase[itemId] = { quantity: itemQuantities[itemId], shop:itemShops[itemId] };
 					}
 
 					if (itemsArr.length == 0)
@@ -340,7 +340,6 @@ exports.purchasePaid = function(state, purchaseId, cb)
 					}
 
 					// instantiate objects
-
 					async.forEachSeries(
 						// for each shop item
 
