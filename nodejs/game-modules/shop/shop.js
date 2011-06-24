@@ -6,7 +6,8 @@ exports.userCommands = {
 
 
 exports.hooks = {
-	getGenericPurchaseMessage: function() { return ''; }
+	getGenericPurchaseMessage: function() { return ''; },
+	validateItemChoice:        {}
 };
 
 
@@ -77,38 +78,31 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 {
 	// if no itemIds given, all items will be returned, if no shopName given, all will return
 
-	var sql = 'SELECT ';
+	var sql = 'SELECT i.id, i.shopId, s.name AS shopName, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id JOIN shop AS s ON s.id = i.shopId';
 	var params = [];
-	var qm = null;
-	var qs = null;
-	var parseShopNames = (shopNames && shopNames.length > 0)
+	var where = [];
 
-	if (parseShopNames)
+	if (shopNames && shopNames.length > 0)
 	{
-		sql += 's.name AS shopName, ';
-	}
-
-	sql += 'i.id, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id';
-
-	if(parseShopNames)
-	{
-		sql += ' JOIN shop AS s ON s.id = i.shopId AND s.name IN (';
-		qs = shopNames.map(function() { return '?'; }).join(', ');
-		sql += qs
-		sql += ')';
-
+		where.push('s.name IN (' + shopNames.map(function() { return '?'; }).join(', ') + ')');
 		params = params.concat(shopNames);
 	}
 
-	if (itemIds)
+	if (itemIds && itemIds.length > 0)
 	{
-		qm = itemIds.map(function() { return '?'; }).join(', ');
-		sql += ' WHERE i.id IN (' + qm + ')';
+		where.push('i.id IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')');
 		params = params.concat(itemIds);
+	}
+
+	if (where.length > 0)
+	{
+		sql += ' WHERE ' + where.join(' AND ');
 	}
 
 	state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 		if (error) return cb(error);
+
+		itemIds = rows.map(function(row) { return row.id; });
 
 		// make item objects
 
@@ -126,21 +120,13 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 		}
 
 		// for each item, get data
-		sql = 'SELECT sid.itemId, sid.property, sid.language, sid.type, sid.value FROM shop_item_data AS sid';
-		if(parseShopNames)
-		{
-			sql += ' JOIN shop_item AS si on sid.itemId = si.id JOIN shop AS s ON s.id = si.shopId AND s.name IN (' + qs +')';
-			//shopNames.forEach(function(){ params.shift(); });
-		}
-		if (qm)
-		{
-			sql += ' WHERE itemId IN (' + qm + ')';
-		}
+		var sql = 'SELECT itemId, property, language, type, value FROM shop_item_data WHERE itemId IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')';
+		var params = itemIds;
+
 		state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 			if (error) return cb(error);
 
 			var len = rows.length;
-
 			for (var i=0; i < len; i++)
 			{
 				var row = rows[i];
@@ -149,15 +135,7 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 			}
 
 			// for each item, get object instantiation info
-			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object';
-			if(parseShopNames)
-			{
-				sql += ' JOIN shop_item AS si on shop_item_object.itemId = si.id JOIN shop AS s ON s.id = si.shopId AND s.name IN (' + qs +')';
-			}
-			if (qm)
-			{
-				sql += ' WHERE itemId IN (' + qm + ')';
-			}
+			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object WHERE itemId IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')';
 
 			state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
 				if (error) return cb(error);
@@ -181,7 +159,7 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 };
 
 
-exports.startPurchase = function(state, forActorId, items, cb)
+exports.startPurchase = function(state, forActorId, shopName, items, cb)
 {
 	// this method starts a purchase process
 	// it is required that all requested items share the same currency
@@ -190,15 +168,41 @@ exports.startPurchase = function(state, forActorId, items, cb)
 
 	if (!forActorId || forActorId == state.actorId) forActorId = null;
 
-	var itemIds = [];
+	var validator = exports.hooks.validateItemChoice[shopName];
 
-	for (var itemId in items)
+	if (!validator)
 	{
-		itemIds.push(~~itemId);
+		validator = function(state, shopName, items, cb) {
+			var itemIds = [];
+			for (var itemId in items)
+			{
+				itemIds.push(~~itemId);
+			}
+			exports.getItems(state, itemIds, [shopName], function(err,data){
+				
+				for (var itemId in data)
+				{
+					data[itemId].quantity = Math.max(~~items[itemId], 1);
+				}
+				cb(null,data)
+			});
+		};
 	}
 
-	exports.getItems(state, itemIds, null, function(error, itemInfo) {
+	validator(state, shopName, items, function(error, itemInfo) {
 		if (error) return cb(error);
+console.log("ITEM INFO: ", itemInfo);
+		if (!itemInfo)
+		{
+			return cb(null, { failed: 'badchoice' });
+		}
+
+		var itemIds = [];
+	
+		for (var itemId in itemInfo)
+		{
+			itemIds.push(~~itemId);
+		}
 
 		// check total cost
 
@@ -235,17 +239,9 @@ exports.startPurchase = function(state, forActorId, items, cb)
 				return cb(null, invalidResponse);
 			}
 
-			// store quantities on itemInfo objects
-
-			for (var itemId in items)
-			{
-				itemInfo[itemId].quantity = Math.max(~~items[itemId], 1);
-			}
-
-
 			// register transaction in shop purchase log
 
-			var purchase = { status: 'new', items: itemInfo, time: mithril.core.time };
+			var purchase = { status: 'new', shopName: shopName, items: itemInfo, time: mithril.core.time };
 
 			if (forActorId)
 			{
@@ -346,15 +342,25 @@ exports.purchasePaid = function(state, purchaseId, cb)
 					// instantiate objects
 
 					async.forEachSeries(
+						// for each shop item
+
 						itemsArr,
 						function(item, callback2) {
 							async.forEachSeries(
+
+								// for each object to be instantiated
+							
 								item.objects,
 								function(object, callback3) {
+
+									// pick collections to add the new object to
+									
 									mithril.obj.hooks.chooseObjectCollections(state, object.className, function(error, collections) {
 										if (error) return callback3(error);
 
 										var tags = (object.tags.length > 0) ? object.tags.split(',') : [];
+
+										// create the object
 
 										mithril.obj.addObject(state, collections, object.className, null, new mithril.core.PropertyMap, tags, object.quantity * itemQuantities[item.id], function(error, ids) {
 											if (error) return callback3(error);

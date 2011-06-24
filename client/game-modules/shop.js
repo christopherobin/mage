@@ -27,11 +27,11 @@ MithrilGameModShop.prototype.setup = function(cb)
 };
 
 
-MithrilGameModShop.prototype.buyItem = function(itemId, quantity, cb)
+MithrilGameModShop.prototype.buyItem = function(itemId, shopName, quantity, cb)
 {
 	var _this = this;
 
-	this.mithril.io.send('shop.buyItem', { itemId: itemId, quantity: quantity }, function(errors, response) {
+	this.mithril.io.send('shop.buyItem', { itemId: itemId, quantity: quantity, shopName: shopName }, function(errors, response) {
 		if (errors) return cb(errors);
 
 		if (response.redirect)

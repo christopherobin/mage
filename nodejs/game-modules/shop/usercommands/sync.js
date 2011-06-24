@@ -4,7 +4,6 @@ exports.execute = function(state, p, cb) {
 
 	var shopNames = (cfg && cfg.sync) ? (cfg.sync.shopNames || null) : null;
 	
-	
 	mithril.shop.getItems(state, null, shopNames, function(error, items) {
 		if (!error)
 		{
