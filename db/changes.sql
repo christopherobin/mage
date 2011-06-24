@@ -461,6 +461,17 @@ UPDATE `shop_item` SET `shopId` = 1;
 ALTER TABLE `shop_item` ADD FOREIGN KEY ( `shopId` ) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 
+-- 2011-06-24: GREE column name change, invitation storage
+
+ALTER TABLE `gree_user` CHANGE `viewerId` `greeUserId` INT( 10 ) UNSIGNED NOT NULL;
+
+CREATE TABLE `gree_invitation` (
+  `greeUserId` INT UNSIGNED NOT NULL ,
+  `invitedByGreeUserId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`greeUserId`),
+  INDEX `key_invitedByGreeUserId` (`invitedByGreeUserId` ASC) )
+ENGINE = InnoDB;
+
 
 -- next change, add here.
 

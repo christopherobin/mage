@@ -20,6 +20,12 @@ const PAYMENT_CANCELLED = 3;
 const PAYMENT_EXPIRED = 4;
 
 
+exports.hooks = {
+	getAuthenticationFailedMessage: function() { return 'Authentication failed.'; },
+	getLoginFailedMessage:          function() { return 'Login failed.'; }
+};
+
+
 exports.setup = function(state, cb)
 {
 	var cfg = mithril.core.config.api.gree;
@@ -57,110 +63,266 @@ exports.handleHttpRequest = function(request, path, params, cb)
 {
 	mithril.core.logger.info('GREE: received request: ' + path);
 
-	// player login
-
-	if (path == apiPaths.login)
+	switch (path)
 	{
-		var state = new mithril.core.state.State;
+		case apiPaths.login:
+			return exports.httpReqLogin(request, path, params, cb);
 
-		exports.tryLogin(state, request, path, params, function(error, user, playerId) {
-			if (error)
-			{
-				state.close();
+		case apiPaths.addApp:
+			return exports.httpReqAddApp(request, path, params, cb);
 
-				if (exports.onLoginFail)
-				{
-					exports.onLoginFail(function(data) {
-						cb(404, data || 'Authentication failed.');
-					});
-				}
-				else
-					cb(404, 'Authentication failed.');
-			}
-			else
-			{
-				var isNewPlayer = !playerId;
+		case apiPaths.suspendApp:
+			return exports.httpReqSuspendApp(request, path, params, cb);
 
-				exports.onLogin(state, user, playerId, function(error, playerId, redirectUrl, data) {
-					if (error) return cb(error);
+		case apiPaths.resumeApp:
+			return exports.httpReqResumeApp(request, path, params, cb);
 
-					var onComplete = function(error)
-					{
-						state.close();
+		case apiPaths.removeApp:
+			return exports.httpReqRemoveApp(request, path, params, cb);
 
-						if (error) return cb(404, 'Login failed.');
+		case apiPaths.paymentConfirm:
+			return exports.httpReqPaymentConfirm(request, path, params, cb);
 
-						if (redirectUrl)
-							cb(307, data || '', { 'Location': redirectUrl });
-						else
-							cb(200, data);
-					};
-
-					if (isNewPlayer)
-					{
-						exports.registerUser(state, user, playerId, onComplete);
-					}
-					else
-						onComplete();
-				});
-			}
-		});
-		return;
-	}
-
-
-	// payment confirmation
-
-	if (path == apiPaths.paymentConfirm)
-	{
-		exports.paymentConfirm(request, path, params, function() { cb(200, 'OK'); });
-
-		return;
-	}
-
-
-	// gadget.xml request
-
-	if (path == apiPaths.gadget)
-	{
-		var xml = exports.getGadgetXml();
-
-		if (xml)
-		{
-			mithril.core.logger.info('Returning gadget XML to GREE request.');
-
-			cb(200, xml, { 'Content-Type': 'application/xml' });
-		}
-		else
-			cb(false);
-
-		return;
+		case apiPaths.gadget:
+			return exports.httpReqGadgetXml(request, path, params, cb);
 	}
 
 	cb(false);
 };
 
 
-exports.tryLogin = function(state, request, path, params, cb)
+exports.httpReqGadgetXml = function(request, path, params, cb)
 {
-	var user = {
-		viewerId: params.opensocial_viewer_id,
-		token: params.oauth_token,
-		tokenSecret: params.oauth_token_secret
-	};
+	var xml = exports.getGadgetXml();
+	if (xml)
+	{
+		mithril.core.logger.info('Returning gadget XML to GREE request.');
 
+		cb(200, xml, { 'Content-Type': 'application/xml' });
+	}
+	else
+		cb(false);
+};
+
+
+exports.httpReqPaymentConfirm = function(request, path, params, cb)
+{
+	exports.paymentConfirm(request, path, params, function() { cb(200, 'OK'); });
+};
+
+
+exports.httpReqLogin = function(request, path, params, cb)
+{
+	var state = new mithril.core.state.State;
+
+	exports.tryAuthenticate(state, request, path, params, true, function(error, user, playerId) {
+		if (error)
+		{
+			state.close();
+			return cb(404, exports.hooks.getAuthenticationFailedMessage());
+		}
+
+		var onComplete = function(error, redirectUrl, data)
+		{
+			state.close();
+
+			if (error) return cb(404, data || exports.hooks.getLoginFailedMessage());
+
+			if (redirectUrl)
+				cb(307, data || '', { 'Location': redirectUrl });
+			else
+				cb(200, data);
+		};
+
+		if (playerId)
+		{
+			exports.onLogin(state, playerId, onComplete);
+		}
+		else
+		{
+			exports.onNewPlayer(state, user, user.userId, function(error, newPlayerId) {
+				if (error) return onComplete(error);
+
+				exports.registerUser(state, user, newPlayerId, null, function(error) {
+					if (error) return onComplete(error);
+
+					exports.onLogin(state, newPlayerId, onComplete);
+				});
+			});
+		}
+	});
+};
+
+
+exports.httpReqAddApp = function(request, path, params, cb)
+{
+	// GREE requires us to do nothing more than register the invitation
+
+	if (!params.invite_from_id)
+	{
+		return cb(200, 'OK');
+	}
+
+	var state = new mithril.core.state.State;
+
+	exports.tryAuthenticate(state, request, path, params, false, function(error) {
+		if (error || !params.id)
+		{
+			state.close();
+			return cb(404, exports.hooks.getAuthenticationFailedMessage());
+		}
+
+		var onComplete = function(error)
+		{
+			state.close();
+
+			if (error) return cb(404, 'error');
+			cb(200, 'OK');
+		};
+
+		// store invitations
+
+		var invitedByUserId = ~~params.invite_from_id;
+		var userIds = params.id.split(',');
+
+		var sql = 'INSERT INTO gree_invitation VALUES ';
+		var params = [];
+		var values = [];
+
+		var len = userIds.length;
+		for (var i=0; i < len; i++)
+		{
+			params.push(~~userIds[i], invitedByUserId);
+			values.push('(?, ?)');
+		}
+
+		sql += values.join(', ');
+
+		state.datasources.db.exec(sql, params, null, function(error) { onComplete(error); });
+	});
+};
+
+
+exports.httpReqSuspendApp = function(request, path, params, cb)
+{
+	// This is not actually implemented or supported by GREE it seems.
+
+	cb(200, 'OK');
+
+/*
+	var state = new mithril.core.state.State;
+
+	exports.tryAuthenticate(state, request, path, params, true, function(error, user, playerId) {
+		if (error)
+		{
+			state.close();
+			return cb(404, exports.hooks.getAuthenticationFailedMessage());
+		}
+
+		var onComplete = function(error)
+		{
+			state.close();
+
+			if (error) return cb(404, 'error');
+			cb(200, 'OK');
+		};
+
+		exports.setStatus(state, playerId, 'suspended', onComplete);
+	});
+*/
+};
+
+
+exports.httpReqResumeApp = function(request, path, params, cb)
+{
+	// This is not actually implemented or supported by GREE it seems.
+
+	cb(200, 'OK');
+
+/*
+	var state = new mithril.core.state.State;
+
+	exports.tryAuthenticate(state, request, path, params, true, function(error, user, playerId) {
+		if (error)
+		{
+			state.close();
+			return cb(404, exports.hooks.getAuthenticationFailedMessage());
+		}
+
+		var onComplete = function(error)
+		{
+			state.close();
+
+			if (error) return cb(404, 'error');
+			cb(200, 'OK');
+		};
+
+		exports.setStatus(state, playerId, 'installed', onComplete);
+	});
+*/
+};
+
+
+exports.httpReqRemoveApp = function(request, path, params, cb)
+{
+	// This is not actually implemented or supported by GREE it seems.
+
+	cb(200, 'OK');
+
+/*
+	var state = new mithril.core.state.State;
+
+	exports.tryAuthenticate(state, request, path, params, true, function(error, user, playerId) {
+		if (error)
+		{
+			state.close();
+			return cb(404, exports.hooks.getAuthenticationFailedMessage());
+		}
+
+		var onComplete = function(error)
+		{
+			state.close();
+
+			if (error) return cb(404, 'error');
+			cb(200, 'OK');
+		};
+
+		exports.setStatus(state, playerId, 'uninstalled', onComplete);
+	});
+*/
+};
+
+
+exports.tryAuthenticate = function(state, request, path, params, resolvePlayer, cb)
+{
 	if (!oauth.isValidAppId(params.opensocial_app_id))
 	{
 		return state.error(null, 'Invalid App ID: ' + params.opensocial_app_id, cb);
 	}
 
-	if (!oauth.isValidSignature(request.method, 'http://' + request.headers.host + path, params, request.headers.Authorization))
+	if (!oauth.isValidSignature(request.method, 'http://' + request.headers.host + path, params, request.headers.authorization))
 	{
-		return state.error(null, 'Invalid signature: ' + JSON.stringify({ method: request.method, url: 'http://' + request.headers.host + path, params: params, auth: request.headers.Authorization }), cb);
+		return state.error(null, 'Invalid signature: ' + JSON.stringify({ method: request.method, url: 'http://' + request.headers.host + path, params: params, auth: request.headers.authorization }), cb);
 	}
 
-	var sql = 'SELECT playerId FROM gree_user WHERE viewerId = ? AND token = ? AND tokenSecret = ?';
-	var params = [user.viewerId, user.token, user.tokenSecret];
+	if (!resolvePlayer)
+	{
+		return cb();
+	}
+
+	if (!params.opensocial_viewer_id || !params.oauth_token || !params.oauth_token_secret)
+	{
+		return state.error(null, 'Tried to resolve player, but no user information was found in the GET parameters of this request.', cb);
+	}
+
+	var user = {
+		userId: params.opensocial_viewer_id,
+		token: params.oauth_token,
+		tokenSecret: params.oauth_token_secret
+	};
+
+	var sql = 'SELECT playerId FROM gree_user WHERE greeUserId = ? AND token = ? AND tokenSecret = ?';
+	var params = [user.userId, user.token, user.tokenSecret];
 
 	state.datasources.db.getOne(sql, params, false, null, function(error, result) {
 		if (error) return cb(error);
@@ -173,6 +335,19 @@ exports.tryLogin = function(state, request, path, params, cb)
 };
 
 
+exports.resolveUser = function(state, userId, optional, cb)
+{
+	var sql = 'SELECT playerId FROM gree_user WHERE greeUserId = ?';
+	var params = [userId];
+
+	state.datasources.db.getOne(sql, params, !optional, null, function(error, playerId) {
+		if (error) return cb(error);
+
+		cb(null, playerId || null);
+	});
+};
+
+
 exports.resolvePlayer = function(state, playerId, cb)
 {
 	if (users[playerId])
@@ -180,7 +355,7 @@ exports.resolvePlayer = function(state, playerId, cb)
 		return cb(null, users[playerId]);
 	}
 
-	var sql = 'SELECT viewerId, token, tokenSecret FROM gree_user WHERE playerId = ?';
+	var sql = 'SELECT greeUserId, token, tokenSecret FROM gree_user WHERE playerId = ?';
 	var params = [playerId];
 
 	state.datasources.db.getOne(sql, params, true, null, function(error, user) {
@@ -194,10 +369,21 @@ exports.resolvePlayer = function(state, playerId, cb)
 };
 
 
-exports.registerUser = function(state, user, playerId, cb)
+exports.registerUser = function(state, user, playerId, invitedByUserId, cb)
 {
+	// TODO: register invitedByUserId
+
 	var sql = 'INSERT INTO gree_user VALUES(?, ?, ?, ?, ?)';
-	var params = [playerId, user.viewerId, user.token, user.tokenSecret, 'installed'];
+	var params = [playerId, user.userId, user.token, user.tokenSecret, 'installed'];
+
+	state.datasources.db.exec(sql, params, null, function(error) { cb(error); });
+};
+
+
+exports.setStatus = function(state, playerId, newStatus, cb)
+{
+	var sql = 'UPDATE gree_user SET status = ? WHERE playerId = ?';
+	var params = [newStatus, playerId];
 
 	state.datasources.db.exec(sql, params, null, function(error) { cb(error); });
 };
@@ -237,19 +423,19 @@ exports.getGadgetXml = function()
 
 exports.getActorIds = function(state, userIds, cb)
 {
-	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
+	var sql = 'SELECT playerId, greeUserId FROM gree_user WHERE greeUserId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
 	var params = userIds;
 
-	state.datasources.db.getMapped(sql, params, { key: 'viewerId', value: 'playerId' }, null, cb);
+	state.datasources.db.getMapped(sql, params, { key: 'greeUserId', value: 'playerId' }, null, cb);
 };
 
 
 exports.getUserIds = function(state, actorIds, cb)
 {
-	var sql = 'SELECT playerId, viewerId FROM gree_user WHERE playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')';
+	var sql = 'SELECT playerId, greeUserId FROM gree_user WHERE playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')';
 	var params = actorIds;
 
-	state.datasources.db.getMapped(sql, params, { key: 'playerId', value: 'viewerId' }, null, cb);
+	state.datasources.db.getMapped(sql, params, { key: 'playerId', value: 'greeUserId' }, null, cb);
 };
 
 
@@ -353,7 +539,7 @@ exports.paymentConfirm = function(request, path, params, cb)
 	}
 
 
-	var sql = 'SELECT gp.id, gp.playerId, gp.shopPurchaseId FROM gree_payment AS gp JOIN gree_user AS u ON u.playerId = gp.playerId WHERE gp.paymentId = ? AND u.viewerId = ?';
+	var sql = 'SELECT gp.id, gp.playerId, gp.shopPurchaseId FROM gree_payment AS gp JOIN gree_user AS u ON u.playerId = gp.playerId WHERE gp.paymentId = ? AND u.greeUserId = ?';
 	var params = [greePaymentId, userId];
 
 	state.datasources.db.getOne(sql, params, true, null, function(error, row) {
@@ -395,7 +581,7 @@ exports.rest = {};
 
 exports.rest.getUserInfo = function(state, user, aboutUserId, fields, cb)
 {
-	if (aboutUserId == user.viewerId)
+	if (aboutUserId == user.userId)
 	{
 		this.getUsersInfo(state, user, null, 'self', { fields: fields }, cb);
 	}
@@ -483,7 +669,7 @@ exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 
 		var userIds = results.map(function(friend) { return ~~friend.id; });
 
-		var sql = 'SELECT playerId, viewerId FROM gree_user WHERE viewerId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
+		var sql = 'SELECT playerId, greeUserId FROM gree_user WHERE greeUserId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
 		var params = userIds.concat([]);
 
 		state.datasources.db.getMany(sql, params, null, function(error, rows) {
@@ -492,7 +678,7 @@ exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 			for (var i=0; i < len; i++)
 			{
 				var row = rows[i];
-				var index = userIds.indexOf(~~row.viewerId);
+				var index = userIds.indexOf(~~row.greeUserId);
 
 				if (index == -1) continue;
 
@@ -574,7 +760,7 @@ exports.send = function(httpMethod, user, path, getParams, postData, cb)
 
 	path = cfg.endpoint.path + (cfg.endpoint.path[cfg.endpoint.path.length - 1] == '/' ? '' : '/') + (path[0] == '/' ? path.substring(1) : path);
 
-	var nonce = (new Date()).getTime() + user.viewerId;
+	var nonce = (new Date()).getTime() + user.userId;
 	var timestamp = mithril.core.time;
 
 	var oauthParams = [
@@ -584,7 +770,7 @@ exports.send = function(httpMethod, user, path, getParams, postData, cb)
 		'oauth_timestamp=' + timestamp,
 		'oauth_token=' + user.token,
 		'oauth_version=1.0',
-		'xoauth_requestor_id=' + user.viewerId
+		'xoauth_requestor_id=' + user.userId
 	];
 
 	var url = cfg.endpoint.protocol + '://' + cfg.endpoint.host + path;
@@ -624,7 +810,7 @@ exports.send = function(httpMethod, user, path, getParams, postData, cb)
 		'oauth_token=' + user.token,
 		'oauth_signature=' + encodeRfc3986(signature),
 		'oauth_signature_method=HMAC-SHA1',
-		'xoauth_requestor_id=' + user.viewerId
+		'xoauth_requestor_id=' + user.userId
 	];
 
 	var headers = {
