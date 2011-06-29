@@ -34,7 +34,10 @@ MithrilGameModShop.prototype.buyItem = function(itemId, shopName, quantity, cb)
 	this.mithril.io.send('shop.buyItem', { itemId: itemId, quantity: quantity, shopName: shopName }, function(errors, response) {
 		if (errors) return cb(errors);
 
-		cb(null, response);
+		if(cb)
+		{
+			cb(null, response);
+		}
 
 		if (response.redirect)
 		{
