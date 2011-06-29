@@ -2,7 +2,6 @@ exports.userCommands = {
 	sync: __dirname + '/usercommands/sync.js'
 };
 
-
 var allNodesMap = null;
 var allNodesArr = null;
 
@@ -10,31 +9,73 @@ var allNodesArr = null;
 exports.setup = function(state, cb)
 {
 	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesArr) {
-		if (error)
-			cb(error);
-		else
-		{
-			allNodesMap = nodesMap;
-			allNodesArr = nodesArr;
+		if (error) return cb(error);
 
-			cb();
-		}
+		allNodesMap = nodesMap;
+		allNodesArr = nodesArr;
+
+		cb();
 	});
 };
 
 
 exports.getNode = function(nodeId)
 {
-	if (nodeId in allNodesMap)
-	{
-		return allNodesMap[nodeId];
-	}
-	return null;
+	return allNodesMap[nodeId] || null;
 };
 
 
 exports.getAllNodesMap = function() { return allNodesMap; };
 exports.getAllNodesArr = function() { return allNodesArr; };
+
+
+// event handling:
+
+var eventHandlers = {};
+
+exports.on = function(eventName, fn)
+{
+	var handler = { fn: fn, once: false };
+
+	if (!eventHandlers[eventName])
+		eventHandlers[eventName] = [handler];
+	else
+		eventHandlers[eventName].push(handler);
+};
+
+
+function emit(eventName, params, cb)
+{
+	// real params: [givenParam1, givenParam2, ..., callback]
+
+	var handlers = eventHandlers[eventName];
+
+	if (!handlers || handlers.length == 0) return cb();
+
+	async.forEachSeries(
+		handlers,
+		function(handler, callback) {
+			console.log(handler.fn);
+			var p = params.concat(callback);
+			handler.fn.apply(null, p);
+		},
+		cb
+	);
+}
+
+
+// module logic:
+
+exports.triggerNode = function(state, nodeId, data, cb)
+{
+	var node = exports.getNode(nodeId);
+	if (!node)
+	{
+		return state.error(null, 'Cannot trigger node that does not exist: ' + nodeId, cb);
+	}
+
+	emit('trigger', [state, node, data], cb);
+};
 
 
 exports.findUnreferencedNodes = function(nodesArr, connectorType)
@@ -52,7 +93,8 @@ exports.findUnreferencedNodes = function(nodesArr, connectorType)
 
 			for (var onState in connector)
 			{
-				for (var j=0; j < connector[onState].length; j++)
+				var jlen = connector[onState].length;
+				for (var j=0; j < jlen; j++)
 				{
 					referenced.push(connector[onState][j]);
 				}
@@ -140,8 +182,9 @@ exports.getInRequirements = function(state, actorId, nodeId, type, cb)
 		for (groupId in connectors)
 		{
 			var group = connectors[groupId];
+			var len = group.length;
 
-			for (var i=0; i < group.length; i++)
+			for (var i=0; i < len; i++)
 			{
 				nodeIds.push(group[i].targetNode);
 			}
@@ -155,9 +198,11 @@ exports.getInRequirements = function(state, actorId, nodeId, type, cb)
 			for (groupId in connectors)
 			{
 				var group = connectors[groupId];
+				var len = group.length;
+
 				var groupRequired = [];
 
-				for (var i=0; i < group.length; i++)
+				for (var i=0; i < len; i++)
 				{
 					var cond = group[i];
 
@@ -183,16 +228,27 @@ exports.getInRequirements = function(state, actorId, nodeId, type, cb)
 };
 
 
-exports.setNodeState = function(state, actorId, nodeId, newState, cb)
+exports.setNodeState = function(state, actorId, nodeId, newState, save, cb)
 {
 	var time = mithril.core.time;
 
 	state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState, stateTime: time });
 
-	var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
-	var params = [actorId, nodeId, newState, time];
+	emit('progressChanged', [state, exports.getNode(nodeId), newState], function(error) {
+		if (error) return cb(error);
 
-	state.datasources.db.exec(sql, params, null, cb);
+		if (save)
+		{
+			// we do the actual write last
+
+			var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
+			var params = [actorId, nodeId, newState, time];
+
+			state.datasources.db.exec(sql, params, null, cb);
+		}
+		else
+			cb();
+	});
 };
 
 
@@ -316,22 +372,24 @@ exports.getNodesProgress = function(state, nodeIds, actorId, cb)
 
 	var query = 'SELECT node, state FROM gc_progress WHERE actor = ? AND node IN (';
 	var params = [actorId];
+	var values = [];
 
-	for (var i=0; i < nodeIds.length; i++)
+	var len = nodeIds.length;
+	for (var i=0; i < len; i++)
 	{
 		result[nodeIds[i]] = null;	// those not returned will be null
 
 		params.push(nodeIds[i]);
-		query += '? ,';
+		values.push('?');
 	}
 
-	query = query.substr(0, query.length - 2);
-	query += ')';
+	query += values.join(', ') + ')';
 
 	state.datasources.db.getMany(query, params, null, function(err, data) {
 		if (err) return cb(err);
 
-		for (var i=0; i < data.length; i++)
+		var len = data.length;
+		for (var i=0; i < len; i++)
 		{
 			result[data[i].node] = data[i].state;
 		}

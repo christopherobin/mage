@@ -135,20 +135,16 @@ MithrilIo.prototype.receivedEvent = function(evt)
 
 					result = listener.cb(path, data);
 
-					if (listener.once)
+					if (listener.once && result !== false)
 					{
 						delete listener.cb;
 						delete listeners[j];
 						dropped = true;
 					}
-
-					if (result === false) break;
 				}
 
 				if (dropped)
 					this.eventListeners[i][listenerPath] = listeners.filter(function(elm) { return elm; });
-
-				if (result === false) return;
 			}
 
 			pathElements.pop();

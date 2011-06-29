@@ -12,6 +12,7 @@ function State(actorId, msg, session)
 	this.cmd = msg.cmd || null;
 	this.p   = msg.p   || {};
 	this.id  = msg.id  || null;
+	this.data = {};		// may be used to pass data around between functions
 
 	this.session = session || null;
 
@@ -83,6 +84,17 @@ State.prototype.error = function(userCode, logDetails, cb)
 
 	if (!userCode)
 		userCode = this.ERR_INTERNAL;
+
+	this.errors.push(userCode);
+
+	if (cb)
+		cb(userCode);
+};
+
+
+State.prototype.userError = function(userCode, cb)
+{
+	// For errors that are caused by users. We don't need to log them per se, but we want a meaningful error message for the user.
 
 	this.errors.push(userCode);
 
