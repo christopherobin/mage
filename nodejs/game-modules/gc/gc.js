@@ -249,7 +249,7 @@ exports.getInRequirements = function(state, actorId, nodeId, type, cb)
 };
 
 
-exports.setNodeState = function(state, actorId, nodeId, newState, save, cb)
+exports.setNodeProgress = function(state, actorId, nodeId, newState, save, cb)
 {
 	var time = mithril.core.time;
 
@@ -273,14 +273,28 @@ exports.setNodeState = function(state, actorId, nodeId, newState, save, cb)
 };
 
 
-exports.delNodeState = function(state, actorId, nodeId, cb)
+exports.incNodeProgress = function(state, actorId, nodeId, increment, save, cb)
+{
+	// parses the node progress as integer, and increments it by "increment"
+
+	exports.getNodeProgress(state, actorId, nodeId, function(error, progress) {
+		if (error) return cb(error);
+
+		var newProgress = ~~progress + increment;
+
+		exports.setNodeProgress(state, actorId, nodeId, newProgress, save, cb);
+	});
+};
+
+
+exports.delNodeProgress = function(state, actorId, nodeId, cb)
 {
 	state.emit(actorId, 'gc.node.progress.del', { nodeId: nodeId });
 
 	var sql = 'DELETE FROM gc_progress WHERE actor = ? AND node = ?';
 	var params = [actorId, nodeId];
 
-	state.datasources.db.exec(sql, params, null, cb);
+	state.datasources.db.exec(sql, params, null, function(error) { cb(error); });
 };
 
 
@@ -365,6 +379,8 @@ exports.loadNodeInformation = function(state, nodesMap, options, cb)
 
 exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 {
+	// TODO: we are augmenting nodes???? scary for multi-user!!!!
+
 	var query = 'SELECT node, state, stateTime FROM gc_progress WHERE actor = ?';
 	var params = [actorId];
 
@@ -383,6 +399,19 @@ exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 		}
 
 		cb();
+	});
+};
+
+
+exports.getNodeProgress = function(state, actorId, nodeId, cb)
+{
+	var sql = 'SELECT state FROM gc_progress WHERE actor = ? AND node = ?';
+	var params = [actorId, nodeId];
+
+	state.datasources.db.getOne(sql, params, false, null, function(error, row) {
+		if (error) return cb(error);
+
+		cb(null, row ? (row.state || null) : null);
 	});
 };
 
