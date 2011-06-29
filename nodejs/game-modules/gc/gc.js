@@ -265,7 +265,7 @@ exports.setNodeProgress = function(state, actorId, nodeId, newState, save, cb)
 			var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
 			var params = [actorId, nodeId, newState, time];
 
-			state.datasources.db.exec(sql, params, null, cb);
+			state.datasources.db.exec(sql, params, null, function(error) { cb(error); });
 		}
 		else
 			cb();
