@@ -57,7 +57,6 @@ function emit(eventName, params, cb)
 	async.forEachSeries(
 		handlers,
 		function(handler, callback) {
-			console.log(handler.fn);
 			var p = params.concat(callback);
 			handler.fn.apply(null, p);
 		},
