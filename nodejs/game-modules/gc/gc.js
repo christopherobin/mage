@@ -4,15 +4,17 @@ exports.userCommands = {
 
 var allNodesMap = null;
 var allNodesArr = null;
+var allNodesTypedArr = null;
 
 
 exports.setup = function(state, cb)
 {
-	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesArr) {
+	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesArr, nodesTypedArr) {
 		if (error) return cb(error);
 
 		allNodesMap = nodesMap;
 		allNodesArr = nodesArr;
+		allNodesTypedArr = nodesTypedArr;
 
 		cb();
 	});
@@ -103,6 +105,26 @@ exports.findUnreferencedNodes = function(nodesArr, connectorType)
 	}
 
 	return nodesArr.filter(function(node) { return (referenced.indexOf(node.id) == -1); });
+};
+
+
+exports.findNodesByType = function(nodesArr, nodeType)
+{
+	if (!nodesArr || nodesArr === allNodesArr)
+	{
+		return allNodesTypedArr[nodeType] || [];
+	}
+
+	var result = [];
+
+	var len = nodesArr.length;
+	for (var i=0; i < len; i++)
+	{
+		var node = nodesArr[i];
+		if (node.type === nodeType) result.push(node);
+	}
+
+	return result;
 };
 
 
@@ -271,6 +293,7 @@ exports.loadNodes = function(state, options, cb)
 	if (!options) options = {};
 
 	var nodesMap = {};
+	var nodesTypedArr = {};
 
 	var query = 'SELECT id, identifier, type FROM gc_node';
 	var params = [];
@@ -280,26 +303,30 @@ exports.loadNodes = function(state, options, cb)
 
 		if (nodesArr.length == 0)
 		{
-			cb(null, nodesMap, nodesArr);
+			return cb(null, nodesMap, nodesArr, nodesTypedArr);
 		}
-		else
+
+		var len = nodesArr.length;
+
+		for (var i=0; i < len; i++)
 		{
-			var len = nodesArr.length;
+			var node = nodesArr[i];
 
-			for (var i=0; i < len; i++)
+			nodesMap[node.id] = node;
+
+			if (node.type in nodesTypedArr)
 			{
-				var node = nodesArr[i];
-
-				nodesMap[node.id] = node;
+				nodesTypedArr[node.type].push(node);
 			}
-
-			exports.loadNodeInformation(state, nodesMap, options, function(error) {
-				if (error)
-					cb(error);
-				else
-					cb(null, nodesMap, nodesArr);
-			});
+			else
+				nodesTypedArr[node.type] = [node];
 		}
+
+		exports.loadNodeInformation(state, nodesMap, options, function(error) {
+			if (error) return cb(error);
+
+			cb(null, nodesMap, nodesArr, nodesTypedArr);
+		});
 	});
 };
 
