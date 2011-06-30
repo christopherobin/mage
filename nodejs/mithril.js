@@ -303,6 +303,19 @@ exports.quit = function()
 };
 
 
+exports.core.benchmark = function(n, fn)
+{
+	var startTime = new Date;
+
+	for (var i=0; i < n; i++) fn();
+
+	var endTime = new Date;
+	var msec = endTime.getTime() - startTime.getTime();
+
+	console.log('>>> Benchmark took ' + msec + ' msec for ' + n + ' iterations.');
+	process.exit();
+};
+
 
 // Clock. Updated every second.
 

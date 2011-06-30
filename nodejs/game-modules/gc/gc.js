@@ -29,6 +29,7 @@ exports.getNode = function(nodeId)
 
 exports.getAllNodesMap = function() { return allNodesMap; };
 exports.getAllNodesArr = function() { return allNodesArr; };
+exports.getAllNodesForType = function(type) { return allNodesTypedArr[type] || []; };
 
 
 // event handling:
@@ -76,6 +77,12 @@ exports.triggerNode = function(state, nodeId, data, cb)
 	}
 
 	emit('trigger', [state, node, data], cb);
+};
+
+
+exports.getAllNodeTypes = function()
+{
+	return Object.keys(allNodesTypedArr);
 };
 
 

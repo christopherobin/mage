@@ -5,57 +5,44 @@ exports.execute = function(state, p, cb)
 	var cfg = mithril.core.config.game.gc;
 
 	var nodeTypes = (cfg && cfg.sync) ? (cfg.sync.nodeTypes || null) : null;
-
-	var nodes = mithril.gc.getAllNodesArr();
-	var len = nodes.length;
+	if (!nodeTypes)
+		nodeTypes = mithril.gc.getAllNodeTypes();
 
 	var resultArr = [];
 	var resultMap = [];
 
-	for (var i=0; i < len; i++)
+	var jlen = nodeTypes.length;
+	for (var j=0; j < jlen; j++)
 	{
-		var node = nodes[i];
+		var nodes = mithril.gc.getAllNodesForType(nodeTypes[j]);
+		var len = nodes.length;
 
-		if (nodeTypes && nodeTypes.indexOf(node.type) == -1) continue;
-
-		var newNode = { id: node.id, type: node.type };
-
-		if (node.cin)
+		for (var i=0; i < len; i++)
 		{
-			var empty = true;
+			var node = nodes[i];
 
-			for (var connType in node.cin) { empty = false; break; }
+			var newNode = { id: node.id, type: node.type };
 
-			if (!empty)
+			if (node.cin)
 			{
-				newNode.cin = node.cin;
+				for (var connType in node.cin) { newNode.cin = node.cin; break; }
 			}
-		}
 
-		if (node.cout)
-		{
-			var empty = true;
-			for (var connType in node.cout) { empty = false; break; }
-
-			if (!empty)
+			if (node.cout)
 			{
-				newNode.cout = node.cout;
+				for (var connType in node.cout) { newNode.cout = node.cout; break; }
 			}
+
+			if (node.data)
+			{
+				var data = node.data.getAll(state.language());
+
+				for (var property in data) { newNode.data = data; break; }
+			}
+
+			resultMap[node.id] = newNode;
+			resultArr.push(newNode);
 		}
-
-		if (node.data)
-		{
-			var data = node.data.getAll(state.language());
-
-			var empty = true;
-			for (var property in data) { empty = false; break; }
-
-			if (!empty)
-				newNode.data = data;
-		}
-
-		resultMap[node.id] = newNode;
-		resultArr.push(newNode);
 	}
 
 	mithril.gc.loadNodeProgress(state, resultMap, state.actorId, false, function(error) {
