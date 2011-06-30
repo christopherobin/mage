@@ -177,7 +177,7 @@ function createRelationRequest(state, type, actorId, targetActorId, cb)
 		state.emit(actorId,       'sns.relationrequest.outbox.add', sent);
 		state.emit(targetActorId, 'sns.relationrequest.inbox.add',  received);
 
-		cb(null, {id:info.insertId, type:'request'});
+		cb();
 	});
 }
 
