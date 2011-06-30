@@ -85,8 +85,8 @@ exports.requestRelation = function(state, type, actorId, targetActorId, cb)
 	// If it's a bidirectional relation type and the other actor also requested this type of relation, instantly connect the two actors instead.
 	// If this relation type does not require approval, also instantly connect the two actors.
 
-	if (!types[type]) return state.error(state.ERR_INTERNAL, 'Unknown relation type: ' + type, cb);
-	if (!targetActorId) return state.error(state.ERR_INTERNAL, 'Invalid target Actor: ' + targetActorId, cb);
+	if (!types[type]) return state.error(null, 'Unknown relation type: ' + type, cb);
+	if (!targetActorId) return state.error(null, 'Invalid target Actor: ' + targetActorId, cb);
 
 	// TODO: If this type of relation already exists, throw an error. Make sure that the bidirectionality is checked.
 
@@ -253,7 +253,7 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 	// This function may be called externally, but should not be needed.
 	// Normal flow would use requestRelation()
 
-	if (!types[type]) return state.error(state.ERR_INTERNAL, 'Unknown relation type: ' + type, cb);
+	if (!types[type]) return state.error(null, 'Unknown relation type: ' + type, cb);
 
 	var time = mithril.core.time;
 

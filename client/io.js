@@ -9,26 +9,14 @@ function MithrilIo(mithril)
 
 	this.sessionSent = false;
 
-	this.ERR_RESTART = 1;
-	this.ERR_INTERNAL = 100;
+	this.handleError = function(error) { alert(error); };	// override!
 }
 
 
-MithrilIo.prototype.handleErrors = function(errorCodes)
-{
-	var msg;
-
-	if (errorCodes.indexOf(this.ERR_RESTART) != -1)
-	{
-		msg = 'You have timed out, or there is a problem with your connection. Please restart the game.';
-	}
-	else
-	{
-		msg = 'Error while trying to execute your request. Please try again. If the problem persists, please check your connection and try restarting the game.';
-	}
-
-	alert(msg);
-};
+// Mithril non-custom error codes:
+//   "server": an internal error happened. Advise: error is logged by game provider.
+//   "badSession": the session was not accepted by the server. Advise: player restarts game (re-login).
+//   "expectedSession": a session was expected, but not sent by the client. Advise: retry same request with a session key.
 
 
 MithrilIo.prototype.start = function(cb)
@@ -160,7 +148,7 @@ MithrilIo.prototype.receivedQueryResult = function(result, isAfterEvents)
 {
 	var id = result[0];
 	var response = result[1];
-	var errors = result[2] || null;
+	var error = result[2] || null;
 
 	if (id in this.queries)
 	{
@@ -171,12 +159,12 @@ MithrilIo.prototype.receivedQueryResult = function(result, isAfterEvents)
 
 			console.log('Received query result', result, isAfterEvents);
 
-			if (errors)
+			var errorToHandle = query.cb(error, response);
+			if (errorToHandle)
 			{
-				this.handleErrors(errors);
+				this.handleError(error);
 			}
 
-			query.cb(errors, response);
 			delete query.cb;
 		}
 	}

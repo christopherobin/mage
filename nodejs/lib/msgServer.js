@@ -9,7 +9,7 @@ exports.start = function(httpServer)
 	function sessionlessError(client, msg, error)
 	{
 		var msgClient = new MsgClient(client);
-		msgClient.respond(msg.id || null, null, [error]);
+		msgClient.respond(msg.id || null, null, error);
 		msgClient.send();
 		msgClient.cleanup();
 	}
@@ -65,7 +65,7 @@ exports.start = function(httpServer)
 				{
 					mithril.core.logger.info('Message server received message without session ID, while not resolving a session.');
 
-					sessionlessError(client, msg, 1);
+					sessionlessError(client, msg, 'expectedSession');
 					return;
 				}
 
@@ -79,7 +79,7 @@ exports.start = function(httpServer)
 						if (error || !result)
 						{
 							mithril.core.logger.info('Could not resolve session: ' + msg.sessionId);
-							sessionlessError(client, msg, 1);
+							sessionlessError(client, msg, 'badSession');
 							msgQueue = [];
 							resolvingSession = false;
 						}

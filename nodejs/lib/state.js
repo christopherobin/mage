@@ -1,8 +1,5 @@
 function State(actorId, msg, session)
 {
-	this.ERR_RESTART  = 1;
-	this.ERR_INTERNAL = 100;
-
 	// behaves like a transaction, and will send off everything that happened after commit() is called.
 
 	this.actorId = actorId || null;
@@ -21,7 +18,7 @@ function State(actorId, msg, session)
 
 	this.events = [];
 	this.response = null;
-	this.errors = [];
+	this.errorCode = null;
 }
 
 
@@ -83,9 +80,9 @@ State.prototype.error = function(userCode, logDetails, cb)
 		mithril.core.logger.error(logDetails);
 
 	if (!userCode)
-		userCode = this.ERR_INTERNAL;
+		userCode = 'server';
 
-	this.errors.push(userCode);
+	this.errorCode = userCode;
 
 	if (cb)
 		cb(userCode);
@@ -96,7 +93,7 @@ State.prototype.userError = function(userCode, cb)
 {
 	// For errors that are caused by users. We don't need to log them per se, but we want a meaningful error message for the user.
 
-	this.errors.push(userCode);
+	this.errorCode = userCode;
 
 	if (cb)
 		cb(userCode);
@@ -125,7 +122,7 @@ State.prototype.close = function()
 {
 	var _this = this;
 
-	if (this.errors.length > 0)
+	if (this.errorCode)
 	{
 		this.rollBack(function() { _this._cleanup(); });
 	}
@@ -185,7 +182,7 @@ State.prototype.rollBack = function(cb)
 		var msgClient = (this.session && this.session.msgClient) ? this.session.msgClient : null;
 		if (msgClient)
 		{
-			msgClient.respond(this.id, null, this.errors);
+			msgClient.respond(this.id, null, this.errorCode);
 
 			if (msgClient)
 				msgClient.send();
@@ -198,7 +195,7 @@ State.prototype.rollBack = function(cb)
 
 	this.events = [];
 	this.response = null;
-	this.errors = [];
+	this.errorCode = null;
 
 	this.datasources.rollBack(cb);
 };
