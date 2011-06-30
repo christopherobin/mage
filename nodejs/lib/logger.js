@@ -8,8 +8,9 @@ exports.add = function(name, output)
 		if (output instanceof stream.Stream)
 		{
 			var out = [];
+			var len = arguments.length;
 
-			for (var i=0; i < arguments.length; i++)
+			for (var i=0; i < len; i++)
 			{
 				var obj = arguments[i];
 				out.push(typeof obj == 'string' ? obj : JSON.stringify(obj));

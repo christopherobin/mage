@@ -8,8 +8,9 @@ exports.expose = function(commandList)
 	for (var gameModule in commandList)
 	{
 		var cmds = commandList[gameModule];
+		var len = cmds.length;
 
-		for (var i=0; i < cmds.length; i++)
+		for (var i=0; i < len; i++)
 		{
 			var cmdName = cmds[i];
 

@@ -103,7 +103,8 @@ exports.setProperties = function(state, actorId, properties, cb)
 	var values = [];
 	var params = [];
 
-	for (var i=0; i < properties.length; i++)
+	var len = properties.length;
+	for (var i=0; i < len; i++)
 	{
 		var prop = properties[i];
 

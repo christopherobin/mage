@@ -130,7 +130,7 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 			for (var i=0; i < len; i++)
 			{
 				var row = rows[i];
-				
+
 				result[row.itemId].data.importOne(row.property, row.type, row.value, row.language);
 			}
 
@@ -179,7 +179,7 @@ exports.startPurchase = function(state, forActorId, shopName, items, cb)
 				itemIds.push(~~itemId);
 			}
 			exports.getItems(state, itemIds, [shopName], function(err,data){
-				
+
 				for (var itemId in data)
 				{
 					data[itemId].quantity = Math.max(~~items[itemId], 1);
@@ -198,7 +198,7 @@ exports.startPurchase = function(state, forActorId, shopName, items, cb)
 		}
 
 		var itemIds = [];
-	
+
 		for (var itemId in itemInfo)
 		{
 			itemIds.push(~~itemId);
@@ -317,7 +317,9 @@ exports.purchasePaid = function(state, purchaseId, cb)
 
 				var itemQuantities = {};
 				var itemShops = {};
-				for (var i=0; i < rows.length; i++)
+
+				var len = rows.length;
+				for (var i=0; i < len; i++)
 				{
 					itemQuantities[rows[i].itemId] = ~~rows[i].quantity || 1;
 					itemShops[rows[i].itemId] = rows[i].shopName; //this should never be nonsense
@@ -348,12 +350,12 @@ exports.purchasePaid = function(state, purchaseId, cb)
 							async.forEachSeries(
 
 								// for each object to be instantiated
-							
+
 								item.objects,
 								function(object, callback3) {
 
 									// pick collections to add the new object to
-									
+
 									mithril.obj.hooks.chooseObjectCollections(state, object.className, function(error, collections) {
 										if (error) return callback3(error);
 
@@ -385,7 +387,9 @@ exports.purchasePaid = function(state, purchaseId, cb)
 		}
 	],
 	function(error) {
-		cb(error, lastPurchase);
+		if (error) return cb(error);
+
+		cb(null, lastPurchase);
 	});
 };
 

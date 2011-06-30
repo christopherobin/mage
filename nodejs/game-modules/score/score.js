@@ -50,7 +50,8 @@ exports.setup = function(state, cb)
 	state.datasources.db.getMany(sql, [], null, function(error, results) {
 		if (error) return cb(error);
 
-		for (var i=0; i < results.length; i++)
+		var len = results.length;
+		for (var i=0; i < len; i++)
 		{
 			var row = results[i];
 
@@ -147,7 +148,8 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 			state.datasources.db.getMany(sql, params, null, function(error, results) {
 				if (error) return cb(error);
 
-				for (var i=0; i < results.length; i++)
+				var len = results.length;
+				for (var i=0; i < len; i++)
 				{
 					var row = results[i];
 

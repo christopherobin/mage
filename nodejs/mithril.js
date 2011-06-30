@@ -253,7 +253,9 @@ exports.start = function()
 		if (params)
 		{
 			params = params.split('&');
-			for (var i=0; i < params.length; i++)
+
+			var len = params.length;
+			for (var i=0; i < len; i++)
 			{
 				var p = params[i].split('=', 2);
 				if (p.length == 2)

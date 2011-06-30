@@ -59,7 +59,8 @@ function getMessageVersions(msg)
 
 	var languages = [];
 
-	for (var i=0; i < msg.content.length; i++)
+	var contentLen = msg.content.length;
+	for (var i=0; i < contentLen; i++)
 	{
 		var content = msg.content[i];
 
@@ -102,7 +103,7 @@ function getMessageVersions(msg)
 
 		// add content
 
-		for (var i=0; i < msg.content.length; i++)
+		for (var i=0; i < contentLen; i++)
 		{
 			var content = msg.content[i];
 
@@ -175,7 +176,8 @@ exports.send = function(state, fromActorId, toActorIds, expirationTime, type, co
 			var params = [];
 			var values = [];
 
-			for (var i=0; i < msg.content.length; i++)
+			var len = msg.content.length;
+			for (var i=0; i < len; i++)
 			{
 				var item = msg.content[i];
 
@@ -225,7 +227,8 @@ exports.send = function(state, fromActorId, toActorIds, expirationTime, type, co
 			var params = [];
 			var values = [];
 
-			for (var i=0; i < toActorIds.length; i++)
+			var len = toActorIds.length;
+			for (var i=0; i < len; i++)
 			{
 				params.push(msg.id, toActorIds[i]);
 				values.push('(?, ?)');
