@@ -177,7 +177,7 @@ function createRelationRequest(state, type, actorId, targetActorId, cb)
 		state.emit(actorId,       'sns.relationrequest.outbox.add', sent);
 		state.emit(targetActorId, 'sns.relationrequest.inbox.add',  received);
 
-		cb(null, info.insertId);
+		cb(null, {id:info.insertId, type:'request'});
 	});
 }
 
@@ -291,7 +291,7 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 		state.emit(actorA, 'sns.relation.add', forA);
 		state.emit(actorB, 'sns.relation.add', forB);
 
-		cb(null, info.insertId);
+		cb(null, { id:info.insertId, type:'relation' });
 	});
 };
 
