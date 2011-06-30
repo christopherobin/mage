@@ -32,40 +32,6 @@ exports.getAllNodesArr = function() { return allNodesArr; };
 exports.getAllNodesForType = function(type) { return allNodesTypedArr[type] || []; };
 
 
-// event handling:
-
-var eventHandlers = {};
-
-exports.on = function(eventName, fn)
-{
-	var handler = { fn: fn, once: false };
-
-	if (!eventHandlers[eventName])
-		eventHandlers[eventName] = [handler];
-	else
-		eventHandlers[eventName].push(handler);
-};
-
-
-function emit(eventName, params, cb)
-{
-	// real params: [givenParam1, givenParam2, ..., callback]
-
-	var handlers = eventHandlers[eventName];
-
-	if (!handlers || handlers.length == 0) return cb();
-
-	async.forEachSeries(
-		handlers,
-		function(handler, callback) {
-			var p = params.concat(callback);
-			handler.fn.apply(null, p);
-		},
-		cb
-	);
-}
-
-
 // module logic:
 
 exports.triggerNode = function(state, nodeId, data, cb)
@@ -76,7 +42,7 @@ exports.triggerNode = function(state, nodeId, data, cb)
 		return state.error(null, 'Cannot trigger node that does not exist: ' + nodeId, cb);
 	}
 
-	emit('trigger', [state, node, data], cb);
+	exports.emit('trigger', [state, node, data], cb);
 };
 
 
@@ -262,7 +228,7 @@ exports.setNodeProgress = function(state, actorId, nodeId, newState, save, cb)
 
 	state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState, stateTime: time });
 
-	emit('progressChanged', [state, exports.getNode(nodeId), newState], function(error) {
+	exports.emit('progressChanged', [state, exports.getNode(nodeId), newState], function(error) {
 		if (error) return cb(error);
 
 		if (save)

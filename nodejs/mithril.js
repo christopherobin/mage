@@ -135,7 +135,38 @@ exports.setup = function(pathConfig, cb)
 
 		exports.core.logger.info('Exposing module ' + name);
 
-		exports[name] = exports.core.modules[name] = require(path);
+		var mod = require(path);
+
+		exports[name] = exports.core.modules[name] = mod;
+
+		// create the event handling mechanism
+
+		mod.eventHandlers = {};
+
+		mod.on = function(eventName, fn) {
+			var handler = { fn: fn, once: false };
+
+			if (!mod.eventHandlers[eventName])
+				mod.eventHandlers[eventName] = [handler];
+			else
+				mod.eventHandlers[eventName].push(handler);
+		};
+
+		mod.emit = function(eventName, params, cb) {
+			// real params: [givenParam1, givenParam2, ..., callback]
+
+			var handlers = mod.eventHandlers[eventName];
+
+			if (!handlers || handlers.length == 0) return cb();
+
+			async.forEachSeries(
+				handlers,
+				function(handler, callback) {
+					handler.fn.apply(null, params.concat(callback));
+				},
+				cb
+			);
+		}
 	});
 
 
@@ -287,6 +318,11 @@ exports.start = function()
 
 	exports.core.msgServer = require(paths.lib + '/msgServer.js');
 	exports.core.msgServer.start(exports.core.httpServer);
+};
+
+
+exports.core.createEventEmitter = function(mod)
+{
 };
 
 

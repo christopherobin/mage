@@ -257,6 +257,8 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 
 	var time = mithril.core.time;
 
+	var forGame = { type: type };
+
 	var forA = {
 		type: type,
 		creationTime: time
@@ -271,27 +273,37 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 	{
 		forA.actorId = actorB;
 		forB.actorId = actorA;
+
+		forGame.actorA = actorA;
+		forGame.actorB = actorB;
 	}
 	else
 	{
-		forA.to = actorB;
 		forB.from = actorA;
+		forA.to = actorB;
+
+		forGame.from = actorA;
+		forGame.to = actorB;
 	}
 
-	var sql = 'INSERT INTO sns_relation VALUES(NULL, ?, ?, ?, ?)';
-	var params = [type, actorA, actorB, time];
-
-	state.datasources.db.exec(sql, params, null, function(error, info) {
+	exports.emit('relationCreated', [state, forGame], function(error) {
 		if (error) return cb(error);
 
-		forA.id = forB.id = info.insertId;
+		var sql = 'INSERT INTO sns_relation VALUES(NULL, ?, ?, ?, ?)';
+		var params = [type, actorA, actorB, time];
 
-		// events that describe the new relation
+		state.datasources.db.exec(sql, params, null, function(error, info) {
+			if (error) return cb(error);
 
-		state.emit(actorA, 'sns.relation.add', forA);
-		state.emit(actorB, 'sns.relation.add', forB);
+			forA.id = forB.id = info.insertId;
 
-		cb(null, info.insertId);
+			// events that describe the new relation
+
+			state.emit(actorA, 'sns.relation.add', forA);
+			state.emit(actorB, 'sns.relation.add', forB);
+
+			cb(null, info.insertId);
+		});
 	});
 };
 
