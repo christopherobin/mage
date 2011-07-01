@@ -106,16 +106,26 @@ exports.filterNodes = function(filter, nextMatch, nodesArr)
 {
 	// filter nodes to only the required ones
 
-	if (!nodesArr) nodesArr = allNodesArr;
+	if (!nodesArr)
+	{
+		nodesArr = allNodesArr;
+	}
+
+	// apply the filter function
 
 	if (filter)
 	{
 		nodesArr = nodesArr.filter(filter);
 	}
 
+	// if we don't care about sorting, or if there are no nodes to sort, return an empty array
+
 	var count = nodesArr.length;
 
-	if (!nextMatch || count == 0) return nodesArr;
+	if (!nextMatch || count == 0)
+	{
+		return nodesArr;
+	}
 
 	// sort nodes
 
@@ -306,7 +316,7 @@ exports.delNodeProgress = function(state, actorId, nodeId, cb)
 
 exports.loadNodes = function(state, options, cb)
 {
-	// options: { loadProgressForActor: actorId, loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }
+	// options: { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }
 	// loads as little as possible by default (if no options given)
 
 	if (!options) options = {};
@@ -369,14 +379,9 @@ exports.loadNodeInformation = function(state, nodesMap, options, cb)
 		tasks.push(function(callback) { exports.loadNodeOutConnectors(state, nodesMap, callback); });
 	}
 
-	if (options.loadProgressForActor)
-	{
-		tasks.push(function(callback) { exports.loadNodeProgress(state, nodesMap, options.loadProgressForActor, true, callback); });
-	}
-
 	if (tasks.length > 0)
 	{
-		async.series(tasks, function(error) { cb(); });
+		async.series(tasks, cb);
 	}
 	else
 		cb();
