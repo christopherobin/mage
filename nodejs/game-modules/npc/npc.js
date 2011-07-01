@@ -18,16 +18,16 @@ exports.setup = function(state, cb)
 
 exports.loadNpcs = function(state, cb)
 {
-	var sql = 'SELECT actor, identifier FROM npc';
+	var query = 'SELECT actor, identifier FROM npc';
 	var params = [];
 
-	state.datasources.db.getMany(sql, params, null, function(error, npcs) {
+	state.datasources.db.getMany(query, params, null, function(error, npcs) {
 		if (error) return cb(error);
 
-		sql = 'SELECT npc, property, language, type, value FROM npc_data';
+		query = 'SELECT npc, property, language, type, value FROM npc_data';
 		params = [];
 
-		state.datasources.db.getMany(sql, params, null, function(error, data) {
+		state.datasources.db.getMany(query, params, null, function(error, data) {
 			if (error) return cb(error);
 
 			var npcsLen = npcs.length;

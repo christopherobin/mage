@@ -321,10 +321,10 @@ exports.tryAuthenticate = function(state, request, path, params, resolvePlayer, 
 		tokenSecret: params.oauth_token_secret
 	};
 
-	var sql = 'SELECT playerId FROM gree_user WHERE greeUserId = ? AND token = ? AND tokenSecret = ?';
+	var query = 'SELECT playerId FROM gree_user WHERE greeUserId = ? AND token = ? AND tokenSecret = ?';
 	var params = [user.userId, user.token, user.tokenSecret];
 
-	state.datasources.db.getOne(sql, params, false, null, function(error, result) {
+	state.datasources.db.getOne(query, params, false, null, function(error, result) {
 		if (error) return cb(error);
 
 		if (result)
@@ -337,10 +337,10 @@ exports.tryAuthenticate = function(state, request, path, params, resolvePlayer, 
 
 exports.resolveUser = function(state, userId, optional, cb)
 {
-	var sql = 'SELECT playerId FROM gree_user WHERE greeUserId = ?';
+	var query = 'SELECT playerId FROM gree_user WHERE greeUserId = ?';
 	var params = [userId];
 
-	state.datasources.db.getOne(sql, params, !optional, null, function(error, playerId) {
+	state.datasources.db.getOne(query, params, !optional, null, function(error, playerId) {
 		if (error) return cb(error);
 
 		cb(null, playerId || null);
@@ -355,10 +355,10 @@ exports.resolvePlayer = function(state, playerId, cb)
 		return cb(null, users[playerId]);
 	}
 
-	var sql = 'SELECT greeUserId, token, tokenSecret FROM gree_user WHERE playerId = ?';
+	var query = 'SELECT greeUserId, token, tokenSecret FROM gree_user WHERE playerId = ?';
 	var params = [playerId];
 
-	state.datasources.db.getOne(sql, params, true, null, function(error, user) {
+	state.datasources.db.getOne(query, params, true, null, function(error, user) {
 		if (error) return cb(error);
 
 		if (user)
@@ -423,19 +423,19 @@ exports.getGadgetXml = function()
 
 exports.getActorIds = function(state, userIds, cb)
 {
-	var sql = 'SELECT playerId, greeUserId FROM gree_user WHERE greeUserId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
+	var query = 'SELECT playerId, greeUserId FROM gree_user WHERE greeUserId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
 	var params = userIds;
 
-	state.datasources.db.getMapped(sql, params, { key: 'greeUserId', value: 'playerId' }, null, cb);
+	state.datasources.db.getMapped(query, params, { key: 'greeUserId', value: 'playerId' }, null, cb);
 };
 
 
 exports.getUserIds = function(state, actorIds, cb)
 {
-	var sql = 'SELECT playerId, greeUserId FROM gree_user WHERE playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')';
+	var query = 'SELECT playerId, greeUserId FROM gree_user WHERE playerId IN (' + actorIds.map(function() { return '?'; }).join(', ') + ')';
 	var params = actorIds;
 
-	state.datasources.db.getMapped(sql, params, { key: 'playerId', value: 'greeUserId' }, null, cb);
+	state.datasources.db.getMapped(query, params, { key: 'playerId', value: 'greeUserId' }, null, cb);
 };
 
 
@@ -551,10 +551,10 @@ exports.paymentConfirm = function(request, path, params, cb)
 	}
 
 
-	var sql = 'SELECT gp.id, gp.playerId, gp.shopPurchaseId FROM gree_payment AS gp JOIN gree_user AS u ON u.playerId = gp.playerId WHERE gp.paymentId = ? AND u.greeUserId = ?';
+	var query = 'SELECT gp.id, gp.playerId, gp.shopPurchaseId FROM gree_payment AS gp JOIN gree_user AS u ON u.playerId = gp.playerId WHERE gp.paymentId = ? AND u.greeUserId = ?';
 	var params = [greePaymentId, userId];
 
-	state.datasources.db.getOne(sql, params, true, null, function(error, row) {
+	state.datasources.db.getOne(query, params, true, null, function(error, row) {
 		if (error) return callback(error);
 
 		var paymentId = row.id;
@@ -681,10 +681,10 @@ exports.rest.getFriends = function(state, user, addActorIds, options, cb)
 
 		var userIds = results.map(function(friend) { return ~~friend.id; });
 
-		var sql = 'SELECT playerId, greeUserId FROM gree_user WHERE greeUserId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
+		var query = 'SELECT playerId, greeUserId FROM gree_user WHERE greeUserId IN (' + userIds.map(function() { return '?'; }).join(', ') + ')';
 		var params = userIds.concat([]);
 
-		state.datasources.db.getMany(sql, params, null, function(error, rows) {
+		state.datasources.db.getMany(query, params, null, function(error, rows) {
 			var len = rows.length;
 
 			for (var i=0; i < len; i++)
