@@ -44,17 +44,17 @@ exports.addEvent = function(state, type, participants, propertyMap, cb)
 		}
 	);
 };
-
+									//consit with ranking
 exports.getEvents = function(state, type, dates, participants, cb) //TODO: test the shit out of this.
 {							//		''    [f,t]	 [ida,idb..]
-	var events = null;
+	var eventsMap = {};
+	var where = [];
 	async.waterfall(
 		[
 			function(callback)
 			{
 				var params = [];
 				var query = 'SELECT he.type, he.creationTime FROM history_event AS he';
-				var where = [];
 			
 				if(type)
 				{
@@ -66,45 +66,81 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 					where.push('creationTime BETWEEN ? AND ?');
 					params.push(dates[0],dates[1]);
 				}
-				if(participants) //TODO: will this return no records if join unsuccessful?
+				if(participants && participants.length > 0)
 				{
-					query += ' JOIN history_event_actor AS hea ON he.id = hea.eventId AND actorId IN (' + participants.map(function() { return '?'; }).join(', ') + ')';
+					query += ' LEFT JOIN history_event_actor AS hea ON he.id = hea.eventId AND actorId IN (' + participants.map(function() { return '?'; }).join(', ') + ')';
 					params = params.concat(participants);
+					where.push('hea.actorId IS NOT NULL');
 				}
 				if(where.length>0)
 				{
 					query += ' WHERE ' + where.join(' AND ');
 				}
+				if(participants && participants.length > 0)
+				{
+					query += ' GROUP BY he.type';
+				}
 				state.datasources.db.getMany(query, params, null, callback);
 			},
 			function(eventData,callback)
 			{
-				events = eventData;
-				if(!participants) { return callback(); }
-				async.forEach(events, function(evt, itCb)
+				if(!participants || participants.length < 1) { return callback(); }
+				
+				var len = eventData.length;
+				
+				for(var i=0;i<len;i++)
+				{
+					var evt = eventData[i];
+					evt.actors = [];
+					evt.data = new mithril.core.PropertyMap;
+					eventsMap[evt.id] = evt;
+				}
+				
+				var query = 'SELECT hea.actorId, hea.eventId from history_event_actor AS hea JOIN history_event AS he ON hea.eventId = he.id ';
+				if(where.length>0)
+				{
+					query += ' WHERE ' + where.join(' AND ');
+				}
+				
+				state.datasources.db.getMany(query, [evt.id], null, function(err,data){
+					if(err) { return callback(err); }
+					
+					var len = data.length;
+					for(var i=0;i<len;i++)
 					{
-					var query = 'SELECT actorId from history_event_actor WHERE eventId = ?';
-					state.datasources.db.getMany(query, [evt.id], null, function(err,actorIds){
-						if(!err)
+						eventId = data[i].eventId;
+						if(eventId in eventsMap)
 						{
-							evt.actors = actorIds;
+							eventsMap[eventId].actors.push(data[i].actorId);
 						}
-						itCb();
-					});
-				}, callback);
+					}
+
+					callback();
+				});
 			},
 			function(callback)
 			{
-				async.forEach(events, function(evt, itCb)
+				var query = 'SELECT hed.eventId, actor, property, language, type, value FROM history_event_data AS hed JOIN history_event AS he on hed.eventId = he.id ';
+				if(where.length>0)
 				{
-					exports.getProperties(state, evt.id, null, function(err,data){
-						if(!err)
+					query += ' WHERE ' + where.join(' AND ');
+				}
+				state.datasources.db.getMany(query, params, null, function(err, results) {
+					if (err) return callback(err);
+
+					var len = results.length;
+					for (var i=0; i < len; i++)
+					{
+						var row = results[i];
+			
+						if (row.eventId in eventsMap)
 						{
-							evt.data = data;
+							eventsMap[row.eventId].data.importOne(row.property, row.type, row.value, row.language, row.actorId);
 						}
-						itCb();
-					});
-				}, callback);
+					}
+			
+					callback();
+				});
 			}
 		],
 		function(err){
@@ -140,26 +176,9 @@ exports.setProperties = function(state, eventId, properties, cb)
 	});
 };
 
-exports.getProperties = function(state, eventId, properties, cb)
-{
-	// If a property is defined with the language AND without a language, one will overwrite the other without any guarantee about which is returned.
-	// This is by design.
 
-	var query = 'SELECT actor, property, type, value FROM history_event_data WHERE eventId = ? AND language IN (?, ?)';
-	var params = [eventId, state.language(), ''];
 
-	if (properties && properties.length > 0)
-	{
-		query += ' AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
-		params = params.concat(properties);
-	}
 
-	state.datasources.db.getMapped(query, params, { key: 'property', type: 'type', value: 'value', actor: 'actor' }, null, function(error, data) {
-		if (error) return cb(error);
-
-		cb(null, data);
-	});
-};
 
 
 
