@@ -506,8 +506,8 @@ CREATE TABLE `history_event_actor` (
   PRIMARY KEY (`eventId`, `actorId`) ,
   INDEX `fk_history_event_actor_eventId` (`eventId` ASC) ,
   INDEX `fk_history_event_actor_actorId` (`actorId` ASC) ,
-  CONSTRAINT `fk_history_event_actor_eventId` FOREIGN KEY (`eventId` ) REFERENCES `history_event` (`id` ) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_history_event_actor_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE NO ACTION ON UPDATE NO ACTION)
+  CONSTRAINT `fk_history_event_actor_eventId` FOREIGN KEY (`eventId` ) REFERENCES `history_event` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_history_event_actor_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 

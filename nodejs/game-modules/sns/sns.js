@@ -24,7 +24,7 @@ exports.getRelationRequests = function(state, type, actorId, targetActorId, cb)
 	// if actorId is omitted, all relation requests to targetActorId will be returned.
 	// if targetActorId is omitted, all relation requests from actorId will be returned.
 
-	var sql = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest';
+	var query = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest';
 	var where = [];
 	var params = [];
 
@@ -45,9 +45,9 @@ exports.getRelationRequests = function(state, type, actorId, targetActorId, cb)
 	}
 	if (where.length > 0)
 	{
-		sql += ' WHERE ' + where.join(' AND ');
+		query += ' WHERE ' + where.join(' AND ');
 	}
-	state.datasources.db.getMany(sql, params, null, cb);
+	state.datasources.db.getMany(query, params, null, cb);
 };
 
 
@@ -72,10 +72,10 @@ exports.getRelationRequest = function(state, requestId, cb)
 {
 	// returns a relation request by ID.
 
-	var sql = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest WHERE id = ?';
+	var query = 'SELECT id, type, actor, targetActor, creationTime FROM sns_relationrequest WHERE id = ?';
 	var params = [requestId];
 
-	state.datasources.db.getOne(sql, params, true, null, cb);
+	state.datasources.db.getOne(query, params, true, null, cb);
 };
 
 
@@ -187,25 +187,25 @@ exports.getRelations = function(state, type, actorId, cb)
 	// returns all relations where actorA or actorB is actorId
 	// type is optional
 
-	var sql = 'SELECT id, type, IF(actorA = ?, actorB, actorA) AS actorId, creationTime FROM sns_relation WHERE ? IN (actorA, actorB)';
+	var query = 'SELECT id, type, IF(actorA = ?, actorB, actorA) AS actorId, creationTime FROM sns_relation WHERE ? IN (actorA, actorB)';
 	var params = [actorId, actorId];
 
 	if (type)
 	{
-		sql += ' AND type = ?';
+		query += ' AND type = ?';
 		params.push(type);
 	}
 
-	state.datasources.db.getMany(sql, params, null, cb);
+	state.datasources.db.getMany(query, params, null, cb);
 };
 
 
 exports.getRelation = function(state, relationId, cb)
 {
-	var sql = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE id = ?';
+	var query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE id = ?';
 	var params = [relationId];
 
-	state.datasources.db.getOne(sql, params, true, null, cb);
+	state.datasources.db.getOne(query, params, true, null, cb);
 };
 
 
@@ -214,16 +214,16 @@ exports.getRelationsFromActor = function(state, type, actorId, cb)
 	// gets all relations where actorA is actorId
 	// type is optional
 
-	var sql = 'SELECT id, type, actorB AS actor, creationTime FROM sns_relation WHERE actorA = ?';
+	var query = 'SELECT id, type, actorB AS actor, creationTime FROM sns_relation WHERE actorA = ?';
 	var params = [actorId];
 
 	if (type)
 	{
-		sql += ' AND type = ?';
+		query += ' AND type = ?';
 		params.push(type);
 	}
 
-	state.datasources.db.getMany(sql, params, null, cb);
+	state.datasources.db.getMany(query, params, null, cb);
 };
 
 
@@ -232,16 +232,16 @@ exports.getRelationsToActor = function(state, type, actorId, cb)
 	// gets all relations where actorB is actorId
 	// type is optional
 
-	var sql = 'SELECT id, type, actorA AS actor, creationTime FROM sns_relation WHERE actorB = ?';
+	var query = 'SELECT id, type, actorA AS actor, creationTime FROM sns_relation WHERE actorB = ?';
 	var params = [actorId];
 
 	if (type)
 	{
-		sql += ' AND type = ?';
+		query += ' AND type = ?';
 		params.push(type);
 	}
 
-	state.datasources.db.getMany(sql, params, null, cb);
+	state.datasources.db.getMany(query, params, null, cb);
 };
 
 

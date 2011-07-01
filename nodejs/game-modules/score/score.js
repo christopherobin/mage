@@ -46,8 +46,8 @@ exports.setup = function(state, cb)
 
 	// find already existing contexts
 
-	var sql = 'SELECT id, name FROM score_context';
-	state.datasources.db.getMany(sql, [], null, function(error, results) {
+	var query = 'SELECT id, name FROM score_context';
+	state.datasources.db.getMany(query, [], null, function(error, results) {
 		if (error) return cb(error);
 
 		var len = results.length;
@@ -142,10 +142,10 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 
 			var values = actorIds.map(function() { return '?'; });
 
-			var sql = 'SELECT actor, score FROM score_total WHERE context = ? AND actor IN (' + values.join(', ') + ')';
+			var query = 'SELECT actor, score FROM score_total WHERE context = ? AND actor IN (' + values.join(', ') + ')';
 			var params = [context.id].concat(actorIds);
 
-			state.datasources.db.getMany(sql, params, null, function(error, results) {
+			state.datasources.db.getMany(query, params, null, function(error, results) {
 				if (error) return cb(error);
 
 				var len = results.length;

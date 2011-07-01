@@ -42,7 +42,8 @@ var coreModules = {
 	obj:        paths.gameModules + '/obj/obj.js',
 	gc:         paths.gameModules + '/gc/gc.js',
 	msg:        paths.gameModules + '/msg/msg.js',
-	score:      paths.gameModules + '/score/score.js'
+	score:      paths.gameModules + '/score/score.js',
+	history:    paths.gameModules + '/history/history.js'
 };
 
 
