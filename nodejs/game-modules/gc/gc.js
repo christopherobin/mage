@@ -259,7 +259,7 @@ exports.setNodeProgress = function(state, actorId, nodeId, newState, save, cb)
 {
 	var time = mithril.core.time;
 
-	state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState, stateTime: time });
+	state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState });
 
 	exports.emit('progressChanged', [state, exports.getNode(nodeId), newState], function(error) {
 		if (error) return cb(error);

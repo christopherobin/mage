@@ -11,11 +11,10 @@ MithrilGameModGc.prototype.setup = function(cb)
 	var _this = this;
 
 	this.mithril.io.on('gc.node.progress.edit', function(path, params) {
-		if (params.nodeId in _this.cacheMap)
+		var node = _this.cacheMap[params.nodeId];
+		if (node)
 		{
-			var node = _this.getNode(params.nodeId);
 			node.progress = params.state;
-
 			params.node = node;
 		}
 	}, true);
@@ -27,10 +26,10 @@ MithrilGameModGc.prototype.setup = function(cb)
 		_this.cacheArr = response;
 		_this.cacheMap = {};
 
-		var len = _this.cacheArr.length;
+		var len = response.length;
 		for (var i=0; i < len; i++)
 		{
-			var node = _this.cacheArr[i];
+			var node = response[i];
 
 			_this.cacheMap[node.id] = node;
 		}
