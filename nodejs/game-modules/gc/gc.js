@@ -59,12 +59,9 @@ exports.findUnreferencedNodes = function(nodesArr, connectorType)
 	var len = nodesArr.length;
 	for (var i=0; i < len; i++)
 	{
-		var node = nodesArr[i];
-
-		if (node.cout && node.cout[connectorType])
+		var connector = nodesArr[i].cout[connectorType];
+		if (connector)
 		{
-			var connector = node.cout[connectorType];
-
 			for (var onState in connector)
 			{
 				var jlen = connector[onState].length;
@@ -76,7 +73,12 @@ exports.findUnreferencedNodes = function(nodesArr, connectorType)
 		}
 	}
 
-	return nodesArr.filter(function(node) { return (referenced.indexOf(node.id) == -1); });
+	var result = [];
+	for (var i=0; i < len; i++)
+	{
+		if (referenced.indexOf(nodesArr[i].id) === -1) result.push(nodesArr[i]);
+	}
+	return result;
 };
 
 
@@ -157,6 +159,37 @@ exports.filterNodes = function(filter, nextMatch, nodesArr)
 		addToResult(out, nodesArr, i);
 
 	return out;
+};
+
+
+exports.getOutNodeId = function(node, connectorType, state)
+{
+	var conns = node.cout[connectorType];
+	if (conns)
+	{
+		var links = conns[state] || conns.any;
+		if (links)
+		{
+			return links[0];
+		}
+	}
+
+	return null;
+};
+
+
+exports.getOutNode = function(node, connectorType, state)
+{
+	var id = exports.getOutNodeId(node, connectorType, state);
+	return id ? allNodesMap[id] : null;
+};
+
+
+exports.getOutNodeIds = function(node, connectorType, state)
+{
+	var conns = node.cout[connectorType];
+
+	return conns ? (conns[state] || conns.any || []) : [];
 };
 
 
@@ -352,8 +385,6 @@ exports.loadNodeInformation = function(state, nodesMap, options, cb)
 
 exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 {
-	// TODO: we are augmenting nodes???? scary for multi-user!!!!
-
 	var query = 'SELECT node, state, stateTime FROM gc_progress WHERE actor = ?';
 	var params = [actorId];
 

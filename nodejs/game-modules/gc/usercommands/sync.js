@@ -23,22 +23,12 @@ exports.execute = function(state, p, cb)
 
 			var newNode = { id: node.id, type: node.type };
 
-			if (node.cin)
-			{
-				for (var connType in node.cin) { newNode.cin = node.cin; break; }
-			}
+			for (var connType in node.cin) { newNode.cin = node.cin; break; }
+			for (var connType in node.cout) { newNode.cout = node.cout; break; }
 
-			if (node.cout)
-			{
-				for (var connType in node.cout) { newNode.cout = node.cout; break; }
-			}
+			var data = node.data.getAll(state.language());
 
-			if (node.data)
-			{
-				var data = node.data.getAll(state.language());
-
-				for (var property in data) { newNode.data = data; break; }
-			}
+			for (var property in data) { newNode.data = data; break; }
 
 			resultMap[node.id] = newNode;
 			resultArr.push(newNode);
