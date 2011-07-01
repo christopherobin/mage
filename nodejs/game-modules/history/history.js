@@ -44,32 +44,36 @@ exports.addEvent = function(state, type, participants, propertyMap, cb)
 		}
 	);
 };
-									//consit with ranking
+
 exports.getEvents = function(state, type, dates, participants, cb) //TODO: test the shit out of this.
-{							//		''    [f,t]	 [ida,idb..]
+{							//		''    {f,t}	 [ida,idb..]
 	var eventsMap = {};
+	var eventArr = [];
 	var where = [];
+	var params = [];
+	
+	if(!participants) { participants = []; }
+	
 	async.waterfall(
 		[
 			function(callback)
 			{
-				var params = [];
-				var query = 'SELECT he.type, he.creationTime FROM history_event AS he';
+				var query = 'SELECT he.id, he.type, he.creationTime FROM history_event AS he';
 			
 				if(type)
 				{
-					where.push('type = ?');
+					where.push('he.type = ?');
 					params.push(type);
 				}
 				if(dates)
 				{
 					where.push('creationTime BETWEEN ? AND ?');
-					params.push(dates[0],dates[1]);
+					params.push(dates.from,dates.to);
 				}
-				if(participants && participants.length > 0)
+				if(participants.length > 0)
 				{
-					query += ' LEFT JOIN history_event_actor AS hea ON he.id = hea.eventId AND actorId IN (' + participants.map(function() { return '?'; }).join(', ') + ')';
-					params = params.concat(participants);
+					query += ' LEFT JOIN history_event_actor AS hea ON he.id = hea.eventId AND hea.actorId IN (' + participants.map(function() { return '?'; }).join(', ') + ')';
+					
 					where.push('hea.actorId IS NOT NULL');
 				}
 				if(where.length>0)
@@ -80,11 +84,13 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 				{
 					query += ' GROUP BY he.type';
 				}
-				state.datasources.db.getMany(query, params, null, callback);
+
+				state.datasources.db.getMany(query, participants.concat(params), null, callback);
 			},
 			function(eventData,callback)
 			{
-				if(!participants || participants.length < 1) { return callback(); }
+				eventArr = eventData;
+				if(participants.length < 1) { return callback(); }
 				
 				var len = eventData.length;
 				
@@ -101,8 +107,8 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 				{
 					query += ' WHERE ' + where.join(' AND ');
 				}
-				
-				state.datasources.db.getMany(query, [evt.id], null, function(err,data){
+
+				state.datasources.db.getMany(query, params.concat([]), null, function(err,data){
 					if(err) { return callback(err); }
 					
 					var len = data.length;
@@ -120,7 +126,7 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 			},
 			function(callback)
 			{
-				var query = 'SELECT hed.eventId, actor, property, language, type, value FROM history_event_data AS hed JOIN history_event AS he on hed.eventId = he.id ';
+				var query = 'SELECT hed.eventId, hed.actorId, hed.property, hed.language, hed.type, hed.value FROM history_event_data AS hed JOIN history_event AS he on hed.eventId = he.id JOIN history_event_actor AS hea ON he.id = hea.eventId ';
 				if(where.length>0)
 				{
 					query += ' WHERE ' + where.join(' AND ');
@@ -138,13 +144,12 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 							eventsMap[row.eventId].data.importOne(row.property, row.type, row.value, row.language, row.actorId);
 						}
 					}
-			
 					callback();
 				});
 			}
 		],
 		function(err){
-			cb(err)
+			cb(err, eventArr)
 		}
 	);
 };
