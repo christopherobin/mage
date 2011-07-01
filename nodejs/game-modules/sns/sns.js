@@ -257,7 +257,7 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 
 	var time = mithril.core.time;
 
-	var forGame = { type: type };
+	var internal = { type: type };
 
 	var forA = {
 		type: type,
@@ -274,19 +274,19 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 		forA.actorId = actorB;
 		forB.actorId = actorA;
 
-		forGame.actorA = actorA;
-		forGame.actorB = actorB;
+		internal.actorA = actorA;
+		internal.actorB = actorB;
 	}
 	else
 	{
 		forB.from = actorA;
 		forA.to = actorB;
 
-		forGame.from = actorA;
-		forGame.to = actorB;
+		internal.from = actorA;
+		internal.to = actorB;
 	}
 
-	exports.emit('relationCreated', [state, forGame], function(error) {
+	exports.emit('relationCreated', [state, internal], function(error) {
 		if (error) return cb(error);
 
 		var sql = 'INSERT INTO sns_relation VALUES(NULL, ?, ?, ?, ?)';
@@ -316,16 +316,21 @@ exports.delRelation = function(state, relationId, cb)
 	exports.getRelation(state, relationId, function(error, relation) {
 		if (error) return cb(error);
 
-		var sql = 'DELETE FROM sns_relation WHERE id = ?';
-		var params = [relationId];
+		var internal = { type: relation.type, actorA:relation.actorA, actorB:relation.actorB };
 
-		state.datasources.db.exec(sql, params, null, function(error) {
-			if (error) return cb(error);
-
-			state.emit(relation.actorA, 'sns.relation.del', { id: relationId });
-			state.emit(relation.actorB, 'sns.relation.del', { id: relationId });
-
-			cb();
+		exports.emit('relationDeleted', [state, internal], function(error)
+		{
+			var sql = 'DELETE FROM sns_relation WHERE id = ?';
+			var params = [relationId];
+	
+			state.datasources.db.exec(sql, params, null, function(error) {
+				if (error) return cb(error);
+	
+				state.emit(relation.actorA, 'sns.relation.del', { id: relationId });
+				state.emit(relation.actorB, 'sns.relation.del', { id: relationId });
+	
+				cb();
+			});
 		});
 	});
 };

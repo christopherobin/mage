@@ -65,11 +65,7 @@ MithrilGameModSns.prototype.getRelationRequestsTo = function(type)
 
 
 MithrilGameModSns.prototype.requestRelation = function(type, actorId, cb) {
-	this.mithril.io.send('sns.requestRelation', { type: type, actorId: actorId }, function(err, request) {
-		if (err) { if (cb) cb(err); return; }
-
-		if (cb) cb(null, request.id);
-	});
+	this.mithril.io.send('sns.requestRelation', { type: type, actorId: actorId }, cb);
 };
 
 
