@@ -145,7 +145,7 @@ exports.getClassProperty = function(className, property, language, tags, behavio
 
 	if (objClass.data)
 	{
-		return objClass.data.getOne(property, language, null, function(prop) { return behaviors.indexOf(prop.meta.behavior) !== -1; });
+		return objClass.data.getOne(property, language, null, function(prop) { return !behaviors || behaviors.indexOf(prop.meta.behavior) !== -1; });
 	}
 
 	return fallback;
