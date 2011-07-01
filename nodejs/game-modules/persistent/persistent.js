@@ -10,19 +10,19 @@ exports.userCommands = {
 
 exports.getAll = function(state, cb)
 {
-	var sql = 'SELECT property, type, value FROM persistent_data WHERE actorId = ? AND language IN (?, ?) AND (expirationTime = 0 OR expirationTime >= ?)';
+	var query = 'SELECT property, type, value FROM persistent_data WHERE actorId = ? AND language IN (?, ?) AND (expirationTime = 0 OR expirationTime >= ?)';
 	var params = [state.actorId, '', state.language(), mithril.core.time];
 
-	state.datasources.db.getMapped(sql, params, { key: 'property', type: 'type', value: 'value' }, null, cb);
+	state.datasources.db.getMapped(query, params, { key: 'property', type: 'type', value: 'value' }, null, cb);
 };
 
 
 exports.get = function(state, properties, removeAfterGet, cb)
 {
-	var sql = 'SELECT property, type, value FROM persistent_data WHERE actorId = ? AND language IN (?, ?) AND (expirationTime = 0 OR expirationTime >= ?) AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
+	var query = 'SELECT property, type, value FROM persistent_data WHERE actorId = ? AND language IN (?, ?) AND (expirationTime = 0 OR expirationTime >= ?) AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
 	var params = [state.actorId, '', state.language(), mithril.core.time].concat(properties);
 
-	state.datasources.db.getMapped(sql, params, { key: 'property', type: 'type', value: 'value' }, null, function(error, data) {
+	state.datasources.db.getMapped(query, params, { key: 'property', type: 'type', value: 'value' }, null, function(error, data) {
 		if (error) return cb(error);
 
 		if (removeAfterGet)

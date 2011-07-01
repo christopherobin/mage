@@ -39,7 +39,7 @@ State.prototype.emit = function(actorId, path, data)
 
 State.prototype.emitToMany = function(filter, path, data, cb)
 {
-	var sql = 'SELECT actor FROM player';
+	var query = 'SELECT actor FROM player';
 	var params = [];
 	var where = [];
 
@@ -57,12 +57,12 @@ State.prototype.emitToMany = function(filter, path, data, cb)
 
 	if (where.length > 0)
 	{
-		sql += ' WHERE ' + where.join(' AND ');
+		query += ' WHERE ' + where.join(' AND ');
 	}
 
 	var _this = this;
 
-	this.datasources.db.getMany(sql, params, null, function(error, players) {
+	this.datasources.db.getMany(query, params, null, function(error, players) {
 		if (error) return cb(error);
 
 		var len = players.length;

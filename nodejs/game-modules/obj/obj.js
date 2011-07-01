@@ -59,18 +59,18 @@ exports.loadAllClasses = function(state, cb)
 {
 	// returns full class definitions, in all languages, all tags
 
-	var sql = 'SELECT id, name, weight FROM obj_class';
+	var query = 'SELECT id, name, weight FROM obj_class';
 	var params = [];
 
-	state.datasources.db.getMany(sql, params, null, function(error, classes) {
+	state.datasources.db.getMany(query, params, null, function(error, classes) {
 		if (error) return cb(error);
 
 		// read properties
 
-		sql = 'SELECT classId, property, tag, language, type, behavior, value FROM obj_class_data';
+		query = 'SELECT classId, property, tag, language, type, behavior, value FROM obj_class_data';
 		params = [];
 
-		state.datasources.db.getMany(sql, params, null, function(error, data) {
+		state.datasources.db.getMany(query, params, null, function(error, data) {
 			if (error) return cb(error);
 
 			var clen = classes.length;
@@ -157,16 +157,16 @@ exports.getClassProperty = function(className, property, language, tags, behavio
 
 exports.getActorObjects = function(state, ownerId, cb)
 {
-	var sql = "SELECT oo.id, oo.name, oo.weight, oo.appliedToObject, oo.creationTime FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
-	state.datasources.db.getMany(sql, [ownerId], null, cb);
+	var query = "SELECT oo.id, oo.name, oo.weight, oo.appliedToObject, oo.creationTime FROM obj_object AS oo INNER JOIN obj_collection_object AS oco ON oo.id = oco.object INNER JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oc.owner = ? GROUP BY oo.id";
+	state.datasources.db.getMany(query, [ownerId], null, cb);
 };
 
 
 exports.getActorObject = function(state, ownerId, objectId, cb)
 {
-	var sql = "SELECT oo.id, oo.name, oo.weight, appliedToObject, creationTime FROM obj_object AS oo JOIN obj_collection_object AS oco ON oo.id = oco.object JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oo.id = ? AND oc.owner = ? GROUP BY oo.id";
+	var query = "SELECT oo.id, oo.name, oo.weight, appliedToObject, creationTime FROM obj_object AS oo JOIN obj_collection_object AS oco ON oo.id = oco.object JOIN obj_collection AS oc ON oco.collection = oc.id WHERE oo.id = ? AND oc.owner = ? GROUP BY oo.id";
 
-	state.datasources.db.getOne(sql, [objectId, ownerId], true, null, cb);
+	state.datasources.db.getOne(query, [objectId, ownerId], true, null, cb);
 };
 
 
@@ -514,10 +514,10 @@ exports.getObjectData = function(state, objectId, properties, cb)
 
 exports.getObjectDataByOwner = function(state, ownerId, cb)
 {
-	var sql = 'SELECT od.object, od.property, od.type, od.value FROM obj_object_data AS od JOIN obj_collection_object AS oc ON oc.object = od.object JOIN obj_collection AS c ON c.id = oc.collection WHERE c.owner = ? AND od.language IN (?, ?) GROUP BY od.object, od.property';
+	var query = 'SELECT od.object, od.property, od.type, od.value FROM obj_object_data AS od JOIN obj_collection_object AS oc ON oc.object = od.object JOIN obj_collection AS c ON c.id = oc.collection WHERE c.owner = ? AND od.language IN (?, ?) GROUP BY od.object, od.property';
 	var params = [ownerId, '', state.language()];
 
-	state.datasources.db.getMany(sql, params, null, function(error, results) {
+	state.datasources.db.getMany(query, params, null, function(error, results) {
 		var props = [];
 		var len = results.length;
 
@@ -551,10 +551,10 @@ exports.setObjectData = function(state, objectId, propertyMap, requiredOwnerId, 
 
 			// augment data object with "copy" style class properties
 
-			var sql = 'SELECT name FROM obj_object WHERE id = ?';
+			var query = 'SELECT name FROM obj_object WHERE id = ?';
 			var params = [objectId];
 
-			state.datasources.db.getOne(sql, params, true, null, function(error, row) {
+			state.datasources.db.getOne(query, params, true, null, function(error, row) {
 				if (error) return callback(error);
 
 				name = row.name;
@@ -876,10 +876,10 @@ exports.getActorCollections = function(state, ownerId, fields, cb)
 
 exports.addCollection = function(state, type, slotCount, maxWeight, parentCollection, owner, cb)
 {
-	var query = 'INSERT INTO obj_collection (type, slotCount, maxWeight, parent, owner) VALUES (?, ?, ?, ?, ?)';
+	var sql = 'INSERT INTO obj_collection (type, slotCount, maxWeight, parent, owner) VALUES (?, ?, ?, ?, ?)';
 	var params = [type, slotCount, maxWeight, parentCollection, owner];
 
-	state.datasources.db.exec(query, params, null, function(err, info) {
+	state.datasources.db.exec(sql, params, null, function(err, info) {
 		if (err) return cb(err);
 
 		if (owner)
@@ -1009,10 +1009,10 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 
 	if (!options) options = {};
 
-	var sql = "SELECT owner, slotCount, maxWeight from obj_collection WHERE id = ?";
+	var query = "SELECT owner, slotCount, maxWeight from obj_collection WHERE id = ?";
 	var params = [collectionId];
 
-	state.datasources.db.getOne(sql, params, true, null, function(err, data) {
+	state.datasources.db.getOne(query, params, true, null, function(err, data) {
 		if (err) return cb(err);
 
 		var owner     = data.owner;
@@ -1039,10 +1039,10 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 					if (slot > slotCount) return state.error(null, 'Invalid slot: ' + slot + ', this collection has capacity: ' + slotCount, callback);
 				}
 
-				var sql = 'SELECT slot, object FROM obj_collection_object WHERE collection = ?';
+				var query = 'SELECT slot, object FROM obj_collection_object WHERE collection = ?';
 				var params = [collectionId];
 
-				state.datasources.db.getMapped(sql, params, { key: 'slot', value: 'object' }, null, function(error, slots) {
+				state.datasources.db.getMapped(query, params, { key: 'slot', value: 'object' }, null, function(error, slots) {
 					if (error) return callback(error);
 
 					if (slot)
@@ -1099,10 +1099,10 @@ exports.addObjectToCollection = function(state, objectId, collectionId, options,
 
 				if (!maxWeight) return callback();
 
-				var sql = 'SELECT SUM(o.weight) AS weight FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? AND o.weight IS NOT NULL';
+				var query = 'SELECT SUM(o.weight) AS weight FROM obj_object AS o JOIN obj_collection_object AS co ON co.object = o.id WHERE co.collection = ? AND o.weight IS NOT NULL';
 				var params = [collectionId];
 
-				state.datasources.db.getOne(sql, params, false, null, function(error, row) {
+				state.datasources.db.getOne(query, params, false, null, function(error, row) {
 					var totalWeight = ~~row.weight;
 
 					if (totalWeight > maxWeight)
@@ -1190,10 +1190,10 @@ exports.setObjectSlot = function(state, objectId, collectionId, slotNumber, cb) 
 	state.datasources.db.getOne(query, params, true, null, function(err, data) {
 		if (err) return cb(err);
 
-		query = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?";
+		var sql = "UPDATE obj_collection_object SET slot = ? WHERE collection = ? AND object = ?";
 		params = [slotNumber, collectionId, objectId];
 
-		state.datasources.db.exec(query, params, null, function(error) {
+		state.datasources.db.exec(sql, params, null, function(error) {
 			if (error) return cb(error);
 
 			if (data.owner)

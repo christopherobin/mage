@@ -63,10 +63,10 @@ exports.enforceCurrency = function(state, identifier, callbacks, cb)
 
 exports.getCurrencyId = function(state, identifier, cb)
 {
-	var sql = 'SELECT id FROM shop_currency WHERE identifier = ?';
+	var query = 'SELECT id FROM shop_currency WHERE identifier = ?';
 	var params = [identifier];
 
-	state.datasources.db.getOne(sql, params, true, null, function(error, row) {
+	state.datasources.db.getOne(query, params, true, null, function(error, row) {
 		if (error) return cb(error);
 
 		cb(null, row.id);
@@ -78,7 +78,7 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 {
 	// if no itemIds given, all items will be returned, if no shopName given, all will return
 
-	var sql = 'SELECT i.id, i.shopId, s.name AS shopName, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id JOIN shop AS s ON s.id = i.shopId';
+	var query = 'SELECT i.id, i.shopId, s.name AS shopName, i.identifier, i.status, i.currencyId, i.unitPrice, c.identifier AS currencyIdentifier FROM shop_currency AS c JOIN shop_item AS i ON i.currencyId = c.id JOIN shop AS s ON s.id = i.shopId';
 	var params = [];
 	var where = [];
 
@@ -96,10 +96,10 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 
 	if (where.length > 0)
 	{
-		sql += ' WHERE ' + where.join(' AND ');
+		query += ' WHERE ' + where.join(' AND ');
 	}
 
-	state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
+	state.datasources.db.getMany(query, params.concat([]), null, function(error, rows) {
 		if (error) return cb(error);
 
 		itemIds = rows.map(function(row) { return row.id; });
@@ -120,10 +120,10 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 		}
 
 		// for each item, get data
-		var sql = 'SELECT itemId, property, language, type, value FROM shop_item_data WHERE itemId IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')';
+		var query = 'SELECT itemId, property, language, type, value FROM shop_item_data WHERE itemId IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')';
 		var params = itemIds;
 
-		state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
+		state.datasources.db.getMany(query, params.concat([]), null, function(error, rows) {
 			if (error) return cb(error);
 
 			var len = rows.length;
@@ -135,9 +135,9 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 			}
 
 			// for each item, get object instantiation info
-			sql = 'SELECT itemId, className, quantity, tags FROM shop_item_object WHERE itemId IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')';
+			query = 'SELECT itemId, className, quantity, tags FROM shop_item_object WHERE itemId IN (' + itemIds.map(function() { return '?'; }).join(', ') + ')';
 
-			state.datasources.db.getMany(sql, params.concat([]), null, function(error, rows) {
+			state.datasources.db.getMany(query, params.concat([]), null, function(error, rows) {
 				if (error) return cb(error);
 
 				var len = rows.length;
@@ -296,7 +296,7 @@ exports.purchasePaid = function(state, purchaseId, cb)
 
 	async.series([
 		function(callback) {
-			// set purchase state to paid
+			// set purchase state to paid TODO: move this to after the following select?
 
 			var sql = 'UPDATE shop_purchase SET status = ?, purchaseTime = ? WHERE id = ? AND status = ?';
 			var params = ['paid', mithril.core.time, purchaseId, 'new'];
@@ -307,10 +307,10 @@ exports.purchasePaid = function(state, purchaseId, cb)
 			// instantiate any objects that need to be created
 
 			// fetch stuff for return in lastPurchase
-			var sql = 'SELECT spi.itemId, spi.quantity, s.name AS shopName FROM shop_purchase_item AS spi JOIN shop_item AS si ON spi.itemId = si.id JOIN shop as s ON si.shopId = s.id WHERE purchaseId = ?';
+			var query = 'SELECT spi.itemId, spi.quantity, s.name AS shopName FROM shop_purchase_item AS spi JOIN shop_item AS si ON spi.itemId = si.id JOIN shop as s ON si.shopId = s.id WHERE purchaseId = ?';
 			var params = [purchaseId];
 
-			state.datasources.db.getMany(sql, params, null, function(error, rows) {
+			state.datasources.db.getMany(query, params, null, function(error, rows) {
 				if (error) return callback(error);
 
 				var itemIds = rows.map(function(row) { return row.itemId; });

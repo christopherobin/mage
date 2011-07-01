@@ -14,16 +14,16 @@ exports.loadInbox = function(state, actorId, cb)
 {
 	var time = mithril.core.time;
 
-	var sql = 'SELECT m.id, m.fromActorId, m.creationTime, m.expirationTime, m.type, c.title, c.body FROM msg AS m JOIN msg_content AS c ON c.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE c.language IN (?, ?) AND (ta.actorId = ? OR ta.actorId IS NULL) AND (m.expirationTime IS NULL OR m.expirationTime >= ?)';
+	var query = 'SELECT m.id, m.fromActorId, m.creationTime, m.expirationTime, m.type, c.title, c.body FROM msg AS m JOIN msg_content AS c ON c.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE c.language IN (?, ?) AND (ta.actorId = ? OR ta.actorId IS NULL) AND (m.expirationTime IS NULL OR m.expirationTime >= ?)';
 	var params = [state.language(), '', actorId, time];
 
-	state.datasources.db.getMapped(sql, params, { key: 'id', keepKey: true }, null, function(error, messages) {
+	state.datasources.db.getMapped(query, params, { key: 'id', keepKey: true }, null, function(error, messages) {
 		if (error) return cb(error);
 
-		var sql = 'SELECT d.msgId, d.property, d.type, d.value FROM msg_data AS d JOIN msg AS m ON d.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE (ta.actorId = ? OR ta.actorId IS NULL) AND (m.expirationTime IS NULL OR m.expirationTime >= ?) AND d.language IN (?, ?)';
+		var query = 'SELECT d.msgId, d.property, d.type, d.value FROM msg_data AS d JOIN msg AS m ON d.msgId = m.id LEFT JOIN msg_to_actor AS ta ON ta.msgId = m.id WHERE (ta.actorId = ? OR ta.actorId IS NULL) AND (m.expirationTime IS NULL OR m.expirationTime >= ?) AND d.language IN (?, ?)';
 		var params = [actorId, time, '', state.language()];
 
-		state.datasources.db.getMany(sql, params, null, function(error, results) {
+		state.datasources.db.getMany(query, params, null, function(error, results) {
 			if (error) return cb(error);
 
 			var len = results.length;

@@ -414,10 +414,10 @@ exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 
 exports.getNodeProgress = function(state, actorId, nodeId, cb)
 {
-	var sql = 'SELECT state FROM gc_progress WHERE actor = ? AND node = ?';
+	var query = 'SELECT state FROM gc_progress WHERE actor = ? AND node = ?';
 	var params = [actorId, nodeId];
 
-	state.datasources.db.getOne(sql, params, false, null, function(error, row) {
+	state.datasources.db.getOne(query, params, false, null, function(error, row) {
 		if (error) return cb(error);
 
 		cb(null, row ? (row.state || null) : null);

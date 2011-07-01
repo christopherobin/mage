@@ -287,6 +287,7 @@ PropertyMap.prototype.getAllFull = function(language, tags, fnFilter)
 
 				if (prop.language) obj.language = prop.language;
 				if (prop.tag) obj.tag = prop.tag;
+				if (prop.meta) obj.meta = prop.meta;
 
 				if (property in result)
 				{
@@ -325,6 +326,7 @@ PropertyMap.prototype.getAllFlat = function(language, tags, fnFilter)
 
 				if (prop.language) obj.language = prop.language;
 				if (prop.tag) obj.tag = prop.tag;
+				if (prop.meta) obj.meta = prop.meta;
 
 				result.push(obj);
 			}

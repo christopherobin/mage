@@ -10,10 +10,10 @@ exports.getActor = function(state, id, cb)
 {
 	id = parseInt(id);
 
-	var sql = 'SELECT creationTime FROM actor WHERE id = ?';
+	var query = 'SELECT creationTime FROM actor WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.getOne(sql, params, true, null, function(error, actor) {
+	state.datasources.db.getOne(query, params, true, null, function(error, actor) {
 		if (error) return cb(error);
 
 		actor.id = id;
@@ -37,10 +37,10 @@ exports.addActor = function(state, name, cb)
 
 	var time = mithril.core.time;
 
-	var query = 'INSERT INTO actor (creationTime) VALUES (?)';
+	var sql = 'INSERT INTO actor (creationTime) VALUES (?)';
 	var params = [time];
 
-	state.datasources.db.exec(query, params, null, function(error, info) {
+	state.datasources.db.exec(sql, params, null, function(error, info) {
 		if (error) return cb(error);
 
 		var actor = { id: info.insertId, creationTime: time, data: {} };
@@ -79,16 +79,16 @@ exports.getProperties = function(state, actorId, properties, cb)
 	// If a property is defined with the language AND without a language, one will overwrite the other without any guarantee about which is returned.
 	// This is by design.
 
-	var sql = 'SELECT property, type, value FROM actor_data WHERE actor = ? AND language IN (?, ?)';
+	var query = 'SELECT property, type, value FROM actor_data WHERE actor = ? AND language IN (?, ?)';
 	var params = [actorId, state.language(), ''];
 
 	if (properties && properties.length > 0)
 	{
-		sql += ' AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
+		query += ' AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
 		params = params.concat(properties);
 	}
 
-	state.datasources.db.getMapped(sql, params, { key: 'property', type: 'type', value: 'value' }, null, function(error, data) {
+	state.datasources.db.getMapped(query, params, { key: 'property', type: 'type', value: 'value' }, null, function(error, data) {
 		if (error) return cb(error);
 
 		cb(null, data);
@@ -126,9 +126,9 @@ exports.delActor = function(state, id, cb)
 {
 	// TODO: removing an actor involves more than just this record. Eg: objects would remain intact.
 
-	var query = 'DELETE FROM actor WHERE id = ?';
+	var sql = 'DELETE FROM actor WHERE id = ?';
 	var params = [id];
 
-	state.datasources.db.exec(query, params, null, cb);
+	state.datasources.db.exec(sql, params, null, cb);
 };
 
