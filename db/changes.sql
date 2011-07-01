@@ -473,5 +473,43 @@ CREATE TABLE `gree_invitation` (
 ENGINE = InnoDB;
 
 
+-- 2011-07-01: History module refactored
+
+DROP TABLE `history_event_data`;
+DROP TABLE `history_event`;
+
+CREATE TABLE `history_event` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(255) NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `key_history_event_type` (`type`(10) ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `history_event_data` (
+  `eventId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  INDEX `fk_history_event_data_eventId` (`eventId` ASC) ,
+  INDEX `fk_history_event_data_actorId` (`actorId` ASC) ,
+  PRIMARY KEY (`eventId`, `actorId`, `property`, `language`) ,
+  CONSTRAINT `fk_history_event_data_eventId` FOREIGN KEY (`eventId` ) REFERENCES `history_event` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_history_event_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `history_event_actor` (
+  `eventId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`eventId`, `actorId`) ,
+  INDEX `fk_history_event_actor_eventId` (`eventId` ASC) ,
+  INDEX `fk_history_event_actor_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_history_event_actor_eventId` FOREIGN KEY (`eventId` ) REFERENCES `history_event` (`id` ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_history_event_actor_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE NO ACTION ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
