@@ -321,7 +321,7 @@ exports.createRelation = function(state, type, actorA, actorB, cb)
 			state.emit(actorA, 'sns.relation.add', forA);
 			state.emit(actorB, 'sns.relation.add', forB);
 
-			cb();
+			cb(null, info);
 		});
 	});
 };
