@@ -228,6 +228,7 @@ exports.findRelation = function(state, type, actorA, actorB, cb)
 		query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND actorA = ? AND actorB = ?';
 		params = [type, actorA, actorB];
 	}
+
 	state.datasources.db.getOne(query, params, false, null, cb);
 };
 
@@ -339,9 +340,11 @@ exports.delRelation = function(state, relationId, cb)
 	exports.getRelation(state, relationId, function(error, relation) {
 		if (error) return cb(error);
 
-		var internal = { type: relation.type, actorA:relation.actorA, actorB:relation.actorB };
+		var internal = { type: relation.type, actorA: relation.actorA, actorB: relation.actorB };
 
 		exports.emit('relationDeleted', [state, internal], function(error) {
+			if (error) return cb(error);
+
 			var sql = 'DELETE FROM sns_relation WHERE id = ?';
 			var params = [relationId];
 
