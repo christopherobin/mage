@@ -209,6 +209,25 @@ exports.getRelation = function(state, relationId, cb)
 };
 
 
+exports.findRelation = function(state, type, actorA, actorB, cb)
+{
+	if (!types[type]) return state.error(null, 'Unknown relation type: ' + type, cb);
+	
+	//if b-di, swap actors, check both possibilities
+	if (types[type].bidirectional)
+	{
+		var query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND (actorA = ? AND actorB = ?) OR (actorA = ? AND actorB = ?)';
+		params = [type, actorA, actorB, actorB, actorA];
+	}
+	else
+	{
+		var query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND actorA = ? AND actorB = ?';
+		params = [type, actorA, actorB];
+	}
+	state.datasources.db.getOne(query, params, false, null, cb);
+};
+
+
 exports.getRelationsFromActor = function(state, type, actorId, cb)
 {
 	// gets all relations where actorA is actorId
@@ -333,5 +352,15 @@ exports.delRelation = function(state, relationId, cb)
 			});
 		});
 	});
+};
+
+exports.resetRelation = function(state, relationId, cb)
+{
+	//TODO: drop data table here too once implemented
+	
+	var time = mithril.core.time;
+	var sql = "UPDATE sns_relation SET creationTime = ? WHERE id = ?";
+	var params = [time, relationId];
+	state.datasources.db.exec(sql, params, null, cb);
 };
 
