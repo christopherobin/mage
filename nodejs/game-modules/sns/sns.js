@@ -212,16 +212,20 @@ exports.getRelation = function(state, relationId, cb)
 exports.findRelation = function(state, type, actorA, actorB, cb)
 {
 	if (!types[type]) return state.error(null, 'Unknown relation type: ' + type, cb);
-	
-	//if b-di, swap actors, check both possibilities
+
+	// if bi-directional, swap actors, check both possibilities
+
+	var query;
+	var params;
+
 	if (types[type].bidirectional)
 	{
-		var query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND (actorA = ? AND actorB = ?) OR (actorA = ? AND actorB = ?)';
+		query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND (actorA = ? AND actorB = ?) OR (actorA = ? AND actorB = ?)';
 		params = [type, actorA, actorB, actorB, actorA];
 	}
 	else
 	{
-		var query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND actorA = ? AND actorB = ?';
+		query = 'SELECT id, type, actorA, actorB, creationTime FROM sns_relation WHERE type = ? AND actorA = ? AND actorB = ?';
 		params = [type, actorA, actorB];
 	}
 	state.datasources.db.getOne(query, params, false, null, cb);
@@ -337,17 +341,16 @@ exports.delRelation = function(state, relationId, cb)
 
 		var internal = { type: relation.type, actorA:relation.actorA, actorB:relation.actorB };
 
-		exports.emit('relationDeleted', [state, internal], function(error)
-		{
+		exports.emit('relationDeleted', [state, internal], function(error) {
 			var sql = 'DELETE FROM sns_relation WHERE id = ?';
 			var params = [relationId];
-	
+
 			state.datasources.db.exec(sql, params, null, function(error) {
 				if (error) return cb(error);
-	
+
 				state.emit(relation.actorA, 'sns.relation.del', { id: relationId });
 				state.emit(relation.actorB, 'sns.relation.del', { id: relationId });
-	
+
 				cb();
 			});
 		});
@@ -356,8 +359,9 @@ exports.delRelation = function(state, relationId, cb)
 
 exports.resetRelation = function(state, relationId, cb)
 {
-	//TODO: drop data table here too once implemented
-	
+	// TODO: drop data table here too once implemented
+	// TODO: emit event to the players involved to reset anything that got reset (currently only creationTime)
+
 	var time = mithril.core.time;
 	var sql = "UPDATE sns_relation SET creationTime = ? WHERE id = ?";
 	var params = [time, relationId];
