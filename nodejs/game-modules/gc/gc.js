@@ -390,7 +390,7 @@ exports.loadNodeInformation = function(state, nodesMap, options, cb)
 
 exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 {
-	var query = 'SELECT node, state, stateTime FROM gc_progress WHERE actor = ?';
+	var query = 'SELECT node, state' + (includeTime ? ', stateTime' : '') + ' FROM gc_progress WHERE actor = ?';
 	var params = [actorId];
 
 	state.datasources.db.getMany(query, params, null, function(err, results) {
@@ -400,10 +400,11 @@ exports.loadNodeProgress = function(state, nodesMap, actorId, includeTime, cb)
 		for (var i=0; i < len; i++)
 		{
 			var row = results[i];
+			var node = nodesMap[row.node];
 
-			if (row.node in nodesMap)
+			if (node)
 			{
-				nodesMap[row.node].progress = includeTime ? { state: row.state, stateTime: row.stateTime } : row.state;
+				node.progress = includeTime ? { state: row.state, stateTime: row.stateTime } : row.state;
 			}
 		}
 
