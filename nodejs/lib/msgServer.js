@@ -15,9 +15,9 @@ exports.start = function(httpServer)
 	}
 
 
-	var io = require('socket.io').listen(httpServer, { log: null });
+	var io = require('socket.io').listen(httpServer);
 
-	io.on('connection', function(client) {
+	io.sockets.on('connection', function(client) {
 		// resolve session object
 
 		mithril.core.logger.info('Message server accepted connection.');
