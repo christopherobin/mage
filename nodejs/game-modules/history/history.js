@@ -45,20 +45,24 @@ exports.addEvent = function(state, type, participants, propertyMap, cb)
 	);
 };
 
-exports.getEvents = function(state, type, dates, participants, cb) //TODO: test the shit out of this.
+exports.getEvents = function(state, type, dates, participants, dataFilter, cb) //TODO: test the shit out of this.
 {							//		''    {f,t}	 [ida,idb..]
 	var eventsMap = {};
 	var eventArr = [];
 	var where = [];
 	var params = [];
+	var simpleWhere = null;
+	var filterCount = 0;
 	
 	if(!participants) { participants = []; }
+	if(!dataFilter) { dataFilter = []; }
 	
 	async.waterfall(
 		[
 			function(callback)
 			{
 				var query = 'SELECT he.id, he.type, he.creationTime FROM history_event AS he';
+				var requireGroup = false;
 			
 				if(type)
 				{
@@ -70,17 +74,45 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 					where.push('creationTime BETWEEN ? AND ?');
 					params.push(dates.from,dates.to);
 				}
+
 				if(participants.length > 0)
 				{
 					query += ' LEFT JOIN history_event_actor AS hea ON he.id = hea.eventId AND hea.actorId IN (' + participants.map(function() { return '?'; }).join(', ') + ')';
-					
 					where.push('hea.actorId IS NOT NULL');
+					requireGroup = true;
 				}
+
+				filterCount = dataFilter.length;
+				if(filterCount > 0)
+				{
+					simpleWhere = where.concat([]);
+					
+					for (var i=0; i < filterCount; i++)
+					{
+						var filter = dataFilter[i];
+						var alias = 'hed' + i;
+
+						var conds = [alias + '.property = ?', alias + '.value = ?'];
+						params.push(filter.property, mithril.core.PropertyMap.serialize(filter.value));
+
+						/*if (filter.actorId)
+						{
+							conds.push(alias + '.actorId = ?');
+							params.push(filter.actorId);
+						}*/
+
+						query += ' LEFT JOIN history_event_data AS ' + alias + ' ON he.id = ' + alias + '.eventId AND ' + conds.join(' AND ');
+						where.push(alias + '.eventId IS NOT NULL'); //WHERE is now polluted with hed+1 etc
+					}
+					requireGroup = true;
+				}
+
 				if(where.length>0)
 				{
 					query += ' WHERE ' + where.join(' AND ');
 				}
-				if(participants && participants.length > 0)
+
+				if(requireGroup)
 				{
 					query += ' GROUP BY he.type';
 				}
@@ -89,6 +121,13 @@ exports.getEvents = function(state, type, dates, participants, cb) //TODO: test 
 			},
 			function(eventData,callback)
 			{
+				if(simpleWhere) { where = simpleWhere; }
+				for(var i=0;i<filterCount;i++)
+				{
+					params.pop();params.pop();
+				}
+console.log("PARAMS : ", params)				
+				
 				eventArr = eventData;
 				if(participants.length < 1) { return callback(); }
 				
