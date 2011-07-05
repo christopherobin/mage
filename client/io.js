@@ -21,9 +21,13 @@ function MithrilIo(mithril)
 
 MithrilIo.prototype.start = function(cb)
 {
-	this.socket = new io.Socket(this.mithril.config.host, { port: this.mithril.config.port, rememberTransport: false });
-
 	var _this = this;
+
+	var cfg = this.mithril.config;
+
+	var host = 'http://' + cfg.host + ':' + cfg.port;
+
+	this.socket = io.connect(host, { 'try multiple transports': true, 'connect timeout': 5000, reconnect: true });
 
 	this.socket.on('connect', function() {
 		_this.sessionSent = false;
