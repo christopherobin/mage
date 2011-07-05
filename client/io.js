@@ -71,8 +71,6 @@ MithrilIo.prototype.start = function(cb)
 			}
 		}
 	});
-
-	this.socket.connect();
 };
 
 
