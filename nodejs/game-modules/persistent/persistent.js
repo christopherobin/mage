@@ -39,6 +39,30 @@ exports.get = function(state, properties, removeAfterGet, cb)
 };
 
 
+exports.getOne = function(state, property, removeAfterGet, cb)
+{
+	var query = 'SELECT type, value FROM persistent_data WHERE actorId = ? AND language IN (?, ?) AND (expirationTime = 0 OR expirationTime >= ?) AND property = ?';
+	var params = [state.actorId, '', state.language(), mithril.core.time, property];
+
+	state.datasources.db.getOne(query, params, false, null, function(error, row) {
+		if (error) return cb(error);
+
+		var value = row ? mithril.core.PropertyMap.unserialize(row.type, row.value) : null;
+
+		if (removeAfterGet)
+		{
+			exports.del(state, [property], function(error) {
+				if (error) return cb(error);
+
+				cb(null, value);
+			});
+		}
+		else
+			cb(null, value);
+	});
+};
+
+
 exports.set = function(state, propertyMap, expirationTime, cb)
 {
 	var properties = propertyMap.getAllFlat(true, true);
