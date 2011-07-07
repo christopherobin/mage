@@ -46,3 +46,16 @@ MithrilGameModShop.prototype.buyItem = function(itemId, shopName, quantity, cb)
 	});
 };
 
+MithrilGameModShop.prototype.getItemByIdentifier = function(ident, shopName)
+{
+	var items = this.shops[shopName].items //[]
+	var len = items.length;
+	for(var i=0;i<len;i++)
+	{
+		if (items[i].identifier == ident)
+		{
+			return items[i];
+		}
+	}
+	return null;
+}
