@@ -16,6 +16,7 @@ exports.start = function(httpServer)
 
 
 	var io = require('socket.io').listen(httpServer);
+	io.set('log level', 1);
 
 	io.sockets.on('connection', function(client) {
 		// resolve session object

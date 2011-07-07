@@ -269,13 +269,15 @@ exports.setNodeProgress = function(state, actorId, nodeId, newState, save, cb)
 {
 	var time = mithril.core.time;
 
-	state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState });
-
 	exports.emit('progressChanged', [state, exports.getNode(nodeId), newState], function(error) {
 		if (error) return cb(error);
 
 		if (save)
 		{
+			// notify the client
+
+			state.emit(actorId, 'gc.node.progress.edit', { nodeId: nodeId, state: newState });
+
 			// we do the actual write last
 
 			var sql = 'INSERT INTO gc_progress VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE state = VALUES(state), stateTime = VALUES(stateTime)';
