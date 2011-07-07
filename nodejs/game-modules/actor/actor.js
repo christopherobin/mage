@@ -45,24 +45,22 @@ exports.addActor = function(state, name, cb)
 
 		var actor = { id: info.insertId, creationTime: time, data: {} };
 
-		// TODO: properties should be a PropertyMap
-
-		var properties = [];
+		var properties = new mithril.core.PropertyMap;
 
 		if (typeof name == 'string')
 		{
-			properties.push({ property: 'name', value: name });
+			properties.add('name', name);
 			actor.data.name = name;
 		}
 		else
 		{
 			for (var language in name)
 			{
-				properties.push({ property: 'name', language: language, value: name });
+				properties.add('name', name[language], language);
 
 				if (language == state.language())
 				{
-					actor.data.name = name;
+					actor.data.name = name[language];
 				}
 			}
 		}
