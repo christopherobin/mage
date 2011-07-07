@@ -5,12 +5,19 @@ exports.execute = function(state, p, cb)
 
 		if (!list) { return cb(); }
 
-		mithril.score.getRankingDataByActor(state, list.id, function(error, data) {
+		mithril.score.getRankingDataByActor(state, p.actorId, list.id, function(error, data) {
 			if (error) { return cb(); }
 
 			if (!data) { return cb(); }
 
-			mithril.score.getRankingData(state, list.id, { from: data.rank - 2, to: data.rank + 2 }, function(error, records) {
+			if (!p.range)
+			{
+				list.data = [data];
+				state.respond(list);
+				return cb();
+			}
+
+			mithril.score.getRankingData(state, list.id, { from: data.rank - p.range, to: data.rank + p.range }, function(error, records) {
 				if (error) { return cb(); }
 
 				list.data = records;

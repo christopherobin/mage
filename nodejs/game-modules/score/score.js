@@ -210,12 +210,21 @@ exports.getRankingData = function(state, id, range, cb)
 };
 
 
-exports.getRankingDataByActor = function(state, id, cb)
+exports.getRankingDataByActor = function(state, actorId, rankingListId, cb)
 {
 	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ? AND ad.actor = ? AND ad.language IN (?, ?)";
-	var params = ['name', id, state.actorId, '', state.language()];
+	var params = ['name', rankingListId, actorId, '', state.language()];
 
 	state.datasources.db.getOne(query, params, false, null, cb);
+};
+
+
+exports.getRankingDataByActors = function(state, actorIds, rankingListId, cb)
+{
+	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ? AND ad.language IN (?, ?) AND ad.actor IN(" + actorIds.map(function() { return '?'; }).join(', ') + ")";
+	var params = ['name', rankingListId, '', state.language()].concat(actorIds);
+
+	state.datasources.db.getMapped(query, params, { key: 'actor' }, null, cb);
 };
 
 
