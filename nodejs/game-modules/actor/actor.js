@@ -45,6 +45,8 @@ exports.addActor = function(state, name, cb)
 
 		var actor = { id: info.insertId, creationTime: time, data: {} };
 
+		// TODO: properties should be a PropertyMap
+
 		var properties = [];
 
 		if (typeof name == 'string')
@@ -96,8 +98,10 @@ exports.getProperties = function(state, actorId, properties, cb)
 };
 
 
-exports.setProperties = function(state, actorId, properties, cb)
+exports.setProperties = function(state, actorId, propertyMap, cb)
 {
+	var properties = propertyMap.getAllFlat(true, true);
+
 	var sql = 'INSERT INTO actor_data VALUES';
 
 	var values = [];
@@ -109,13 +113,30 @@ exports.setProperties = function(state, actorId, properties, cb)
 		var prop = properties[i];
 
 		values.push('(?, ?, ?, ?, ?)');
-		params.push(actorId, prop.property, prop.language || '', typeof prop.value, prop.value);
+		params.push(actorId, prop.property, prop.language || '', prop.type, prop.value);
 	}
 
 	sql += values.join(', ') + ' ON DUPLICATE KEY UPDATE value = VALUES(value)';
 
 	state.datasources.db.exec(sql, params, null, function(error) {
 		if (error) return cb(error);
+
+		state.emit(actorId, 'actor.data.edit', { properties: propertyMap.getAll(state.language()) });
+
+		cb();
+	});
+};
+
+
+exports.delProperties = function(state, actorId, properties, cb)
+{
+	var sql = 'DELETE FROM actor_data WHERE actor = ? AND property IN (' + properties.map(function() { return '?'; }).join(', ') + ')';
+	var params = [actorId].concat(properties);
+
+	state.datasources.db.exec(sql, params, null, function(error) {
+		if (error) return cb(error);
+
+		state.emit(actorId, 'actor.data.del', { properties: properties });
 
 		cb();
 	});
