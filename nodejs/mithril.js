@@ -322,11 +322,6 @@ exports.start = function()
 };
 
 
-exports.core.createEventEmitter = function(mod)
-{
-};
-
-
 exports.quit = function()
 {
 	exports.core.logger.info('Shutting down Mithril...');

@@ -2,6 +2,9 @@ var State     = require(__dirname + '/state.js').State;
 var MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
 
+exports.io = null;
+
+
 // startup messaging server
 
 exports.start = function(httpServer)
@@ -120,5 +123,7 @@ exports.start = function(httpServer)
 	});
 
 	mithril.core.logger.info('Message server waiting for commands.');
+
+	exports.io = io;
 }
 
