@@ -102,12 +102,20 @@ exports.getItems = function(state, itemIds, shopNames, cb)
 	state.datasources.db.getMany(query, params.concat([]), null, function(error, rows) {
 		if (error) return cb(error);
 
+		var result = {};
+
+		var len = rows.length;
+
+		// if empty, return the empty set
+
+		if (len === 0)
+		{
+			return cb(null, result);
+		}
+
 		itemIds = rows.map(function(row) { return row.id; });
 
 		// make item objects
-
-		var result = {};
-		var len = rows.length;
 
 		for (var i=0; i < len; i++)
 		{
