@@ -32,6 +32,7 @@ var coreLibraries = {
 
 var coreModules = {
 	manage:     paths.gameModules + '/manage/manage.js',
+	mithrilui:  paths.gameModules + '/mithrilui/index.js',
 	shop:       paths.gameModules + '/shop/shop.js',
 	gree:       paths.gameModules + '/gree/gree.js',
 	actor:      paths.gameModules + '/actor/actor.js',
