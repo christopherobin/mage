@@ -197,7 +197,8 @@ exports.getRankingData = function(state, id, range, cb)
 	// loads the latest ranking list
 	// this loads the full ranks - range is like: { from: min, to: max }
 
-	var query = "SELECT srs.rank, srs.score, ad.actor, ad.value AS name FROM score_rankinglist_ranks AS srs JOIN actor_data AS ad ON srs.actor = ad.actor WHERE ad.property = ? AND srs.rankinglist = ?";
+	var query = "SELECT gp.level, srs.rank, srs.score, ad.actor, ad.value AS name FROM `score_rankinglist_ranks` AS srs JOIN `actor_data` AS ad ON srs.actor = ad.actor LEFT JOIN `game_playerstate` AS gp ON gp.player = ad.actor WHERE ad.property = ? AND srs.rankinglist = ?";
+	
 	var params = ['name', id];
 
 	if(range)
