@@ -13,11 +13,13 @@ exports.Page = function(name, basePath, viewPath)
 	//   basePath/$name/script.js
 	//   basePath/$name/styles.css
 	// will replace:
-	//   $(page.views.html) with the view html
+	//   $html(page.views) with the view html
 	// will replace:
-	//   $(page.views.css) with the view css
+	//   $css(page.views) with the view css
 	// will replace:
-	//   $(page.views.js) with the view js
+	//   $script(page.views) with the view js
+	// will replace
+	//   $script(page.viewsetup) with a view setup script
 
 	this.addView = function(viewClassName, viewName, cssClassNames, dataAttr)
 	{
@@ -29,7 +31,7 @@ exports.Page = function(name, basePath, viewPath)
 	{
 		// will replace $(script.label) with all matched files in path
 
-		this.embed['script.' + label] = { path: path, matcher: matcher };
+		this.embed['script(' + label + ')'] = { path: path, matcher: matcher };
 	};
 
 
@@ -37,7 +39,7 @@ exports.Page = function(name, basePath, viewPath)
 	{
 		// will replace $(styles.label) with all matches files in path
 
-		this.embed['styles.' + label] = { path: path, matcher: matcher };
+		this.embed['css(' + label + ')'] = { path: path, matcher: matcher };
 	};
 
 
@@ -49,21 +51,98 @@ exports.Page = function(name, basePath, viewPath)
 		var js   = getFileContents(basePath + '/' + name + '/script.js');
 		var css  = getFileContents(basePath + '/' + name + '/styles.css');
 
-		var files = [html, js, css];
+		html = embedViews(html);
+		js   = embedViews(js);
+		css  = embedViews(css);
 
-		var _this = this;
+		html = embedReplacements(html);
+		js   = embedReplacements(js);
+		css  = embedReplacements(css);
 
-		files = files.map(function(file) {
-			return file.replace(/\$\((script|styles)\..+?\)/g, function(match) {
-				var label = match.substring(2, match.length - 2);
-				var embed = _this.embed[label];
-
-				return mergeFiles(embed.path, embed.matcher || /\.js$/);
-			});
-		});
-
-		return { html: files[0], js: files[1], css: files[2] };
+		return { html: html, js: js, css: css };
 	};
+
+
+	var _this = this;
+
+	function embedReplacements(file)
+	{
+		return file.replace(/\$(script|css)\(.+?\)/g, function(match) {
+
+			var m = /\$(script|css)\((.+?)\)/.exec(match);
+
+			var type = m[1];
+			var label = m[2];
+
+			var embed = _this.embed[type + '(' + label + ')'];
+			if (!embed)
+			{
+				mithril.core.logger.error('Could not embed ' + type + ' ' + label);
+				return '';
+			}
+
+			return mergeFiles(embed.path, embed.matcher || /\.js$/);
+		});
+	}
+
+	function embedViews(file)
+	{
+		return file.replace(/\$(html|script|css)\(.+?\)/g, function(match) {
+
+			var m = /\$(html|script|css)\((.+?)\)/.exec(match);
+
+			var type = m[1];
+			var label = m[2];
+
+			if (label !== 'page.views' && label !== 'page.viewsetup')
+			{
+				// not a view-replacement
+
+				return match;
+			}
+
+			var str = [];
+
+			var len = _this.views.length;
+			for (var i=0; i < len; i++)
+			{
+				var view = _this.views[i];
+
+				switch (type)
+				{
+					case 'html':
+						var attr = {};
+
+						attr['class'] = view.cssClassNames ? ('view ' + view.cssClassNames.join(' ')) : 'view';
+
+						for (var key in view.dataAttr)
+						{
+							attr['data-' + key] = view.dataAttr[key];
+						}
+
+						var div = '<div';
+						for (var key in attr)
+						{
+							div += ' ' + key + '="' + attr[key] + '"';
+						}
+						div += '>\n';
+
+						str.push(div + getFileContents(viewPath + '/' + view.viewClassName + '/view.html') + '\n</div>\n');
+						break;
+
+					case 'script':
+						str.push(getFileContents(viewPath + '/' + view.viewClassName + '/script.js'));
+						break;
+
+					case 'css':
+						str.push(getFileContents(viewPath + '/' + view.viewClassName + '/styles.css'));
+						break;
+				}
+			}
+
+			return str.join('\n');
+		});
+	}
 };
 
 

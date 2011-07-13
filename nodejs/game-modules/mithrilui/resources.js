@@ -9,9 +9,12 @@ exports.getManifest = function(state, cb)
 	exports.img.getManifest(state, function(error, images) {
 		if (error) return cb(error);
 
-		images.sort();
+		if (images.length > 0)
+		{
+			images.sort();
 
-		str = str.concat(images);
+			str = str.concat(images);
+		}
 
 		str.push('', 'NETWORK:', '*');
 
