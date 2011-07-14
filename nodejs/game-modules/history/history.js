@@ -22,7 +22,7 @@ exports.addEvent = function(state, type, participants, propertyMap, cb)
 			{
 				eventId = info.insertId;
 				if (!participants || participants.length < 1) { return callback(null, { insertId: null }); }
-				
+
 				var sql = 'INSERT INTO history_event_actor (eventId, actorId) VALUES ';
 				var params = [];
 				var frag = [];
@@ -37,7 +37,7 @@ exports.addEvent = function(state, type, participants, propertyMap, cb)
 			{
 				exports.setProperties(state, eventId, propertyMap, cb);
 			}
-		], 
+		],
 		function(err)
 		{
 			cb(err);
@@ -53,17 +53,17 @@ exports.getEvents = function(state, type, dates, participants, dataFilter, cb) /
 	var params = [];
 	var simpleWhere = null;
 	var filterCount = 0;
-	
+
 	if(!participants) { participants = []; }
 	if(!dataFilter) { dataFilter = []; }
-	
+
 	async.waterfall(
 		[
 			function(callback)
 			{
 				var query = 'SELECT he.id, he.type, he.creationTime FROM history_event AS he';
 				var requireGroup = false;
-			
+
 				if(type)
 				{
 					where.push('he.type = ?');
@@ -86,7 +86,7 @@ exports.getEvents = function(state, type, dates, participants, dataFilter, cb) /
 				if(filterCount > 0)
 				{
 					simpleWhere = where.concat([]);
-					
+
 					for (var i=0; i < filterCount; i++)
 					{
 						var filter = dataFilter[i];
@@ -126,13 +126,12 @@ exports.getEvents = function(state, type, dates, participants, dataFilter, cb) /
 				{
 					params.pop();params.pop();
 				}
-console.log("PARAMS : ", params)				
-				
+
 				eventArr = eventData;
 				if(participants.length < 1) { return callback(); }
-				
+
 				var len = eventData.length;
-				
+
 				for(var i=0;i<len;i++)
 				{
 					var evt = eventData[i];
@@ -140,7 +139,7 @@ console.log("PARAMS : ", params)
 					evt.data = new mithril.core.PropertyMap;
 					eventsMap[evt.id] = evt;
 				}
-				
+
 				var query = 'SELECT hea.actorId, hea.eventId from history_event_actor AS hea JOIN history_event AS he ON hea.eventId = he.id ';
 				if(where.length>0)
 				{
@@ -149,7 +148,7 @@ console.log("PARAMS : ", params)
 
 				state.datasources.db.getMany(query, params.concat([]), null, function(err,data){
 					if(err) { return callback(err); }
-					
+
 					var len = data.length;
 					for(var i=0;i<len;i++)
 					{
@@ -177,7 +176,7 @@ console.log("PARAMS : ", params)
 					for (var i=0; i < len; i++)
 					{
 						var row = results[i];
-			
+
 						if (row.eventId in eventsMap)
 						{
 							eventsMap[row.eventId].data.importOne(row.property, row.type, row.value, row.language, row.actorId);

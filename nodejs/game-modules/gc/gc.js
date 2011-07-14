@@ -2,6 +2,12 @@ exports.userCommands = {
 	sync: __dirname + '/usercommands/sync.js'
 };
 
+
+exports.hooks = {
+	getSyncNodes: function(state, actorId, cb) { cb(null, allNodesArr); }
+};
+
+
 var allNodesMap = null;
 var allNodesArr = null;
 var allNodesTypedArr = null;
@@ -29,7 +35,30 @@ exports.getNode = function(nodeId)
 
 exports.getAllNodesMap = function() { return allNodesMap; };
 exports.getAllNodesArr = function() { return allNodesArr; };
-exports.getAllNodesForType = function(type) { return allNodesTypedArr[type] || []; };
+
+
+exports.getAllNodesForType = function(type)
+{
+	return allNodesTypedArr[type] || [];
+};
+
+
+exports.getAllNodesForTypes = function(types)
+{
+	var result = [];
+
+	var len = types.length;
+	for (var i=0; i < len; i++)
+	{
+		var nodes = allNodesTypedArr[types[i]];
+		if (nodes)
+		{
+			result = result.concat(nodes);
+		}
+	}
+
+	return result;
+};
 
 
 // module logic:

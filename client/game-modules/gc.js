@@ -132,6 +132,8 @@ MithrilGameModGc.prototype.filterNodes = function(filter, nextMatch, nodes)
 	{
 		result = nodes.filter(filter);
 	}
+	else
+		result = nodes.concat([]);	// make a copy
 
 	if (!nextMatch)
 	{

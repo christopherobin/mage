@@ -1,22 +1,14 @@
 exports.execute = function(state, p, cb)
 {
-	var options = p.options || {};
-
-	var cfg = mithril.core.config.game.gc;
-
-	var nodeTypes = (cfg && cfg.sync) ? (cfg.sync.nodeTypes || null) : null;
-	if (!nodeTypes)
-		nodeTypes = mithril.gc.getAllNodeTypes();
-
 	var resultArr = [];
 	var resultMap = [];
 
-	var jlen = nodeTypes.length;
-	for (var j=0; j < jlen; j++)
-	{
-		var nodes = mithril.gc.getAllNodesForType(nodeTypes[j]);
-		var len = nodes.length;
+	mithril.gc.hooks.getSyncNodes(state, state.actorId, function(error, nodes) {
+		if (error) return cb(error);
 
+		// we will sync these nodes...
+
+		var len = nodes.length;
 		for (var i=0; i < len; i++)
 		{
 			var node = nodes[i];
@@ -33,13 +25,13 @@ exports.execute = function(state, p, cb)
 			resultMap[node.id] = newNode;
 			resultArr.push(newNode);
 		}
-	}
 
-	mithril.gc.loadNodeProgress(state, resultMap, state.actorId, false, function(error) {
-		if (!error)
-			state.respond(resultArr);
+		mithril.gc.loadNodeProgress(state, resultMap, state.actorId, false, function(error) {
+			if (!error)
+				state.respond(resultArr);
 
-		cb();
+			cb();
+		});
 	});
 };
 
