@@ -225,7 +225,6 @@ exports.addObject = function(state, collections, name, weight, propertyMap, tags
  			objLen = objectIds.length;
 
 			// store properties
-
 			var records = [];
 			var params = [];
 
@@ -251,7 +250,9 @@ exports.addObject = function(state, collections, name, weight, propertyMap, tags
 				state.datasources.db.exec(sql, params, null, function(error) { callback(error); });
 			}
 			else
+			{
 				callback();
+			}
 		},
 		function(callback)
 		{
@@ -297,7 +298,8 @@ exports.addObject = function(state, collections, name, weight, propertyMap, tags
 							var obj = {
 								id: objectId,
 								name: name,
-								weight: weight
+								weight: weight,
+								creationTime: mithril.core.time
 							};
 
 							if (propertyMap)
