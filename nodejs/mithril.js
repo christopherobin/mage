@@ -32,7 +32,7 @@ var coreLibraries = {
 
 var coreModules = {
 	manage:     paths.gameModules + '/manage/manage.js',
-	mithrilui:  paths.gameModules + '/mithrilui/index.js',
+	mithrilui:  paths.gameModules + '/mithrilui/mithrilui.js',
 	shop:       paths.gameModules + '/shop/shop.js',
 	gree:       paths.gameModules + '/gree/gree.js',
 	actor:      paths.gameModules + '/actor/actor.js',
@@ -261,7 +261,6 @@ exports.start = function()
 		for (var i=0; i < routeCount; i++)
 		{
 			var route = routes[i];
-
 			if (path.match(route.pathMatch))
 			{
 				handler = route.handler;

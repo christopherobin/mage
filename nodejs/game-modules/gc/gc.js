@@ -9,16 +9,18 @@ exports.hooks = {
 
 
 var allNodesMap = null;
+var allNodesIdentifiedMap = null;
 var allNodesArr = null;
 var allNodesTypedArr = null;
 
 
 exports.setup = function(state, cb)
 {
-	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesArr, nodesTypedArr) {
+	exports.loadNodes(state, { loadNodeData: true, loadInConnectors: true, loadOutConnectors: true }, function(error, nodesMap, nodesIdentifiedMap, nodesArr, nodesTypedArr) {
 		if (error) return cb(error);
 
 		allNodesMap = nodesMap;
+		allNodesIdentifiedMap = nodesIdentifiedMap;
 		allNodesArr = nodesArr;
 		allNodesTypedArr = nodesTypedArr;
 
@@ -30,6 +32,12 @@ exports.setup = function(state, cb)
 exports.getNode = function(nodeId)
 {
 	return allNodesMap[nodeId] || null;
+};
+
+
+exports.getNodeByIdentifier = function(identifier)
+{
+	return allNodesIdentifiedMap[identifier] || null;
 };
 
 
@@ -353,6 +361,7 @@ exports.loadNodes = function(state, options, cb)
 	if (!options) options = {};
 
 	var nodesMap = {};
+	var nodesIdentifiedMap = {};
 	var nodesTypedArr = {};
 
 	var query = 'SELECT id, identifier, type FROM gc_node';
@@ -373,6 +382,7 @@ exports.loadNodes = function(state, options, cb)
 			var node = nodesArr[i];
 
 			nodesMap[node.id] = node;
+			nodesIdentifiedMap[node.identifier] = node;
 
 			if (node.type in nodesTypedArr)
 			{
@@ -385,7 +395,7 @@ exports.loadNodes = function(state, options, cb)
 		exports.loadNodeInformation(state, nodesMap, options, function(error) {
 			if (error) return cb(error);
 
-			cb(null, nodesMap, nodesArr, nodesTypedArr);
+			cb(null, nodesMap, nodesIdentifiedMap, nodesArr, nodesTypedArr);
 		});
 	});
 };
