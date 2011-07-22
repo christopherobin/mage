@@ -357,7 +357,7 @@ exports.core.time = null;
 
 function updateTime()
 {
-	var currentTime = (new Date).getTime();
+	var currentTime = Date.now();
 
 	exports.core.time = (currentTime / 1000) << 0;	// round down
 
