@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- <html manifest="$(mithrilui.manifest.url)"> -->
+<html manifest="mui://manifest">
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
@@ -16,8 +16,9 @@
 
 <script type="text/javascript">
 
-function MithrilUiLoader()
+window.mui = new function()
 {
+	var imageMap = mui.imageMapProvider;
 	var partSplit = '---package-part---';
 	var htmlClassName = 'mithrilui-package';
 	var loadedCbs = {};
@@ -51,7 +52,7 @@ function MithrilUiLoader()
 		return error('No session specified.');
 	}
 
-	this.session = m[1];
+	this.session = decodeURIComponent(m[1]);
 
 
 	// page name
@@ -62,7 +63,7 @@ function MithrilUiLoader()
 		return error('No page specified.');
 	}
 
-	this.pageName = m[1];
+	this.pageName = decodeURIComponent(m[1]);
 
 
 	// api
@@ -212,10 +213,32 @@ function MithrilUiLoader()
 	};
 
 
-	this.loadNextPackage();
-}
+	this.img = function(descriptor)
+	{
+		if (!descriptor) return null;
 
-window.mithrilUiLoader = new MithrilUiLoader();
+		var img = imageMap.images[descriptor];
+		if (!img) return null;
+
+		var domain = img[0];
+		var path = img[1];
+		var version = img[2];
+		var descParts;
+
+		path = path.replace(/\$([0-9]+)/g, function(m) {
+			if (m[1] == '0') return descriptor;
+
+			if (!descParts) descParts = descriptor.split(imageMap.descriptorDelimiter);
+
+			return descParts[m[1]-1];
+		});
+
+		return imageMap.domains[domain] + path + ((version && version != 1) ? ('?v' + version) : '');
+	};
+
+
+	this.loadNextPackage();
+};
 
 </script>
 

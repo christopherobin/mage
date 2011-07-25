@@ -1,9 +1,106 @@
-var images = [];
-var manifest = [];
-var localCache = [];
-var descriptorDelimiter = '/';
+var images = {};
+var domains = [];
+
+exports.descriptorDelimiter = '/';
 
 
+exports.getUrl = function(descriptor, language)
+{
+	var img = images[descriptor];
+
+	if (!img) return null;
+
+	var descParts = descriptor.split(exports.descriptorDelimiter);
+
+	var len = img.length;
+	for (var i=0; i < len; i++)
+	{
+		var o = img[i];
+
+		if (!o.language || language === o.language)
+		{
+			var path = o.path.replace(/\$([0-9]+)/g, function(m) { return (m[1] == '0') ? descriptor : descParts[m[1]-1]; });
+
+			var url = domains[o.domain] + path;
+			if (o.version)
+			{
+				url += '?v' + o.version;
+			}
+
+			return url;
+		}
+	}
+
+	return null;
+}
+
+
+exports.add = function(descriptor, domain, path, version, language)
+{
+	// path syntax may contain $n, where $0 will be replaced with descriptor, and $N will be replaced by descriptor chunk N (delimiter based):
+	// eg:
+	// 		my/$2/path/file.png
+	// 		$0.png
+
+	var domainIndex = domains.indexOf(domain);
+	if (domainIndex === -1)
+	{
+		domainIndex = domains.push(domain)-1;
+	}
+
+	var o = { domain: domainIndex, path: path };
+
+	if (version && version !== 1)
+	{
+		o.version = version;
+	}
+
+	if (language)
+	{
+		o.language = language;
+	}
+
+	if (descriptor in images)
+	{
+		images[descriptor].push(o);
+	}
+	else
+	{
+		images[descriptor] = [o];
+	}
+};
+
+
+exports.getTranslationMap = function(language)
+{
+	var myImages = {};
+	for (var identifier in images)
+	{
+		var targets = images[identifier];
+
+		for (var i=0, len = targets.length; i < len; i++)
+		{
+			var o = targets[i];
+			if (!o.language || o.language == language)
+			{
+				var data = [o.domain, o.path];
+				if (o.version) data.push(o.version);
+
+				myImages[identifier] = data;
+				break;
+			}
+		}
+	}
+
+	return result = {
+		domains: domains,
+		descriptorDelimiter: exports.descriptorDelimiter,
+		images: myImages
+	};
+};
+
+
+/*
 function getUrl(descriptor, language)
 {
 	var dParts = descriptor.split(descriptorDelimiter);
@@ -95,23 +192,10 @@ function translateImgUrl(img, variables)
 
 	return url;
 }
+*/
 
 
-exports.add = function(domain, descriptor, path, version, language)
-{
-	version = version ? ~~version : 1;
-
-	var o = { domain: domain, descriptor: descriptor, path: path, version: version };
-
-	if (language)
-	{
-		o.language = language;
-	}
-
-	images.push(o);
-};
-
-
+/*
 exports.setCacheLevel = function(descriptor, level)
 {
 	localCache.push({ descriptor: descriptor, level: level });
@@ -147,30 +231,5 @@ exports.getManifest = function(state, cb)
 
 	cb(null, result);
 };
-
-
-exports.getTranslationMap = function(state, cb)
-{
-	var result = { domains: [], images: [] };
-
-	var len = images.length;
-	for (var i=0; i < len; i++)
-	{
-		var img = images[i];
-
-		if (img.language && img.language !== state.language()) continue;
-
-		var domainIndex = result.domains.indexOf(img.domain);
-		if (domainIndex === -1)
-		{
-			domainIndex = result.domains.push(img.domain)-1;
-		}
-
-		result.images.push([domainIndex, img.descriptor, img.path, img.version]);
-	}
-
-	result.domains = result.domains.map(function(domain) { return domain.baseUrl; });
-
-	cb(null, result);
-};
+*/
 
