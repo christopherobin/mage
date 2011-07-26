@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html manifest="mui://manifest">
-<html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -88,34 +87,39 @@ window.mui = new function()
 
 			parts = parts.split(partSplit);
 			var len = parts.length;
+
 			for (var i=0; i < len; i++)
 			{
-				var part = parts[i].split('\n', 2);	// content-type, content
+				var part = parts[i];
 
-				switch (part[0])
+				var eol = part.indexOf('\n');
+				var mimetype = part.substring(0, eol);
+				var content  = part.substring(eol + 1);
+
+				switch (mimetype)
 				{
 					case 'text/html':
 						var cnt = document.createElement('div');
 						cnt.className = htmlClassName;
 						cnt.setAttribute('data-package', name);
-						cnt.innerHTML = part[1];
+						cnt.innerHTML = content;
 						cnt.style.display = 'none';
 						document.body.appendChild(cnt);
 						break;
 
 					case 'text/javascript':
 						var cnt = document.createElement('script');
-						cnt.setAttribute('type', part[0]);
+						cnt.setAttribute('type', mimetype);
 						cnt.setAttribute('data-package', name);
-						cnt.innerHTML = part[1];
+						cnt.innerHTML = content;
 						document.head.appendChild(cnt);
 						break;
 
 					case 'text/css':
 						var cnt = document.createElement('style');
-						cnt.setAttribute('type', part[0]);
+						cnt.setAttribute('type', mimetype);
 						cnt.setAttribute('data-package', name);
-						cnt.innerHTML = part[1];
+						cnt.innerHTML = content;
 						document.head.appendChild(cnt);
 						break;
 				}

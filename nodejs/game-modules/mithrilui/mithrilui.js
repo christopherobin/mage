@@ -52,7 +52,7 @@ function setupRoutes(cb)
 
 				var manifestUrl = '/page/' + pageName + '/page.manifest';
 
-				var output = loaderPage.replace('mui://manifest', manifestUrl).replace('mui.imageMapProvider', "JSON.parse('" + JSON.stringify(exports.img.getTranslationMap(params.language)) + "')");
+				var output = loaderPage.replace('mui://manifest', manifestUrl).replace('mui.imageMapProvider', JSON.stringify(exports.img.getTranslationMap(params.language)));
 
 				cb(200, output, { 'Content-Type': 'text/html; charset=utf8' });
 				break;
@@ -66,6 +66,7 @@ function setupRoutes(cb)
 
 				if (!page)
 				{
+					mithril.core.logger.debug('Page ' + pageName + ' not found.');
 					return cb(false);
 				}
 
@@ -84,10 +85,11 @@ function setupRoutes(cb)
 					var pckg = page.getPackage(fileName);
 					if (!pckg)
 					{
+						mithril.core.logger.debug('Package ' + fileName + ' not found.');
 						return cb(false);
 					}
 
-					pckg = pckg.render();
+					pckg = pckg.render(exports.img, params.language);
 
 					var output = [];
 

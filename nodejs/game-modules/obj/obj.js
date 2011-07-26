@@ -97,6 +97,18 @@ exports.loadAllClasses = function(state, cb)
 };
 
 
+exports.getAllClassNames = function(matcher)
+{
+	var names = Object.keys(allClassesMap);
+	if (matcher)
+	{
+		names = names.filter(function(name) { return name.match(matcher); });
+	}
+
+	return names;
+};
+
+
 exports.getAllClasses = function(language, behaviors)
 {
 	if (!language)

@@ -2,16 +2,16 @@ var fs = require('fs');
 
 //var pages = {};
 
-exports.PagePackage = function(name, basePath, viewPath)
+exports.PagePackage = function(name, packagePath, viewPath)
 {
 	this.name = name;
 	this.views = [];
 	this.embed = {};
 
 	// page template:
-	//   basePath/$name/page.html
-	//   basePath/$name/script.js
-	//   basePath/$name/styles.css
+	//   packagePath/$name/page.html
+	//   packagePath/$name/script.js
+	//   packagePath/$name/styles.css
 	// will replace:
 	//   $html(page.views) with the view html
 	// will replace:
@@ -23,6 +23,11 @@ exports.PagePackage = function(name, basePath, viewPath)
 
 	this.addView = function(viewClassName, viewName, cssClassNames, dataAttr)
 	{
+		if (dataAttr)
+			dataAttr.name = viewName;
+		else
+			dataAttr = { name: viewName };
+
 		this.views.push({ viewClassName: viewClassName, viewName: viewName, cssClassNames: cssClassNames, dataAttr: dataAttr });
 	};
 
@@ -31,7 +36,7 @@ exports.PagePackage = function(name, basePath, viewPath)
 	{
 		// will replace $(script.label) with all matched files in path
 
-		this.embed['script(' + label + ')'] = { path: path, matcher: matcher };
+		this.embed['js(' + label + ')'] = { path: path, matcher: matcher };
 	};
 
 
@@ -43,13 +48,13 @@ exports.PagePackage = function(name, basePath, viewPath)
 	};
 
 
-	this.render = function()
+	this.render = function(img, language)
 	{
 		// returns { html: '', css: '', js: '' }
 
-		var html = getFileContents(basePath + '/' + name + '/page.html');
-		var js   = getFileContents(basePath + '/' + name + '/script.js');
-		var css  = getFileContents(basePath + '/' + name + '/styles.css');
+		var html = getFileContents(packagePath + '/' + name + '/page.html');
+		var js   = getFileContents(packagePath + '/' + name + '/script.js');
+		var css  = getFileContents(packagePath + '/' + name + '/styles.css');
 
 		html = embedViews(html);
 		js   = embedViews(js);
@@ -59,6 +64,12 @@ exports.PagePackage = function(name, basePath, viewPath)
 		js   = embedReplacements(js);
 		css  = embedReplacements(css);
 
+		if (img)
+		{
+			html = img.applyTranslationMap(html, language);
+			css  = img.applyTranslationMap(css, language);
+		}
+
 		return { html: html, js: js, css: css };
 	};
 
@@ -67,9 +78,9 @@ exports.PagePackage = function(name, basePath, viewPath)
 
 	function embedReplacements(file)
 	{
-		return file.replace(/\$(script|css)\(.+?\)/g, function(match) {
+		return file.replace(/\$(js|css)\(.+?\)/g, function(match) {
 
-			var m = /\$(script|css)\((.+?)\)/.exec(match);
+			var m = /\$(js|css)\((.+?)\)/.exec(match);
 
 			var type = m[1];
 			var label = m[2];
@@ -81,21 +92,36 @@ exports.PagePackage = function(name, basePath, viewPath)
 				return '';
 			}
 
-			return mergeFiles(embed.path, embed.matcher || /\.js$/);
+			var matcher = embed.matcher;
+			if (!matcher)
+			{
+				switch (type)
+				{
+					case 'js':  matcher = /\.js$/; break;
+					case 'css': matcher = /\.css$/; break;
+				}
+			}
+
+			if (!matcher)
+			{
+				mithril.core.logger.error('No matching rule found for filetype ' + type);
+			}
+
+			return mergeFiles(embed.path, matcher);
 		});
 	}
 
 
 	function embedViews(file)
 	{
-		return file.replace(/\$(html|script|css)\(.+?\)/g, function(match) {
+		return file.replace(/\$(html|js|css)\(.+?\)/g, function(match) {
 
-			var m = /\$(html|script|css)\((.+?)\)/.exec(match);
+			var m = /\$(html|js|css)\((.+?)\)/.exec(match);
 
 			var type = m[1];
 			var label = m[2];
 
-			if (label !== 'page.views' && label !== 'page.viewsetup')
+			if (label !== 'package.views' && label !== 'package.viewsetup')
 			{
 				// not a view-replacement
 
@@ -131,12 +157,28 @@ exports.PagePackage = function(name, basePath, viewPath)
 						str.push(div + getFileContents(viewPath + '/' + view.viewClassName + '/view.html') + '\n</div>\n');
 						break;
 
-					case 'script':
-						str.push(getFileContents(viewPath + '/' + view.viewClassName + '/script.js'));
+					case 'js':
+						if (label === 'package.viewsetup')
+						{
+							str.push("app.views.setViewHandler('" + view.viewName + "', new View" + view.viewClassName + "(app, app.views.getViewElement('" + view.viewName + "')));");
+						}
+						else
+						{
+							str.push(getFileContents(viewPath + '/' + view.viewClassName + '/script.js'));
+						}
 						break;
 
 					case 'css':
-						str.push(getFileContents(viewPath + '/' + view.viewClassName + '/styles.css'));
+						var path = viewPath + '/' + view.viewClassName + '/styles.css';
+
+						try
+						{
+							var contents = getFileContents(path);
+							str.push(contents);
+						}
+						catch (e)
+						{
+						}
 						break;
 				}
 			}

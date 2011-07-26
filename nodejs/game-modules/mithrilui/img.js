@@ -100,6 +100,16 @@ exports.getTranslationMap = function(language)
 };
 
 
+exports.applyTranslationMap = function(content, language)
+{
+	return content.replace(/mui:\/\/img\/([\/\w\-]+)/g, function(match) {
+		var identifier = match.substring(10);
+
+		return exports.getUrl(identifier, language);
+	});
+};
+
+
 /*
 function getUrl(descriptor, language)
 {
