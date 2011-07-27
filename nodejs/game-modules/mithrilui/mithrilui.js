@@ -50,9 +50,9 @@ function setupRoutes(cb)
 				// a page request, so we return the loader
 				// eg: /page/game
 
-				var manifestUrl = '/page/' + pageName + '/page.manifest';
+				var manifestUrl = '/page/' + pageName + '/page.manifest?language=' + (params.language || '');
 
-				var output = loaderPage.replace('mui://manifest', manifestUrl).replace('mui.imageMapProvider', JSON.stringify(exports.img.getTranslationMap(params.language)));
+				output = loaderPage.replace('mui://manifest', manifestUrl);
 
 				cb(200, output, { 'Content-Type': 'text/html; charset=utf8' });
 				break;
@@ -92,6 +92,11 @@ function setupRoutes(cb)
 					pckg = pckg.render(exports.img, params.language);
 
 					var output = [];
+
+					if ('imagemap' in params)
+					{
+						output.push('mui/imagemap\n' + JSON.stringify(exports.img.getTranslationMap(params.imagemap)));
+					}
 
 					if (pckg.html)
 					{

@@ -8,7 +8,7 @@
 		* { -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-text-size-adjust: none; -webkit-user-select: none; -webkit-user-drag: none; }
 		input, textarea { -webkit-user-select: text; }
 		q:before, q:after { content: ''; }
-		body { background: #000; }
+		body { background: #000; margin: 0; }
 	</style>
 </head>
 <body>
@@ -17,13 +17,14 @@
 
 window.mui = new function()
 {
-	var imageMap = mui.imageMapProvider;
+	var imageMap;
 	var partSplit = '---package-part---';
 	var htmlClassName = 'mithrilui-package';
 	var loadedCbs = {};
 	var displayCbs = {};
 	var error = function(msg) { alert(msg); };
 	var displayedPackage = null;
+	var packageData = {};
 	var that = this;
 
 	var baseUrl = window.location.origin + window.location.pathname;
@@ -54,6 +55,17 @@ window.mui = new function()
 	this.session = decodeURIComponent(m[1]);
 
 
+	// language
+
+	var m = /language=(.+?)(&|$)/.exec(window.location.hash);
+	if (!m || !m[1])
+	{
+		this.language = null;
+	}
+	else
+		this.language = decodeURIComponent(m[1]);
+
+
 	// page name
 
 	var m = /^\/page\/(.+)(\/|$)/.exec(window.location.pathname);
@@ -76,7 +88,7 @@ window.mui = new function()
 
 			if (xhr.status == 0)
 			{
-				return error('No connection, please reload.');
+				return; // error('No connection, please reload.');
 			}
 
 			var parts = xhr.responseText;
@@ -84,6 +96,8 @@ window.mui = new function()
 			{
 				return error('Download failed, please reload.');
 			}
+
+			packageData[name] = {};
 
 			parts = parts.split(partSplit);
 			var len = parts.length;
@@ -98,6 +112,10 @@ window.mui = new function()
 
 				switch (mimetype)
 				{
+					case 'mui/imagemap':
+						imageMap = JSON.parse(content);
+						break;
+
 					case 'text/html':
 						var cnt = document.createElement('div');
 						cnt.className = htmlClassName;
@@ -116,11 +134,7 @@ window.mui = new function()
 						break;
 
 					case 'text/css':
-						var cnt = document.createElement('style');
-						cnt.setAttribute('type', mimetype);
-						cnt.setAttribute('data-package', name);
-						cnt.innerHTML = content;
-						document.head.appendChild(cnt);
+						packageData[name].css = content;
 						break;
 				}
 			}
@@ -143,7 +157,13 @@ window.mui = new function()
 			that.loadNextPackage();
 		};
 
-		xhr.open('GET', baseUrl + '/' + name + '?partSplit=' + encodeURIComponent(partSplit), true);
+		var url = baseUrl + '/' + name + '?partSplit=' + encodeURIComponent(partSplit);
+		if (!imageMap)
+		{
+			url += '&imagemap=' + (that.language || '');
+		}
+
+		xhr.open('GET', url, true);
 		xhr.send(null);
 	};
 
@@ -185,35 +205,47 @@ window.mui = new function()
 		var packages = document.getElementsByClassName(htmlClassName);
 
 		var found = false;
-		var len = packages.length;
-		for (var i=0; i < len; i++)
+		for (var i=0, len = packages.length; i < len; i++)
 		{
 			var elm = packages[i];
 
 			if (elm.getAttribute('data-package') === name)
 			{
-				elm.style.display = '';
-				displayedPackage = name;
-				found = true;
+				found = elm;
 			}
-			else
+
+			elm.style.display = 'none';
+		}
+
+		if (!found) return;
+
+		var cbs = displayCbs[name];
+		if (cbs)
+		{
+			for (var i=0, len = cbs.length; i < len; i++)
 			{
-				elm.style.display = 'none';
+				cbs[i](name);
 			}
 		}
 
-		if (found)
+		if (displayedPackage)
 		{
-			var cbs = displayCbs[name];
-			if (cbs)
-			{
-				var len = cbs.length;
-				for (var i=0; i < len; i++)
-				{
-					cbs[i](name);
-				}
-			}
+			var displayedCss = document.querySelector('style[data-package="' + displayedPackage + '"]');
+			displayedCss.parentNode.removeChild(displayedCss);
 		}
+
+		if (packageData[name].css)
+		{
+			var cnt = document.createElement('style');
+			cnt.setAttribute('type', 'text/css');
+			cnt.setAttribute('data-package', name);
+			cnt.innerHTML = packageData[name].css;
+			document.head.appendChild(cnt);
+		}
+
+		found.style.display = '';
+
+		displayedPackage = name;
 	};
 
 
