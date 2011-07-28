@@ -1,15 +1,15 @@
 var fs = require('fs');
 
-function MuiPage(name, pagePath, viewPath)
+function MuiPage(name)
 {
 	this.name = name;
 	this.views = [];
 	this.embed = {};
 
 	// page template:
-	//   pagePath/$name/page.html
-	//   pagePath/$name/script.js
-	//   pagePath/$name/styles.css
+	//   pages/$name/page.html
+	//   pages/$name/script.js
+	//   pages/$name/styles.css
 	// will replace:
 	//   $html(page.views) with the view html
 	// will replace:
@@ -46,13 +46,15 @@ function MuiPage(name, pagePath, viewPath)
 	};
 
 
-	this.render = function(img, language)
+	this.render = function(language)
 	{
 		// returns { html: '', css: '', js: '' }
 
-		var html = getFileContents(pagePath + '/' + name + '/page.html');
-		var js   = getFileContents(pagePath + '/' + name + '/script.js');
-		var css  = getFileContents(pagePath + '/' + name + '/styles.css');
+		var pagePath = mithril.core.config.module.mithrilui.paths.pages + '/' + name;
+
+		var html = getFileContents(pagePath + '/page.html');
+		var js   = getFileContents(pagePath + '/script.js');
+		var css  = getFileContents(pagePath + '/styles.css');
 
 		html = embedViews(html);
 		js   = embedViews(js);
@@ -62,11 +64,8 @@ function MuiPage(name, pagePath, viewPath)
 		js   = embedReplacements(js);
 		css  = embedReplacements(css);
 
-		if (img)
-		{
-			html = img.applyTranslationMap(html, language);
-			css  = img.applyTranslationMap(css, language);
-		}
+		html = mithril.assets.applyTranslationMap(html, language);
+		css  = mithril.assets.applyTranslationMap(css, language);
 
 		return { html: html, js: js, css: css };
 	};
@@ -133,6 +132,8 @@ function MuiPage(name, pagePath, viewPath)
 			{
 				var view = _this.views[i];
 
+				var viewPath = mithril.core.config.module.mithrilui.paths.views + '/' + view.viewClassName;
+
 				switch (type)
 				{
 					case 'html':
@@ -152,7 +153,7 @@ function MuiPage(name, pagePath, viewPath)
 						}
 						div += '>\n';
 
-						str.push(div + getFileContents(viewPath + '/' + view.viewClassName + '/view.html') + '\n</div>\n');
+						str.push(div + getFileContents(viewPath + '/view.html') + '\n</div>\n');
 						break;
 
 					case 'js':
@@ -162,16 +163,14 @@ function MuiPage(name, pagePath, viewPath)
 						}
 						else
 						{
-							str.push(getFileContents(viewPath + '/' + view.viewClassName + '/script.js'));
+							str.push(getFileContents(viewPath + '/script.js'));
 						}
 						break;
 
 					case 'css':
-						var path = viewPath + '/' + view.viewClassName + '/styles.css';
-
 						try
 						{
-							var contents = getFileContents(path);
+							var contents = getFileContents(viewPath + '/styles.css');
 							str.push(contents);
 						}
 						catch (e)

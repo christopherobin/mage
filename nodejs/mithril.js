@@ -10,7 +10,8 @@ var rootPath = path.dirname(module.filename);
 var paths = {
 	root:        rootPath,
 	lib:         rootPath + '/lib',
-	gameModules: rootPath + '/game-modules'
+	gameModules: rootPath + '/game-modules',
+	client:      path.dirname(rootPath) + '/client'
 };
 
 var shutdown = false;
@@ -32,6 +33,7 @@ var coreLibraries = {
 
 var coreModules = {
 	manage:     paths.gameModules + '/manage/manage.js',
+	assets:     paths.gameModules + '/assets/assets.js',
 	mithrilui:  paths.gameModules + '/mithrilui/mithrilui.js',
 	shop:       paths.gameModules + '/shop/shop.js',
 	gree:       paths.gameModules + '/gree/gree.js',

@@ -17,7 +17,7 @@
 
 window.mui = new function()
 {
-	var imageMap;
+	var assetMap;
 	var partSplit = '---page-part---';
 	var htmlClassName = 'mithrilui-page';
 	var loadedCbs = {};
@@ -101,8 +101,8 @@ window.mui = new function()
 
 				switch (mimetype)
 				{
-					case 'mui/imagemap':
-						imageMap = JSON.parse(content);
+					case 'mui/assetmap':
+						assetMap = JSON.parse(content);
 						break;
 
 					case 'text/html':
@@ -147,9 +147,9 @@ window.mui = new function()
 		};
 
 		var url = baseUrl + '/' + name + '?partSplit=' + encodeURIComponent(partSplit);
-		if (!imageMap)
+		if (!assetMap)
 		{
-			url += '&imagemap=' + (that.language || '');
+			url += '&assetmap=' + (that.language || '');
 		}
 
 		xhr.open('GET', url, true);
@@ -240,25 +240,25 @@ window.mui = new function()
 
 	this.img = function(descriptor)
 	{
-		if (!descriptor) return null;
+		if (!descriptor || !assetMap) return null;
 
-		var img = imageMap.images[descriptor];
-		if (!img) return null;
+		var images = assetMap.files.img;
+		if (!images || !images.files) return null;
 
-		var domain = img[0];
-		var path = img[1];
-		var version = img[2];
+		var path = images.files[descriptor];
+		if (!path) return null;
+
 		var descParts;
 
 		path = path.replace(/\$([0-9]+)/g, function(m) {
 			if (m[1] == '0') return descriptor;
 
-			if (!descParts) descParts = descriptor.split(imageMap.descriptorDelimiter);
+			if (!descParts) descParts = descriptor.split(assetMap.descriptorDelimiter);
 
 			return descParts[m[1]-1];
 		});
 
-		return imageMap.domains[domain] + path + ((version && version != 1) ? ('?v' + version) : '');
+		return images.baseUrl + path;
 	};
 
 

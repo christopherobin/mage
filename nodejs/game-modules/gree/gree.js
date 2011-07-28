@@ -1,6 +1,6 @@
 exports.userCommands = {
 	getFriends: __dirname + '/usercommands/getFriends.js',
-	getUserIds:  __dirname + '/usercommands/getUserIds.js'
+	getUserIds: __dirname + '/usercommands/getUserIds.js'
 };
 
 var crypto = require('crypto');
@@ -28,7 +28,7 @@ exports.hooks = {
 
 exports.setup = function(state, cb)
 {
-	var cfg = mithril.core.config.api.gree;
+	var cfg = mithril.core.config.module.gree;
 
 	for (var api in cfg.expose)
 	{
@@ -707,7 +707,7 @@ exports.rest.startPayment = function(state, user, purchase, message, items, cb)
 {
 	var url = 'http://' + mithril.core.config.server.expose.host + ':' + mithril.core.config.server.expose.port;
 
-	var cfg = mithril.core.config.api.gree;
+	var cfg = mithril.core.config.module.gree;
 
 	var postData = {
 		callbackUrl:   url + apiPaths.paymentConfirm,
@@ -768,7 +768,7 @@ exports.rest.startPayment = function(state, user, purchase, message, items, cb)
 
 exports.send = function(httpMethod, user, path, getParams, postData, cb)
 {
-	var cfg = mithril.core.config.api.gree;
+	var cfg = mithril.core.config.module.gree;
 
 	path = cfg.endpoint.path + (cfg.endpoint.path[cfg.endpoint.path.length - 1] == '/' ? '' : '/') + (path[0] == '/' ? path.substring(1) : path);
 

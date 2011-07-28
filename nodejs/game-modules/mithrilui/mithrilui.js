@@ -5,7 +5,6 @@ var fs = require('fs');
 var loaderPage;
 var packages = {};
 
-exports.img        = require(__dirname + '/img.js');
 exports.MuiPackage = require(__dirname + '/MuiPackage.js');
 exports.MuiPage    = require(__dirname + '/MuiPage.js');
 
@@ -88,13 +87,13 @@ function setupRoutes(cb)
 						return cb(false);
 					}
 
-					page = page.render(exports.img, params.language);
+					page = page.render(params.language);
 
 					var output = [];
 
-					if ('imagemap' in params)
+					if ('assetmap' in params)
 					{
-						output.push('mui/imagemap\n' + JSON.stringify(exports.img.getTranslationMap(params.imagemap)));
+						output.push('mui/assetmap\n' + JSON.stringify(mithril.assets.getTranslationMap(params.assetmap)));
 					}
 
 					if (page.html)

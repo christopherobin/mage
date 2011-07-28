@@ -12,7 +12,7 @@ var types = {};
 
 exports.setup = function(state, cb)
 {
-	types = (mithril.core.config.game && mithril.core.config.game.sns && mithril.core.config.game.sns.relationTypes) ? mithril.core.config.game.sns.relationTypes : {};
+	types = (mithril.core.config.module && mithril.core.config.module.sns && mithril.core.config.module.sns.relationTypes) ? mithril.core.config.module.sns.relationTypes : {};
 	cb();
 };
 

@@ -38,7 +38,7 @@ function parseResolution(resolution)
 
 exports.setup = function(state, cb)
 {
-	var requiredContexts = (mithril.core.config.game && mithril.core.config.game.score && mithril.core.config.game.score.contexts) ? mithril.core.config.game.score.contexts : [];
+	var requiredContexts = (mithril.core.config.module && mithril.core.config.module.score && mithril.core.config.module.score.contexts) ? mithril.core.config.module.score.contexts : [];
 	if (requiredContexts.length == 0)
 	{
 		return cb();
@@ -198,7 +198,7 @@ exports.getRankingData = function(state, id, range, cb)
 	// this loads the full ranks - range is like: { from: min, to: max }
 
 	var query = "SELECT gp.level, srs.rank, srs.score, ad.actor, ad.value AS name FROM `score_rankinglist_ranks` AS srs JOIN `actor_data` AS ad ON srs.actor = ad.actor LEFT JOIN `game_playerstate` AS gp ON gp.player = ad.actor WHERE ad.property = ? AND srs.rankinglist = ?";
-	
+
 	var params = ['name', id];
 
 	if(range)

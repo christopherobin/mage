@@ -31,14 +31,14 @@ module.exports = MuiPackage;
 
 function Manifest()
 {
-	this.images = [];
+	this.uris = [];
 	this.cache = {};
 }
 
 
-Manifest.prototype.img = function(identifier)
+Manifest.prototype.add = function(uri)
 {
-	this.images.push(identifier);
+	this.uris.push(uri);
 	this.cache = {};
 };
 
@@ -55,9 +55,18 @@ Manifest.prototype.get = function(language)
 
 	// images:
 
-	for (var i=0, len = this.images.length; i < len; i++)
+	for (var i=0, len = this.uris.length; i < len; i++)
 	{
-		files.push(mithril.mithrilui.img.getUrl(this.images[i], language));
+		var url = mithril.assets.getUrl(this.uris[i], language);
+
+		if (url)
+		{
+			files.push(url);
+		}
+		else
+		{
+			mithril.core.logger.error('No URL found for asset: ' + this.uris[i] + ' (' + language + ')');
+		}
 	}
 
 	files.sort();
