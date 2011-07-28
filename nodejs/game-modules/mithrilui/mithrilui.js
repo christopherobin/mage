@@ -3,11 +3,12 @@
 var fs = require('fs');
 
 var loaderPage;
-var pages = {};
+var packages = {};
 
-exports.img      = require(__dirname + '/img.js');
-exports.pages    = require(__dirname + '/pages.js');
-exports.pagePackages = require(__dirname + '/pagePackages.js');
+exports.img        = require(__dirname + '/img.js');
+exports.MuiPackage = require(__dirname + '/MuiPackage.js');
+exports.MuiPage    = require(__dirname + '/MuiPage.js');
+
 
 exports.setup = function(state, cb)
 {
@@ -17,40 +18,38 @@ exports.setup = function(state, cb)
 };
 
 
-exports.addPage = function(name)
+exports.addPackage = function(name)
 {
-	var page = new exports.pages.Page(name);
-	pages[name] = page;
-	return page;
+	return (packages[name] = new exports.MuiPackage(name));
 };
 
 
 function setupRoutes(cb)
 {
-	mithril.addRoute(/^\/page\//, function(request, path, params, cb) {
+	mithril.addRoute(/^\/mui\//, function(request, path, params, cb) {
 
 		// requested path can be:
-		// page
-		//   eg: /page/game
-		// package:
-		//   eg: /page/game/landing
+		// package
+		//   eg: /mui/game
+		// page in a package:
+		//   eg: /mui/game/landing
 
-		path = path.substring(6).split('/').filter(function(elm) { return elm; });	// drop /page/ and split the path into its elements
+		path = path.substring(5).split('/').filter(function(elm) { return elm; });	// drop /page/ and split the path into its elements
 
 		if (!path || path.length == 0)
 		{
 			return cb(false);
 		}
 
-		var pageName = path[0];
+		var packageName = path[0];
 
 		switch (path.length)
 		{
 			case 1:
-				// a page request, so we return the loader
-				// eg: /page/game
+				// a package request, so we return the loader
+				// eg: /mui/game
 
-				var manifestUrl = '/page/' + pageName + '/page.manifest?language=' + (params.language || '');
+				var manifestUrl = '/mui/' + packageName + '/package.manifest?language=' + (params.language || '');
 
 				output = loaderPage.replace('mui://manifest', manifestUrl);
 
@@ -58,38 +57,38 @@ function setupRoutes(cb)
 				break;
 
 			case 2:
-				// a page's package or a manifest
-				// eg: /page/game/page.manifest
-				// eg: /page/game/main
+				// a package's page or a manifest
+				// eg: /mui/game/package.manifest
+				// eg: /mui/game/main
 
-				var page = pages[pageName];
+				var pckg = packages[packageName];
 
-				if (!page)
+				if (!pckg)
 				{
-					mithril.core.logger.debug('Page ' + pageName + ' not found.');
+					mithril.core.logger.debug('Package ' + packageName + ' not found.');
 					return cb(false);
 				}
 
 				var fileName = path[1];
 
-				if (fileName === 'page.manifest')
+				if (fileName === 'package.manifest')
 				{
 					// return the manifest
 
-					cb(200, page.getManifest(exports.img, params.language), { 'Content-Type': 'text/cache-manifest' });
+					cb(200, pckg.manifest.get(params.language), { 'Content-Type': 'text/cache-manifest' });
 				}
 				else
 				{
-					// return a package
+					// return a page
 
-					var pckg = page.getPackage(fileName);
-					if (!pckg)
+					var page = pckg.getPage(fileName);
+					if (!page)
 					{
-						mithril.core.logger.debug('Package ' + fileName + ' not found.');
+						mithril.core.logger.debug('Page ' + fileName + ' not found.');
 						return cb(false);
 					}
 
-					pckg = pckg.render(exports.img, params.language);
+					page = page.render(exports.img, params.language);
 
 					var output = [];
 
@@ -98,19 +97,19 @@ function setupRoutes(cb)
 						output.push('mui/imagemap\n' + JSON.stringify(exports.img.getTranslationMap(params.imagemap)));
 					}
 
-					if (pckg.html)
+					if (page.html)
 					{
-						output.push('text/html\n' + pckg.html);
+						output.push('text/html\n' + page.html);
 					}
 
-					if (pckg.js)
+					if (page.js)
 					{
-						output.push('text/javascript\n' + pckg.js);
+						output.push('text/javascript\n' + page.js);
 					}
 
-					if (pckg.css)
+					if (page.css)
 					{
-						output.push('text/css\n' + pckg.css);
+						output.push('text/css\n' + page.css);
 					}
 
 					cb(200, output.join(params.partSplit), { 'Content-Type': 'text/plain; charset=utf8' });

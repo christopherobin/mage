@@ -1,17 +1,15 @@
 var fs = require('fs');
 
-//var pages = {};
-
-exports.PagePackage = function(name, packagePath, viewPath)
+function MuiPage(name, pagePath, viewPath)
 {
 	this.name = name;
 	this.views = [];
 	this.embed = {};
 
 	// page template:
-	//   packagePath/$name/page.html
-	//   packagePath/$name/script.js
-	//   packagePath/$name/styles.css
+	//   pagePath/$name/page.html
+	//   pagePath/$name/script.js
+	//   pagePath/$name/styles.css
 	// will replace:
 	//   $html(page.views) with the view html
 	// will replace:
@@ -52,9 +50,9 @@ exports.PagePackage = function(name, packagePath, viewPath)
 	{
 		// returns { html: '', css: '', js: '' }
 
-		var html = getFileContents(packagePath + '/' + name + '/page.html');
-		var js   = getFileContents(packagePath + '/' + name + '/script.js');
-		var css  = getFileContents(packagePath + '/' + name + '/styles.css');
+		var html = getFileContents(pagePath + '/' + name + '/page.html');
+		var js   = getFileContents(pagePath + '/' + name + '/script.js');
+		var css  = getFileContents(pagePath + '/' + name + '/styles.css');
 
 		html = embedViews(html);
 		js   = embedViews(js);
@@ -121,7 +119,7 @@ exports.PagePackage = function(name, packagePath, viewPath)
 			var type = m[1];
 			var label = m[2];
 
-			if (label !== 'package.views' && label !== 'package.viewsetup')
+			if (label !== 'page.views' && label !== 'page.viewsetup')
 			{
 				// not a view-replacement
 
@@ -158,7 +156,7 @@ exports.PagePackage = function(name, packagePath, viewPath)
 						break;
 
 					case 'js':
-						if (label === 'package.viewsetup')
+						if (label === 'page.viewsetup')
 						{
 							str.push("app.views.setViewHandler('" + view.viewName + "', new View" + view.viewClassName + "(app, app.views.getViewElement('" + view.viewName + "')));");
 						}
@@ -187,6 +185,10 @@ exports.PagePackage = function(name, packagePath, viewPath)
 		});
 	}
 };
+
+
+module.exports = MuiPage;
+
 
 
 function mergeFiles(path, matcher)
@@ -236,22 +238,3 @@ function getFileContents(path)
 	return fs.readFileSync(path, 'utf8')
 }
 
-
-/*
-exports.addPageFileMerge = function(name, path, htmlMatch, cssMatch, jsMatch)
-{
-	// loops recursively through path, and merges all files it finds that match the given matchers
-
-	if (!htmlMatch) htmlMatch = /\.html?$/;
-	if (!cssMatch)  htmlMatch = /\.css$/;
-	if (!jsMatch)   htmlMatch = /\.js$/;
-
-	var page = { html: '', css: '', js: '' };
-
-	page.html = getFilesRecursive(path, htmlMatch).join('\n');
-	page.css  = getFilesRecursive(path, cssMatch).join('\n');
-	page.js   = getFilesRecursive(path, jsMatch).join('\n');
-
-	pages[name] = page;
-};
-*/

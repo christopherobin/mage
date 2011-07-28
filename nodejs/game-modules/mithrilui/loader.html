@@ -18,13 +18,13 @@
 window.mui = new function()
 {
 	var imageMap;
-	var partSplit = '---package-part---';
-	var htmlClassName = 'mithrilui-package';
+	var partSplit = '---page-part---';
+	var htmlClassName = 'mithrilui-page';
 	var loadedCbs = {};
 	var displayCbs = {};
 	var error = function(msg) { alert(msg); };
-	var displayedPackage = null;
-	var packageData = {};
+	var displayedPage = null;
+	var pageData = {};
 	var that = this;
 
 	var baseUrl = window.location.origin + window.location.pathname;
@@ -33,15 +33,15 @@ window.mui = new function()
 		baseUrl = baseUrl.substring(0, baseUrl.length-1);
 	}
 
-	// package list
+	// page list
 
-	var m = /packages=(.+?)(&|$)/.exec(window.location.hash);
+	var m = /pages=(.+?)(&|$)/.exec(window.location.hash);
 	if (!m || !m[1])
 	{
-		return error('No package specified.');
+		return error('No page specified.');
 	}
 
-	this.packageQueue = decodeURIComponent(m[1]).split(',');
+	this.pageQueue = decodeURIComponent(m[1]).split(',');
 
 
 	// session ID
@@ -57,7 +57,7 @@ window.mui = new function()
 
 	// language
 
-	var m = /language=(.+?)(&|$)/.exec(window.location.hash);
+	var m = /language=(.+?)(&|$)/.exec(window.location.search);
 	if (!m || !m[1])
 	{
 		this.language = null;
@@ -66,20 +66,9 @@ window.mui = new function()
 		this.language = decodeURIComponent(m[1]);
 
 
-	// page name
-
-	var m = /^\/page\/(.+)(\/|$)/.exec(window.location.pathname);
-	if (!m || !m[1])
-	{
-		return error('No page specified.');
-	}
-
-	this.pageName = decodeURIComponent(m[1]);
-
-
 	// api
 
-	this.loadPackage = function(name)
+	this.loadPage = function(name)
 	{
 		var xhr = new XMLHttpRequest();
 
@@ -97,7 +86,7 @@ window.mui = new function()
 				return error('Download failed, please reload.');
 			}
 
-			packageData[name] = {};
+			pageData[name] = {};
 
 			parts = parts.split(partSplit);
 			var len = parts.length;
@@ -119,7 +108,7 @@ window.mui = new function()
 					case 'text/html':
 						var cnt = document.createElement('div');
 						cnt.className = htmlClassName;
-						cnt.setAttribute('data-package', name);
+						cnt.setAttribute('data-page', name);
 						cnt.innerHTML = content;
 						cnt.style.display = 'none';
 						document.body.appendChild(cnt);
@@ -128,13 +117,13 @@ window.mui = new function()
 					case 'text/javascript':
 						var cnt = document.createElement('script');
 						cnt.setAttribute('type', mimetype);
-						cnt.setAttribute('data-package', name);
+						cnt.setAttribute('data-page', name);
 						cnt.innerHTML = content;
 						document.head.appendChild(cnt);
 						break;
 
 					case 'text/css':
-						packageData[name].css = content;
+						pageData[name].css = content;
 						break;
 				}
 			}
@@ -149,12 +138,12 @@ window.mui = new function()
 				}
 			}
 
-			if (!displayedPackage)
+			if (!displayedPage)
 			{
-				that.displayPackage(name);
+				that.displayPage(name);
 			}
 
-			that.loadNextPackage();
+			that.loadNextPage();
 		};
 
 		var url = baseUrl + '/' + name + '?partSplit=' + encodeURIComponent(partSplit);
@@ -190,26 +179,26 @@ window.mui = new function()
 	};
 
 
-	this.loadNextPackage = function()
+	this.loadNextPage = function()
 	{
-		var next = this.packageQueue.shift();
+		var next = this.pageQueue.shift();
 		if (next)
 		{
-			this.loadPackage(next);
+			this.loadPage(next);
 		}
 	};
 
 
-	this.displayPackage = function(name)
+	this.displayPage = function(name)
 	{
-		var packages = document.getElementsByClassName(htmlClassName);
+		var pages = document.getElementsByClassName(htmlClassName);
 
 		var found = false;
-		for (var i=0, len = packages.length; i < len; i++)
+		for (var i=0, len = pages.length; i < len; i++)
 		{
-			var elm = packages[i];
+			var elm = pages[i];
 
-			if (elm.getAttribute('data-package') === name)
+			if (elm.getAttribute('data-page') === name)
 			{
 				found = elm;
 			}
@@ -228,24 +217,24 @@ window.mui = new function()
 			}
 		}
 
-		if (displayedPackage)
+		if (displayedPage)
 		{
-			var displayedCss = document.querySelector('style[data-package="' + displayedPackage + '"]');
+			var displayedCss = document.querySelector('style[data-page="' + displayedPage + '"]');
 			displayedCss.parentNode.removeChild(displayedCss);
 		}
 
-		if (packageData[name].css)
+		if (pageData[name].css)
 		{
 			var cnt = document.createElement('style');
 			cnt.setAttribute('type', 'text/css');
-			cnt.setAttribute('data-package', name);
-			cnt.innerHTML = packageData[name].css;
+			cnt.setAttribute('data-page', name);
+			cnt.innerHTML = pageData[name].css;
 			document.head.appendChild(cnt);
 		}
 
 		found.style.display = '';
 
-		displayedPackage = name;
+		displayedPage = name;
 	};
 
 
@@ -273,7 +262,7 @@ window.mui = new function()
 	};
 
 
-	this.loadNextPackage();
+	this.loadNextPage();
 };
 
 </script>
