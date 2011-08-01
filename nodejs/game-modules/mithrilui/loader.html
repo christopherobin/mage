@@ -21,6 +21,7 @@ window.mui = new function()
 	var htmlClassName = 'mithrilui-page';
 	var loadedCbs = {};
 	var displayCbs = {};
+	var closeCbs = {};
 	var error = function(msg) { alert(msg); };
 	var displayedPage = null;
 	var pageData = {};
@@ -210,6 +211,12 @@ window.mui = new function()
 
 	this.onloaded = function(name, cb)
 	{
+		if (pageData[name])
+		{
+			// already loaded
+			return cb(name);
+		}
+
 		if (name in loadedCbs)
 		{
 			loadedCbs[name].push(cb);
@@ -227,6 +234,17 @@ window.mui = new function()
 		}
 		else
 			displayCbs[name] = [cb];
+	};
+
+
+	this.onclose = function(name, cb)
+	{
+		if (name in closeCbs)
+		{
+			closeCbs[name].push(cb);
+		}
+		else
+			closeCbs[name] = [cb];
 	};
 
 
@@ -261,6 +279,24 @@ window.mui = new function()
 
 		if (!found) return;
 
+		if (displayedPage)
+		{
+			var cbs = closeCbs[displayedPage];
+			if (cbs)
+			{
+				for (var i=0, len = cbs.length; i < len; i++)
+				{
+					cbs[i](name);
+				}
+			}
+
+			var displayedCss = document.querySelector('style[data-page="' + displayedPage + '"]');
+			if (displayedCss)
+			{
+				displayedCss.parentNode.removeChild(displayedCss);
+			}
+		}
+
 		var cbs = displayCbs[name];
 		if (cbs)
 		{
@@ -268,12 +304,6 @@ window.mui = new function()
 			{
 				cbs[i](name);
 			}
-		}
-
-		if (displayedPage)
-		{
-			var displayedCss = document.querySelector('style[data-page="' + displayedPage + '"]');
-			displayedCss.parentNode.removeChild(displayedCss);
 		}
 
 		if (pageData[name].css)
