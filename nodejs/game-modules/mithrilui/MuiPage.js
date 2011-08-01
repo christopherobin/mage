@@ -1,12 +1,13 @@
 var fs = require('fs');
 
+
 function MuiPage(name, languages)
 {
 	this.name = name;
 	this.views = [];
 	this.embed = {};
-	this.cache = {};
 	this.languages = languages;
+	this.minify = !!mithril.getConfig('module.mithrilui.delivery.page.js.minify');
 
 	// page template:
 	//   pages/$name/page.html
@@ -48,30 +49,7 @@ function MuiPage(name, languages)
 	};
 
 
-	this.prepare = function()
-	{
-		for (var i=0, len = languages.length; i < len; i++)
-		{
-			var language = languages[i];
-
-			this.cache[language] = render(language);
-		}
-	};
-
-
-	this.getOutput = function(language)
-	{
-		var output = this.cache[language];
-		if (output)
-		{
-			return output;
-		}
-
-		return null;
-	};
-
-
-	function render(language)
+	this.render = function(language)
 	{
 		// returns { html: '', css: '', js: '' }
 
@@ -94,7 +72,7 @@ function MuiPage(name, languages)
 		html = mithril.assets.applyTranslationMap(html, language);
 		css  = mithril.assets.applyTranslationMap(css, language);
 
-		if (js && mithril.getConfig('module.mithrilui.delivery.js.minify'))
+		if (js && this.minify)
 		{
 			var uglify = require('uglify-js');
 			var ast = uglify.parser.parse(js);

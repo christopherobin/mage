@@ -242,6 +242,8 @@ window.mui = new function()
 
 	this.displayPage = function(name)
 	{
+		document.body.scrollIntoView(true);
+
 		var pages = document.getElementsByClassName(htmlClassName);
 
 		var found = false;

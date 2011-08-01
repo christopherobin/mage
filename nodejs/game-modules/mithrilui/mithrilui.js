@@ -26,6 +26,8 @@ exports.addPackage = function(name)
 
 function setupRoutes(cb)
 {
+	var useManifest = mithril.getConfig('module.mithrilui.delivery.package.useManifest');
+
 	mithril.addRoute(/^\/mui\//, function(request, path, params, cb) {
 
 		// requested path can be:
@@ -49,9 +51,12 @@ function setupRoutes(cb)
 				// a package request, so we return the loader
 				// eg: /mui/game
 
-				var manifestUrl = '/mui/' + packageName + '/package.manifest?language=' + (params.language || '');
+				var output = loaderPage.replace('mui://manifest', function() {
+					if (useManifest)
+						return '/mui/' + packageName + '/package.manifest?language=' + (params.language || '');
 
-				output = loaderPage.replace('mui://manifest', manifestUrl);
+					return '';
+				});
 
 				cb(200, output, { 'Content-Type': 'text/html; charset=utf8' });
 				break;
@@ -103,14 +108,16 @@ var pageCache = {};
 
 function getPageOutput(pckg, pageName, language, incAssetMap, hash, cb)
 {
+	var usePageCache = mithril.getConfig('module.mithrilui.delivery.page.serverCache');
+
 	var cacheKey = pckg.name + ',' + pageName + ',' + language + ',' + (incAssetMap ? '1' : '0');
 
 	// try to use a cached version, or if the client's local cache matches ours, we tell the client to use their local cache
 
-	var cached = pageCache[cacheKey];
-
-	if (cached)
+	if (usePageCache && pageCache[cacheKey])
 	{
+		var cached = pageCache[cacheKey];
+
 		console.log('Using cached page ' + cacheKey);
 
 		if (hash && cached.hash === hash)
@@ -132,7 +139,7 @@ function getPageOutput(pckg, pageName, language, incAssetMap, hash, cb)
 		return cb(true);
 	}
 
-	page = page.getOutput(language);
+	page = page.render(language);
 	if (!page)
 	{
 		mithril.core.logger.error('Failed to retrieve page output for "' + pageName + '" in language "' + language + '"');
@@ -200,12 +207,15 @@ function getPageOutput(pckg, pageName, language, incAssetMap, hash, cb)
 
 	// add this generated page to the page cache
 
-	mithril.core.logger.debug('Adding page to cache: ' + cacheKey);
+	if (usePageCache)
+	{
+		mithril.core.logger.debug('Adding page to cache: ' + cacheKey);
 
-	pageCache[cacheKey] = {
-		hash: hash,
-		output: output,
-		headers: headers
-	};
+		pageCache[cacheKey] = {
+			hash: hash,
+			output: output,
+			headers: headers
+		};
+	}
 }
 
