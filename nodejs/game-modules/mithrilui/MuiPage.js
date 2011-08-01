@@ -1,10 +1,12 @@
 var fs = require('fs');
 
-function MuiPage(name)
+function MuiPage(name, languages)
 {
 	this.name = name;
 	this.views = [];
 	this.embed = {};
+	this.cache = {};
+	this.languages = languages;
 
 	// page template:
 	//   pages/$name/page.html
@@ -46,9 +48,34 @@ function MuiPage(name)
 	};
 
 
-	this.render = function(language)
+	this.prepare = function()
+	{
+		for (var i=0, len = languages.length; i < len; i++)
+		{
+			var language = languages[i];
+
+			this.cache[language] = render(language);
+		}
+	};
+
+
+	this.getOutput = function(language)
+	{
+		var output = this.cache[language];
+		if (output)
+		{
+			return output;
+		}
+
+		return null;
+	};
+
+
+	function render(language)
 	{
 		// returns { html: '', css: '', js: '' }
+
+		mithril.core.logger.debug('Rendering page "' + name + '" in language "' + language + '"');
 
 		var pagePath = mithril.core.config.module.mithrilui.paths.pages + '/' + name;
 
@@ -66,6 +93,15 @@ function MuiPage(name)
 
 		html = mithril.assets.applyTranslationMap(html, language);
 		css  = mithril.assets.applyTranslationMap(css, language);
+
+		if (js && mithril.getConfig('module.mithrilui.delivery.js.minify'))
+		{
+			var uglify = require('uglify-js');
+			var ast = uglify.parser.parse(js);
+			ast = uglify.uglify.ast_mangle(ast);
+			ast = uglify.uglify.ast_squeeze(ast);
+			js = uglify.uglify.gen_code(ast);
+		}
 
 		return { html: html, js: js, css: css };
 	};

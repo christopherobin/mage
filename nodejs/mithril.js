@@ -88,6 +88,23 @@ exports.addModule = function(name, path)
 };
 
 
+exports.getConfig = function(path)
+{
+	var cfg = mithril.core.config;
+	if (!cfg) return null;
+
+	path = path.split('.');
+
+	for (var i=0, len = path.length; i < len; i++)
+	{
+		cfg = cfg[path[i]];
+		if (!cfg) return null;
+	}
+
+	return cfg;
+};
+
+
 // setup() sets up mithril and its modules.
 // After this (callback), mithril is ready to be started.
 // Once started, users may connect.
@@ -245,6 +262,8 @@ exports.start = function()
 			response.end('Server going down for maintenance.');
 			return;
 		}
+
+		mithril.core.logger.debug('Received HTTP request: ' + request.url);
 
 
 		// parse URL

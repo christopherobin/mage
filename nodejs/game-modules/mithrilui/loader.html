@@ -18,7 +18,6 @@
 window.mui = new function()
 {
 	var assetMap;
-	var partSplit = '---page-part---';
 	var htmlClassName = 'mithrilui-page';
 	var loadedCbs = {};
 	var displayCbs = {};
@@ -27,11 +26,17 @@ window.mui = new function()
 	var pageData = {};
 	var that = this;
 
-	var baseUrl = window.location.origin + window.location.pathname;
+	var baseUrl = window.location.pathname;
 	if (baseUrl[baseUrl.length-1] === '/')
 	{
 		baseUrl = baseUrl.substring(0, baseUrl.length-1);
 	}
+
+
+	// package name
+
+	this.packageName = window.location.pathname.substring(window.location.pathname.lastIndexOf('/')+1);
+
 
 	// page list
 
@@ -70,6 +75,25 @@ window.mui = new function()
 
 	this.loadPage = function(name)
 	{
+		var incAssetMap = !assetMap;
+		var cacheKey = 'muicache/' + that.packageName + '/' + name + '/' + that.language + '/' + (incAssetMap ? '1' : '0');
+
+		var currentHash, currentPartSplit;
+
+		if (window.localStorage && (cacheKey in window.localStorage))
+		{
+			var cacheMeta = window.localStorage.getItem(cacheKey + '/meta');
+			if (cacheMeta)
+			{
+				cacheMeta = JSON.parse(cacheMeta);
+				if (cacheMeta.hash && cacheMeta.partSplit)
+				{
+					currentHash = cacheMeta.hash;
+					currentPartSplit = cacheMeta.partSplit;
+				}
+			}
+		}
+
 		var xhr = new XMLHttpRequest();
 
 		xhr.onreadystatechange = function() {
@@ -80,15 +104,37 @@ window.mui = new function()
 				return; // error('No connection, please reload.');
 			}
 
-			var parts = xhr.responseText;
-			if (!parts)
+			var data = xhr.responseText;
+			if (!data)
 			{
 				return error('Download failed, please reload.');
 			}
 
+			var partSplit;
+
+			if (data.trim() === 'usecache')
+			{
+				data = window.localStorage.getItem(cacheKey);
+				partSplit = currentPartSplit;
+			}
+			else
+			{
+				partSplit = xhr.getResponseHeader('X-MithrilUI-PartSplit');
+
+				var hash = xhr.getResponseHeader('X-MithrilUI-Hash');
+
+				// store the data in localStorage
+
+				if (hash && window.localStorage)
+				{
+					window.localStorage.setItem(cacheKey, data);
+					window.localStorage.setItem(cacheKey + '/meta', JSON.stringify({ hash: hash, partSplit: partSplit }));
+				}
+			}
+
 			pageData[name] = {};
 
-			parts = parts.split(partSplit);
+			var parts = data.split(partSplit);
 			var len = parts.length;
 
 			for (var i=0; i < len; i++)
@@ -146,10 +192,15 @@ window.mui = new function()
 			that.loadNextPage();
 		};
 
-		var url = baseUrl + '/' + name + '?partSplit=' + encodeURIComponent(partSplit);
-		if (!assetMap)
+		var url = baseUrl + '/' + name + '?language=' + that.language;
+		if (incAssetMap)
 		{
-			url += '&assetmap=' + (that.language || '');
+			url += '&assetmap=1';
+		}
+
+		if (currentHash)
+		{
+			url += '&hash=' + encodeURIComponent(currentHash);
 		}
 
 		xhr.open('GET', url, true);
