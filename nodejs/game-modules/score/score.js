@@ -109,7 +109,7 @@ exports.awardPoints = function(state, actorIds, contextName, points, cb)
 
 	if (context.resolution > 1)
 	{
-		time = Math.floor(time / context.resolution) * context.resolution;
+		time = ~~(time / context.resolution) * context.resolution;
 	}
 
 	var values = [];
