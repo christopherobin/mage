@@ -133,10 +133,9 @@ window.mui = new function()
 				}
 			}
 
-			pageData[name] = {};
-
 			var parts = data.split(partSplit);
 			var len = parts.length;
+			var css = '';
 
 			for (var i=0; i < len; i++)
 			{
@@ -170,10 +169,14 @@ window.mui = new function()
 						break;
 
 					case 'text/css':
-						pageData[name].css = content;
+						css += content;
 						break;
 				}
 			}
+
+			pageData[name] = {};
+
+			if (css) pageData[name].css = css;
 
 			var cbs = loadedCbs[name];
 			if (cbs)
