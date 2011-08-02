@@ -313,6 +313,14 @@ MySqlDatabase.prototype.exec = function(sql, params, errorCode, cb)
 };
 
 
+MySqlDatabase.prototype.getPlaceHolders = function(n)
+{
+	var str = [];
+	for (var i=0; i < n; i++) str.push('?');
+	return str.join(', ');
+};
+
+
 MySqlDatabase.prototype.buildSelect = function(fields, allowedFields, table, joins)
 {
 
