@@ -1,3 +1,6 @@
+var mithril = require('../../../mithril.js');
+
+
 exports.execute = function(state, p, cb)
 {
 	mithril.persistent.get(state, p.properties, p.removeAfterGet, function(error, data) {

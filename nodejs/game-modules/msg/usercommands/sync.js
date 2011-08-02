@@ -1,3 +1,6 @@
+var mithril = require('../../../mithril.js');
+
+
 exports.execute = function(state, p, cb)
 {
 	mithril.msg.loadInbox(state, state.actorId, function(error, inbox) {

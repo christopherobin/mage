@@ -1,4 +1,5 @@
-var mysql = require('mysql');
+var mithril = require('../mithril.js'),
+    mysql = require('mysql');
 
 
 function MySqlDatabase(state, config)

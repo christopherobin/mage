@@ -1,3 +1,8 @@
+var mithril = require('../../mithril.js');
+
+exports.sessions = require('./sessions.js');
+
+
 exports.userCommands = {
 	sync:      __dirname + '/usercommands/sync.js',
 	getPlayer: __dirname + '/usercommands/getPlayer.js'
@@ -34,6 +39,7 @@ exports.addPlayer = function(state, actorId, vipLevel, language, cb)
 
 	state.datasources.db.exec(sql, params, null, function(err) {
 		if (err) { return cb(err); }
+
 		cb(null, { playerId: actorId, vipLevel: vipLevel, language: language, lastLoginTime: lastLoginTime });
 	});
 };
@@ -70,7 +76,4 @@ exports.delPlayer = function(state, playerId, cb)
 
 	state.datasources.db.exec(sql, params, null, cb);
 };
-
-
-exports.sessions = require('./sessions.js');
 

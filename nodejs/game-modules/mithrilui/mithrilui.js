@@ -1,6 +1,7 @@
-//exports.viewport = require(__dirname + '/viewport.js');
+var mithril = require('../../mithril.js'),
+    fs = require('fs'),
+	crypto = require('crypto');
 
-var fs = require('fs');
 
 var packages = {};
 var pagePartSplitString = '---page-part---';
@@ -8,6 +9,7 @@ var fileCache = {};
 var usePageCache = false;
 var useManifest = false;
 var compressPages = false;
+
 
 exports.MuiPackage = require(__dirname + '/MuiPackage.js');
 exports.MuiPage    = require(__dirname + '/MuiPage.js');
@@ -297,7 +299,7 @@ function prepareFileOutput(cacheKey, output, headers, createHash)
 
 	if (createHash)
 	{
-		result.hash = require('crypto').createHash('md5').update(output).digest('hex');
+		result.hash = crypto.createHash('md5').update(output).digest('hex');
 
 		result.headers['X-MithrilUI-Hash'] = result.hash;
 	}

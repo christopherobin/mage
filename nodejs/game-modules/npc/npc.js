@@ -1,3 +1,6 @@
+var mithril = require('../../mithril.js');
+
+
 // a list of NPCs per language for quick lookup in any language
 
 var npcsArr = [];

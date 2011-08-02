@@ -1,3 +1,6 @@
+var mithril = require('../mithril.js');
+
+
 function State(actorId, msg, session)
 {
 	// behaves like a transaction, and will send off everything that happened after commit() is called.

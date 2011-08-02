@@ -1,3 +1,6 @@
+var mithril = require('../mithril.js');
+
+
 var commands = {};
 
 

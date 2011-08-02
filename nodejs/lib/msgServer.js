@@ -1,5 +1,6 @@
-var State     = require(__dirname + '/state.js').State;
-var MsgClient = require(__dirname + '/msgClient.js').MsgClient;
+var mithril = require('../mithril.js'),
+    State     = require(__dirname + '/state.js').State,
+    MsgClient = require(__dirname + '/msgClient.js').MsgClient;
 
 
 exports.io = null;

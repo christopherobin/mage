@@ -1,3 +1,6 @@
+var mithril = require('../../../mithril.js');
+
+
 exports.execute = function(state, p, cb)
 {
 	if (!p.playerId) p.playerId = state.actorId;

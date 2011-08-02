@@ -1,3 +1,6 @@
+var mithril = require('../../mithril.js');
+
+
 exports.userCommands = {
 	sync:     __dirname + '/usercommands/sync.js',
 	getActor: __dirname + '/usercommands/getActor.js'

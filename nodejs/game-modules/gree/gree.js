@@ -1,13 +1,18 @@
+var mithril = require('../../mithril.js'),
+    crypto = require('crypto'),
+    http = require('http');
+
+
 exports.userCommands = {
 	getFriends: __dirname + '/usercommands/getFriends.js',
 	getUserIds: __dirname + '/usercommands/getUserIds.js'
 };
 
-var crypto = require('crypto');
-var http = require('http');
+
 var users = {};
 var oauth = null;
 var apiPaths = {};
+
 
 exports.onNewUser = null;	// function(state, user, cb) { ... }		-> cb(null, playerId);					or cb(error);
 exports.onLogin = null;		// function(state, playerId, isNewPlayer, cb) { ... }	-> cb(null, redirectUrl, 'Welcome!');	or cb(error);

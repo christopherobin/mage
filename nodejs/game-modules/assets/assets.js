@@ -1,6 +1,10 @@
+var mithril = require('../../mithril.js');
+
+
 exports.files = {
 	img: []
 };
+
 
 exports.descriptorDelimiter = '/';
 

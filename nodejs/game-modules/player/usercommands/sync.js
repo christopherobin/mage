@@ -1,3 +1,6 @@
+var mithril = require('../../../mithril.js');
+
+
 exports.execute = function(state, p, cb)
 {
 	mithril.player.getPlayer(state, state.actorId, ['language'], function(error, player) {

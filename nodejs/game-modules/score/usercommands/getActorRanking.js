@@ -1,3 +1,6 @@
+var mithril = require('../../../mithril.js');
+
+
 exports.execute = function(state, p, cb)
 {
 	mithril.score.getLatestRankingListByContext(state, p.context, p.name, function(error, list) {

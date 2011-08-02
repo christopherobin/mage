@@ -1,5 +1,8 @@
 // Social Networking Services Module.
 
+var mithril = require('../../mithril.js');
+
+
 exports.userCommands = {
 	sync:				__dirname + '/usercommands/sync.js',
 	requestRelation: 	__dirname + '/usercommands/requestRelation.js',
