@@ -2,9 +2,12 @@
 
 var fs = require('fs');
 
-var loaderPage;
 var packages = {};
 var pagePartSplitString = '---page-part---';
+var fileCache = {};
+var usePageCache = false;
+var useManifest = false;
+var compressPages = false;
 
 exports.MuiPackage = require(__dirname + '/MuiPackage.js');
 exports.MuiPage    = require(__dirname + '/MuiPage.js');
@@ -12,7 +15,9 @@ exports.MuiPage    = require(__dirname + '/MuiPage.js');
 
 exports.setup = function(state, cb)
 {
-	loaderPage = fs.readFileSync(__dirname + '/loader.html', 'utf8');
+	usePageCache  = !!mithril.getConfig('module.mithrilui.delivery.page.serverCache');
+	compressPages = !!mithril.getConfig('module.mithrilui.delivery.page.compress');
+	useManifest   = !!mithril.getConfig('module.mithrilui.delivery.package.useManifest');
 
 	setupRoutes(cb);
 };
@@ -26,8 +31,6 @@ exports.addPackage = function(name)
 
 function setupRoutes(cb)
 {
-	var useManifest = mithril.getConfig('module.mithrilui.delivery.package.useManifest');
-
 	mithril.addRoute(/^\/mui\//, function(request, path, params, cb) {
 
 		// requested path can be:
@@ -51,14 +54,11 @@ function setupRoutes(cb)
 				// a package request, so we return the loader
 				// eg: /mui/game
 
-				var output = loaderPage.replace('mui://manifest', function() {
-					if (useManifest)
-						return '/mui/' + packageName + '/package.manifest?language=' + (params.language || '');
+				getLoaderPageOutput(packageName, params.language, function(error, result) {
+					if (error) { return cb(false); }
 
-					return '';
+					cb(200, result.output, result.headers);
 				});
-
-				cb(200, output, { 'Content-Type': 'text/html; charset=utf8' });
 				break;
 
 			case 2:
@@ -80,7 +80,11 @@ function setupRoutes(cb)
 				{
 					// return the manifest
 
-					cb(200, pckg.manifest.get(params.language), { 'Content-Type': 'text/cache-manifest' });
+					getManifestOutput(pckg, params.language, function(error, result) {
+						if (error) { return cb(false); }
+
+						cb(200, result.output, result.headers);
+					});
 				}
 				else
 				{
@@ -89,10 +93,10 @@ function setupRoutes(cb)
 					// for caching purposes (client and server) the unique key is: pckg, fileName (page), language, assetmap included y/n
 					// if params.hash matches a known hash for this combination of parameters, we return an indicator for "no changes".
 
-					getPageOutput(pckg, fileName, params.language, 'assetmap' in params, params.hash, function(error, output, headers) {
+					getPageOutput(pckg, fileName, params.language, 'assetmap' in params, params.hash, function(error, result) {
 						if (error) { return cb(false); }
 
-						cb(200, output, headers);
+						cb(200, result.output, result.headers);
 					});
 				}
 				break;
@@ -103,30 +107,79 @@ function setupRoutes(cb)
 };
 
 
-var pageCache = {};
+function getLoaderPageOutput(packageName, language, cb)
+{
+	language = language || '';
+
+	var cacheKey = 'loader:' + packageName + ',' + language;
+
+	// check file cache
+
+	var cached = getCachedFile(cacheKey, null);
+	if (cached)
+	{
+		return cb(null, cached);
+	}
+
+	// load the loader HTML and set up headers
+
+	var headers = { 'Content-Type': 'text/html; charset=utf8' };
+	var output = fs.readFileSync(__dirname + '/loader.html', 'utf8');
+
+	// inject manifest or empty string
+
+	output = output.replace('mui://manifest', function() {
+		if (useManifest)
+			return '/mui/' + packageName + '/package.manifest?language=' + language;
+
+		return '';
+	});
+
+	var result = prepareFileOutput(cacheKey, output, headers, false);
+
+	// return the response information
+
+	cb(null, result);
+}
+
+
+function getManifestOutput(pckg, language, cb)
+{
+	language = language || '';
+
+	var cacheKey = 'manifest:' + pckg.name + ',' + language;
+
+	var cached = getCachedFile(cacheKey, null);
+	if (cached)
+	{
+		return cb(null, cached);
+	}
+
+	var output = pckg.manifest.get(language);
+	var headers = { 'Content-Type': 'text/cache-manifest' };
+
+	var result = prepareFileOutput(cacheKey, output, headers, false);
+
+	// return the response information
+
+	cb(null, result);
+}
 
 
 function getPageOutput(pckg, pageName, language, incAssetMap, hash, cb)
 {
-	var usePageCache = mithril.getConfig('module.mithrilui.delivery.page.serverCache');
+	language = language || '';
 
 	var cacheKey = pckg.name + ',' + pageName + ',' + language + ',' + (incAssetMap ? '1' : '0');
 
 	// try to use a cached version, or if the client's local cache matches ours, we tell the client to use their local cache
 
-	if (usePageCache && pageCache[cacheKey])
+	if (usePageCache)
 	{
-		var cached = pageCache[cacheKey];
-
-		console.log('Using cached page ' + cacheKey);
-
-		if (hash && cached.hash === hash)
+		var cached = getCachedFile(cacheKey, hash);
+		if (cached)
 		{
-			return cb(null, 'usecache', { 'Content-Type': 'text/plain; charset=utf8' });
-		}
-		else
-		{
-			return cb(null, cached.output, cached.headers);
+			return cb(null, cached);
 		}
 	}
 
@@ -173,49 +226,91 @@ function getPageOutput(pckg, pageName, language, incAssetMap, hash, cb)
 
 	output = new Buffer(output.join(pagePartSplitString));
 
-	var headers = { 'Content-Type': 'text/plain; charset=utf8', 'X-MithrilUI-PartSplit': pagePartSplitString };
+	var headers = {
+		'Content-Type': 'text/plain; charset=utf8',
+		'X-MithrilUI-PartSplit': pagePartSplitString
+	};
+
+	var result = prepareFileOutput(cacheKey, output, headers, true);
+
+	// return the response information
+
+	cb(null, result);
+}
 
 
-	// compression
+function getCachedFile(cacheKey, hash)
+{
+	var cached = fileCache[cacheKey];
+	if (cached)
+	{
+		console.log('Using cached file ' + cacheKey);
 
-	if (mithril.getConfig('module.mithrilui.delivery.page.compress'))
+		if (hash && cached.hash === hash)
+		{
+			return { output: 'usecache', headers: { 'Content-Type': 'text/plain; charset=utf8' } };
+		}
+
+		return cached;
+	}
+
+	return null;
+}
+
+
+function prepareFileOutput(cacheKey, output, headers, createHash)
+{
+	// make sure we are using a Buffer object
+
+	if (!(output instanceof Buffer))
+	{
+		output = new Buffer(output);
+	}
+
+	// create result object
+
+	var result = {
+		output: output,
+		headers: headers
+	};
+
+	// GZIP compression
+
+	if (compressPages)
 	{
 		var gzip = require('compress-buffer');
 
-		mithril.core.logger.debug('Page ' + cacheKey + ' size before gzip compression: ' + output.length + ' bytes.');
+		mithril.core.logger.debug('File ' + cacheKey + ' size before gzip compression: ' + result.output.length + ' bytes.');
 
-		output = gzip.compress(output);
+		result.output = gzip.compress(result.output);
 
-		mithril.core.logger.debug('Page ' + cacheKey + ' size after gzip compression: ' + output.length + ' bytes.');
+		mithril.core.logger.debug('File ' + cacheKey + ' size after gzip compression: ' + result.output.length + ' bytes.');
 
-		headers['Content-Encoding'] = 'gzip';
+		result.headers['Content-Encoding'] = 'gzip';
 	}
 	else
 	{
-		mithril.core.logger.debug('Page ' + cacheKey + ' size: ' + output.length + ' bytes.');
+		mithril.core.logger.debug('File ' + cacheKey + ' size: ' + result.output.length + ' bytes.');
 	}
 
-	// output hash
+	// generate MD5 hash
 
-	var hash = require('crypto').createHash('md5').update(output).digest('hex');
+	if (createHash)
+	{
+		result.hash = require('crypto').createHash('md5').update(output).digest('hex');
 
-	headers['X-MithrilUI-Hash'] = hash;
-
-	// respond to the client
-
-	cb(null, output, headers);
+		result.headers['X-MithrilUI-Hash'] = result.hash;
+	}
 
 	// add this generated page to the page cache
 
 	if (usePageCache)
 	{
-		mithril.core.logger.debug('Adding page to cache: ' + cacheKey);
+		mithril.core.logger.debug('Adding file to cache: ' + cacheKey);
 
-		pageCache[cacheKey] = {
-			hash: hash,
-			output: output,
-			headers: headers
-		};
+		fileCache[cacheKey] = result;
 	}
+
+	return result;
 }
 
