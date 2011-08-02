@@ -1,3 +1,6 @@
+var mysql = require('mysql');
+
+
 function MySqlDatabase(state, config)
 {
 	this.state = state;
@@ -8,27 +11,25 @@ function MySqlDatabase(state, config)
 	this.transactionRules = null;
 }
 
-// required API:
-//	setupTransaction(rules)	sets up transaction behavior rules
-//	commit(cb)				commits all executed statements
-//	rollback(cb)			rolls back all executed statements
-//	close()					closes and cleans up any open connections
 
-
-var mysql = null;
-
-MySqlDatabase.prototype._connect = function(config)
+MySqlDatabase.prototype._connect = function(config, cb)
 {
-	if (mysql === null) mysql = require('mysql');
-
 	var client = new mysql.Client();
 	client.user = config.user;
 	client.password = config.pass;
 	client.host = config.host;
 	client.port = config.port;
 	client.database = config.dbname;
-	client.connect(function() { mithril.core.logger.debug('DB: Connected to MySQL server at ' + client.host + ':' + client.port); });
-	return client;
+	client.connect(function(error) {
+		if (error)
+		{
+			mithril.core.logger.error('DB: Failed to connect to MySQL server at ' + client.host + ':' + client.port);
+			return cb(error);
+		}
+
+		mithril.core.logger.debug('DB: Connected to MySQL server at ' + client.host + ':' + client.port);
+		cb(null, client);
+	});
 };
 
 
@@ -42,49 +43,88 @@ MySqlDatabase.prototype.autoTransaction = function(rules)
 
 // getting a connection
 
-MySqlDatabase.prototype.source = function(readonly)
+MySqlDatabase.prototype.source = function(readonly, cb)
 {
 	if (this.connTransaction)
 	{
-		return this.connTransaction;
+		return cb(null, this.connTransaction);
 	}
 
 	if ((readonly && this.transactionRules.read) || (!readonly && this.transactionRules.write))
 	{
-		mithril.core.logger.debug('DB: Transaction start');
+		var _this = this;
 
-		this.connTransaction = this.rw();
-		this.connTransaction.query('START TRANSACTION');
+		this.rw(function(error, conn) {
+			if (error) return cb(error);
 
-		return this.connTransaction;
+			mithril.core.logger.debug('DB: Transaction start');
+
+			conn.query('START TRANSACTION', [], function(error) {
+				if (error) return cb(error);
+
+				_this.connTransaction = conn;
+
+				cb(null, conn);
+			});
+		});
 	}
-
-	return readonly ? this.ro() : this.rw();
-};
-
-
-MySqlDatabase.prototype.ro = function()
-{
-	if (this.connRO === null)
+	else
 	{
-		if ('ro' in this.config)
-			this.connRO = this._connect(this.config.ro);
+		if (readonly)
+		{
+			this.ro(cb);
+		}
 		else
-			this.connRO = this.rw();
+		{
+			this.rw(cb);
+		}
 	}
-
-	return this.connRO;
 };
 
 
-MySqlDatabase.prototype.rw = function()
+MySqlDatabase.prototype.ro = function(cb)
 {
-	if (this.connRW === null)
+	if (this.connRO)
 	{
-		this.connRW = this._connect(this.config.rw);
+		return cb(null, this.connRO);
 	}
 
-	return this.connRW;
+	var _this = this;
+
+	var callback = function(error, conn)
+	{
+		if (error) return cb(error);
+
+		_this.connRO = conn;
+
+		cb(null, conn);
+	};
+
+	if ('ro' in this.config)
+		this._connect(this.config.ro, callback);
+	else
+		this.rw(callback);
+};
+
+
+MySqlDatabase.prototype.rw = function(cb)
+{
+	if (this.connRW)
+	{
+		cb(null, this.connRW);
+	}
+	else
+	{
+		var _this = this;
+
+		this._connect(this.config.rw, function(error, conn) {
+			if (error) return cb(error);
+
+			_this.connRW = conn;
+
+			cb(null, conn);
+		});
+	}
 };
 
 
@@ -153,26 +193,31 @@ MySqlDatabase.prototype.rollBack = function(cb)
 MySqlDatabase.prototype.getOne = function(sql, params, required, errorCode, cb)
 {
 	var _this = this;
-	var db = this.source(true);
 
-	db.query(sql, params, function(error, results) {
-		mithril.core.logger.debug('DB: getOne ' + sql + ' using', params);
+	this.source(true, function(error, db) {
+		if (error) return cb(error);
 
-		if (error)
-		{
-			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
-			return;
-		}
+		db.query(sql, params, function(error, results) {
+			mithril.core.logger.debug('DB: getOne ' + sql + ' using', params);
 
-		if (required && results.length != 1)
-		{
-			_this.state.error(errorCode, { sql: sql, params: params, error: 'expected exactly 1 record, but received ' + results.length }, cb);
-			return;
-		}
+			if (error)
+			{
+				_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
+				return;
+			}
 
-		var result = (results.length > 0) ? results[0] : null;
+			var len = results.length;
 
-		cb(null, result);
+			if (required && len != 1)
+			{
+				_this.state.error(errorCode, { sql: sql, params: params, error: 'expected exactly 1 record, but received ' + len }, cb);
+				return;
+			}
+
+			var result = (len > 0) ? results[0] : null;
+
+			cb(null, result);
+		});
 	});
 };
 
@@ -180,19 +225,22 @@ MySqlDatabase.prototype.getOne = function(sql, params, required, errorCode, cb)
 MySqlDatabase.prototype.getMany = function(sql, params, errorCode, cb)
 {
 	var _this = this;
-	var db = this.source(true);
 
-	db.query(sql, params, function(error, results) {
-		mithril.core.logger.debug('DB: getMany ' + sql + ' using', params);
+	this.source(true, function(error, db) {
+		if (error) return cb(error);
 
-		if (error)
-		{
-			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
-		}
-		else
-		{
-			cb(null, results);
-		}
+		db.query(sql, params, function(error, results) {
+			mithril.core.logger.debug('DB: getMany ' + sql + ' using', params);
+
+			if (error)
+			{
+				_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
+			}
+			else
+			{
+				cb(null, results);
+			}
+		});
 	});
 };
 
@@ -200,42 +248,44 @@ MySqlDatabase.prototype.getMany = function(sql, params, errorCode, cb)
 MySqlDatabase.prototype.getMapped = function(sql, params, map, errorCode, cb)
 {
 	var _this = this;
-	var db = this.source(true);
 
-	db.query(sql, params, function(error, results) {
-		mithril.core.logger.debug('DB: getMapped ' + sql + ' using', params);
+	this.source(true, function(error, db) {
+		if (error) return cb(error);
 
-		if (error)
-		{
-			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
-		}
-		else
-		{
-			var len = results.length;
-			var out = {};
+		db.query(sql, params, function(error, results) {
+			mithril.core.logger.debug('DB: getMapped ' + sql + ' using', params);
 
-			for (var i=0; i < len; i++)
+			if (error)
 			{
-				var row = results[i];
-
-				if (map.value)
-				{
-					if (map.type)
-						out[row[map.key]] = mithril.core.PropertyMap.unserialize(row[map.type], row[map.value]);
-					else
-						out[row[map.key]] = row[map.value];
-				}
-				else
-				{
-					out[row[map.key]] = row;
-
-					if (!map.keepKey)
-						delete row[map.key];
-				}
+				_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
 			}
+			else
+			{
+				var out = {};
 
-			cb(null, out);
-		}
+				for (var i=0, len = results.length; i < len; i++)
+				{
+					var row = results[i];
+
+					if (map.value)
+					{
+						if (map.type)
+							out[row[map.key]] = mithril.core.PropertyMap.unserialize(row[map.type], row[map.value]);
+						else
+							out[row[map.key]] = row[map.value];
+					}
+					else
+					{
+						out[row[map.key]] = row;
+
+						if (!map.keepKey)
+							delete row[map.key];
+					}
+				}
+
+				cb(null, out);
+			}
+		});
 	});
 };
 
@@ -243,19 +293,22 @@ MySqlDatabase.prototype.getMapped = function(sql, params, map, errorCode, cb)
 MySqlDatabase.prototype.exec = function(sql, params, errorCode, cb)
 {
 	var _this = this;
-	var db = this.source(false);
 
-	db.query(sql, params, function(error, info) {
-		mithril.core.logger.debug('DB: exec ' + sql + ' using', params);
+	this.source(false, function(error, db) {
+		if (error) return cb(error);
 
-		if (error)
-		{
-			_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
-		}
-		else
-		{
-			cb(null, info);
-		}
+		db.query(sql, params, function(error, info) {
+			mithril.core.logger.debug('DB: exec ' + sql + ' using', params);
+
+			if (error)
+			{
+				_this.state.error(errorCode, { sql: sql, params: params, error: error }, cb);
+			}
+			else
+			{
+				cb(null, info);
+			}
+		});
 	});
 };
 
