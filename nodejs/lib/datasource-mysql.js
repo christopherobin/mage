@@ -343,7 +343,7 @@ var allowedFields = {
 
 		if ('requires' in rule)
 		{
-			for (var i=0; i < rule.requires.length; i++)
+			for (var i=0, len = rule.requires.length; i < len; i++)
 			{
 				addRequiredJoin(rule.requires[i]);
 			}
@@ -355,7 +355,7 @@ var allowedFields = {
 	var result = ['SELECT'];
 	var resultFields = [];
 
-	for (var i=0; i < fields.length; i++)
+	for (var i=0, len = fields.length; i < len; i++)
 	{
 		var fieldAlias = fields[i];
 		var field = allowedFields[fieldAlias];
