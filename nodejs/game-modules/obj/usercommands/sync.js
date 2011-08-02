@@ -1,3 +1,7 @@
+var mithril = require('../../../mithril.js'),
+    async = require('async');
+
+
 exports.execute = function(state, p, cb)
 {
 	mithril.obj.getActorCollections(state, state.actorId, ['collectionId', 'parentId', 'collectionType', 'slotCount', 'maxWeight'], function(error, collections) {	// get player collections

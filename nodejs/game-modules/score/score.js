@@ -1,3 +1,6 @@
+var mithril = require('../../mithril.js'),
+    async = require('async');
+
 
 exports.userCommands = {
 	loadRanking: __dirname + '/usercommands/loadRanking.js',

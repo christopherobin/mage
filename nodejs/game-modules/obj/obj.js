@@ -1,3 +1,7 @@
+var mithril = require('../../mithril.js'),
+    async = require('async');
+
+
 var joins = {
 	collectionOwner:	{ sql: 'LEFT JOIN actor AS ? ON obj_collection.owner = ?.id' },
 	collectionObject:	{ sql: 'JOIN obj_collection_object AS ? ON obj_collection.id = ?.collection' },

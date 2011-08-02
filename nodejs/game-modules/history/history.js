@@ -1,10 +1,12 @@
-//Mithril history module, TF July 1 2011
+var mithril = require('../../mithril.js'),
+    async = require('async');
 
 
 exports.setup = function(state, cb)
 {
 	cb();
 };
+
 
 exports.addEvent = function(state, type, participants, propertyMap, cb)
 {								// ''	 []			   {}			(){}
@@ -45,6 +47,7 @@ exports.addEvent = function(state, type, participants, propertyMap, cb)
 	);
 };
 
+
 exports.getEvents = function(state, type, dates, participants, dataFilter, cb) //TODO: test the shit out of this.
 {							//		''    {f,t}	 [ida,idb..]
 	var eventsMap = {};
@@ -54,8 +57,8 @@ exports.getEvents = function(state, type, dates, participants, dataFilter, cb) /
 	var simpleWhere = null;
 	var filterCount = 0;
 
-	if(!participants) { participants = []; }
-	if(!dataFilter) { dataFilter = []; }
+	if (!participants) { participants = []; }
+	if (!dataFilter) { dataFilter = []; }
 
 	async.waterfall(
 		[
@@ -192,6 +195,7 @@ exports.getEvents = function(state, type, dates, participants, dataFilter, cb) /
 	);
 };
 
+
 exports.setProperties = function(state, eventId, properties, cb)
 {
 	var sql = 'INSERT INTO history_event_data VALUES';
@@ -219,39 +223,3 @@ exports.setProperties = function(state, eventId, properties, cb)
 	});
 };
 
-
-
-
-
-
-
-
-
-/*
-getEvents(state, type,  )
-
-
-var data = new mithril.core.propertyMap;
-data.add('place', 1, null, winnerId);
-data.add('place', 2, null, loserId);
-
-mithril.history.addEvent(state, 'pvp', [winnerId, loserId], data)
-mithril.history.getEvents(state, 'pvp', now-24h, now, [me, otherGuy])
-
-history_event
-	id
-	type
-	creationTime
-
-history_actor
-	eventId
-	actorId
-
-history_event_data
-	eventId
-	actorId	NULL
-	property
-	language
-	type
-	value
-*/

@@ -1,4 +1,6 @@
-var MySqlDatabase = require(__dirname + '/datasource-mysql.js').MySqlDatabase;
+var mithril = require('../mithril.js'),
+    async = require('async'),
+    MySqlDatabase = require(__dirname + '/datasource-mysql.js').MySqlDatabase;
 
 
 function DataSources(state)

@@ -2,7 +2,10 @@ global.mithril = this;
 
 exports.core = {};
 
-var path = require('path');
+var path = require('path'),
+    async = require('async'),
+    fs = require('fs'),
+    http = require('http');
 
 var gamePath = path.dirname(process.mainModule.filename);
 var rootPath = path.dirname(module.filename);
@@ -15,8 +18,6 @@ var paths = {
 };
 
 var shutdown = false;
-
-global.async = require('async');
 
 exports.core.paths = paths;
 exports.core.state = require(paths.lib + '/state.js');
@@ -111,8 +112,6 @@ exports.getConfig = function(path)
 
 exports.setup = function(pathConfig, cb)
 {
-	var fs = require('fs');
-
 	var config = JSON.parse(fs.readFileSync(pathConfig, 'utf8'));
 
 	exports.core.config = config;
@@ -253,7 +252,7 @@ exports.start = function()
 	exports.core.logger.debug('Starting HTTP service at http://' + exports.core.config.server.expose.host + ':' + exports.core.config.server.expose.port + '/');
 
 
-	exports.core.httpServer = require('http').createServer(function(request, response) {
+	exports.core.httpServer = http.createServer(function(request, response) {
 		// if we're shutting down, don't accept the request
 
 		if (shutdown)
