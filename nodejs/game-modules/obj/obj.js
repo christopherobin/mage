@@ -733,7 +733,7 @@ exports.getCollectionsByType = function(state, type, max, cb)
 
 	if (max)
 	{
-		query += ' LIMIT ' + parseInt(max);
+		query += ' LIMIT ' + (~~max);
 	}
 
 	state.datasources.db.getMany(query, [type], null, cb);

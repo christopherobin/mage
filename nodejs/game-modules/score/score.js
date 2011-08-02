@@ -14,22 +14,22 @@ function parseResolution(resolution)
 
 	if ((m = resolution.match(/^([1-9][0-9]*)d$/)))
 	{
-		return parseInt(m[1]) * 24 * 3600;
+		return ~~m[1] * 24 * 3600;
 	}
 
 	if ((m = resolution.match(/^([1-9][0-9]*)h$/)))
 	{
-		return parseInt(m[1]) * 3600;
+		return ~~m[1] * 3600;
 	}
 
 	if ((m = resolution.match(/^([1-9][0-9]*)m$/)))
 	{
-		return parseInt(m[1]) * 60;
+		return ~~m[1] * 60;
 	}
 
 	if ((m = resolution.match(/^([1-9][0-9]*)s?$/)))
 	{
-		return parseInt(m[1]);
+		return ~~m[1];
 	}
 
 	return 1;

@@ -8,7 +8,7 @@ exports.userCommands = {
 
 exports.getActor = function(state, id, cb)
 {
-	id = parseInt(id);
+	id = ~~id;
 
 	var query = 'SELECT creationTime FROM actor WHERE id = ?';
 	var params = [id];
