@@ -1,3 +1,8 @@
+// challenges when turning this into a package:
+// - global mithril is being used throughout our games, problem is solved when mithril is accessible by its name only.
+// - the mithril client's location is unknown, mithrilui would need to be made aware somehow, but i guess that could be done through a "custom" path in the config.
+// - the log path is now "GAME PATH / log", this should be configurable.
+
 global.mithril = this;
 
 exports.core = {};
@@ -21,10 +26,10 @@ var shutdown = false;
 
 exports.core.paths = paths;
 exports.core.state = require(paths.lib + '/state.js');
-exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
 exports.core.PropertyMap = require(paths.lib + '/propertyMap.js');
 exports.core.lib = {};
 exports.core.modules = {};
+exports.core.userCommandCenter = require(paths.lib + '/userCommandCenter.js');
 
 
 // available libraries and modules
@@ -88,6 +93,8 @@ exports.addModule = function(name, path)
 	modules.push([name, path]);
 };
 
+
+// configuration value shortcut function, returns null if not found.
 
 exports.getConfig = function(path)
 {
