@@ -134,10 +134,9 @@ window.mui = new function()
 			}
 
 			var parts = data.split(partSplit);
-			var len = parts.length;
 			var css = '';
 
-			for (var i=0; i < len; i++)
+			for (var i=0, len = parts.length; i < len; i++)
 			{
 				var part = parts[i];
 
@@ -181,8 +180,7 @@ window.mui = new function()
 			var cbs = loadedCbs[name];
 			if (cbs)
 			{
-				var len = cbs.length;
-				for (var i=0; i < len; i++)
+				for (var i=0, len = cbs.length; i < len; i++)
 				{
 					cbs[i](name);
 				}
