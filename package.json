@@ -13,11 +13,11 @@
 	},
 	"main": "lib/mithril",
 	"dependencies": {
-		"async": ">= 0.1.9",
-		"mysql": ">= 0.9.1",
-		"socket.io": ">= 0.7.6",
-		"uglify-js": ">= 1.0.6",
-		"compress-buffer": ">= 0.3.0"
+		"async": "0.1.9",
+		"mysql": "0.9.1",
+		"socket.io": "0.7.6",
+		"uglify-js": "1.0.6",
+		"compress-buffer": "0.3.0"
 	},
 	"repository": {
 		"type": "git",
