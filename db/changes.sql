@@ -511,5 +511,14 @@ CREATE TABLE `history_event_actor` (
 ENGINE = InnoDB;
 
 
+-- 2011-08-15: Some key and column length fixes.
+
+ALTER TABLE `npc` CHANGE `identifier` `identifier` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+ALTER TABLE `npc` ADD UNIQUE (`identifier`);
+ALTER TABLE `obj_class` DROP INDEX `name_UNIQUE`, ADD UNIQUE `name_UNIQUE` ( `name` );
+ALTER TABLE `gc_node` CHANGE `identifier` `identifier` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+ALTER TABLE `gc_node` DROP INDEX `identifier_UNIQUE`, ADD UNIQUE `identifier_UNIQUE` ( `identifier` )
+
+
 -- next change, add here.
 
