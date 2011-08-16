@@ -517,7 +517,24 @@ ALTER TABLE `npc` CHANGE `identifier` `identifier` VARCHAR( 50 ) CHARACTER SET u
 ALTER TABLE `npc` ADD UNIQUE (`identifier`);
 ALTER TABLE `obj_class` DROP INDEX `name_UNIQUE`, ADD UNIQUE `name_UNIQUE` ( `name` );
 ALTER TABLE `gc_node` CHANGE `identifier` `identifier` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
-ALTER TABLE `gc_node` DROP INDEX `identifier_UNIQUE`, ADD UNIQUE `identifier_UNIQUE` ( `identifier` )
+ALTER TABLE `gc_node` DROP INDEX `identifier_UNIQUE`, ADD UNIQUE `identifier_UNIQUE` ( `identifier` );
+
+
+-- 2011-08-16: Added a table to store data per GC node, per actor
+
+CREATE TABLE `gc_node_actor_data` (
+  `nodeId` INT UNSIGNED NOT NULL,
+  `actorId` INT UNSIGNED NOT NULL,
+  `property` VARCHAR(50) NOT NULL,
+  `language` VARCHAR(2) NOT NULL,
+  `type` ENUM('number','boolean','object','string') NOT NULL,
+  `value` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`nodeId`, `actorId`, `property`, `language`),
+  INDEX `fk_gc_node_actor_data_nodeId` (`nodeId` ASC),
+  INDEX `fk_gc_node_actor_data_actorId` (`actorId` ASC),
+  CONSTRAINT `fk_gc_node_actor_data_nodeId` FOREIGN KEY (`nodeId` ) REFERENCES `gc_node` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `gc_gc_node_actor_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
 
 
 -- next change, add here.
