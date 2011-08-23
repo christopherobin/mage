@@ -537,5 +537,18 @@ CREATE TABLE `gc_node_actor_data` (
 ENGINE = InnoDB;
 
 
+-- 2011-08-23: Collection observers
+
+CREATE TABLE `obj_collection_observer` (
+  `collectionId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`collectionId`, `actorId`) ,
+  INDEX `fk_obj_collection_observer_collectionId` (`collectionId` ASC) ,
+  INDEX `fk_obj_collection_observer_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_obj_collection_observer_collectionId` FOREIGN KEY (`collectionId` ) REFERENCES `obj_collection` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_obj_collection_observer_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
