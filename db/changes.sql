@@ -533,7 +533,7 @@ CREATE TABLE `gc_node_actor_data` (
   INDEX `fk_gc_node_actor_data_nodeId` (`nodeId` ASC),
   INDEX `fk_gc_node_actor_data_actorId` (`actorId` ASC),
   CONSTRAINT `fk_gc_node_actor_data_nodeId` FOREIGN KEY (`nodeId` ) REFERENCES `gc_node` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `gc_gc_node_actor_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+  CONSTRAINT `fk_gc_node_actor_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
