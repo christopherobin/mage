@@ -550,5 +550,36 @@ CREATE TABLE `obj_collection_observer` (
 ENGINE = InnoDB;
 
 
+-- 2011-08-24: Object class categories
+
+CREATE TABLE `obj_category` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `obj_category_data` (
+  `categoryId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`categoryId`, `property`, `language`) ,
+  INDEX `fk_obj_category_data_categoryId` (`categoryId` ASC) ,
+  CONSTRAINT `fk_obj_category_data_categoryId` FOREIGN KEY (`categoryId` ) REFERENCES `obj_category` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `obj_class_category` (
+  `classId` INT UNSIGNED NOT NULL ,
+  `categoryId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`classId`, `categoryId`) ,
+  INDEX `fk_obj_class_category_categoryId` (`categoryId` ASC) ,
+  INDEX `fk_obj_class_category_classId` (`classId` ASC) ,
+  CONSTRAINT `fk_obj_class_category_categoryId` FOREIGN KEY (`categoryId` ) REFERENCES `obj_category` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_obj_class_category_classId` FOREIGN KEY (`classId` ) REFERENCES `obj_class` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
