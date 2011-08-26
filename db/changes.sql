@@ -581,5 +581,25 @@ CREATE TABLE `obj_class_category` (
 ENGINE = InnoDB;
 
 
+-- 2011-08-25: SNS updates
+
+DROP TABLE `sns_relationrequest`;
+
+CREATE TABLE `sns_relationrequest` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(20) NOT NULL ,
+  `fromActorId` INT UNSIGNED NOT NULL ,
+  `toActorId` INT UNSIGNED NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_sns_relationrequest_fromActorId` (`fromActorId` ASC) ,
+  INDEX `fk_sns_relationrequest_toActorId` (`toActorId` ASC) ,
+  UNIQUE INDEX `unq_fromActorId_toActorId` (`fromActorId` ASC, `toActorId` ASC) ,
+  INDEX `keyType` (`type` ASC) ,
+  CONSTRAINT `fk_sns_relationrequest_fromActorId` FOREIGN KEY (`fromActorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_sns_relationrequest_toActorId` FOREIGN KEY (`toActorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
