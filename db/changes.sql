@@ -583,6 +583,8 @@ ENGINE = InnoDB;
 
 -- 2011-08-25: SNS updates
 
+DROP TABLE `sns_relationrequest`;
+
 CREATE TABLE `sns_relationrequest` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `type` VARCHAR(20) NOT NULL ,
