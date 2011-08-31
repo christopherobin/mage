@@ -601,5 +601,19 @@ CREATE TABLE `sns_relationrequest` (
 ENGINE = InnoDB;
 
 
+-- 2011-08-26: Shop data
+
+CREATE TABLE `shop_data` (
+  `shopId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NULL ,
+  PRIMARY KEY (`shopId`, `property`, `language`) ,
+  INDEX `fk_shop_data_shopId` (`shopId` ASC) ,
+  CONSTRAINT `fk_shop_data_shopId` FOREIGN KEY (`shopId` ) REFERENCES `shop` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
