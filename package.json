@@ -16,7 +16,7 @@
 		"async": "0.1.9",
 		"mysql": "0.9.1",
 		"socket.io": "0.8.2",
-		"uglify-js": "1.0.6",
+		"uglify-js": "1.0.7",
 		"less": "1.1.4",
 		"compress-buffer": "0.3.0"
 	},
