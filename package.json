@@ -1,7 +1,7 @@
 {
 	"name": "mithril",
 	"description": "Mithril game development platform for NodeJS",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -16,13 +16,15 @@
 		"async": "0.1.9",
 		"mysql": "0.9.1",
 		"socket.io": "0.8.2",
-		"uglify-js": "1.0.6",
+		"uglify-js": "1.0.7",
+		"less": "1.1.4",
 		"compress-buffer": "0.3.0"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Wizcorp/node-mithril.git"
+		"url": "https://github.com/Wizcorp/Mithril.git"
 	},
+	"private": true,
 	"licences": [
 		{
 			"type": "Private",
