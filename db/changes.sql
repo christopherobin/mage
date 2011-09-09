@@ -461,6 +461,199 @@ UPDATE `shop_item` SET `shopId` = 1;
 ALTER TABLE `shop_item` ADD FOREIGN KEY ( `shopId` ) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 
+-- 2011-06-24: GREE column name change, invitation storage
+
+ALTER TABLE `gree_user` CHANGE `viewerId` `greeUserId` INT( 10 ) UNSIGNED NOT NULL;
+
+CREATE TABLE `gree_invitation` (
+  `greeUserId` INT UNSIGNED NOT NULL ,
+  `invitedByGreeUserId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`greeUserId`),
+  INDEX `key_invitedByGreeUserId` (`invitedByGreeUserId` ASC) )
+ENGINE = InnoDB;
+
+
+-- 2011-07-01: History module refactored
+
+DROP TABLE `history_event_data`;
+DROP TABLE `history_event`;
+
+CREATE TABLE `history_event` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(255) NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `key_history_event_type` (`type`(10) ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `history_event_data` (
+  `eventId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  INDEX `fk_history_event_data_eventId` (`eventId` ASC) ,
+  INDEX `fk_history_event_data_actorId` (`actorId` ASC) ,
+  PRIMARY KEY (`eventId`, `actorId`, `property`, `language`) ,
+  CONSTRAINT `fk_history_event_data_eventId` FOREIGN KEY (`eventId` ) REFERENCES `history_event` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_history_event_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `history_event_actor` (
+  `eventId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`eventId`, `actorId`) ,
+  INDEX `fk_history_event_actor_eventId` (`eventId` ASC) ,
+  INDEX `fk_history_event_actor_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_history_event_actor_eventId` FOREIGN KEY (`eventId` ) REFERENCES `history_event` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_history_event_actor_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-08-15: Some key and column length fixes.
+
+ALTER TABLE `npc` CHANGE `identifier` `identifier` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+ALTER TABLE `npc` ADD UNIQUE (`identifier`);
+ALTER TABLE `obj_class` DROP INDEX `name_UNIQUE`, ADD UNIQUE `name_UNIQUE` ( `name` );
+ALTER TABLE `gc_node` CHANGE `identifier` `identifier` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+ALTER TABLE `gc_node` DROP INDEX `identifier_UNIQUE`, ADD UNIQUE `identifier_UNIQUE` ( `identifier` );
+
+
+-- 2011-08-16: Added a table to store data per GC node, per actor
+
+CREATE TABLE `gc_node_actor_data` (
+  `nodeId` INT UNSIGNED NOT NULL,
+  `actorId` INT UNSIGNED NOT NULL,
+  `property` VARCHAR(50) NOT NULL,
+  `language` VARCHAR(2) NOT NULL,
+  `type` ENUM('number','boolean','object','string') NOT NULL,
+  `value` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`nodeId`, `actorId`, `property`, `language`),
+  INDEX `fk_gc_node_actor_data_nodeId` (`nodeId` ASC),
+  INDEX `fk_gc_node_actor_data_actorId` (`actorId` ASC),
+  CONSTRAINT `fk_gc_node_actor_data_nodeId` FOREIGN KEY (`nodeId` ) REFERENCES `gc_node` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_gc_node_actor_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-08-23: Collection observers
+
+CREATE TABLE `obj_collection_observer` (
+  `collectionId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`collectionId`, `actorId`) ,
+  INDEX `fk_obj_collection_observer_collectionId` (`collectionId` ASC) ,
+  INDEX `fk_obj_collection_observer_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_obj_collection_observer_collectionId` FOREIGN KEY (`collectionId` ) REFERENCES `obj_collection` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_obj_collection_observer_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-08-24: Object class categories
+
+CREATE TABLE `obj_category` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
+ENGINE = InnoDB;
+
+CREATE TABLE `obj_category_data` (
+  `categoryId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`categoryId`, `property`, `language`) ,
+  INDEX `fk_obj_category_data_categoryId` (`categoryId` ASC) ,
+  CONSTRAINT `fk_obj_category_data_categoryId` FOREIGN KEY (`categoryId` ) REFERENCES `obj_category` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `obj_class_category` (
+  `classId` INT UNSIGNED NOT NULL ,
+  `categoryId` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`classId`, `categoryId`) ,
+  INDEX `fk_obj_class_category_categoryId` (`categoryId` ASC) ,
+  INDEX `fk_obj_class_category_classId` (`classId` ASC) ,
+  CONSTRAINT `fk_obj_class_category_categoryId` FOREIGN KEY (`categoryId` ) REFERENCES `obj_category` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_obj_class_category_classId` FOREIGN KEY (`classId` ) REFERENCES `obj_class` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-08-25: SNS updates
+
+DROP TABLE `sns_relationrequest`;
+
+CREATE TABLE `sns_relationrequest` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(20) NOT NULL ,
+  `fromActorId` INT UNSIGNED NOT NULL ,
+  `toActorId` INT UNSIGNED NOT NULL ,
+  `creationTime` INT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_sns_relationrequest_fromActorId` (`fromActorId` ASC) ,
+  INDEX `fk_sns_relationrequest_toActorId` (`toActorId` ASC) ,
+  UNIQUE INDEX `unq_fromActorId_toActorId` (`fromActorId` ASC, `toActorId` ASC) ,
+  INDEX `keyType` (`type` ASC) ,
+  CONSTRAINT `fk_sns_relationrequest_fromActorId` FOREIGN KEY (`fromActorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_sns_relationrequest_toActorId` FOREIGN KEY (`toActorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-08-26: Shop data
+
+CREATE TABLE `shop_data` (
+  `shopId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NULL ,
+  PRIMARY KEY (`shopId`, `property`, `language`) ,
+  INDEX `fk_shop_data_shopId` (`shopId` ASC) ,
+  CONSTRAINT `fk_shop_data_shopId` FOREIGN KEY (`shopId` ) REFERENCES `shop` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-08-31: Shop improvements
+
+ALTER TABLE `shop` DROP INDEX `name_UNIQUE`, ADD UNIQUE `name_UNIQUE` (`name`);
+ALTER TABLE `shop` CHANGE `name` `name` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+ALTER TABLE `shop` ADD `type` VARCHAR(255) NOT NULL;
+
+CREATE TABLE `shop_item_object_data` (
+  `itemObjectId` INT UNSIGNED NOT NULL,
+  `property` VARCHAR(30) NOT NULL,
+  `language` VARCHAR(2) NOT NULL,
+  `type` ENUM('number','boolean','object','string') NOT NULL,
+  `value` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`itemObjectId`, `property`, `language`),
+  INDEX `fk_shop_item_object_data_itemObjectId` (`itemObjectId` ASC),
+  CONSTRAINT `fk_shop_item_object_data_itemObjectId` FOREIGN KEY (`itemObjectId` ) REFERENCES `shop_item_object` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE TABLE `shop_item_shop` (
+  `shopId` INT UNSIGNED NOT NULL,
+  `itemId` INT UNSIGNED NOT NULL,
+  `sortIndex` INT UNSIGNED NULL,
+  PRIMARY KEY (`shopId`, `itemId`),
+  INDEX `fk_shop_item_shop_itemId` (`itemId` ASC),
+  INDEX `fk_shop_item_shop_shopId` (`shopId` ASC),
+  CONSTRAINT `fk_shop_item_shop_itemId` FOREIGN KEY (`itemId`) REFERENCES `shop_item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_shop_item_shop_shopId` FOREIGN KEY (`shopId`) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+INSERT INTO shop_item_shop SELECT shopId, id, sortIndex FROM shop_item;
+
+ALTER TABLE `shop_item` DROP FOREIGN KEY `fk_shop_item_shopId`;
+ALTER TABLE `shop_item` DROP FOREIGN KEY `fk_shop_item_currencyId`;
+ALTER TABLE `shop_item` ADD FOREIGN KEY (`currencyId`) REFERENCES `shop_currency` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `shop_item` DROP `shopId`, DROP `sortIndex`;
+
+ALTER TABLE `shop_purchase` ADD `shopId` INT UNSIGNED NOT NULL AFTER `forActorId`;
+ALTER TABLE `shop_purchase` ADD INDEX `fk_shop_purchase_shopId` (`shopId`);
+ALTER TABLE `shop_purchase` ADD FOREIGN KEY `fk_shop_purchase_shopId` (`shopId`) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
 
 -- next change, add here.
 
