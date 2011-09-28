@@ -655,5 +655,22 @@ ALTER TABLE `shop_purchase` ADD INDEX `fk_shop_purchase_shopId` (`shopId`);
 ALTER TABLE `shop_purchase` ADD FOREIGN KEY `fk_shop_purchase_shopId` (`shopId`) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 
+-- 2011-09-28: obj_class_actor_data
+
+CREATE TABLE `obj_class_actor_data` (
+  `classId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NULL ,
+  `value` VARCHAR(255) NULL ,
+  PRIMARY KEY (`classId`, `actorId`, `property`, `language`) ,
+  INDEX `fk_obj_class_actor_data_classId` (`classId` ASC) ,
+  INDEX `fk_obj_class_actor_data_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_obj_class_actor_data_classId` FOREIGN KEY (`classId` ) REFERENCES `obj_class` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_obj_class_actor_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
