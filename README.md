@@ -21,8 +21,6 @@ The compress-buffer dependency has some C-code in it, so it has to be built in o
 3. `cd mithril`
 4. `rm -rf node_modules`
 5. `nmod deps`
-6. `cd node_modules/compress-buffer`
-7. `./build.sh`
 
 And we're all done! You can now run your game.
 
