@@ -681,5 +681,24 @@ ALTER TABLE `obj_class_actor_data` CHANGE `type` `type` ENUM( 'number', 'boolean
 CHANGE `value` `value` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
 
 
+-- 2011-10-11: apple appstore integration
+
+CREATE TABLE `apple_appstore_payment` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  `shopPurchaseId` INT UNSIGNED NOT NULL ,
+  `appleTransactionId` VARCHAR(100) NOT NULL ,
+  `appleProductId` VARCHAR(100) NOT NULL ,
+  `status` ENUM('paid','handled') NOT NULL ,
+  `receipt` MEDIUMTEXT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `keyAppleTransactionId` (`appleTransactionId` ASC) ,
+  INDEX `fk_apple_appstore_payment_shopPurchaseId` (`shopPurchaseId` ASC) ,
+  INDEX `fk_apple_appstore_payment_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_apple_appstore_payment_shopPurchaseId` FOREIGN KEY (`shopPurchaseId` ) REFERENCES `shop_purchase` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_apple_appstore_payment_actorId`FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 -- next change, add here.
 
