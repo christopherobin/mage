@@ -672,5 +672,14 @@ CREATE TABLE `obj_class_actor_data` (
 ENGINE = InnoDB;
 
 
+-- 2011-10-11: dropping trade module, fixing obj_class_actor_data to NOT NULL columns
+
+DROP TABLE `trade_counteroffer`;
+DROP TABLE `trade_offer`;
+
+ALTER TABLE `obj_class_actor_data` CHANGE `type` `type` ENUM( 'number', 'boolean', 'object', 'string' ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL ,
+CHANGE `value` `value` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+
+
 -- next change, add here.
 
