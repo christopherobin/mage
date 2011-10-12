@@ -686,7 +686,7 @@ CHANGE `value` `value` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NU
 CREATE TABLE `apple_appstore_payment` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `actorId` INT UNSIGNED NOT NULL ,
-  `shopPurchaseId` INT UNSIGNED NOT NULL ,
+  `shopPurchaseId` INT UNSIGNED ,
   `appleTransactionId` VARCHAR(100) NOT NULL ,
   `appleProductId` VARCHAR(100) NOT NULL ,
   `status` ENUM('paid','handled') NOT NULL ,
