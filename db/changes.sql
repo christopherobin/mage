@@ -655,5 +655,39 @@ ALTER TABLE `shop_purchase` ADD INDEX `fk_shop_purchase_shopId` (`shopId`);
 ALTER TABLE `shop_purchase` ADD FOREIGN KEY `fk_shop_purchase_shopId` (`shopId`) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 
+-- 2011-10-14: Gm module tables, shop name to shop identifier
+
+CREATE  TABLE IF NOT EXISTS `gm` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `username` CHAR(16) NOT NULL ,
+  `password` CHAR(40) NOT NULL ,
+  PRIMARY KEY (`actor`, `username`) ,
+  INDEX `fk_gm_actor` (`actor` ASC) ,
+  UNIQUE (`username`) ,
+  CONSTRAINT `fk_gm_actor`
+    FOREIGN KEY (`actor` )
+    REFERENCES `actor` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+CREATE  TABLE IF NOT EXISTS `gm_data` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` CHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`actor`, `property`, `language`) ,
+  INDEX `fk_gm_data_actor` (`actor` ASC) ,
+  CONSTRAINT `fk_gm_data_actor`
+    FOREIGN KEY (`actor` )
+    REFERENCES `gm` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+ALTER TABLE `shop` CHANGE `name` `identifier` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+
 -- next change, add here.
 

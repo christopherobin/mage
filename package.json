@@ -18,7 +18,8 @@
 		"socket.io": "0.8.2",
 		"uglify-js": "1.0.7",
 		"less": "1.1.4",
-		"compress-buffer": "0.3.0"
+		"compress-buffer": "0.3.0",
+		"node-uuid": "1.2.0"
 	},
 	"repository": {
 		"type": "git",
