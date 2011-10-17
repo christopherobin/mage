@@ -14,7 +14,6 @@ In your game project, where you should have a package.json, execute the followin
 
 The "nmod deps" command will have recreated a directory called "node_modules". We now have to install Mithril there.
 After cloning the Mithril repository, we'll install Mithril's dependencies, the same way we installed the game's dependencies.
-The compress-buffer dependency has some C-code in it, so it has to be built in order to be usable.
 
 1. `cd node_modules`
 2. `git clone --branch develop git@github.com:Wizcorp/Mithril.git mithril` or `git clone --branch develop https://github.com/Wizcorp/Mithril.git mithril`
@@ -24,6 +23,28 @@ The compress-buffer dependency has some C-code in it, so it has to be built in o
 
 And we're all done! You can now run your game.
 
-## Using Mithril
+## Versions
 
+Mithril should generally only be used from the master branch. Version numbering is being applied using the following logic.
+
+	Major.Minor.Build
+
+### The meaning of version change
+
+When a new version is released this may introduce backwards compatibility (BC) issues.
+
+__Major version change__
+
+Backwards compatibility break, and radical API changes/improvements should be expected.
+A how-to-upgrade and why-to-upgrade guide will be provided to assist with the porting of existing applications.
+
+__Minor version change__
+
+Some backwards compatibility break should be expected.
+These will be announced through the Changelog file.
+
+__Build version change__
+
+This should not create BC issues, but may expose new APIs and fix existing bugs.
+These will be announced through the Changelog file.
 
