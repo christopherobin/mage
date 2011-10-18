@@ -31,7 +31,8 @@ Mithril should generally only be used from the master branch. Version numbering 
 
 ### The meaning of version change
 
-When a new version is released this may introduce backwards compatibility (BC) issues.
+When a new version is released this may introduce backwards compatibility (BC) issues. Whenever a feature has been planned
+to be removed from Mithril, using it will trigger a console warning 'X has been deprecated, and should no longer be used'.
 
 __Major version change__
 
@@ -40,7 +41,7 @@ A how-to-upgrade and why-to-upgrade guide will be provided to assist with the po
 
 __Minor version change__
 
-Some backwards compatibility break should be expected.
+Some backwards compatibility breaks should be expected.
 These will be announced through the Changelog file.
 
 __Build version change__
