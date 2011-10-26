@@ -726,7 +726,7 @@ CREATE  TABLE IF NOT EXISTS `gm_data` (
   INDEX `fk_gm_data_actor` (`actor` ASC) ,
   CONSTRAINT `fk_gm_data_actor`
     FOREIGN KEY (`actor` )
-    REFERENCES `gm` (`id` )
+    REFERENCES `gm` (`actor` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
