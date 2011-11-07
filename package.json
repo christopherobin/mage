@@ -6,7 +6,7 @@
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
 		"mail": "info@wizcorp.jp",
-		"web": "http://github.com/Wizcorp/Mithril/issues"
+		"url": "http://github.com/Wizcorp/Mithril/issues"
 	},
 	"engines": {
 		"node": ">=0.4.9"
@@ -15,10 +15,13 @@
 	"dependencies": {
 		"async": "0.1.9",
 		"mysql": "0.9.1",
-		"socket.io": "0.8.2",
 		"uglify-js": "1.0.7",
+		"compress-buffer": "0.4.2",
 		"less": "1.1.4",
-		"compress-buffer": "0.3.2",
+		"msgpack-0.4": "0.1.4",
+		"node-bj": "0.0.3bogeyatsix-1.0",
+		"zmq": "1.0.2",
+		"memcached": "0.0.5",
 		"node-uuid": "1.2.0"
 	},
 	"repository": {
