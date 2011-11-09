@@ -5,10 +5,12 @@ $js(custom.libgame)
 $js(page.views)
 
 var app;
-var cfg;
 
-window.mithril.mui.onloaded('main', function () {
+window.mithril.mui.on('main.loaded', function () {
 	var gameNodeLocation = window.mithrilOrigin || '';
+
+	window.mithril.mui.renderPage('main');
+	window.mithril.mui.displayPage('main');
 
 	$('.btn_toview').click(function () {
 		var view = $(this).attr('data-target');
@@ -40,7 +42,6 @@ window.mithril.mui.onloaded('main', function () {
 					}
 
 
-
 					app = new Tool({ width: window.innerWidth, height: window.innerHeight });
 
 					mithril.start(gm.id, gm.session, function(error) {
@@ -68,34 +69,5 @@ window.mithril.mui.onloaded('main', function () {
 	document.getElementById('login').addEventListener('click', function() {
 		login();
 	});
-
-	function createGm() {
-		var rights = ['gc', 'obj'];
-		var params = {
-			username: $('#user').val(),
-			password: $('#password').val(),
-			rights: rights
-		};
-
-		mithril.gm.createGm(params, function (msg) { alert(msg); });
-	}
-
-	function mithrilLogin() {
-		var params = {
-			username: document.getElementById('user').value,
-			password: document.getElementById('password').value
-		};
-		console.log(params.username, params.password);
-
-		mithril.gm.login(params, function (response) {
-			mithril.start(response.id, response.session, function(error) {
-				if (error) {
-					serverstate.textContent = JSON.stringify(error);
-				} else {
-					serverstate.textContent = 'ready';
-				}
-			});
-		});
-	}
 });
 
