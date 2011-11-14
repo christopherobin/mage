@@ -23,7 +23,7 @@ Some smaller new changes:
 - Ability to retry a user command. Responses are cached on the server, so a retry will correctly yield the previous response.
 - Custom server-side modules can be referred to with a relative path (eg: "./modules/quest").
 
-BC incompatibility:
+BC breaks:
 
 - The current working directory is now the path of the first JS-file, so the reference to the config file will most likely have to be adjusted.
 - Command centers (multi) are now created per package.
