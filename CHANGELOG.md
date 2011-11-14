@@ -12,6 +12,7 @@ Version 0.2.0 adds some long awaited features.
 - Improved build system that now allows for $tags(even.in.embedded.files).
 - Integration with Memcached/Membase. Currently applied only to session management.
 - Improved error handling and IO events.
+- Magic data types (in particular: timed values/numbers).
 
 Some smaller new changes:
 
