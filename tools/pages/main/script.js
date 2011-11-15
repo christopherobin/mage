@@ -1,7 +1,6 @@
 $js(mithril.client.html5)
 $js(custom.libtool)
 $js(custom.libsystem)
-$js(custom.libgame)
 $js(page.views)
 
 var app;
