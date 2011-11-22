@@ -1,5 +1,158 @@
 # Changelog
 
+## v0.3.0
+
+Version 0.3.0 adds a new build system. It is extremely flexible and customizable.
+
+### Changes:
+
+- When serverCache is enabled, all build targets are built before the HTTP server is opened up. This prevents users from hammering the server when it's not ready yet.
+- The builder is really a framework that allows for many different builders to cooperate. These builders share knowledge on contexts, parsers and post processors.
+- Since less and uglify are now supposed to be provided by the game developer, Mithril no longer has these dependencies. You will have to add these to your game's package.json file.
+- The "mithrilui" module has been completely replaced.
+
+#### Inline build targets
+
+Inline build targets are formatted as: $builder.context(key)
+This may optionally be followed by a semicolon. Also, the key may be surrounded by single or double quotes.
+
+### New concepts:
+
+#### Builders
+
+Builders are libraries that build files and data.
+
+Mithril comes with a number of builders pre-installed:
+- file (reading from a file path)
+- dir (reads from a directory)
+- path (reads a file or a directory)
+- pathlist (reads from a list of files and/or directories)
+- filecontent (builds the contents of a file)
+- web (builds Mithril pages and manifest files)
+- html5client (builds the Mithril client for HTML5)
+- cfg (outputs configuration values)
+
+#### Contexts
+
+Builders can implement support for various contexts. Contexts may have associated file extensions and mimetypes.
+Pre-installed contexts are:
+
+- html (.html, .htm: text/html; charset=utf8)
+- css (.css: text/css; charset=utf8)
+- js (.js: text/javascript; charset=utf8)
+- manifest (text/cache-manifest; charset=utf8)
+- mithrilpage (text/mithrilpage; charset=utf8)
+- url (eg: $web.url(manifest) will output the URL to a generated manifest file)
+
+#### Parsers
+
+Based on a file extension, they can parse a file and turn them into a known format, to be embedded into other files.
+Current use case: less (to turn .less files into css).
+Game developers are excpeted to register these themselves.
+
+#### Post processors
+
+These further process a built target. Current use cases: css and javascript minification.
+Game developers are excpeted to register these themselves.
+
+### Examples:
+
+#### Adding an extension and associated parser
+
+`
+mithril.core.app.contexts.get('css').addFileExtensions(['less'], function (filePath, data, cb) {
+	var path = require('path');
+
+	var fileDir = path.dirname(filePath);
+	var fileName = path.basename(filePath);
+
+	var less = require('less');
+	var options = { paths: [fileDir], filename: fileName };
+
+	try {
+		var parser = new less.Parser(options);
+		parser.parse(data, function (error, tree) {
+			if (error) {
+				mithril.core.logger.error(error);
+				return cb(error);
+			}
+
+			cb(null, tree.toCSS());
+		});
+	} catch (error) {
+		mithril.core.logger.error(error);
+		cb(error);
+	}
+});
+`
+
+### Adding a post processor
+
+`
+mithril.core.app.contexts.get('js').addPostProcessor('minify', function (data, cb) {
+	mithril.core.logger.debug('Minifying JS contents through "uglify".');
+
+	var uglify = require('uglify-js');
+
+	try {
+		var ast = uglify.parser.parse(data);
+		ast = uglify.uglify.ast_mangle(ast);
+		ast = uglify.uglify.ast_squeeze(ast);
+		data = uglify.uglify.gen_code(ast);
+
+		cb(null, data);
+	} catch (error) {
+		mithril.core.logger.error('Error while minifying:', error);
+		cb(error);
+	}
+});
+`
+
+### Setting up pages
+
+`
+var WebApp = mithril.core.app.web.WebApp;
+
+var gameApp = new WebApp('game', { languages: ['EN'] });
+gameApp.setIndexPage('../../www/pages/loader');
+gameApp.addPage('landing', '../../www/pages/landing', { assetmap: true });
+gameApp.addPage('main', '../../www/pages/main');
+
+var manifest = gameApp.createManifest();
+manifest.add('mui://img/ui/spinner');
+`
+
+### Configuration options
+
+The "mithrilui" entry has to be completely removed. Renamed the "app" entry to "apps", and make it similar to the following:
+
+`
+"apps": {
+	"game": {
+		"name": "My awesome game",
+		"url": {
+			"public": "http://myawesomegame.com"
+		},
+		"delivery": {
+			"serverCache": true,
+			"useManifest": false,
+			"compress": true,
+			"postprocessors": {
+				"css": "minify",
+				"js": "minify"
+			}
+		}
+	}
+}
+`
+Some notes:
+- If you set up a manifest, but do not set useManifest to true, it will not be exposed to the HTTP server.
+- serverCache is built at Mithril startup. During development, it makes a lot of sense to keep this set to false.
+- compress is gzip compression of the output.
+- Any amount of postprocessors may be registered by developers. The configuration decides which are actually applied.
+- postprocessors may be arrays, in order to apply multiples. Eg: "css": ["tidy", "minify"]
+
+
 ## v0.2.0
 
 Version 0.2.0 adds some long awaited features.
