@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.3.1
+
+Asset maps are now on a per-application basis.
+
+`
+// creating an asset map:
+
+var assets = mithril.assets.createAssetMap();
+
+// creating helper functions to register files:
+
+assets.regImg   = assets.regFile.bind(assets, 'img');
+assets.regFont  = assets.regFile.bind(assets, 'font');
+assets.regAudio = assets.regFile.bind(assets, 'audio');
+assets.regHtml  = assets.regFile.bind(assets, 'html');
+
+// adding the asset map to an app's page:
+
+myApp.addPage('myPage', '../../www/pages/myPage', { assetMap: assets });
+`
+
 ## v0.3.0
 
 Version 0.3.0 adds a new build system. It is extremely flexible and customizable.
