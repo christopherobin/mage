@@ -23,6 +23,8 @@ Has changed into:
 
 `var mod = mithril.registerModule($html5client('module.myModule.construct'));`
 
+The module will now automatically have a function wrapper for each exposes user command.
+
 
 ## v0.3.1
 
