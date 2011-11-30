@@ -10,6 +10,10 @@ On the server, we now have to add one line of code per user command:
 
 `exports.params = ['each', 'parameter', 'name'];`
 
+Which is now also reflected in the execute function:
+
+`exports.execute = function (state, each, parameter, name, cb) { ... }`
+
 On the client, this:
 
 `var mod = {}
