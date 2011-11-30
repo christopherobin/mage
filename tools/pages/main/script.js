@@ -1,14 +1,12 @@
 $js(mithril.client.html5)
 $js(custom.libtool)
 $js(custom.libsystem)
-$js(page.views)
 
 var app;
 
 window.mithril.mui.on('main.loaded', function () {
 	var gameNodeLocation = window.mithrilOrigin || '';
 
-	window.mithril.mui.renderPage('main');
 	window.mithril.mui.displayPage('main');
 
 	$('.btn_toview').click(function () {
@@ -40,8 +38,8 @@ window.mithril.mui.on('main.loaded', function () {
 						alert('Could not login. ' + error);
 					}
 
-
-					app = new Tool({ width: window.innerWidth, height: window.innerHeight });
+					// pass options into tool constructor i.e. screen, language
+					app = new Tool({ screen: { width: window.innerWidth, height: window.innerHeight } });
 
 					mithril.start(gm.id, gm.session, function(error) {
 						if (error) {
@@ -53,6 +51,7 @@ window.mithril.mui.on('main.loaded', function () {
 								var loginEle = document.getElementById('loginContainer');
 								loginEle.style.display = 'none';
 								$js(page.viewsetup)
+								$js(page.views)
 								app.views.change('tool_dashboard');
 							});
 						}

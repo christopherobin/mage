@@ -1,6 +1,7 @@
-function Tool(screenSize) {
-	var _this = this;
-	this.screenSize = screenSize;
+function Tool(options) {
+	var _this       = this;
+	this.screenSize = options.screen;
+	this.language   = options.language || 'EN';
 	
 
 	this.init = function (cb) {
