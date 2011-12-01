@@ -32,6 +32,13 @@ The module will now automatically have a function wrapper for each exposes user 
 The datatypes libraries are now externalized and have been moved out of `$html5client(core)` and into its own `$html5client(datatypes)`,
 so please add this to one of your page scripts, preferably right before `$html5client(io)`.
 
+### Starting up the mithril client
+
+What used to be `mithril.setup(config);` has been renamed to `mithril.configure(config);`.
+Also, `mithril.start(myCallback);` is now `mithril.setup(myCallback);`, which may be called any amount of times.
+The mithril.setup API sets up any not-yet-set-up modules. So every time you add a bunch of modules (usually a chunk of them per page),
+you'll want to call mithril.setup.
+
 
 ## v0.3.1
 
