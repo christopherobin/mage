@@ -39,6 +39,12 @@ Also, `mithril.start(myCallback);` is now `mithril.setup(myCallback);`, which ma
 The mithril.setup API sets up any not-yet-set-up modules. So every time you add a bunch of modules (usually a chunk of them per page),
 you'll want to call mithril.setup.
 
+### The loader
+
+The loader's setup parameters have changed. It no longer requires the baseUrl, language and appName parameters, so you have to remove them.
+Only the pages array remains.
+`window.mithril.loader.setup(pages);`
+
 
 ## v0.3.1
 
