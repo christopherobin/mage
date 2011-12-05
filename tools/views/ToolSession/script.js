@@ -39,7 +39,7 @@
 	$('.deleteGmBtn').live('click', function () {
 		var gm = $(this).parents('.gmHolder');
 		var id = gm.attr('data-id');
-		mithril.gm.deleteGm({ id: id }, function (error) {
+		mithril.gm.deleteGm(id, function (error) {
 			if (!error) {
 				gm.remove();
 				removeGm(id);
@@ -50,7 +50,6 @@
 	$('.editGmBtn').live('click', function (e) {
 		var gm          = $(this).parents('.gmHolder');
 		var id          = gm.attr('data-id');
-		var params      = {};
 		var rights      = [];
 		var newPass     = gm.find('.newGmPassword').val();
 		var confirmPass = gm.find('.confirmGmPassword').val();
@@ -58,24 +57,22 @@
 		gm.find('.error').remove();
 
 		if (newPass || confirmPass) {
-			if (newPass == confirmPass) {
-				params.password = newPass;
-			} else {
+			if (newPass !== confirmPass) {
 				gm.find('.confirmGmPassword').after('<div class="error">Passwords don\'t match.</div>');
 				e.preventDefault();
 				return false;
 			}
+		} else {
+			newPass = null;
 		}
 
 		gm.find('.gmRight:checked').each(function () {
 			rights.push($(this).val());
 		});
 
-		params.rights = rights;
-		params.actor  = id;
-		mithril.gm.editGm(params, function (error) {
+		mithril.gm.editGm(id, newPass, rights, function (error) {
 			if (!error) {
-				gmsMap[id].data.rights = params.rights;
+				gmsMap[id].data.rights = rights;
 				var updated = $('<div class="updated" style="display: none;">Saved!</div>');
 				gm.find('.dialog').append(updated);
 				updated.toggle(300);
@@ -118,7 +115,7 @@
 			editDlg[0].style.display = 'none';
 
 			// Load player data
-			mithril.player.getPlayerData({ actorId: actorId }, function (error, data) {
+			mithril.player.getPlayerData(actorId, function (error, data) {
 				if (error)
 					return alert('Could not retrieve player data.');
 
@@ -214,15 +211,12 @@
 			}
 		}
 
-		var params = {
-			username: document.getElementById('gmUsername').value,
-			password: document.getElementById('gmPassword').value,
-			rights: rights
-		};
+		var username = document.getElementById('gmUsername').value;
+		var password = document.getElementById('gmPassword').value;
 
-		mithril.gm.createGm(params, function (error, id) {
-			addToList(ul_gmList, { id: id, username: params.username });
-			gmsMap[id] = { actor: id, username: params.username, data: { rights: rights } };
+		mithril.gm.createGm(username, password, rights, function (error, id) {
+			addToList(ul_gmList, { id: id, username: username });
+			gmsMap[id] = { actor: id, username: username, data: { rights: rights } };
 			gmsArr.push(gmsMap[id]);
 			$(dlg_gm).hide(300);
 		});
@@ -239,16 +233,13 @@
 
 	$(btn_confirmPlayer).click(function () {
 		var username = $('#playerUsername').val();
-		var params = {
-			name: username
-		};
 
-		mithril.gm.createNewPlayer(params, function (error, actor) {
+		mithril.gm.createNewPlayer(username, function (error, actor) {
 			if (error) {
 				console.warn('Could not create new player.');
 			} else {
 				if (actor != undefined && actor != null) {
-					addToList(ul_playerList, { actor: actor, data: params });
+					addToList(ul_playerList, { actor: actor, data: { name: username } });
 				} else {
 					console.warn('actorId not returned, please make sure the actorId is returned on player creation.');
 				}
