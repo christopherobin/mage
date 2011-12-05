@@ -1,0 +1,38 @@
+<div id="toolSession">
+	<div id="gmListHolder" class="listHolder">
+		<div class="listTitle">GM List</div>
+
+		<ul id="gmList" class="list"></ul>
+
+		<button id="addGmBtn">Add GM</button>
+		<div id="gmDialog" class="dialog" style="display: none;">
+			<div class="field"><div class="dialogLabel">Username</div><input type="text" id="gmUsername" /></div>
+			<div class="field"><div class="dialogLabel">Password</div><input type="password" id="gmPassword" /></div>
+			<div class="field"><div class="gmRightsList"></div></div>
+			<button id="confirmAddGm">Add</button><button id="cancelAddGm">Cancel</button>
+		</div>
+	</div>
+
+	<div id="playerListHolder" class="listHolder">
+		<div class="listTitle">Player List</div>
+
+		<ul id="playerList" class="list"></ul>
+
+		<button id="addPlayerBtn">Add Player</button>
+		<div id="playerDialog" class="dialog" style="display: none;">
+			<div class="field"><div class="dialogLabel">Username</div><input type="text" id="playerUsername" /></div>
+			<button id="confirmAddPlayer">Add</button><button id="cancelAddPlayer">Cancel</button>
+		</div>
+	</div>
+</div>
+
+<div id="editGmDialog" class="dialog" style="display: none;">
+	<div class="field"><div class="dialogLabel longLabel">New Password</div><input type="password" class="newGmPassword" /></div>
+	<div class="field"><div class="dialogLabel longLabel">Confirm Password</div><input type="password" class="confirmGmPassword" /></div>
+	<div class="field"><div class="gmRightsList"></div></div>
+	<button class="editGmBtn">Edit</button><button class="deleteGmBtn">Delete</button>
+</div>
+
+<div id="editPlayerDialog" class="dialog ldialog" style="display: none;">
+	<button class="editPlayerBtn">Edit</button><button class="deletePlayerBtn">Delete</button>
+</div>
