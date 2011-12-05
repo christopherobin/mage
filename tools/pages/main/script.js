@@ -1,19 +1,44 @@
-$js(mithril.client.html5)
-$js(custom.libtool)
-$js(custom.libsystem)
+$html5client(io);
+$html5client(datatypes);
+$html5client(module.assets);
+$html5client(module.session);
+$html5client(module.shop);
+$html5client(module.giraffe);
+$html5client(module.gc);
+$html5client(module.gm);
+$html5client(module.sns);
+$html5client(module.actor);
+$html5client(module.player);
+$html5client(module.persistent);
+$html5client(module.obj);
+$html5client(module.msg);
+$html5client(module.npc);
+
+$file.bin("../../libtool/jquery-1.7.js");
+$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.min.js");
+$file.bin("../../libtool/jquery.contextMenu.js");
+$file.bin("../../libtool/jquery.jsPlumb-1.3.3-all.js");
+$file.bin("../../libtool/tool.js");
+
+$dir("../../libtool/general");
+$file("../../libtool/viewport/viewport.js");
+
+
+function loadViews() {
+	$toolviewport(all);
+}
 
 var app;
 
-window.mithril.mui.on('main.loaded', function () {
-	var gameNodeLocation = window.mithrilOrigin || '';
-
-	window.mithril.mui.displayPage('main');
+window.mithril.loader.on('main.loaded', function () {
+	window.mithril.loader.displayPage('main');
 
 	$('.btn_toview').click(function () {
 		var view = $(this).attr('data-target');
-		app.views.change(view);
+		window.viewport.change(view);
 	});
 
+	// TODO -- io is now loaded whenever I want, so I don't need this ajax stuff anymore
 	function login() {
 		var params = 'username=' + document.getElementById('user').value + '&password=' + document.getElementById('password').value;	// TODO: input checking
 
@@ -27,38 +52,43 @@ window.mithril.mui.on('main.loaded', function () {
 					return;
 				} else if (xhr.responseText) {
 
-					var options = { origin: gameNodeLocation };
+					var options = { io: { defaultHooks: ['mithril.session'] } };
 					var mithril = window.mithril;
-					mithril.setup(options);
+					mithril.configure(options);
 
-					var gm;
+					var newSession;
 					try {
-						gm = JSON.parse(xhr.responseText);
+						newSession = xhr.responseText;
 					} catch (error) {
 						alert('Could not login. ' + error);
 					}
 
-					// pass options into tool constructor i.e. screen, language
-					app = new Tool({ screen: { width: window.innerWidth, height: window.innerHeight } });
 
-					mithril.start(gm.id, gm.session, function(error) {
+					app = new Tool({ width: window.innerWidth, height: window.innerHeight });
+
+					mithril.session.setSessionKey(newSession);
+
+					mithril.io.on('io.error', function (path, error) {
+						console.error(error);
+					});
+
+					mithril.setup(function(error) {
 						if (error) {
 							console.log(JSON.stringify(error));
 						} else {
 							console.log('ready');
 
 							app.init(function () {
+								loadViews();
 								var loginEle = document.getElementById('loginContainer');
 								loginEle.style.display = 'none';
-								$js(page.viewsetup)
-								$js(page.views)
-								app.views.change('tool_dashboard');
+								window.viewport.change('tool_dashboard');
 							});
 						}
 					});
 				}
 			}
-		}
+		};
 
 		xhr.open('POST', '/gmlogin', true);
 		xhr.send(params);

@@ -1,5 +1,5 @@
 PACKAGE = Mithril
 
-lint:
-	nodelint --config ./nodelint.cfg `find ./lib -name "*.js"`
+hint:
+	jshint `find ./lib -name "*.js"` --config ./jshint.cfg
 

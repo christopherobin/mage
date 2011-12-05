@@ -1,0 +1,249 @@
+#toolGacha {
+	margin: 10px 10px;
+	font-family: 'Arial';
+	text-align: left;
+	background: white;
+	vertical-align: top;
+	display: inline-block;
+	width: 77%;
+}
+
+body {
+	select {
+		font-family: 'Arial';
+		font-size: 12px;
+		border: none;
+		margin: 2px;
+		background: #EEEDED;
+		display: inline-block;
+	}
+
+	.hour, .minute {
+		width: 25px;
+		padding: 2px;
+	}
+}
+
+#cardList {
+	color: black;
+	text-align: left;
+
+	li {
+		z-index: 10000;
+	}
+}
+
+.cardListItem {
+	background: white;
+}
+
+.ui-selecting {
+	background: #ccc;
+}
+
+.ui-selected {
+	background: gray;
+	border: 1px solid black;
+	font-weight: bold;
+	color: white;
+}
+
+#tabs div {
+	display: inline;
+	border: 1px solid black;
+	margin: 5px 10px;
+}
+
+.stage {
+	border: 1px solid black;
+	height: 95%;
+	margin: 5px 10px;
+}
+
+.collection {
+	min-height: 100px;
+	border: 1px dotted black;
+	margin: 10px 10px;
+	padding: 10px;
+}
+
+#toolBox {
+	font-size: 12px;
+	width: 250px;
+	border: 1px solid black;
+	background-color: white;
+	z-index: 1000;
+	display: inline-block;
+}
+
+#toolBoxTabs {
+	font-size: 16px;
+	color: white;
+	background-color: black;
+
+	.checkAll {
+		font-size: 10px;
+		vertical-align: middle;
+	}
+}
+
+#toolBoxTabs div {
+	display: inline-block;
+	padding: 5px;
+	vertical-align: top;
+}
+
+#toolBoxTabs div.active {
+	background-color: white;
+	color: black;
+}
+
+.toolLists ul {
+	padding: 0;
+	margin: 0;
+}
+
+.toolLists li {
+	list-style: none;
+	border: 1px dotted black;
+	margin: 5px;
+	padding: 5px;
+	width: 200px;
+}
+
+.cardRarity {
+	font-size: 10px;
+}
+
+.card {
+	background-color: white;
+	display: inline-block;
+	border: 1px solid black;
+	font-size: 12px;
+	width: 180px;
+	margin: 10px 5px;
+	color: black;
+}
+
+.cardIdLabel {
+	margin: 5px 0 3px 3px;
+}
+
+.booster {
+	background-color: white;
+	display: inline-block;
+	border: 1px solid black;
+	font-size: 12px;
+	width: 180px;
+	margin: 10px 5px;
+	color: black;
+}
+
+.card button, .booster button {
+	margin: 0;
+	font-size: 10px;
+}
+
+.cardData {
+	margin: 5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.boosterData {
+	margin: 5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	input {
+		width: 180px;
+	}
+}
+
+.removeBtn, .minBtn {
+	float: right;
+	padding: 0 3px;
+}
+
+.draggable-active {
+	-webkit-box-shadow: blue 0px 0px 30px;
+}
+
+.draggable-hover {
+	background-color: blue;
+}
+
+#filterCards {
+	float: right;
+}
+
+.gachaRate {
+	width: 50px;
+	float: right;
+}
+
+.boosterWeight {
+	width: 50px;
+}
+
+#gachaPriority {
+	width: 50px;
+}
+
+#boosterDetail {
+	position: absolute;
+	background: white;
+	border: 1px solid black;
+	min-height: 100px;
+	width: 900px;
+	margin-left: 11px;
+	z-index: 2000;
+}
+
+.boosterRow {
+	border: 1px dotted black;
+	margin: 10px 5px;
+	min-height: 60px;
+}
+
+.actions {
+	color: white;
+}
+
+.actions .name {
+	margin-left: 10px;
+}
+
+.boosterRow .removeBtn {
+	font-size: 10px;
+}
+
+.curBooster {
+	-webkit-box-shadow: darkorange 0px 0px 30px;
+}
+
+.actions {
+	background-color: black;
+}
+
+.label {
+	background-color: black;
+	color: white;
+	padding-left: 10px;
+}
+
+.from, .to {
+	display: inline-block;
+}
+
+.from .calendar, .to .calendar {
+	width: 75px;
+}
+
+.interval, .recurrence {
+	border-bottom: 1px dotted black;
+	margin: 5px;
+	padding: 5px;
+}

@@ -1,32 +1,24 @@
-$js(mithril.mithrilui.loader)
+$html5client(core);
+$html5client(loader);
 
-(function () {
+(function (loader) {
 
-	var baseUrl = window.location.pathname;
-	var packageName = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1);
+	var pages = ['main'];
 
-	window.mithrilOrigin = 'http://$cfg(server.expose.host):$cfg(server.expose.port)';
+	loader.setup(pages);
 
-	var m = /pages=(.+?)(&|$)/.exec(window.location.hash);
-	if (!m || !m[1]) {
-		return error('No page specified.');
-	}
+	loader.on('error', function () {
+		alert('Fatal error');
+	});
 
-	var pages = decodeURIComponent(m[1]).split(',');
+	loader.on('offline', function () {
+		console.warn('offline');
+	});
 
-	var language;
+	loader.on('online', function () {
+		console.warn('online');
+	});
 
-	m = /language=(.+?)(&|$)/.exec(window.location.search);
-	if (m[1]) {
-		language = decodeURIComponent(m[1]);
-	}
+	loader.start();
 
-	window.mithril.mui.setup(language, baseUrl, packageName, pages);
-
-	window.mithril.mui.start();
-
-	// TODO: change all the above into:
-	// language, baseUrl, packagename are no longer needed, just pages is good
-	// window.mithril.loader.setup(['my', 'page', 'names']);
-	// window.mithril.loader.start();
-}());
+}(window.mithril.loader));

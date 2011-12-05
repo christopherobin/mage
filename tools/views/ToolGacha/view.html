@@ -1,0 +1,90 @@
+<div id="toolGacha">
+<!--
+	<div id="tabs">
+		<div data-id="collections">Collections</div>
+		<div data-id="all">All Cards</div>
+		<div data-id="timeline">Timeline</div>
+		<div data-id="recurring">Recurring</div>
+	</div>
+-->
+	<div data-id="collections" class="stage">
+		<div class="actions">
+			<button class="addBtn" data-id="addCollection">Add Collection</button>
+		</div>
+		<div class="content collectionStage"></div>
+	</div>
+
+	<div data-id="all" class="stage" style="display: none;">
+		<div class="actions">
+			<button class="addBtn" data-id="addGacha">Add Gacha</button>
+		</div>
+		<div class="content gachaStage">
+		</div>
+	</div>
+
+	<div data-id="timeline" class="stage" style="display: none;">
+	timeline
+	</div>
+
+	<div data-id="recurring" class="stage" style="display: none;">
+	recurring
+	</div>
+</div>
+
+<div id="toolBox">
+	<div id="toolBoxTabs">
+		<div data-id="cardList">Cards<br /><div class="checkAll"><input type="checkbox" name="all" /><br />All/None</div></div>
+		<div class="filters">
+			<input type="text" id="filterCards" data-type="name" /><br />
+
+				<select class="cardRarity">
+					<option value="all">All</option>
+					<option value="N"> N</option>
+					<option value="N+"> N+</option>
+					<option value="R"> R</option>
+					<option value="R+"> R+</option>
+					<option value="SR"> SR</option>
+					<option value="SR+"> SR+</option>
+				</select>
+		</div>
+	</div>
+	<div id="cardList" class="toolLists">
+		<ul id="cardListUL"></ul>
+	</div>
+</div>
+
+<div id="collectionDialog">
+	Name
+	<input type="text" id="gachaName" /><br />
+	Priority
+	<input type="number" id="gachaPriority" /><br />
+	Type
+	<select id="gachaType">
+		<option value="gacha_free">free</option>
+		<option value="gacha_paid">paid</option>
+	</select>
+	<br /><br />Open Hours <button class="addHours">+</button><br />
+	<div id="gachaHours">
+	</div>
+	<br /><br />Recurring <button class="addRecurring">+</button></br />
+	<div id="gachaRecurring">
+	</div>
+</div>
+
+<div id="boosterDialog">
+	Name
+	<input type="text" id="boosterName" /><br />
+	<br />
+	Weight
+	<input type="number" id="boosterWeight" />
+</div>
+
+<div id="boosterDetail" style="display: none;">
+	<div class="actions">
+		<button class="minBtn">_</button>
+		<button class="addBtn" data-id="addRow">+</button>
+	</div>
+
+	<div id="boosterDetailRows"></div>
+</div>
+

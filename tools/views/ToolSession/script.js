@@ -1,5 +1,20 @@
-function ViewToolSession(app, elm)
-{
+(function () {
+
+	var mithril = window.mithril;
+	var viewport = window.viewport;
+	
+	var view = {};
+	
+	var elm = viewport.getViewElement("tool_session");
+	
+	viewport.setViewHandler({
+		name: "tool_session",
+		obj: view,
+		elm: elm
+	});
+	
+	var origin = 'http://$cfg(server.clientHost.expose.host):$cfg(server.clientHost.expose.port)';
+
 	var gmsMap      = {};
 	var gmsArr      = [];
 	var playersMap  = {};
@@ -24,7 +39,7 @@ function ViewToolSession(app, elm)
 	$('.deleteGmBtn').live('click', function () {
 		var gm = $(this).parents('.gmHolder');
 		var id = gm.attr('data-id');
-		app.mithril.gm.deleteGm({ id: id }, function (error) {
+		mithril.gm.deleteGm({ id: id }, function (error) {
 			if (!error) {
 				gm.remove();
 				removeGm(id);
@@ -58,7 +73,7 @@ function ViewToolSession(app, elm)
 
 		params.rights = rights;
 		params.actor  = id;
-		app.mithril.gm.editGm(params, function (error) {
+		mithril.gm.editGm(params, function (error) {
 			if (!error) {
 				gmsMap[id].data.rights = params.rights;
 				var updated = $('<div class="updated" style="display: none;">Saved!</div>');
@@ -103,28 +118,12 @@ function ViewToolSession(app, elm)
 			editDlg[0].style.display = 'none';
 
 			// Load player data
-			app.mithril.player.gm.getPlayerData({ actorId: actorId }, function (error, data) {
-				if (error) {
+			mithril.player.getPlayerData({ actorId: actorId }, function (error, data) {
+				if (error)
 					return alert('Could not retrieve player data.');
-				}
-
-				editDlg.find('.field').remove();
 
 				for (var attr in data.data) {
-					var itype = 'text';
-					var type = typeof data.data[attr];
-					var value = (type === 'object') ? JSON.stringify(data.data[attr]) : data.data[attr];
-					if (type === 'number') {
-						itype = 'number';
-					}
-
-					var htmlFrag = '<div class="field">';
-					htmlFrag += '<div class="dialogLabel">' + attr + '</div><input type="' + itype + '" data-property="' + attr;
-					htmlFrag += '" data-type="' + type  + '" /></div>';
-					htmlFrag = $(htmlFrag);
-
-					htmlFrag.find('input').val(value);
-					editDlg.prepend(htmlFrag);
+					editDlg.find('input[data-property="' + attr + '"]').val(getValue(data.data[attr]));
 				}
 
 				par.append(editDlg);
@@ -138,16 +137,18 @@ function ViewToolSession(app, elm)
 
 
 	$('.deletePlayerBtn').live('click', function (e) {
+/*		// ignoring this for now, since have no clue what behavior it should have
 		var player = $(this).parents('.playerHolder');
 		var id     = player.attr('data-id');
 
-		app.mithril.player.gm.deletePlayer({ id: id }, function (error) {
+		mithril.player.deletePlayer({ id: id }, function (error) {
 			if (error)
 				alert('Could not delete Player.');
 			else {
 				player.remove();
 			}
 		});
+*/
 	});
 
 	$('.editPlayerBtn').live('click', function (e) {
@@ -156,7 +157,7 @@ function ViewToolSession(app, elm)
 		var dialog = $(this).parents('.dialog');
 		var params = getParams('player', dialog);
 
-		app.mithril.player.gm.editPlayer({ id: id, data: params }, function (error) {
+		mithril.player.editPlayer({ id: id, data: params }, function (error) {
 			var msg;
 
 			if (error) {
@@ -178,12 +179,12 @@ function ViewToolSession(app, elm)
 
 	$('.playAs').live('click', function (e) {
 		var id       = $(this).attr('data-id');
-		var loginUrl = window.mithrilOrigin + '/login?playerId=' + id;
+		var loginUrl = origin + '/login?playerId=' + id;
 		var session;
 
 		$.get(loginUrl, function (data) {
 			session = data;
-			window.location = window.mithrilOrigin + '$cfg(tool.gamePath)' + '&playerId=' + id + '&session=' + session;
+			window.location = origin + '/app/game?language=EN#pages=landing,main&playerId=' + id + '&session=' + session;
 		});
 
 		e.preventDefault();
@@ -219,7 +220,7 @@ function ViewToolSession(app, elm)
 			rights: rights
 		};
 
-		app.mithril.gm.createGm(params, function (error, id) {
+		mithril.gm.createGm(params, function (error, id) {
 			addToList(ul_gmList, { id: id, username: params.username });
 			gmsMap[id] = { actor: id, username: params.username, data: { rights: rights } };
 			gmsArr.push(gmsMap[id]);
@@ -242,8 +243,16 @@ function ViewToolSession(app, elm)
 			name: username
 		};
 
-		app.mithril.io.send('game.createGamePlayer', params, function (error, actor) {
-			addToList(ul_playerList, { actor: actor, data: params });
+		mithril.gm.createNewPlayer(params, function (error, actor) {
+			if (error) {
+				console.warn('Could not create new player.');
+			} else {
+				if (actor != undefined && actor != null) {
+					addToList(ul_playerList, { actor: actor, data: params });
+				} else {
+					console.warn('actorId not returned, please make sure the actorId is returned on player creation.');
+				}
+			}
 			$(dlg_player).hide(300);
 		});
 	});
@@ -252,48 +261,45 @@ function ViewToolSession(app, elm)
 		$(dlg_player).hide(300);
 	});
 
-	this.onbeforepaint = function (view) {
+	view.onbeforepaint = function () {
 		// List Gms
 
 		$(ul_gmList).empty();
 		$(ul_playerList).empty();
 		$('#nav .btn_session').css({ color: 'white', background: 'black', "font-weight": 'bold' });
 
-		app.mithril.gm.getGms(function(error, gms) {
-			// populate gm list
+
+
+		window.mithril.gm.getGms(function(error, gms) {		// List Gms
 
 			for (var i = 0, len = gms.length; i < len; i++) {
 				addToList(ul_gmList, { id: gms[i].actor, username: gms[i].username });
 				gmsMap[gms[i].actor] = gms[i];
 				gmsArr.push(gmsMap[gms[i].actor]);
 			}
+
+			// TODO -- add async later
+			mithril.player.getPlayers(function(error, players) {		// List Players
+				// populate player list
+				for (var i = 0, len = players.length; i < len; i++) {
+					var id = players[i].actor;
+					addToList(ul_playerList, players[i]);
+					playersMap[id] = players[i];
+					playersArr.push(playersMap[id]);
+				}
+			});
 		});
 
-		for (var mod in app.mithril) {
-			if (typeof(app.mithril[mod]) === 'object') {
+
+		for (var mod in mithril) {
+			if (typeof(mithril[mod]) === 'object') {
 				var inputDiv = $('<div class="gmRightDiv"><input type="checkbox" class="gmRight" name="gmRights" value="' + mod + '" /> ' + mod + '</div>');
 				$('.gmRightsList').append(inputDiv);
 			}
 		}
-
-		// List Players
-
-		app.mithril.player.gm.getPlayers(function(error, players) {
-			// populate player list
-			for (var i = 0, len = players.length; i < len; i++) {
-				var id = players[i].actor;
-				addToList(ul_playerList, players[i]);
-				playersMap[id] = players[i];
-				playersArr.push(playersMap[id]);
-			}
-		});
 	};
-	
-	this.onafterpaint = function (view) {
-		
-	};
-	
-	this.onclose = function () {
+
+	view.onclose = function () {
 		$('#nav .btn_session').css({ color: 'white', background: 'gray', "font-weight": 'normal' });
 	};
 
@@ -307,8 +313,8 @@ function ViewToolSession(app, elm)
 		} else {
 			var isGm = (gmsMap[obj.actor]) ? ' *' : '';
 			li     = $('<li class="playerHolder" data-id="' + obj.actor + '"></li>');
-			button = $('<button class="playerDetailBtn" data-id="' + obj.actor + '">Detail</button><button class="playAs" data-id="' + obj.actor + '">Play</button>');
-			li.append(button).append((obj.data && obj.data.name) + ' ( ' + obj.actor + ' ) ' + isGm);
+			button = $('<button class="playerDetailBtn" data-id="' + obj.actor + '">Detail</button>');
+			li.append(button).append((obj.data && obj.data.name) + ' ( ' + obj.actor + ' ) ' + isGm + '<button class="playAs" data-id="' + obj.actor + '">Play</button>');
 		}
 
 		$(list).append(li);
@@ -372,4 +378,4 @@ function ViewToolSession(app, elm)
 
 		return params;
 	}
-}
+}());

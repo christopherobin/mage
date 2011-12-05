@@ -1,31 +1,43 @@
-function ViewToolDashboard(app, elm)
-{
+(function () {
+
+	var viewport = window.viewport;
+	
+	var view = {};
+	
+	var elm = viewport.getViewElement("tool_dashboard");
+	
+	viewport.setViewHandler({
+		name: "tool_dashboard",
+		obj: view,
+		elm: elm
+	});
+	
 	var btn_session    = elm.querySelector('.btn_session');
 	var btn_gacha      = elm.querySelector('.btn_gacha');
 	var btn_raid       = elm.querySelector('.btn_raid');
 
 	$(btn_session).click(function () {
-		app.views.change('tool_session');
+		viewport.change('tool_session');
 	});
 
 	$(btn_gacha).click(function () {
-		app.views.change('tool_gacha');
+		viewport.change('tool_gacha');
 	});
 
 	$(btn_raid).click(function () {
-		app.views.change('tool_raid');
+		viewport.change('tool_raid');
 	});
 
-	this.onbeforepaint = function (view) {
+	view.onbeforepaint = function () {
 		$('#nav').hide();
 	};
 	
-	this.onafterpaint = function (view) {
+	view.onafterpaint = function () {
 		
 	};
 	
-	this.onclose = function () {
+	view.onclose = function () {
 		$('#nav').show();
 	};
 
-}
+}());
