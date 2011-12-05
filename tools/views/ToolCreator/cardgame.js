@@ -8,7 +8,7 @@
 //*********************************************************************************************************//
 
 function Cardgame() {
-    Game.call(this);
+//    Game.call(this);
 	var _this     = this;
 
 
@@ -144,6 +144,9 @@ function Cardgame() {
 
 	this.setup = function () {
 		// TODO: check if these things have been declared yet
+
+		jsPlumb.setRenderMode(jsPlumb.SVG);
+		jsPlumb.Defaults.Endpoint = ['Rectangle'];
 
 	    for (var types in this.nodes.types) {
 			var handler = this.nodes.types[types];
@@ -746,15 +749,18 @@ function Cardgame() {
 
         while(node) {
             if(node.cout && node.cout[cViewMode]) {
-                var target = node.cout[cViewMode][0].node;        // only traverse the first branch, not sure what to do about branches for now
-                if(this.nodes.nodesMap[target] && !rCheck[target]) {
-                    traverseList.push(this.nodes.nodesMap[target]);
-                    rCheck[target] = true;
-                    node = this.nodes.nodesMap[target];
-                } else {
-                    node = false;
-                    break;
-                }
+				var outType = node.cout[cViewMode];
+				for (var outState in outType) {
+					var target = outType[outState][0];        // only traverse the first branch, not sure what to do about branches for now
+					if(this.nodes.nodesMap[target] && !rCheck[target]) {
+						traverseList.push(this.nodes.nodesMap[target]);
+						rCheck[target] = true;
+						node = this.nodes.nodesMap[target];
+					} else {
+						node = false;
+						break;
+					}
+				}
             } else {
                 node = false;
             }
@@ -1101,4 +1107,4 @@ function Cardgame() {
 	}
 }
 
-Cardgame.prototype = Object.create(Game.prototype);
+//Cardgame.prototype = Object.create(Game.prototype);

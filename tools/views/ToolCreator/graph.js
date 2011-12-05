@@ -16,12 +16,16 @@ function Graph (connectorTypes) {
 			color = info.connector.color;
 
 		this.output[connectorType] = {
-			endpoint: new jsPlumb.Endpoints.Rectangle(),
-			style: { 
+//			endpoint: new jsPlumb.Endpoints.Rectangle(),
+			endpoint: ['Rectangle', { width: 20, height: 10 }],
+			paintStyle: {
+				fillStyle: (info.endpoint && info.endpoint.color) ? info.connector.color : 'grey' 
+			},
+/*			style: { 
 				width: 20,
 				height: 10,
 				fillStyle: (info.endpoint && info.endpoint.color) ? info.connector.color : 'grey' 
-			},
+			},*/
 			isSource: true,
 			isTarget: true,
 			scope: connectorType,
@@ -30,15 +34,19 @@ function Graph (connectorTypes) {
 				lineWidth: (info.connector && info.connector.width) ? info.connector.width : 5,
 				strokeStyle: color
 			},
-			connector: new jsPlumb.Connectors.Straight(),
+			connector: ['Straight'],
 			dropOptions : dropOptions,
 		};
 
 		this.input[connectorType] = {
-			endpoint: new jsPlumb.Endpoints.Rectangle(),
+/*			endpoint: new jsPlumb.Endpoints.Rectangle(),
 			style: { 
 				width: 20,
 				height: 10,
+				fillStyle: (info.endpoint && info.endpoint.color) ? info.connector.color : 'grey' 
+			},*/
+			endpoint: ['Rectangle', { width: 20, height: 10 }],
+			paintStyle: {
 				fillStyle: (info.endpoint && info.endpoint.color) ? info.connector.color : 'grey' 
 			},
 			isSource: true,
@@ -49,7 +57,7 @@ function Graph (connectorTypes) {
 				lineWidth: (info.connector && info.connector.width) ? info.connector.width : 5,
 				strokeStyle: color
 			},
-			connector: new jsPlumb.Connectors.Straight(),
+			connector: ['Straight'],
 			dropOptions : dropOptions,
 		};
 	}

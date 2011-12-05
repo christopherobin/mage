@@ -32,29 +32,19 @@ $(function() {
         }
     });
 */
-    jsPlumb.bind('jsPlumbConnection', {
-        jsPlumbConnection: function(p) {
-            if(!renderFlag) {
-				var connection    = { source: $(p.source[0]).attr('data-id'), target: $(p.target[0]).attr('data-id') };
-				var type          = $(p.sourceEndpoint.canvas).attr('data-ctype');
-				var connectionEle = getConnection(connection, type);
-				$(connectionEle.connection.canvas).attr('data-ctype', type);
+    jsPlumb.bind('jsPlumbConnection', function (p) {
+		if(!renderFlag) {
+			if(!createConnection(p)) {
+				console.log('bad connection');
+			}
+		}
+	});
 
-                if(!createConnection(p)) {
-                    console.log('bad connection');
-                }
-            }
-        }
-    });
-
-    jsPlumb.bind('jsPlumbConnectionDetached', {
-        jsPlumbConnectionDetached: function(p) {
-            if(!renderFlag) {
-                console.log('detached : ', p);
-                detachConnection(p);
-            }
-        }
-    });
+    jsPlumb.bind('jsPlumbConnectionDetached', function (p) {
+		if(!renderFlag) {
+			detachConnection(p);
+		}
+	});
 
     // Delete Node Handler
 
@@ -486,27 +476,19 @@ $(function() {
         $(this).contextMenu('endpointMenu', menus);
     });
 
-    $('._jsPlumb_connector').live('mouseenter', function(event, ui) {
+    $('._jsPlumb_connector path').live('mouseenter', function(event, ui) {
         $(this).contextMenu('deleteConnectorMenu', {
             'Delete Connector': {
                 click: function(connector) {
-                    var cType      = $(connector).attr('data-ctype');
-                    var cId        = $(connector).attr('id');
-                    var types      = jsPlumb.getConnections(cType);     // loop through since you can't get a connection object back with jsPlumb_connection id...
-                    var cons       = types[cType];
-                    var connection = null;
-					console.log('connector >>>>>>>>>>', connector);
-					console.log('types >>>>>>>>>>>>>>>>>>> ', types, '   ctype : ', cType);
-					console.log('cons >>>>>>>>>>>>>>>>>>>>>>> ', cons);
+					connector      = $(connector).parents('._jsPlumb_connector');
+					var filter = {
+						scope:  connector.attr('data-cType'),
+						source: connector.attr('data-source'),
+						target: connector.attr('data-target')
+					};
 
-                    for(i = 0; i < cons.length; i++) {
-                        if(cons[i].connection && cons[i].connection.canvas && cons[i].connection.canvas.id == cId) {
-                            connection = cons[i];
-                            break;
-                        }
-                    }
-                    if(connection)
-                        jsPlumb.detach(connection);
+					var connection = jsPlumb.getConnections(filter)[0];
+					jsPlumb.detach(connection);
                 },
                 klass: 'deleteMenu redGradient'
             }

@@ -25,4 +25,8 @@ $js(mithril.mithrilui.loader)
 
 	window.mithril.mui.start();
 
+	// TODO: change all the above into:
+	// language, baseUrl, packagename are no longer needed, just pages is good
+	// window.mithril.loader.setup(['my', 'page', 'names']);
+	// window.mithril.loader.start();
 }());

@@ -16,13 +16,13 @@ function getEndpoint(type, inout, x, y) {
 		if(inout == 'input') {
 			anchor = [y - .025, x];
 			style = jQuery.extend(true, {}, Render.creator.graphHdlr.input[type]);
-			style.style.width  = Render.creator.graphHdlr.input[type].style.height;
-			style.style.height = Render.creator.graphHdlr.input[type].style.width;
+			style.endpoint[1].width  = Render.creator.graphHdlr.input[type].endpoint[1].height;
+			style.endpoint[1].height = Render.creator.graphHdlr.input[type].endpoint[1].width;
 		} else {
 			anchor = [y + .03, x];
 			style = jQuery.extend(true, {}, Render.creator.graphHdlr.output[type]);
-			style.style.width  = Render.creator.graphHdlr.output[type].style.height;
-			style.style.height = Render.creator.graphHdlr.output[type].style.width;
+			style.endpoint[1].width  = Render.creator.graphHdlr.output[type].endpoint[1].height;
+			style.endpoint[1].height = Render.creator.graphHdlr.output[type].endpoint[1].width;
 		}
 	} else {
 		if(inout == 'input') {
@@ -304,8 +304,20 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 			anchor     = endpoint.anchor;
 			var styles = endpoint.style;
 
-			jNode.addEndpoint(jsPlumb.extend({ uuid: name + 'input' + cType, anchor: anchor, maxConnections: nodeDef.accepts }, styles));
-			$('#' + name + 'input' + cType).attr({'data-inout': 'input', 'data-cType': cType, 'data-id': id, 'data-type': type, 'data-layer': layer.jNode.attr('data-layer') });
+			var uuid      = name + 'input' + cType;
+			var epOptions = { uuid: uuid, anchor: anchor, maxConnections: nodeDef.accepts };
+			var epAttribs = {
+				'id'         : uuid,
+				'data-inout' : 'input',
+				'data-cType' : cType,
+				'data-id'    : id,
+				'data-type'  : type,
+				'data-layer' : layer.jNode.attr('data-layer')
+			};
+
+			var epCanvas = jsPlumb.addEndpoint(jNode.attr('id'), epOptions, styles).canvas;
+			$(epCanvas).attr(epAttribs);
+
 		}else {				// output endpoint
 			if(!state)
 				state = 'any';
@@ -339,9 +351,20 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 				anchor     = endpoint.anchor;
 				var styles = endpoint.style;
 
-				jNode.addEndpoint(jsPlumb.extend({ uuid: name + 'output' + cType + state, anchor: anchor, maxConnections: maxConnections }, styles));
-				var newEndpoint = $('#' + name + 'output' + cType + state);
-				newEndpoint.attr({'data-inout': 'output', 'data-cType': cType, 'data-id': id, 'data-type': type, 'data-onState': state, 'data-layer': layer.jNode.attr('data-layer') });
+				var uuid      = name + 'output' + cType + state;
+				var epOptions = { uuid: uuid, anchor: anchor, maxConnections: maxConnections };
+				var epAttribs = {
+					'id'           : uuid,
+					'data-inout'   : 'output',
+					'data-cType'   : cType,
+					'data-id'      : id,
+					'data-type'    : type,
+					'data-onState' : state,
+					'data-layer'   : layer.jNode.attr('data-layer')
+				};
+
+				var epCanvas = jsPlumb.addEndpoint(jNode.attr('id'), epOptions, styles).canvas;
+				$(epCanvas).attr(epAttribs);
 			}
 		}
 	}else {			// in connection
@@ -369,8 +392,10 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 			anchor     = endpoint.anchor;
 			var styles = endpoint.style;
 
-			jNode.addEndpoint(jsPlumb.extend({ uuid: name + 'input' + cType + count, anchor: anchor, maxConnections: nodeDef.accepts }, styles));
-			$('#' + name + 'input' + cType + count).attr({'data-inout': 'input', 'data-count': count, 'data-cType': cType, 'data-id': id, 'data-type': type, 'data-layer': layer.jNode.attr('data-layer') });
+			var uuid = name + 'input' + cType + count;
+
+			jNode.addEndpoint(jsPlumb.extend({ uuid: uuid, anchor: anchor, maxConnections: nodeDef.accepts }, styles));
+			$('#' + uuid).attr({'data-inout': 'input', 'data-count': count, 'data-cType': cType, 'data-id': id, 'data-type': type, 'data-layer': layer.jNode.attr('data-layer') });
 //			jsPlumb.repaintEverything();
 		}else {			// output endpoint
 			if(!state)
@@ -389,9 +414,10 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 			endpoint   = getEndpoint(cType, 'output', space, 1);
 			anchor     = endpoint.anchor;
 			var styles = endpoint.style;
+			var uuid   = name + 'output' + cType + state;
 
-			jNode.addEndpoint(jsPlumb.extend({ uuid: name + 'output' + cType + state, anchor: [space, 1], maxConnections: maxConnections }, styles));
-			$('#' + name + 'output' + cType + state).attr({'data-inout': 'output', 'data-cType': cType, 'data-id': id, 'data-type': type, 'data-onState': state, 'data-layer': layer.jNode.attr('data-layer') });
+			jNode.addEndpoint(jsPlumb.extend({ uuid: uuid, anchor: [space, 1], maxConnections: maxConnections }, styles));
+			$('#' + uuid).attr({'data-inout': 'output', 'data-cType': cType, 'data-id': id, 'data-type': type, 'data-onState': state, 'data-layer': layer.jNode.attr('data-layer') });
 		}
 	}
 	Render.renderLabels(layer.jNode);
@@ -400,7 +426,8 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 Render.loadConnections = function (layer) {
 	viewMode         = layer.viewMode;
 	var visibleConnectors = definedViews[viewType].connectors;
-	var _makeOverlay = function() { return new jsPlumb.Overlays.Arrow({foldback:0.7, fillStyle:'gray', location:0.5, width:14}); };
+//	var _makeOverlay = function() { return new jsPlumb.Overlays.Arrow({foldback:0.7, fillStyle:'gray', location:0.5, width:14}); };
+	var _makeOverlay = function() { return ['Arrow', { foldback:0.7, fillStyle:'gray', location:0.5, width:14 } ]; };
 
 	layer.jNode.find('.node').each(function() {
 		if($(this).is(':visible')) {
@@ -470,21 +497,24 @@ Render.loadConnections = function (layer) {
 			var conId = cons[i];
 			if(Render.creator.nodes.nodesMap[conId]) {
 				var conName = Render.creator.nodes.nodesMap[conId].type + Render.creator.nodes.nodesMap[conId].id;
-				var source = jsPlumb.getEndpoint(name + 'output' + cType + nType);
-				var target = jsPlumb.getEndpoint(conName + 'input' + cType);
+				var sourceId = name + 'output' + cType + nType;
+				var targetId = conName + 'input' + cType;
+				var source = jsPlumb.getEndpoint(sourceId);
+				var target = jsPlumb.getEndpoint(targetId);
 
 				if(!target) {
 					Render.addEndpoint($('#' + conName), 'input', '', layer, cType);
-					target = jsPlumb.getEndpoint(conName + 'input' + cType);
+					target = jsPlumb.getEndpoint(targetId);
 				}
 
 				if($('#' + conName).length > 0 && !source.isFull() && !target.isFull()) {
 					renderFlag = true;
-					var test = jsPlumb.connect({ uuids: [ name + 'output' + cType + nType, conName + 'input' + cType ], overlays:[_makeOverlay()] });
-					var cId = $(test.canvas).attr('id');
-					$('#' + cId).attr('data-type', type);
-					$('#' + cId).attr('data-cType', cType);
-					$('#' + cId).attr('data-layer', layer.jNode.attr('data-layer'));
+					var test  = jsPlumb.connect({ uuids: [sourceId, targetId], overlays:[_makeOverlay()] });
+					$(test.canvas).attr('data-source', name);
+					$(test.canvas).attr('data-target', conName);
+					$(test.canvas).attr('data-type', type);
+					$(test.canvas).attr('data-cType', cType);
+					$(test.canvas).attr('data-layer', layer.jNode.attr('data-layer'));
 					renderFlag = false;
 				}
 			}

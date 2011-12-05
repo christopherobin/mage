@@ -1,8 +1,8 @@
 var viewType = 'default';       // view type
 var viewMode = 'trigger';       // the type of connection the view type uses
 
-var placesList     = '<option>underground</option><option>faeria</option><option>magika</option><option>underworld</option><option>hell</option><option>abyss</option><option>sky</option><option>kingdom</option><option>heaven</option><option>tarot</option><option>chaos</option>';		//'<?php print_r($placesList); ?>';
-var spirits        = [];		//<?php echo $spirits; ?>;
+var placesList     = '<option>underground</option><option>faeria</option><option>magika</option><option>underworld</option><option>hell</option><option>abyss</option><option>sky</option><option>kingdom</option><option>heaven</option><option>tarot</option><option>chaos</option>';
+var spirits        = [];
 var prevSaves      = [];
 var toolLang       = 'EN';
 var renderOptions  = { offsetX: 30, offsetY: 20 };
@@ -179,4 +179,4 @@ var viewTypes = {
         SectionNarration:  ['trigger', 'trigger'],
         SectionScenario:   ['trigger', 'trigger']
     }
-}
+};

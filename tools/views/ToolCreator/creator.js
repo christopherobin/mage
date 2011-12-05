@@ -10,11 +10,14 @@ function initApp(creator) {
 function loadDialog(action, type, title, id, cb) {
     var buttons  = [];
     var template = $('.nodetemplate[data-type="' + type + '"]').clone().removeClass('nodetemplate');
-	var test = window.app.creator.nodes.serialize($(template));
+//	var test = window.app.creator.nodes.serialize($(template));
+//	window.app.creator.nodes.types[type].options.autoAdd ???	// do something like this later?
+/*
     if(!test.data && action === 'add') {
         addNode(type, cb);
         return;
     }
+*/
 
     if (id) {
         $('#dialogBox').attr('data-id', id);
@@ -433,39 +436,32 @@ function removeAllReferences(id) {
 }
 
 function removeReference(source, target, inout, ctype) {
-    // yet another workaround for crappy jsPlumb behavior
-    // detach event fires twice for some unknown reason
-
-	inout = (inout === 'input') ? 'cin' : 'cout';
     var type = [];
-    if(window.app.creator.nodes.nodesMap[source] && window.app.creator.nodes.nodesMap[source][inout] && window.app.creator.nodes.nodesMap[source][inout][ctype]) {
-        type = window.app.creator.nodes.nodesMap[source][inout][ctype];
+	var node = window.app.creator.nodes.nodesMap[source];
+    if(node && node[inout] && node[inout][ctype]) {
+        type = node[inout][ctype];
 	}
 
-    for(var i = 0; i < type.length; i++) {
-        if(inout == 'cin') {
-            var iNode = type[i];
-            for(var j = 0; j < iNode.length; j++) {
-                if(iNode[j].node == target) {
-                    iNode.splice(j, 1);
-                }
-            }
-            if(iNode.length < 1) {
-                type.splice(i, 1);
-            }
-        }else {
-            if(type[i].node == target) {
-                type.splice(i, 1);
-            }
-        }
-    }
 
-    if( type && type.length < 1) {
-        delete window.app.creator.nodes.nodesMap[source][inout][ctype];
-    }
 
-    if(Object.keys(window.app.creator.nodes.nodesMap[source][inout]).length < 1) {
-        delete window.app.creator.nodes.nodesMap[source][inout];
+	if (inout === 'output') {
+		var outs = node.cout[cType][state];
+
+		for (var i = 0, len = outs.length; i < len; i++) {
+			if (outs[i] == target) {
+				outs.splice(i, 1);
+			}
+		}
+
+		if (outs.length < 1) {
+			delete outs;
+		}
+	} else {
+		// TODO -- cin connectors
+	}
+
+    if(Object.keys(node[inout][cType]).length < 1) {
+        delete node[inout][cType];
     }
 }
 
@@ -482,16 +478,6 @@ function removeReference(source, target, inout, ctype) {
 }
 */
 
-function initGraph() {
-//  document.onselectstart = function () { return false; };
-    jsPlumb.Defaults.Connector = new jsPlumb.Connectors.Straight;
-//  jsPlumb.Defaults.DragOptions = { cursor: 'pointer', zIndex:2000 };
-//  jsPlumb.Defaults.PaintStyle = { strokeStyle:'gray', lineWidth:2 };
-//  jsPlumb.Defaults.EndpointStyle = { radius:9, fillStyle:'gray' };
-//  jsPlumb.Defaults.Anchors =  [ "BottomCenter", "TopCenter" ];
-//  jsPlumb.Defaults.Container = 'contentHolder';
-}
-
 function detachConnection(con) {
     var comp       = computeSource(con);
     var source     = comp.source;
@@ -504,9 +490,36 @@ function detachConnection(con) {
     var cType      = sEndpoint.attr('data-cType');
     removeReference(source, target, inout, cType);
 
-	var delConnection = { node: source, type: cType, onState: state, target: target };
 
+	var node = window.app.creator.nodes.nodesMap[source];
+/*
+	inout = (inout === 'output') ? 'cout' : 'cin';
 
+	var outs = node[inout][cType][state];
+
+	for (var i = 0, len = outs.length; i < len; i++) {
+		if (outs[i] == target) {
+			outs.splice(i, 1);
+		}
+	}
+
+	if (node[inout][cType][state].length === 0) {
+		delete node[inout][cType][state];
+	}
+
+	if (Object.keys(node[inout][cType]).length === 0) {
+		delete node[inout][cType];
+	}
+*/
+	console.log(node);
+
+	window.mithril.gc.gm.editNodes([node], function (error) {
+		if (error) {
+			console.warn('Could not delete connection for node : ', node);
+		}
+	});
+
+/*
     if(inout == 'cin') {
         delConnection.onState = tEndpoint.attr('data-onstate');
 		delConnection.group   = count;
@@ -523,6 +536,7 @@ function detachConnection(con) {
 			}
 		});
     }
+*/
 }
 
 function createConnection(con) {
@@ -534,8 +548,9 @@ function createConnection(con) {
     var cType      = sEndpoint.attr('data-cType');
 
     var eCon = getConnection(comp, cType);
-    if (eCon)
+    if (eCon) {
         $(eCon.connection.canvas).attr('data-layer', sEndpoint.attr('data-layer'));
+	}
 
     if(!checkValidConnection(con)) {
         renderFlag = true;
@@ -554,11 +569,12 @@ function createConnection(con) {
     else
         state = 'any';
 
-    if(!window.app.creator.nodes.nodesMap[source][inout]) window.app.creator.nodes.nodesMap[source][inout] = {};
-    if(!window.app.creator.nodes.nodesMap[source][inout][cType]) window.app.creator.nodes.nodesMap[source][inout][cType] = [];
+//    if(!window.app.creator.nodes.nodesMap[source][inout]) window.app.creator.nodes.nodesMap[source][inout] = {};
+//    if(!window.app.creator.nodes.nodesMap[source][inout][cType]) window.app.creator.nodes.nodesMap[source][inout][cType] = [];
 
     if((connectionTypes[cType].type == 'in') && (inout == 'cin')) {		// in connection
 		// TODO -- in connectors are completely out of date, this will not work at all
+/*
         var count = sEndpoint.attr('data-count');
         if(!count || count == '')
             count = 0;
@@ -574,17 +590,28 @@ function createConnection(con) {
 				console.log('Unable to create connection : ', newConnection);
 			}
 		});
+*/
     }else {			// out connection
-        if(!window.app.creator.nodes.nodesMap[source][inout])                window.app.creator.nodes.nodesMap[source][inout] = {};
-        if(!window.app.creator.nodes.nodesMap[source][inout][cType])         window.app.creator.nodes.nodesMap[source][inout][cType] = {};
-        if(!window.app.creator.nodes.nodesMap[source][inout][cType][state])  window.app.creator.nodes.nodesMap[source][inout][cType][state] = [];
+		var node = window.app.creator.nodes.nodesMap[source];
+        if (!node[inout]) {
+			node[inout] = {};
+		}
 
-        window.app.creator.nodes.nodesMap[source][inout][cType][state].push(target);
+        if (!node[inout][cType]) {
+			node[inout][cType] = {};
+		}
 
-		var newConnection = { node: source, type: cType, onState: state, target: target };
-		mithril.gc.gm.addOutConnectors([newConnection], function (error) {
+        if (!node[inout][cType][state]) {
+			node[inout][cType][state] = [];
+		}
+
+        node[inout][cType][state].push(parseInt(target, 10));
+		console.log('node >>> ', node);
+
+		mithril.gc.gm.editNodes([node], function (error) {
 			if (error) {
-				console.log('Unable to create connection : ', newConnection);
+				console.warn('Unable to create connection : ', node[inout][cType][state]);
+				return false;
 			}
 		});
     }
@@ -624,7 +651,6 @@ function checkValidConnection(con) {
     var cType      = sEndpoint.attr('data-cType');
     var npar;
 
-	console.log(window.app.creator.nodes.nodesMap[sid]);
     if (window.app.creator.nodes.nodesMap[sid] && window.app.creator.nodes.nodesMap[sid].cout && window.app.creator.nodes.nodesMap[sid].cout.parent && window.app.creator.nodes.nodesMap[sid].cout.parent.any) {
         npar = window.app.creator.nodes.nodesMap[window.app.creator.nodes.nodesMap[sid].cout.parent.any[0]];
     }
@@ -670,20 +696,13 @@ function computeSource(con) {           // figures what the source is regardless
     var targetPoint = (con.targetEndpoint.getUuid) ? $('#' + con.targetEndpoint.getUuid()) : con.targetEndpoint;
     var conType     = sourcePoint.attr('data-cType');
 
-    var cfilter     = { scope: conType, source: con.sourceEndpoint, target: con.targetEndpoint };
+    var cfilter     = { scope: conType, source: con.sourceId, target: con.targetId };
     var connectors  = jsPlumb.getConnections(cfilter);
 
-    // FTW jsPlumb filtering of connectors doesn't work, who whudda thought
-    for(var i = 0; i < connectors[conType].length; i++) {
-        var connector = connectors[conType][i];
-        var csource   = connector.sourceEndpoint.getUuid();
-        var ctarget   = connector.targetEndpoint.getUuid();
-        var clayer    = targetPoint.attr('data-layer');
-        if(con.sourceEndpoint.getUuid() === csource && con.targetEndpoint.getUuid() == ctarget) {
-            $('#' + connector.connection.canvas.id).attr('data-layer', clayer);
-            break;
-        }
-    }
+	if (connectors.length > 0) {
+        var clayer = targetPoint.attr('data-layer');
+		$(connectors[0]).attr('data-layer', clayer);
+	}
 
     if(conType == 'in') {               // in connection
         if(sourcePoint.attr('data-inout') == 'input') {
