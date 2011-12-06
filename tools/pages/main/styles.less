@@ -1,0 +1,85 @@
+$dir("/home/te/mithril/tools/libtool");
+$toolviewport(all)
+
+
+
+body {
+	background-color: black;
+	font-family: 'Arial';
+}
+
+#nav {
+	color: white;
+	background: gray;
+}
+
+#nav div {
+	display: inline-block;
+	padding: 3px 15px;
+}
+
+#loginContainer {
+	width: 50%;
+	margin: auto;
+	margin-top: 10%;
+	color: white;
+}
+
+#loginTitle {
+	font-size: 28px;
+	font-weight: bold;
+	margin: auto;
+	width: 50%;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+#loginHolder {
+	position: relative;
+	width: 300px;
+	margin: auto;
+
+	.loginLabel {
+		display: inline-block;
+		width: 60px;
+	}
+}
+
+#login {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	margin-left: 220px;
+}
+
+#viewport {
+	width: 100%;
+	max-width: 100%;
+	font-family: 'Arial';
+	background: black;
+	display: inline-table;
+
+	.view[data-name="tool_dashboard"], .view[data-name="tool_session"] {
+		width: 90%;
+		margin: auto;
+		margin-top: 30px;
+		text-align: center;
+		background: black;
+		color: white;
+	}
+
+	.view[data-name="tool_gacha"] {
+		margin: 10px;
+		text-align: left;
+		background: white;
+	}
+}
+
+.viewTitle {
+	font-weight: bold;
+	font-size: 28px;
+}
+
+.toolTitle {
+	margin-bottom: 30px;
+}
