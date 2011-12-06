@@ -2,6 +2,9 @@
 
 	var mithril = window.mithril;
 	var viewport = window.viewport;
+	if (!app.gachaTool) {
+		app.gachaTool = {};
+	}
 	
 	var view = {};
 	
@@ -52,8 +55,13 @@
 	day += '<input type="checkbox" name="days" value="5" /> Fr';
 	day += '<input type="checkbox" name="days" value="6" /> Sa';
 
-	this.hoursFragment     = $('<div class="interval"><div class="from">' + interval + '</div> to <div class="to">' + interval + '</div><button class="removeHours">-</button></div>');
-	this.recurringFragment = $('<div class="recurrence"><div class="from">' + time + '</div> to <div class="to">' + time + '</div><button class="removeRecurring">-</button><br />' + day + '</div>');
+	var hoursFragment = '<div class="interval"><div class="from">' + interval;
+	hoursFragment    += '</div> to <div class="to">' + interval + '</div><button class="removeHours">-</button></div>';
+	app.gachaTool.hoursFragment = $(hoursFragment);
+
+	var recurringFragment = '<div class="recurrence"><div class="from">' + time + '</div> to <div class="to">';
+	recurringFragment    += time + '</div><button class="removeRecurring">-</button><br />' + day + '</div>';
+	app.gachaTool.recurringFragment = $(recurringFragment);
 
 	view.onbeforepaint = function () {
 		$('#nav .btn_gacha').css({ color: 'white', background: 'black', "font-weight": 'bold' });
@@ -80,6 +88,7 @@
 				_this.renderer.init(results, _this.cards, _this.lib);
 				_this.lib.init(results, _this.curCollection, _this.curBooster, _this.renderer);
 
+				console.log(results);
 				for (var key in results) {
 					var ele = _this.renderer.generateCollection(key);
 					$('.collectionStage').append(ele);

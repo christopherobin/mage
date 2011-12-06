@@ -260,7 +260,6 @@
 		$('#nav .btn_session').css({ color: 'white', background: 'black', "font-weight": 'bold' });
 
 
-
 		window.mithril.gm.getGms(function(error, gms) {		// List Gms
 
 			for (var i = 0, len = gms.length; i < len; i++) {

@@ -23,7 +23,7 @@ function Renderer() {
 			curBooster    = gFuncs.getCurBooster();
 			curCollection = gFuncs.getCurCollection();
 
-			$('.ui-selected').not('.ui-draggable-dragging').each(function () {
+			function pushItems() {
 				var id = $(this).attr('data-id');
 
 				itemObjects.push({
@@ -35,8 +35,15 @@ function Renderer() {
 						weight: 1
 					}
 				});
-			});
+			}
 
+
+			var selected = $('.ui-selected');
+			if (selected.length > 1) {
+				selected.not('.ui-draggable-dragging').each(pushItems);
+			} else {
+				$('.ui-draggable-dragging').each(pushItems);
+			}
 
 			itemObjects.filter(function (itemObject, index, array) {
 				return (row.find('.card[data-id="' + itemObject.className + '"]').length === 0)
