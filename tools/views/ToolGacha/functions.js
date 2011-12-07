@@ -95,7 +95,7 @@ function gachaLib() {
 						$('#gachaHours').empty();
 						if (collection.data.hours) {
 							for (var i = 0, len = collection.data.hours.length; i < len; i++) {
-								var fragment = app.views.views.tool_gacha.obj.hoursFragment.clone();
+								var fragment = app.gachaTool.hoursFragment.clone();
 								fragment.find('.calendar').datepicker({ showOtherMonths: true, selectOtherMonths: true });
 
 								var hours = collection.data.hours[i];
@@ -116,7 +116,7 @@ function gachaLib() {
 						if (collection.data.recurring) {
 							for (var i = 0, len = collection.data.recurring.length; i < len; i++) {
 								var recurrence = collection.data.recurring[i];
-								var fragment = app.views.views.tool_gacha.obj.recurringFragment.clone();
+								var fragment = app.gachaTool.recurringFragment.clone();
 
 								var fromH = parseInt(recurrence.time[0].slice(0, 2), 10);
 								var fromM = parseInt(recurrence.time[0].slice(2), 10);
@@ -317,19 +317,15 @@ function gachaLib() {
 		var weight = parseInt(booster.find('.boosterWeight').val());
 		var cost = 30;	// TODO: CHANGE THIS 
 
-		var params = {
-			itemIdentifier: curBooster,
-			unitPrice: cost,
-			data: {
-				name: { val: name, lang: 'EN' },
-				weight: weight
-			}
+		var data = {
+			name: { val: name, lang: 'EN' },
+			weight: weight
 		};
 
-		app.mithril.shop.editItem(params, function (error) {
+		app.mithril.shop.editItem(curBooster, cost, data, function (error) {
 			if (!error) {
 				var obj = collections[curCollection]['items'][curBooster];
-				obj.data = params.data;
+				obj.data = data;
 				obj.unitPrice = cost;
 			} else {
 				alert('Could not edit item. ' + error);
@@ -350,8 +346,8 @@ function gachaLib() {
 
 			var objects = collections[curCollection]['items'][curBooster]['objects'];
 			for (var i = 0, len = objects.length; i < len; i++) {
-				if (params.id == objects[i].id) {
-					objects[i].data.weight = params.data.weight;
+				if (id == objects[i].id) {
+					objects[i].data.weight = data.weight;
 				}
 			}
 		});
@@ -398,13 +394,13 @@ function gachaLib() {
 	});
 
 	$('.addHours').click(function() {
-		var fragment = app.views.views.tool_gacha.obj.hoursFragment.clone();
+		var fragment = app.gachaTool.hoursFragment.clone();
 		fragment.find('.calendar').datepicker({ showOtherMonths: true, selectOtherMonths: true });
 		$('#gachaHours').append(fragment);
 	});
 
 	$('.addRecurring').click(function() {
-		var fragment = app.views.views.tool_gacha.obj.recurringFragment.clone();
+		var fragment = app.gachaTool.recurringFragment.clone();
 		$('#gachaRecurring').append(fragment);
 	});
 
@@ -525,7 +521,7 @@ function gachaLib() {
 			if (error) {
 				alert('Could not remove booster. ', error);
 			} else {
-				delete collections[params.shopIdentifier]['items'][params.itemIdentifier];
+				delete collections[shopIdentifier]['items'][itemIdentifier];
 				booster.remove();
 			}
 		});
