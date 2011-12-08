@@ -149,13 +149,15 @@ function Renderer() {
 	this.generateBooster = function(id, collection) {
 		var colId = collection.attr('data-id');
 		var booster = collections[colId]['items'][id];	// TODO:: check first before using
-		var fragment  = '<div class="booster" data-id="' + id + '"><button class="removeBooster removeBtn">x</button><div class="boosterData"><div class="label" >Name</div>';
-		fragment     += '<input type="text" class="boosterName" value="' + (booster.data.name.val || booster.data.name) + '" /><br />';
-		fragment     += '<div class="label">Weight</div><input type="number" class="boosterWeight" value="' + (booster.data.weight || 0) + '" /></div></div>';
-		var ele = $(fragment).draggable({
-			helper: 'clone'
-		});
-		return ele;
+		if (booster) {
+			var fragment  = '<div class="booster" data-id="' + id + '"><button class="removeBooster removeBtn">x</button><div class="boosterData"><div class="label" >Name</div>';
+			fragment     += '<input type="text" class="boosterName" value="' + (booster.data.name.val || booster.data.name) + '" /><br />';
+			fragment     += '<div class="label">Weight</div><input type="number" class="boosterWeight" value="' + (booster.data.weight || 0) + '" /></div></div>';
+			var ele = $(fragment).draggable({
+				helper: 'clone'
+			});
+			return ele;
+		}
 	}
 
 	this.generateRow = function(row, id) {

@@ -172,18 +172,20 @@ function gachaLib() {
 			objects = collections[curCollection]['items'][curBooster].objects;
 		}
 
-		for (var i = 0, len = objects.length; i < len; i++) {
-			var rowId = objects[i].data.row;
-			if (!rows[rowId]) {
-				rows[rowId] = {};
+		if (objects) {
+			for (var i = 0, len = objects.length; i < len; i++) {
+				var rowId = objects[i].data.row;
+				if (!rows[rowId]) {
+					rows[rowId] = {};
+				}
+
+				rows[rowId][objects[i].className] = { weight: objects[i].data.weight, dbid: objects[i].id };
 			}
 
-			rows[rowId][objects[i].className] = { weight: objects[i].data.weight, dbid: objects[i].id };
-		}
-
-		for (var key in rows) {
-			var row = renderer.generateRow(rows[key], key);
-			$('#boosterDetailRows').append(row);
+			for (var key in rows) {
+				var row = renderer.generateRow(rows[key], key);
+				$('#boosterDetailRows').append(row);
+			}
 		}
 
 		$('#boosterDetail').show();
@@ -306,7 +308,12 @@ function gachaLib() {
 
 		// identifier, prefix, currencyType, unitPrice, shopIdentifier, data
 		app.mithril.shop.createItem(identifier, prefix, currencyType, cost, curCollection, data, function (error, id) {
-			collections[curCollection]['items'][id] = { unitPrice: cost, objects: {}, data: data, objects: [] };
+			var collection = collections[curCollection];
+			if (!collection.items) {
+				collection.items = {};
+			}
+
+			collection.items[id] = { unitPrice: cost, objects: {}, data: data, objects: [] };
 			renderer.addToCollection(id, 'booster', $('.collection[data-id="' + curCollection + '"]'));
 			$('#boosterDialog').dialog('close');
 		});
