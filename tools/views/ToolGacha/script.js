@@ -88,7 +88,6 @@
 				_this.renderer.init(results, _this.cards, _this.lib);
 				_this.lib.init(results, _this.curCollection, _this.curBooster, _this.renderer);
 
-				console.log(results);
 				for (var key in results) {
 					var ele = _this.renderer.generateCollection(key);
 					$('.collectionStage').append(ele);
