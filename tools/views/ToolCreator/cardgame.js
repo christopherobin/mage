@@ -13,92 +13,83 @@ function Cardgame() {
 
 
 	this.backgrounds = {
-		"underground": [
-			"cave_1",
-			"cave_2",
-			"cave_entrance",
-			"cave_hall",
-			"lava_sea",
-			"ruins",
-			"underground_chest"
-		],
-		"faeria": [
-			"elf_castle",
-			"faeria_chest",
-			"forest_1",
-			"forest_2",
-			"forest_deep",
-			"forest_village",
-			"large_tree"
-		],
-		"magika": [
-			"floor1",
-			"floor2",
-			"floor3",
-			"floor4",
-			"floor5",
-			"floor6",
-			"portal",
-			"tower"
-		],
-		"underworld": [
-			"dead_forest",
-			"fog_town",
-			"ghostship",
-			"ghostship_inside",
-			"grave_mansion",
-			"mansion_inside",
-			"moon_lake",
-			"underworld_chest"
-		],
-		"hell": [
-			"blood_ocean",
-			"blood_river",
-			"hell_gate",
-			"hell_road",
-			"mirror"
-		],
-		"abyss": [
-			"abyss_chest",
-			"island",
-			"ocean",
-			"storm",
-			"storm_2",
-			"underwater",
-			"underwater_deep"
-		],
-		"sky": [
-			"angel_fall",
-			"sky",
-			"sky_castle",
-			"sky_mountain",
-			"sky_port"
-		],
-		"kingdom": [
-			"castle",
-			"castle_gates",
-			"desert",
-			"field",
-			"kingdom_chest",
-			"mountain",
-			"oasis",
-			"study",
-			"tavern",
-			"temple",
-			"village"
-		],
-		"heaven": [
-			"heaven_gate",
-			"heaven_stairs",
-			"holy_mountain",
-			"holy_temple",
-			"truth_room"
-		],
-		"tarot": [],
-		"boss": [],
-		"pvp": [],
-		"village": [],
-		"black": []
+		"underground": { "place": "underground" },
+		"cave_1": { "place": "underground" },
+		"cave_2": { "place": "underground" },
+		"cave_entrance": { "place": "underground" },
+		"cave_hall": { "place": "underground" },
+		"lava_sea": { "place": "underground" },
+		"ruins": { "place": "underground" },
+		"underground_chest": { "place": "underground" },
+		"faeria": { "place": "faeria" },
+		"elf_castle": { "place": "faeria" },
+		"faeria_chest": { "place": "faeria" },
+		"forest_1": { "place": "faeria" },
+		"forest_2": { "place": "faeria" },
+		"forest_deep": { "place": "faeria" },
+		"forest_village": { "place": "faeria" },
+		"large_tree": { "place": "faeria" },
+		"magika": { "place": "magika" },
+		"floor1": { "place": "magika" },
+		"floor2": { "place": "magika" },
+		"floor3": { "place": "magika" },
+		"floor4": { "place": "magika" },
+		"floor5": { "place": "magika" },
+		"floor6": { "place": "magika" },
+		"portal": { "place": "magika" },
+		"tower": { "place": "magika" },
+		"underworld": { "place": "underworld" },
+		"dead_forest": { "place": "underworld" },
+		"fog_town": { "place": "underworld" },
+		"ghostship": { "place": "underworld" },
+		"ghostship_inside": { "place": "underworld" },
+		"grave_mansion": { "place": "underworld" },
+		"mansion_inside": { "place": "underworld" },
+		"moon_lake": { "place": "underworld" },
+		"underworld_chest": { "place": "underworld" },
+		"hell": { "place": "hell" },
+		"blood_ocean": { "place": "hell" },
+		"blood_river": { "place": "hell" },
+		"hell_gate": { "place": "hell" },
+		"hell_road": { "place": "hell" },
+		"mirror": { "place": "hell" },
+		"abyss": { "place": "abyss" },
+		"abyss_chest": { "place": "abyss" },
+		"island": { "place": "abyss" },
+		"ocean": { "place": "abyss" },
+		"storm": { "place": "abyss" },
+		"storm_2": { "place": "abyss" },
+		"underwater": { "place": "abyss" },
+		"underwater_deep": { "place": "abyss" },
+		"sky": { "place": "sky" },
+		"angel_fall": { "place": "sky" },
+		"sky": { "place": "sky" },
+		"sky_castle": { "place": "sky" },
+		"sky_mountain": { "place": "sky" },
+		"sky_port": { "place": "sky" },
+		"kingdom": { "place": "kingdom" },
+		"castle": { "place": "kingdom" },
+		"castle_gates": { "place": "kingdom" },
+		"desert": { "place": "kingdom" },
+		"field": { "place": "kingdom" },
+		"kingdom_chest": { "place": "kingdom" },
+		"mountain": { "place": "kingdom" },
+		"oasis": { "place": "kingdom" },
+		"study": { "place": "kingdom" },
+		"tavern": { "place": "kingdom" },
+		"temple": { "place": "kingdom" },
+		"village": { "place": "kingdom" },
+		"heaven": { "place": "heaven" },
+		"heaven_gate": { "place": "heaven" },
+		"heaven_stairs": { "place": "heaven" },
+		"holy_mountain": { "place": "heaven" },
+		"holy_temple": { "place": "heaven" },
+		"truth_room": { "place": "heaven" },
+		"tarot": { "place": "tarot" },
+		"boss": { "place": "boss" },
+		"pvp": { "place": "pvp" },
+		"village": { "place": "village" },
+		"black": { "place": "black" }
 	};
 
 
@@ -203,6 +194,26 @@ function Cardgame() {
 
 
 		// select background
+		var assets = window.mithril.assets.getAll();
+		
+		for (var i = 0, len = assets.length; i < len; i++) {
+			var asset  = assets[i];
+			var regex  = /^world\/(.*)/g;
+
+			var match    = expregex.exec(asset.fullIdent);
+
+			if (match) {
+				if (!this.backgrounds[match[1]]) {
+					console.warn("background found in asset map that isn't in backgrounds list : ", match[1]);
+				} else {
+					this.backgrounds[match[1]].mui = match[0];
+				}
+			}
+
+		}
+
+
+
 		var backgrounds = '<option></option>';
 		for (var background in this.backgrounds) {
 			backgrounds += '<option value="' + background + '">' + background + '</option>';
@@ -214,6 +225,13 @@ function Cardgame() {
 		}
 
 		$('.viewToolCreator .nodeData[data-replacement="background"]').append(selectStart + backgrounds + selectEnd);
+		$('.nodeData[data-replacement="background"] select').live('change', function (e) {
+			$('#dialogBox img.backgroundPreview').remove();
+			var background = $(this).find('option:selected').val();
+			var src = this.backgrounds[background].mui;
+			$('#dialogBox').append('<img class="backgroundPreview" src="' + src + '" />');
+			
+		});
 
 
 		var nodeTypes = window.app.creator.nodes.types;
