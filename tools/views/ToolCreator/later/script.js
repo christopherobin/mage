@@ -32,7 +32,7 @@ function ViewToolCreator(app, elm) {
 				creator.curParent;
 				creator.curType;
 
-				$js(module.manage.nodetypes)							// Include the nodetype files. The nodetypes will register themselves in creator.nodes.types
+				$js(module.gm.nodetypes)							// Include the nodetype files. The nodetypes will register themselves in creator.nodes.types
 
 				creator.setup();
 			}
