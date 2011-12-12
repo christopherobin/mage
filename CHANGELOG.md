@@ -1,5 +1,107 @@
 # Changelog
 
+## v0.4.0
+
+### Membase / LivePropertyMap
+
+#### Background
+
+We are slowly but surely moving a lot of data out of MySQL, and into alternative storage systems. Membase is an incredibly fast
+persistent key/value storage system, based on the memcache protocol. Considering the relatively small data sizes that individual
+players deal with, we have found it valuable to move a lot of player related data into membase. The main advantage is the ease
+of scaling up the server farm. MySQL is incredibly difficult to scale up into a large amount of servers, yet for membase it's a
+completely transparent issue. Wizcorp has released an open source library to provide virtual memcache/membase transactions in
+a module called [node-memcached-transactions](https://github.com/Wizcorp/node-memcached-transactions). Mithril uses this module
+to issue writes on-commit. This means you can still do a (virtual) rollback after writing, even though membase itself does not
+provide transactions. Mithril makes good use of this, and so as a developer, you should experience the same flexibility as you
+were used to in the previous situation with MySQL.
+
+#### Status
+
+We have not (yet) refactored the entire dataset into Membase. We are currently limiting the effort to user-data only. That means
+that static definitions (quests, shop contents, object classes, etc..), for now, stay in MySQL. Also, some user data found in
+some modules has not yet been refactored to Membase. This should be easy enough however and will be implemented as needed by
+developers in order to receive proper test coverage.
+
+Currently refactored are user data in: actor, gc, giraffe, obj, shop.
+Not yet refactored are: gree, history, msg, persistent, player, gm.
+
+#### The LivePropertyMap class
+
+LivePropertyMaps are the classes that are used to represent what used to be data-tables in MySQL. Whenever you write to these
+objects, the data is automatically synchronized to the client. The client side representation of our modules no longer have to
+take care of data-caches. Note that this automatic synching includes logic for dealing with special data types such as
+TimedNumber and TimedValue. The changing of your properties on the client is exposed through events, so you can tap into
+specific property changes in a very simple way.
+
+On the server, the refactored modules now expose LivePropertyMap instances through alternative functions. Because of this, the
+old data getters and setters for this data have been removed. Also, the parameter for setting properties in obj.addObject() has
+been removed.
+
+The API to create a LivePropertyMap is exposed through:
+* obj.getObjectProperties(state, objectId, options, cb)
+* obj.getObjectsProperties(state, objectIds, options, cb)
+* obj.getClassActorProperties(state, classId, actorId, options, cb)
+* obj.getClassesActorProperties(state, classIds, actorId, options, cb)
+* actor.getActorProperties(state, actorId, options, cb)
+* actor.getActorsProperties(state, actorIds, options, cb)
+* gc.getNodeActorProperties(state, nodeId, actorId, options, cb)
+* giraffe.getUserProperties(state, userId, options, cb)
+
+The plural versions of these functions return a key/value map of LivePropertyMap instances, with a logical key that is the ID
+of that which you provide as an array (classIds, actorIds, ...). For a deeper understanding of how this all works, please
+inspect the code of the functions mentioned above.
+
+The options object may contain a property `{ loadAll: true }` that will load every property from Membase. This is generally
+not recommended though. Prefered is: `{ load: ['name', 'xp', 'level'] }` in order to preload specific properties. After that,
+you may use `var value = myPropertyMap.get('name', 'EN')` to retrieve the value (note that this does not require a callback).
+Other exposed functions are `set('name', 'Bob', 'EN');` and `myPropertyMap.del('olddata');`.
+
+#### Advantages for developers
+
+For all the data that sits in Membase, you no longer have to worry about querying multiple times for the same data. The
+node-memcached-transactions module has been made to be 100% efficient in data-reuse. That means for example that requesting the
+same key twice (or more), will only result in a single read. Also, if you write a value to a key, and some time later your code
+ends up doing a read, it will simply yield the previously written value.
+
+The transactional model allows for write operations to be queued, instead of executed. This means: synchronous behavior (ie:
+no callback spaghetti). Reads obviously are still asynchronous.
+
+You can create your own property maps very easily wherever it makes sense. This generally costs you less than 10 lines of code,
+and because Membase is schemaless, you won't have to set up any tables.
+
+#### Disadvantages for developers
+
+Because of the nature of key/value data stores, you will no longer be able to do table-scans for data. If you want a value, you
+will have to know the key that is associated with it. That is not always possible, and workarounds must be implemented for
+these cases. This seems like a real pain, but ends up giving us ultimate performance, and is a sacrifice on a very limited
+code base that we have to be willing to make. In the future, we will have proper APIs to deal with these cases however, so any
+frustration that may exist today, will eventually be taken care of.
+
+### More EventEmitter instances
+
+More and more objects on the client side are becoming EventEmitter instances. This means that they can emit events. Expect in
+the future that modules will emit their own events whenever data changes, instead of having to go through mithril.io.
+
+### Time module
+
+A new module called "time" has been introduced to deal with automatic time synchronization between server and client. That means
+that on the client side, every information that is time-based is now supposed to normalize against the client time. This has
+been implemented for TimedValue/TimedNumber, so even if the client and server disagree about the time by 10 minutes, the time
+on the client will display synchronized to the client's own clock. To use this module:
+- server side, be sure to useModule('time')
+- expose its "sync" user command on your command center.
+- on the client side, make sure your build includes this module.
+
+### Smaller changes
+
+* The gree module's shop integration no longer responds with a request to do an HTTP navigation. Instead, a "gree.redirect" event is emitted.
+* The shop module now caches all static data. Before, it used to always hit the database to read this data that never changed.
+* The giraffe module now stores user data on its own live property map, and no longer on actor data.
+* Reliability improvements on the client's IO module, command center and event stream.
+* Because Membase stores objects as JSON serialized objects, a module's sync command will no longer parse this data, but instead use the data as is.
+
+
 ## v0.3.2
 
 ### User commands

@@ -1,7 +1,7 @@
 {
 	"name": "mithril",
 	"description": "Mithril game development platform for NodeJS",
-	"version": "0.3.2",
+	"version": "0.4.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -9,7 +9,7 @@
 		"url": "http://github.com/Wizcorp/Mithril/issues"
 	},
 	"engines": {
-		"node": ">=0.4.9"
+		"node": ">=0.4.12"
 	},
 	"main": "lib/mithril",
 	"dependencies": {
