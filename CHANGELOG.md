@@ -23,8 +23,8 @@ that static definitions (quests, shop contents, object classes, etc..), for now,
 some modules has not yet been refactored to Membase. This should be easy enough however and will be implemented as needed by
 developers in order to receive proper test coverage.
 
-Currently refactored are user data in: actor, gc, giraffe, obj, shop.
-Not yet refactored are: gree, history, msg, persistent, player, gm.
+Currently refactored are user data in: actor, gc, giraffe, obj.
+Not yet refactored are: gree, history, msg, persistent, player, gm, shop.
 
 #### The LivePropertyMap class
 
