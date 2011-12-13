@@ -655,5 +655,93 @@ ALTER TABLE `shop_purchase` ADD INDEX `fk_shop_purchase_shopId` (`shopId`);
 ALTER TABLE `shop_purchase` ADD FOREIGN KEY `fk_shop_purchase_shopId` (`shopId`) REFERENCES `shop` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 
+-- 2011-09-28: obj_class_actor_data
+
+CREATE TABLE `obj_class_actor_data` (
+  `classId` INT UNSIGNED NOT NULL ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(30) NOT NULL ,
+  `language` VARCHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NULL ,
+  `value` VARCHAR(255) NULL ,
+  PRIMARY KEY (`classId`, `actorId`, `property`, `language`) ,
+  INDEX `fk_obj_class_actor_data_classId` (`classId` ASC) ,
+  INDEX `fk_obj_class_actor_data_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_obj_class_actor_data_classId` FOREIGN KEY (`classId` ) REFERENCES `obj_class` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_obj_class_actor_data_actorId` FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-10-11: dropping trade module, fixing obj_class_actor_data to NOT NULL columns
+
+DROP TABLE `trade_counteroffer`;
+DROP TABLE `trade_offer`;
+
+ALTER TABLE `obj_class_actor_data` CHANGE `type` `type` ENUM( 'number', 'boolean', 'object', 'string' ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL ,
+CHANGE `value` `value` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+
+
+-- 2011-10-11: apple appstore integration
+
+CREATE TABLE `apple_appstore_payment` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `actorId` INT UNSIGNED NOT NULL ,
+  `shopPurchaseId` INT UNSIGNED ,
+  `appleTransactionId` VARCHAR(100) NOT NULL ,
+  `appleProductId` VARCHAR(100) NOT NULL ,
+  `status` ENUM('paid','handled') NOT NULL ,
+  `receipt` MEDIUMTEXT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `keyAppleTransactionId` (`appleTransactionId` ASC) ,
+  INDEX `fk_apple_appstore_payment_shopPurchaseId` (`shopPurchaseId` ASC) ,
+  INDEX `fk_apple_appstore_payment_actorId` (`actorId` ASC) ,
+  CONSTRAINT `fk_apple_appstore_payment_shopPurchaseId` FOREIGN KEY (`shopPurchaseId` ) REFERENCES `shop_purchase` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_apple_appstore_payment_actorId`FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- 2011-10-14: Gm module tables, shop name to shop identifier
+
+CREATE  TABLE IF NOT EXISTS `gm` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `username` CHAR(16) NOT NULL ,
+  `password` CHAR(40) NOT NULL ,
+  PRIMARY KEY (`actor`, `username`) ,
+  INDEX `fk_gm_actor` (`actor` ASC) ,
+  UNIQUE (`username`) ,
+  CONSTRAINT `fk_gm_actor`
+    FOREIGN KEY (`actor` )
+    REFERENCES `actor` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+CREATE  TABLE IF NOT EXISTS `gm_data` (
+  `actor` INT UNSIGNED NOT NULL ,
+  `property` VARCHAR(50) NOT NULL ,
+  `language` CHAR(2) NOT NULL ,
+  `type` ENUM('number','boolean','object','string') NOT NULL ,
+  `value` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`actor`, `property`, `language`) ,
+  INDEX `fk_gm_data_actor` (`actor` ASC) ,
+  CONSTRAINT `fk_gm_data_actor`
+    FOREIGN KEY (`actor` )
+    REFERENCES `gm` (`actor` )
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+ALTER TABLE `shop` CHANGE `name` `identifier` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+
+
+-- 2011-12-12: Dropping data tables that got moved into membase
+
+DROP TABLE `obj_object_data`;
+DROP TABLE `obj_class_actor_data`;
+DROP TABLE `actor_data`;
+DROP TABLE `gc_node_actor_data`;
+
+
 -- next change, add here.
 
