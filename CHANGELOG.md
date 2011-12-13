@@ -39,6 +39,7 @@ old data getters and setters for this data have been removed. Also, the paramete
 been removed.
 
 The API to create a LivePropertyMap is exposed through:
+
 * obj.getObjectProperties(state, objectId, options, cb)
 * obj.getObjectsProperties(state, objectIds, options, cb)
 * obj.getClassActorProperties(state, classId, actorId, options, cb)
@@ -86,12 +87,13 @@ the future that modules will emit their own events whenever data changes, instea
 ### Time module
 
 A new module called "time" has been introduced to deal with automatic time synchronization between server and client. That means
-that on the client side, every information that is time-based is now supposed to normalize against the client time. This has
-been implemented for TimedValue/TimedNumber, so even if the client and server disagree about the time by 10 minutes, the time
-on the client will display synchronized to the client's own clock. To use this module:
-- server side, be sure to useModule('time')
-- expose its "sync" user command on your command center.
-- on the client side, make sure your build includes this module.
+that on the client side, every bit of information that is time-based is now supposed to normalize against the client time. This
+has been implemented for TimedValue/TimedNumber, so even if the client and server disagree about the time by 10 minutes, the
+time on the client will display synchronized to the client's own clock. To use this module:
+
+* server side, be sure to useModule('time')
+* expose its "sync" user command on your command center.
+* on the client side, make sure your build includes this module.
 
 ### Smaller changes
 
@@ -175,10 +177,10 @@ Version 0.3.0 adds a new build system. It is extremely flexible and customizable
 
 ### Changes:
 
-- When serverCache is enabled, all build targets are built before the HTTP server is opened up. This prevents users from hammering the server when it's not ready yet.
-- The builder is really a framework that allows for many different builders to cooperate. These builders share knowledge on contexts, parsers and post processors.
-- Since less and uglify are now supposed to be provided by the game developer, Mithril no longer has these dependencies. You will have to add these to your game's package.json file.
-- The "mithrilui" module has been completely replaced.
+* When serverCache is enabled, all build targets are built before the HTTP server is opened up. This prevents users from hammering the server when it's not ready yet.
+* The builder is really a framework that allows for many different builders to cooperate. These builders share knowledge on contexts, parsers and post processors.
+* Since less and uglify are now supposed to be provided by the game developer, Mithril no longer has these dependencies. You will have to add these to your game's package.json file.
+* The "mithrilui" module has been completely replaced.
 
 #### Inline build targets
 
@@ -192,26 +194,27 @@ This may optionally be followed by a semicolon. Also, the key may be surrounded 
 Builders are libraries that build files and data.
 
 Mithril comes with a number of builders pre-installed:
-- file (reading from a file path)
-- dir (reads from a directory)
-- path (reads a file or a directory)
-- pathlist (reads from a list of files and/or directories)
-- filecontent (builds the contents of a file)
-- web (builds Mithril pages and manifest files)
-- html5client (builds the Mithril client for HTML5)
-- cfg (outputs configuration values)
+
+* file (reading from a file path)
+* dir (reads from a directory)
+* path (reads a file or a directory)
+* pathlist (reads from a list of files and/or directories)
+* filecontent (builds the contents of a file)
+* web (builds Mithril pages and manifest files)
+* html5client (builds the Mithril client for HTML5)
+* cfg (outputs configuration values)
 
 #### Contexts
 
 Builders can implement support for various contexts. Contexts may have associated file extensions and mimetypes.
 Pre-installed contexts are:
 
-- html (.html, .htm: text/html; charset=utf8)
-- css (.css: text/css; charset=utf8)
-- js (.js: text/javascript; charset=utf8)
-- manifest (text/cache-manifest; charset=utf8)
-- mithrilpage (text/mithrilpage; charset=utf8)
-- url (eg: $web.url(manifest) will output the URL to a generated manifest file)
+* html (.html, .htm: text/html; charset=utf8)
+* css (.css: text/css; charset=utf8)
+* js (.js: text/javascript; charset=utf8)
+* manifest (text/cache-manifest; charset=utf8)
+* mithrilpage (text/mithrilpage; charset=utf8)
+* url (eg: $web.url(manifest) will output the URL to a generated manifest file)
 
 #### Parsers
 
@@ -315,40 +318,41 @@ The "mithrilui" entry has to be completely removed. Renamed the "app" entry to "
 }
 `
 Some notes:
-- If you set up a manifest, but do not set useManifest to true, it will not be exposed to the HTTP server.
-- serverCache is built at Mithril startup. During development, it makes a lot of sense to keep this set to false.
-- compress is gzip compression of the output.
-- Any amount of postprocessors may be registered by developers. The configuration decides which are actually applied.
-- postprocessors may be arrays, in order to apply multiples. Eg: "css": ["tidy", "minify"]
+
+* If you set up a manifest, but do not set useManifest to true, it will not be exposed to the HTTP server.
+* serverCache is built at Mithril startup. During development, it makes a lot of sense to keep this set to false.
+* compress means gzip compression of the output.
+* Any amount of postprocessors may be registered by developers. The configuration decides which are actually applied.
+* postprocessors may be arrays, in order to apply multiples. Eg: "css": ["tidy", "minify"]
 
 
 ## v0.2.0
 
 Version 0.2.0 adds some long awaited features.
 
-- Multi-server support (with zeroconf auto-discovery).
-- Multi-node support (using LearnBoost's cluster library, in the future we'll switch to NodeJS 0.6's cluster).
-- A new messaging system between users and servers (based on zeroconf).
-- A new browser to server communication system (no more Socket.IO).
-- Improved per-user-command hook system (will allow for unauthorized user commands).
-- Improved build system that now allows for $tags(even.in.embedded.files).
-- Integration with Memcached/Membase. Currently applied only to session management.
-- Improved error handling and IO events.
-- Magic data types (in particular: timed values/numbers).
+* Multi-server support (with zeroconf auto-discovery).
+* Multi-node support (using LearnBoost's cluster library, in the future we'll switch to NodeJS 0.6's cluster).
+* A new messaging system between users and servers (based on zeroconf).
+* A new browser to server communication system (no more Socket.IO).
+* Improved per-user-command hook system (will allow for unauthorized user commands).
+* Improved build system that now allows for $tags(even.in.embedded.files).
+* Integration with Memcached/Membase. Currently applied only to session management.
+* Improved error handling and IO events.
+* Magic data types (in particular: timed values/numbers).
 
 Some smaller new changes:
 
-- Colorized logging.
-- Wizcorp's open sourced LocalCache library.
-- Games can be started from any directory, the cwd is automatically adjusted.
-- Fix: the logger did not write to file.
-- Ability to retry a user command. Responses are cached on the server, so a retry will correctly yield the previous response.
-- Custom server-side modules can be referred to with a relative path (eg: "./modules/quest").
+* Colorized logging.
+* Wizcorp's open sourced LocalCache library.
+* Games can be started from any directory, the cwd is automatically adjusted.
+* Fix: the logger did not write to file.
+* Ability to retry a user command. Responses are cached on the server, so a retry will correctly yield the previous response.
+* Custom server-side modules can be referred to with a relative path (eg: "./modules/quest").
 
 BC breaks:
 
-- The current working directory is now the path of the first JS-file, so the reference to the config file will most likely have to be adjusted.
-- Command centers (multi) are now created per package.
-- Client: mithril options now can contain an IO timeout value and defaultHooks.
-- Client: the Giraffe module has been refactored.
+* The current working directory is now the path of the first JS-file, so the reference to the config file will most likely have to be adjusted.
+* Command centers (multi) are now created per package.
+* Client: mithril options now can contain an IO timeout value and defaultHooks.
+* Client: the Giraffe module has been refactored.
 
