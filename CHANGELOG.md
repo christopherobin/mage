@@ -1,5 +1,144 @@
 # Changelog
 
+## v0.4.1
+
+### Sessions
+
+The session module is now more configurable (optionally). The following configuration parameters have been exposed:
+
+* `module.session.ttl` is the session's time-to-live, after having been idle. The format is human readable, eg: 60s, 3m, 1h, 1d. The default is 10m.
+* `module.session.keyLength` is the session key length in number of characters. The default is 16.
+
+### MMRP
+
+Mithril's server-to-server messaging protocol has a configuration setting "server.mmrp.expose.host" that has now become
+optional. You may still use it, to announce to the world what the host is that other servers may connect to. But by default,
+Mithril will now use DNS to resolve the IP of the server it is running on.
+
+### HTTP Server
+
+The HTTP server now has a heartbeat configuration setting for the event stream. This means that every N seconds, even if no
+events are to be sent to the browser, the server responds with a "HB" code. The client will understand this as a heartbeat and
+will reconnect. This mechanism is used to keep the server clean from zombie connections.
+
+Another change in configuration is that the protocol setting has been moved from the "expose" structure, into the main
+"clientHost" configuration. An example for the full configuration:
+
+`
+"clientHost": {
+	"protocol": "http",
+	"transports": {
+		"longpolling": { "heartbeat": 120 }
+	},
+	"bind": { "host": "0.0.0.0", "port": 4242 },
+	"expose": { "host": "zombieboss.rk.dev.wizcorp.jp", "port": 4242 }
+}
+`
+
+## v0.4.0
+
+### Membase / LivePropertyMap
+
+#### Background
+
+We are slowly but surely moving a lot of data out of MySQL, and into alternative storage systems. Membase is an incredibly fast
+persistent key/value storage system, based on the memcache protocol. Considering the relatively small data sizes that individual
+players deal with, we have found it valuable to move a lot of player related data into membase. The main advantage is the ease
+of scaling up the server farm. MySQL is incredibly difficult to scale up into a large amount of servers, yet for membase it's a
+completely transparent issue. Wizcorp has released an open source library to provide virtual memcache/membase transactions in
+a module called [node-memcached-transactions](https://github.com/Wizcorp/node-memcached-transactions). Mithril uses this module
+to issue writes on-commit. This means you can still do a (virtual) rollback after writing, even though membase itself does not
+provide transactions. Mithril makes good use of this, and so as a developer, you should experience the same flexibility as you
+were used to in the previous situation with MySQL.
+
+#### Status
+
+We have not (yet) refactored the entire dataset into Membase. We are currently limiting the effort to user-data only. That means
+that static definitions (quests, shop contents, object classes, etc..), for now, stay in MySQL. Also, some user data found in
+some modules has not yet been refactored to Membase. This should be easy enough however and will be implemented as needed by
+developers in order to receive proper test coverage.
+
+Currently refactored are user data in: actor, gc, giraffe, obj.
+Not yet refactored are: gree, history, msg, persistent, player, gm, shop.
+
+#### The LivePropertyMap class
+
+LivePropertyMaps are the classes that are used to represent what used to be data-tables in MySQL. Whenever you write to these
+objects, the data is automatically synchronized to the client. The client side representation of our modules no longer have to
+take care of data-caches. Note that this automatic synching includes logic for dealing with special data types such as
+TimedNumber and TimedValue. The changing of your properties on the client is exposed through events, so you can tap into
+specific property changes in a very simple way.
+
+On the server, the refactored modules now expose LivePropertyMap instances through alternative functions. Because of this, the
+old data getters and setters for this data have been removed. Also, the parameter for setting properties in obj.addObject() has
+been removed.
+
+The API to create a LivePropertyMap is exposed through:
+
+* obj.getObjectProperties(state, objectId, options, cb)
+* obj.getObjectsProperties(state, objectIds, options, cb)
+* obj.getClassActorProperties(state, classId, actorId, options, cb)
+* obj.getClassesActorProperties(state, classIds, actorId, options, cb)
+* actor.getActorProperties(state, actorId, options, cb)
+* actor.getActorsProperties(state, actorIds, options, cb)
+* gc.getNodeActorProperties(state, nodeId, actorId, options, cb)
+* giraffe.getUserProperties(state, userId, options, cb)
+
+The plural versions of these functions return a key/value map of LivePropertyMap instances, with a logical key that is the ID
+of that which you provide as an array (classIds, actorIds, ...). For a deeper understanding of how this all works, please
+inspect the code of the functions mentioned above.
+
+The options object may contain a property `{ loadAll: true }` that will load every property from Membase. This is generally
+not recommended though. Prefered is: `{ load: ['name', 'xp', 'level'] }` in order to preload specific properties. After that,
+you may use `var value = myPropertyMap.get('name', 'EN')` to retrieve the value (note that this does not require a callback).
+Other exposed functions are `set('name', 'Bob', 'EN');` and `myPropertyMap.del('olddata');`.
+
+#### Advantages for developers
+
+For all the data that sits in Membase, you no longer have to worry about querying multiple times for the same data. The
+node-memcached-transactions module has been made to be 100% efficient in data-reuse. That means for example that requesting the
+same key twice (or more), will only result in a single read. Also, if you write a value to a key, and some time later your code
+ends up doing a read, it will simply yield the previously written value.
+
+The transactional model allows for write operations to be queued, instead of executed. This means: synchronous behavior (ie:
+no callback spaghetti). Reads obviously are still asynchronous.
+
+You can create your own property maps very easily wherever it makes sense. This generally costs you less than 10 lines of code,
+and because Membase is schemaless, you won't have to set up any tables.
+
+#### Disadvantages for developers
+
+Because of the nature of key/value data stores, you will no longer be able to do table-scans for data. If you want a value, you
+will have to know the key that is associated with it. That is not always possible, and workarounds must be implemented for
+these cases. This seems like a real pain, but ends up giving us ultimate performance, and is a sacrifice on a very limited
+code base that we have to be willing to make. In the future, we will have proper APIs to deal with these cases however, so any
+frustration that may exist today, will eventually be taken care of.
+
+### More EventEmitter instances
+
+More and more objects on the client side are becoming EventEmitter instances. This means that they can emit events. Expect in
+the future that modules will emit their own events whenever data changes, instead of having to go through mithril.io.
+
+### Time module
+
+A new module called "time" has been introduced to deal with automatic time synchronization between server and client. That means
+that on the client side, every bit of information that is time-based is now supposed to normalize against the client time. This
+has been implemented for TimedValue/TimedNumber, so even if the client and server disagree about the time by 10 minutes, the
+time on the client will display synchronized to the client's own clock. To use this module:
+
+* server side, be sure to useModule('time')
+* expose its "sync" user command on your command center.
+* on the client side, make sure your build includes this module.
+
+### Smaller changes
+
+* The gree module's shop integration no longer responds with a request to do an HTTP navigation. Instead, a "gree.redirect" event is emitted.
+* The shop module now caches all static data. Before, it used to always hit the database to read this data that never changed.
+* The giraffe module now stores user data on its own live property map, and no longer on actor data.
+* Reliability improvements on the client's IO module, command center and event stream.
+* Because Membase stores objects as JSON serialized objects, a module's sync command will no longer parse this data, but instead use the data as is.
+
+
 ## v0.3.2
 
 ### User commands
@@ -73,10 +212,10 @@ Version 0.3.0 adds a new build system. It is extremely flexible and customizable
 
 ### Changes:
 
-- When serverCache is enabled, all build targets are built before the HTTP server is opened up. This prevents users from hammering the server when it's not ready yet.
-- The builder is really a framework that allows for many different builders to cooperate. These builders share knowledge on contexts, parsers and post processors.
-- Since less and uglify are now supposed to be provided by the game developer, Mithril no longer has these dependencies. You will have to add these to your game's package.json file.
-- The "mithrilui" module has been completely replaced.
+* When serverCache is enabled, all build targets are built before the HTTP server is opened up. This prevents users from hammering the server when it's not ready yet.
+* The builder is really a framework that allows for many different builders to cooperate. These builders share knowledge on contexts, parsers and post processors.
+* Since less and uglify are now supposed to be provided by the game developer, Mithril no longer has these dependencies. You will have to add these to your game's package.json file.
+* The "mithrilui" module has been completely replaced.
 
 #### Inline build targets
 
@@ -90,26 +229,27 @@ This may optionally be followed by a semicolon. Also, the key may be surrounded 
 Builders are libraries that build files and data.
 
 Mithril comes with a number of builders pre-installed:
-- file (reading from a file path)
-- dir (reads from a directory)
-- path (reads a file or a directory)
-- pathlist (reads from a list of files and/or directories)
-- filecontent (builds the contents of a file)
-- web (builds Mithril pages and manifest files)
-- html5client (builds the Mithril client for HTML5)
-- cfg (outputs configuration values)
+
+* file (reading from a file path)
+* dir (reads from a directory)
+* path (reads a file or a directory)
+* pathlist (reads from a list of files and/or directories)
+* filecontent (builds the contents of a file)
+* web (builds Mithril pages and manifest files)
+* html5client (builds the Mithril client for HTML5)
+* cfg (outputs configuration values)
 
 #### Contexts
 
 Builders can implement support for various contexts. Contexts may have associated file extensions and mimetypes.
 Pre-installed contexts are:
 
-- html (.html, .htm: text/html; charset=utf8)
-- css (.css: text/css; charset=utf8)
-- js (.js: text/javascript; charset=utf8)
-- manifest (text/cache-manifest; charset=utf8)
-- mithrilpage (text/mithrilpage; charset=utf8)
-- url (eg: $web.url(manifest) will output the URL to a generated manifest file)
+* html (.html, .htm: text/html; charset=utf8)
+* css (.css: text/css; charset=utf8)
+* js (.js: text/javascript; charset=utf8)
+* manifest (text/cache-manifest; charset=utf8)
+* mithrilpage (text/mithrilpage; charset=utf8)
+* url (eg: $web.url(manifest) will output the URL to a generated manifest file)
 
 #### Parsers
 
@@ -213,40 +353,41 @@ The "mithrilui" entry has to be completely removed. Renamed the "app" entry to "
 }
 `
 Some notes:
-- If you set up a manifest, but do not set useManifest to true, it will not be exposed to the HTTP server.
-- serverCache is built at Mithril startup. During development, it makes a lot of sense to keep this set to false.
-- compress is gzip compression of the output.
-- Any amount of postprocessors may be registered by developers. The configuration decides which are actually applied.
-- postprocessors may be arrays, in order to apply multiples. Eg: "css": ["tidy", "minify"]
+
+* If you set up a manifest, but do not set useManifest to true, it will not be exposed to the HTTP server.
+* serverCache is built at Mithril startup. During development, it makes a lot of sense to keep this set to false.
+* compress means gzip compression of the output.
+* Any amount of postprocessors may be registered by developers. The configuration decides which are actually applied.
+* postprocessors may be arrays, in order to apply multiples. Eg: "css": ["tidy", "minify"]
 
 
 ## v0.2.0
 
 Version 0.2.0 adds some long awaited features.
 
-- Multi-server support (with zeroconf auto-discovery).
-- Multi-node support (using LearnBoost's cluster library, in the future we'll switch to NodeJS 0.6's cluster).
-- A new messaging system between users and servers (based on zeroconf).
-- A new browser to server communication system (no more Socket.IO).
-- Improved per-user-command hook system (will allow for unauthorized user commands).
-- Improved build system that now allows for $tags(even.in.embedded.files).
-- Integration with Memcached/Membase. Currently applied only to session management.
-- Improved error handling and IO events.
-- Magic data types (in particular: timed values/numbers).
+* Multi-server support (with zeroconf auto-discovery).
+* Multi-node support (using LearnBoost's cluster library, in the future we'll switch to NodeJS 0.6's cluster).
+* A new messaging system between users and servers (based on zeroconf).
+* A new browser to server communication system (no more Socket.IO).
+* Improved per-user-command hook system (will allow for unauthorized user commands).
+* Improved build system that now allows for $tags(even.in.embedded.files).
+* Integration with Memcached/Membase. Currently applied only to session management.
+* Improved error handling and IO events.
+* Magic data types (in particular: timed values/numbers).
 
 Some smaller new changes:
 
-- Colorized logging.
-- Wizcorp's open sourced LocalCache library.
-- Games can be started from any directory, the cwd is automatically adjusted.
-- Fix: the logger did not write to file.
-- Ability to retry a user command. Responses are cached on the server, so a retry will correctly yield the previous response.
-- Custom server-side modules can be referred to with a relative path (eg: "./modules/quest").
+* Colorized logging.
+* Wizcorp's open sourced LocalCache library.
+* Games can be started from any directory, the cwd is automatically adjusted.
+* Fix: the logger did not write to file.
+* Ability to retry a user command. Responses are cached on the server, so a retry will correctly yield the previous response.
+* Custom server-side modules can be referred to with a relative path (eg: "./modules/quest").
 
 BC breaks:
 
-- The current working directory is now the path of the first JS-file, so the reference to the config file will most likely have to be adjusted.
-- Command centers (multi) are now created per package.
-- Client: mithril options now can contain an IO timeout value and defaultHooks.
-- Client: the Giraffe module has been refactored.
+* The current working directory is now the path of the first JS-file, so the reference to the config file will most likely have to be adjusted.
+* Command centers (multi) are now created per package.
+* Client: mithril options now can contain an IO timeout value and defaultHooks.
+* Client: the Giraffe module has been refactored.
 

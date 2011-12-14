@@ -699,6 +699,7 @@ CREATE TABLE `apple_appstore_payment` (
   CONSTRAINT `fk_apple_appstore_payment_actorId`FOREIGN KEY (`actorId` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
+
 -- 2011-10-14: Gm module tables, shop name to shop identifier
 
 CREATE  TABLE IF NOT EXISTS `gm` (
@@ -732,6 +733,14 @@ CREATE  TABLE IF NOT EXISTS `gm_data` (
 ENGINE = InnoDB;
 
 ALTER TABLE `shop` CHANGE `name` `identifier` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+
+
+-- 2011-12-12: Dropping data tables that got moved into membase
+
+DROP TABLE `obj_object_data`;
+DROP TABLE `obj_class_actor_data`;
+DROP TABLE `actor_data`;
+DROP TABLE `gc_node_actor_data`;
 
 
 -- next change, add here.
