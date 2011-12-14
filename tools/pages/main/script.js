@@ -3,15 +3,11 @@ $html5client(datatypes);
 $html5client(module.assets);
 $html5client(module.session);
 $html5client(module.shop);
-$html5client(module.giraffe);
 $html5client(module.gc);
 $html5client(module.gm);
-$html5client(module.sns);
 $html5client(module.actor);
 $html5client(module.player);
-$html5client(module.persistent);
 $html5client(module.obj);
-$html5client(module.msg);
 $html5client(module.npc);
 
 $file.bin("../../libtool/jquery-1.7.js");
