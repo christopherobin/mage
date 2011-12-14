@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.4.1
+
+### Sessions
+
+The session module is now more configurable (optionally). The following configuration parameters have been exposed:
+
+* `module.session.ttl` is the session's time-to-live, after having been idle. The format is human readable, eg: 60s, 3m, 1h, 1d. The default is 10m.
+* `module.session.keyLength` is the session key length in number of characters. The default is 16.
+
+### MMRP
+
+Mithril's server-to-server messaging protocol has a configuration setting "server.mmrp.expose.host" that has now become
+optional. You may still use it, to announce to the world what the host is that other servers may connect to. But by default,
+Mithril will now use DNS to resolve the IP of the server it is running on.
+
+### HTTP Server
+
+The HTTP server now has a heartbeat configuration setting for the event stream. This means that every N seconds, even if no
+events are to be sent to the browser, the server responds with a "HB" code. The client will understand this as a heartbeat and
+will reconnect. This mechanism is used to keep the server clean from zombie connections.
+
+Another change in configuration is that the protocol setting has been moved from the "expose" structure, into the main
+"clientHost" configuration. An example for the full configuration:
+
+`
+"clientHost": {
+	"protocol": "http",
+	"transports": {
+		"longpolling": { "heartbeat": 120 }
+	},
+	"bind": { "host": "0.0.0.0", "port": 4242 },
+	"expose": { "host": "zombieboss.rk.dev.wizcorp.jp", "port": 4242 }
+}
+`
+
 ## v0.4.0
 
 ### Membase / LivePropertyMap
