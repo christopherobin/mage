@@ -179,38 +179,11 @@ function addNode(type, cb) {
 
     content.type = type;
 
-	mithril.gc.gm.addNodes([content], function (error, newNodes) {
+	mithril.gc.addNodes([content], function (error, newNodes) {
 		if (error) {
 			return console.log('Could not add node(s) : ', content);
 		}
-
-		content.id = newNodes[0].id;
-		content.identifier = newNodes[0].identifier;
-		content.cout = content.cout || {};
-		content.data = nodeDataToObject(content.data);
-
-		window.app.creator.nodes.nodesMap[content.id] = content;
-		window.app.creator.nodes.nodesArr.push(content);
-
-		if(window.app.creator.nodes.nodesMap[content.id].type) {
-			window.app.creator.renderer.appendNode(window.app.creator.nodes.nodesMap[content.id], null, null, layer);
-		}
-
-		if(cb) {
-			cb(content.id);
-		}
-
-
-		if (content.cout.parent) {
-			window.app.creator.nodeClick($('.node[data-id="' + content.cout.parent.any[0] + '"]'));
-		} else if ($('.curNode').length == 1) {
-			$('.curNode').click();
-		} else {
-			var parentNode = ($('.node[data-id="' + parentId + '"]').length > 0) ? $('.node[data-id="' + parentId + '"]') : null;
-			window.app.creator.renderer.addLayer(parentNode, layer.jNode);
-		}
-
-		$('#dialogBox').dialog('close');
+		// must make sure "connect to node" function still works
 	});
 }
 
@@ -261,14 +234,13 @@ function editNode(node, raw) {      // edit node function
         }
     }
 
-	mithril.gc.gm.editNodes([node], function (error) {
+	mithril.gc.editNodes([node], function (error) {
 		if (error) {
 			console.log('Could not edit node : ', node);
 			window.app.creator.nodes.nodesMap[node.id] = temp;		// revert to the original if failed
 			updateNodeArray(node.id, temp);
 		} else {
-
-			node.data = nodeDataToObject(node.data);
+//			node.data = nodeDataToObject(node.data);
             $('#dialogBox').dialog('close');
 //            hideProgress();
             // TODO:: need to refresh the node display with the newly edited data
@@ -299,7 +271,7 @@ function deleteNodes(node, deleteType) {
 
     if(confirm("Are you sure you want to delete this?")) {
 
-		mithril.gc.gm.delNodes(nodes, function (error) {
+		mithril.gc.delNodes(nodes, function (error) {
 			var parentId;
 			if (error) {
 				return console.log('Could not delete nodes! ', nodes);
@@ -363,7 +335,6 @@ function nodeDataToObject(data) {
 				break;
 
 			case 'object':
-				console.log(prop.value);
 				try {
 					propData.value = JSON.parse(prop.value);
 				} catch (e) {
@@ -492,6 +463,8 @@ function detachConnection(con) {
 
 
 	var node = window.app.creator.nodes.nodesMap[source];
+
+
 /*
 	inout = (inout === 'output') ? 'cout' : 'cin';
 
@@ -511,9 +484,8 @@ function detachConnection(con) {
 		delete node[inout][cType];
 	}
 */
-	console.log(node);
 
-	window.mithril.gc.gm.editNodes([node], function (error) {
+	window.mithril.gc.editNodes([node], function (error) {
 		if (error) {
 			console.warn('Could not delete connection for node : ', node);
 		}
@@ -524,13 +496,13 @@ function detachConnection(con) {
         delConnection.onState = tEndpoint.attr('data-onstate');
 		delConnection.group   = count;
 
-		mithril.gc.gm.delInConnectors([delConnection], function (error) {
+		mithril.gc.delInConnectors([delConnection], function (error) {
 			if (error) {
 				console.log('Could not delete connection. ', delConnection);
 			}
 		});
     }else {
-		mithril.gc.gm.delOutConnectors([delConnection], function (error) {
+		mithril.gc.delOutConnectors([delConnection], function (error) {
 			if (error) {
 				console.log('Could not delete connection. ', delConnection);
 			}
@@ -561,7 +533,7 @@ function createConnection(con) {
 
     var inout     = (sEndpoint.attr('data-inout') == 'input') ? 'cin' : 'cout';
 
-    var pNode = { node: target.toString() };
+    var pNode = { node: target };
     var state = comp.state;
 
     if(state)
@@ -585,7 +557,7 @@ function createConnection(con) {
         window.app.creator.nodes.nodesMap[source][inout][cType][state][count].push(target);
 
 		var newConnection = { node: source, type: cType, onState: state, target: target, group: count };
-		mithril.gc.gm.addInConnectors([newConnection], function (error) {
+		mithril.gc.addInConnectors([newConnection], function (error) {
 			if (error) {
 				console.log('Unable to create connection : ', newConnection);
 			}
@@ -608,7 +580,7 @@ function createConnection(con) {
         node[inout][cType][state].push(parseInt(target, 10));
 		console.log('node >>> ', node);
 
-		mithril.gc.gm.editNodes([node], function (error) {
+		mithril.gc.editNodes([node], function (error) {
 			if (error) {
 				console.warn('Unable to create connection : ', node[inout][cType][state]);
 				return false;
@@ -788,11 +760,13 @@ function uploadFile() {
         hideProgress();
     }, false);
 
+	// TODO: remove baseDir (from php)
     xhr.open("post", baseDir + "/csv.php", true);
     xhr.send(fd);
 }
 
 function getSaves() {
+	// TODO: remove baseDir (from php)
     var data = {
         url : baseDir + '/csv.php?action=getsaves',
         type: 'GET',

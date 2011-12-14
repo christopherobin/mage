@@ -8,7 +8,7 @@
 //*********************************************************************************************************//
 
 function Cardgame() {
-//    Game.call(this);
+    Game.call(this);
 	var _this     = this;
 
 
@@ -166,8 +166,8 @@ function Cardgame() {
 		this.setupReplacements();
 
 		_this.renderer.init(this, {});
-
 		_this.renderer.addLayer();
+
 	};
 
 
@@ -187,7 +187,7 @@ function Cardgame() {
 		$('.viewToolCreator .nodeData[data-replacement="spirit"]').append(selectStart + spirits + selectEnd);
 		$('.viewToolCreator .nodeData[data-replacement="bonusSpirits"]').append(selectStart + '<option></option>' + spirits + selectEnd);
 
-		var opponents = '<div class="opponent"><select class="dataValue" data-id="spirit">' + spirits + '</select>';
+		var opponents = '<div class="opponent" style="display: none;"><select class="dataValue" data-id="spirit">' + spirits + '</select>';
 		opponents += ' Lvl <input type="number" class="dataValue" data-id="level" /></div>';
 
 		$('.viewToolCreator .nodeData[data-replacement="opponents"]').append(opponents);
@@ -200,7 +200,7 @@ function Cardgame() {
 			var asset  = assets[i];
 			var regex  = /^world\/(.*)/g;
 
-			var match    = expregex.exec(asset.fullIdent);
+			var match    = regex.exec(asset.fullIdent);
 
 			if (match) {
 				if (!this.backgrounds[match[1]]) {
@@ -1125,4 +1125,4 @@ function Cardgame() {
 	}
 }
 
-//Cardgame.prototype = Object.create(Game.prototype);
+Cardgame.prototype = Object.create(Game.prototype);

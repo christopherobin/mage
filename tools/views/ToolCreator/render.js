@@ -201,7 +201,6 @@ Render.renderLabels = function(layer) {
 
 Render.appendNode = function(node, options, siblings, layer) {
 	var type = '';
-	//var html = $('#nodeGraphTemplate').clone();
 	var html = $('#nodeGraphTemplate').clone().show();			// use templates and don't use show... it's slow as peanut butter
 	$(html).attr('id', node.type + node.id);
 	$(html).attr('data-id', node.id);
@@ -211,11 +210,9 @@ Render.appendNode = function(node, options, siblings, layer) {
 //	var nodeCount = $('.node[data-type="' + node.type + '"]').length + 1;
 
 	if(handler) {
-//		$(html).find('img').attr('src', handler.icon);
 		$(html).find('.nodeType').html(node.type);
 		detail = Render.creator.nodes.getNodeRepresentation(node, { siblings: siblings});
 		if(!detail || detail == '')
-//			detail = node.type + ' -- ' + nodeCount;
 			detail = node.type + ' (' + node.id + ')';
 	}else
 		detail = 'No handler found for node type : ' + node.type;
@@ -230,7 +227,6 @@ Render.appendNode = function(node, options, siblings, layer) {
 
 	Render.attachEndpoints(appendedNode, layer);
 	toggleNodeBtns(appendedNode);
-//	Render.renderLabels();
 }
 
 Render.attachEndpoints = function(jNode, layer) {
@@ -618,3 +614,43 @@ Render.resizeLayer = function(layer) {
 	$('.curLayer').removeClass('curLayer');
 	layer.addClass('curLayer');
 }
+
+
+// render stuff based on events
+
+mithril.io.on('gc.nodesAdded', function (path, params, nodes) {
+	var parentId = $('.curNode').attr('data-id');
+	var curLayer = $('.curLayer');
+
+	console.log('nodes added , ', nodes);
+	for (var i = 0, len = nodes.length; i < len; i += 1) {
+		var node = nodes[i];
+
+		window.app.creator.nodes.nodesMap[node.id] = node;
+		window.app.creator.nodes.nodesArr.push(node);
+
+
+		console.log('node ', node);
+		if (node.cout && node.cout.parent && node.cout.parent.any) {
+			if (node.cout.parent.any[0] === parentId) {
+				Render.appendNode(node, null, null, curLayer);
+			}
+		}
+
+/*
+		if (node.cout.parent) {
+			window.app.creator.nodeClick($('.node[data-id="' + content.cout.parent.any[0] + '"]'));
+		} else if ($('.curNode').length == 1) {
+			$('.curNode').click();
+		} else {
+			var parentNode = ($('.node[data-id="' + parentId + '"]').length > 0) ? $('.node[data-id="' + parentId + '"]') : null;
+			Render.addLayer(parentNode, layer.jNode);
+		}
+*/
+
+
+
+	}
+
+	$('#dialogBox').dialog('close');
+});

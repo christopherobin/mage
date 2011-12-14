@@ -3,19 +3,15 @@ $html5client(datatypes);
 $html5client(module.assets);
 $html5client(module.session);
 $html5client(module.shop);
-$html5client(module.giraffe);
 $html5client(module.gc);
 $html5client(module.gm);
-$html5client(module.sns);
 $html5client(module.actor);
 $html5client(module.player);
-$html5client(module.persistent);
 $html5client(module.obj);
-$html5client(module.msg);
 $html5client(module.npc);
 
 $file.bin("../../libtool/jquery-1.7.js");
-$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.min.js");
+$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.js");
 $file.bin("../../libtool/jquery.contextMenu.js");
 $file.bin("../../libtool/jquery.jsPlumb-1.3.3-all.js");
 $file.bin("../../libtool/tool.js");
@@ -36,6 +32,16 @@ window.mithril.loader.on('main.loaded', function () {
 	$('.btn_toview').click(function () {
 		var view = $(this).attr('data-target');
 		window.viewport.change(view);
+	});
+
+	$('#loginHolder #user').focus();
+
+	$('#loginHolder input').keypress(function (event) {
+		if (event.which === 13) {
+			$('#loginHolder #login').click();
+			event.preventDefault();
+			return false;
+		}
 	});
 
 	// TODO -- io is now loaded whenever I want, so I don't need this ajax stuff anymore

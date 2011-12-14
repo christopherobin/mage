@@ -7,19 +7,47 @@
 //
 //*********************************************************************************************************//
 
-function Nodes() {
+function Nodes(nodes) {
 	this.nodesMap  = {};
-	this.nodesArr  = window.mithril.gc.filterNodes();
+	this.nodesArr  = nodes;
+	this.coutMap   = {};
+	this.rcoutMap  = {};
 	this.types     = {};
 
 	var len = this.nodesArr.length;
 
+	// build various quick lookups
 	for (var i = 0; i < len; i++) {
 		var node = this.nodesArr[i];
 		this.nodesMap[node.id] = node;
 		if (!node.cout) {
 			node.cout = {};
-		}
+		}/* else {
+
+			for (var ctype in node.cout) {
+				var states = node.cout[ctype];
+
+				for (var state in states) {
+					var targets = node.cout[ctype][state];
+
+					for (var j = 0, jlen = targets.length; j < jlen; j++) {
+						if (!rcoutMap[ctype]) {
+							rcoutMap[ctype] = {};
+						}
+
+						if (!rcoutMap[ctype][state]) {
+							rcoutMap[ctype][state] = {};
+						}
+
+						if (!rcoutMap[ctype][state][targets[i]]) {
+							rcoutMap[ctype][state][targets[i]] = [];
+						}
+
+						rcoutMap[ctype][state][targets[i]].push(node.id);
+					}
+				}
+			}
+		}  */
 	}
 }
 
@@ -56,6 +84,20 @@ Nodes.prototype.unserialize = function (obj, cb) {
 	var form = $('.nodetemplate[data-type="' + type + '"]').clone().removeClass('nodetemplate');
 
 
+	for (var i = 0, len = data.length; i < len; i++) {
+		var property = data[i].property;
+		var queryString = '.nodeData[data-property="' + property + '"]';
+		if (data[i].language) {
+			queryString += '[data-language="' + data[i].language + '"]';
+		}
+
+		var dataField   = form.find(queryString);
+		var required    = (dataField.attr('data-required') === 'true');
+
+		this.setPropertyData(type, data[i], dataField, form);
+	}
+
+/*
 	for (var property in data) {
 		var curProperty = data[property];
 
@@ -73,6 +115,7 @@ Nodes.prototype.unserialize = function (obj, cb) {
 		}
 	}
 
+*/
 	return form;
 };
 
@@ -148,7 +191,6 @@ Nodes.prototype.getPropertyData = function (objType, field) {
 
 Nodes.prototype.setPropertyData = function (objType, data, field, form) {
 	var type    = field.attr('data-type');
-	var eleType = field.attr('data-formtype');
 	var dataEle = field.find('.dataValue');
 
 
@@ -173,6 +215,7 @@ Nodes.prototype.setPropertyData = function (objType, data, field, form) {
 			break;
 
 		case 'defaultSelect':
+			console.log(data);
             field.find('.dataValue option[value="' + data.value + '"]').attr('selected', true);
 			break;
 

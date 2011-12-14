@@ -1,11 +1,25 @@
-function ViewToolCreator(app, elm) {
+(function () {
+	var mithril = window.mithril;
+	var viewport = window.viewport;
+	
+	var view = {};
+	
+	var elm = viewport.getViewElement("tool_creator");
+	
+	viewport.setViewHandler({
+		name: "tool_creator",
+		obj: view,
+		elm: elm
+	});
+	
+	var origin = 'http://$cfg(server.clientHost.expose.host):$cfg(server.clientHost.expose.port)';
 
-	this.onbeforepaint = function (view) {
+
+	view.onbeforepaint = function (view) {
 		$('#nav .btn_creator').css({ color: 'white', background: 'black', "font-weight": 'bold' });
 
 		var childTree;
 
-		var baseDir        = 'http://$cfg(server.expose.host):$cfg(server.expose.port)/creator';
 		var nodeHandler    = {};
 		var renderFlag     = false;
 		var popupType      = 'normal';
@@ -21,29 +35,33 @@ function ViewToolCreator(app, elm) {
 
 		var creator        = window.app.creator = new Cardgame();			// instantiate creator variable with whatever game class you're using
 
-		window.mithril.gc.gm.sync(function (error) {
+		window.mithril.gc.gmsync(function (error, nodes) {
 			if (!error) {
 
-				creator.renderer   = Object.create(Render);							// TODO: rewrite this to follow mithril design patterns
-				creator.nodes      = new Nodes();
+				creator.nodes      = new Nodes(nodes);
 				creator.graphHdlr  = new Graph(connectionTypes);
 
 
 				creator.curParent;
 				creator.curType;
 
-				$js(module.gm.nodetypes)							// Include the nodetype files. The nodetypes will register themselves in creator.nodes.types
+				window.mithril.assets.getAssetMaps([], function (error, maps) {
+					window.app.creator.assetMaps = maps;
+					console.log('assets', window.app.creator.assetMaps);
+					$config("module.gm.nodetypes");							// Include the nodetype files. The nodetypes will register themselves in creator.nodes.types
 
-				creator.setup();
+					creator.renderer   = Object.create(Render);				// TODO: rewrite this to follow mithril design patterns
+					creator.setup();
+				});
 			}
 		}); 
 	};
 	
-	this.onafterpaint = function (view) {
+	view.onafterpaint = function (view) {
 		
 	};
 	
-	this.onclose = function () {
+	view.onclose = function () {
 		$('#nav .btn_creator').css({ color: 'white', background: 'gray', "font-weight": 'normal' });
 	};
 
@@ -87,4 +105,4 @@ function ViewToolCreator(app, elm) {
 
 		return params;
 	}
-}
+}());
