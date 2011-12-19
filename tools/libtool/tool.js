@@ -7,11 +7,10 @@ function Tool(options) {
 	this.init = function (cb) {
 		this.views	      = window.viewport;
 		this.viewport     = document.getElementById("viewport");
-//		this.ui		      = new UiManager(_this);
 
 		// Load gm modules
 		this.mithril      = window.mithril;
 
 		cb();
-	}
+	};
 }

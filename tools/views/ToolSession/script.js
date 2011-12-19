@@ -2,6 +2,7 @@
 
 	var mithril = window.mithril;
 	var viewport = window.viewport;
+	var curEditDlg;
 	
 	var view = {};
 	
@@ -102,6 +103,8 @@
 		} else {
 			par.find('.dialog').toggle(300);
 		}
+
+		scroll(0, par.position().top);
 	});
 
 
@@ -116,13 +119,19 @@
 
 			// Load player data
 			mithril.actor.getActorData(actorId, function (error, data) {
-				if (error)
-					return alert('Could not retrieve player data.');
-
-				for (var attr in data.data) {
-					editDlg.find('input[data-property="' + attr + '"]').val(getValue(data.data[attr]));
+				if (error) {
+					return console.warn('Could not retrieve player data.');
 				}
 
+				var input = '';
+
+				for (var attr in data) {
+					var type = typeof data[attr];
+					
+					input += generatePropField(attr, type, data[attr]);
+				}
+
+				editDlg.prepend(input);
 				par.append(editDlg);
 				editDlg.toggle(300);
 			});
@@ -130,7 +139,48 @@
 		} else {
 			par.find('.dialog').toggle(300);
 		}
+
+		var scrollheight = par.position().top + 60;
+		window.setTimeout(function () { scroll(0, scrollheight); }, 310);
 	});
+
+
+	function generatePropField(attr, type, data) {
+		var input = '';
+		var prop = '<div class="propName">' + attr + '<button class="removeProperty">X</button></div>';
+
+		input += '<div class="dataField">';
+
+		switch (type) {
+			case 'number':
+				input += prop + ' <input type="number" data-type="number" data-property="';
+				input += attr + '" value="' + data + '" />';
+				break;
+
+			case 'string':
+				input += prop + ' <input type="text" data-type="string" data-property="';
+				input += attr + '" value="' + data + '" />';
+				break;
+
+			case 'boolean':
+				input += prop + '<input type="checkbox" data-type="bool" data-property="';
+				input += attr + '" ' + ((data) ? 'checked' : '') + ' />';
+				break;
+
+			case 'object':
+				input +=  prop + '<textarea rows="4" cols="55" data-type="object" data-property="' + attr + '">';
+				input += JSON.stringify(data) + '</textarea>';
+				break;
+
+			default:
+				break;
+		}
+
+		input += '</div>';
+
+		return input;
+	}
+
 
 
 	$('.deletePlayerBtn').live('click', function (e) {
@@ -152,16 +202,15 @@
 		var player = $(this).parents('.playerHolder');
 		var id     = player.attr('data-id');
 		var dialog = $(this).parents('.dialog');
-		var params = getParams('player', dialog);
+		var data   = getParams('player', dialog);
 
-		mithril.player.editPlayer({ id: id, data: params }, function (error) {
+		mithril.actor.editActor(id, data, function (error) {
 			var msg;
 
 			if (error) {
 				msg = $('<div class="error" style="display: none;">Error on Save!</div>');
 			} else {
 				msg = $('<div class="updated" style="display: none;">Saved!</div>');
-
 			}
 
 			dialog.append(msg);
@@ -188,6 +237,48 @@
 		return false;
 	});
 
+
+	$('.addProperty').live('click', function (e) {
+		var editDlg     = $(this).parents('.dialog');
+		curEditDlg      = editDlg;
+		var propertyDlg = $('#addPropertyDlg').clone().show();
+		$('.viewToolSession').append(propertyDlg);
+		$(this).attr('disabled', true);
+	});
+
+
+	$('.removeProperty').live('click', function (e) {
+		$(this).parents('.dataField').remove();
+	});
+
+
+	$('#addPropertyDlg select').live('change', function (e) {
+		var dlg = $(this).parents('#addPropertyDlg');
+		var type = $(this).find('option:selected').val();
+		dlg.find('.value').hide();
+		dlg.find('.value[data-type="' + type + '"]').show();
+	});
+
+	$('.cancelAddProperty').live('click', function (e) {
+		$(this).parents('#addPropertyDlg').remove();
+		curEditDlg.find('.addProperty').removeAttr('disabled');
+	});
+
+
+	$('.confirmAddProperty').live('click', function (e) {
+		var dlg = $(this).parents('#addPropertyDlg');
+		var property = dlg.find('input[data-id="property"]').val();
+		var type = dlg.find('select[data-id="type"] option:selected').val();
+		var value = dlg.find('.value[data-type="' + type + '"] input, .value[data-type="' + type + '"] textarea').val();
+		if (type === 'boolean') {
+			value = (value === 'true');
+		}
+
+		var ele = generatePropField(property, type, value);
+		curEditDlg.find('.dataField').filter(':last').after(ele);
+		curEditDlg.find('.addProperty').removeAttr('disabled');
+		dlg.remove();
+	});
 
 	$(btn_addGm).click(function () {
 		document.getElementById('gmUsername').value = '';
@@ -337,31 +428,33 @@
 	}
 
 	function getParams(type, dialog) {
-		var params = {};
-		dialog.find('input').each(function () {
+		var params = [];
+		dialog.find('input, textarea').each(function () {
 			var property = $(this).attr('data-property');
 			var type     = $(this).attr('data-type');
 			var value    = $(this).val();
 			switch (type) {
 				case 'number':
-					params[property] = parseInt(value);
+					params.push({ property: property, value: parseInt(value) });
 					break;
 
 				case 'object':
-					if (property === 'collectionsComplete' && value === '') {
-						value = [];
-					} else if (property === 'lastQuestId' && value === '') {
-						value = '';
-					} else {
-						value = JSON.parse(value);
-					}
+					params.push({ property: property, value: JSON.parse(value) });
+					break;
 
-					params[property] = value;
+				case 'bool':
+					params.push({ property: property, value: (value == 'true') });
 					break;
 
 				case 'string':
 				default:
-					params[property] = value;
+					var param = { property: property, value: value };
+					var lang = $(this).attr('data-language');
+					if (lang !== '') {
+						param.language = lang;
+					}
+
+					params.push(param);
 					break;
 			}
 		});

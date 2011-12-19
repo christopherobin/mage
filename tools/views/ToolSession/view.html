@@ -33,6 +33,34 @@
 	<button class="editGmBtn">Edit</button><button class="deleteGmBtn">Delete</button>
 </div>
 
+<div id="addPropertyDlg" style="display: none;">
+	<div class="propName">Property</div>
+	<input type="text" data-id="property" />
+
+	<div class="propName">Type</div>
+	<select data-id="type">
+		<option value="number">number</option>
+		<option value="string">string</option>
+		<option value="boolean">boolean</option>
+		<option value="object">object</option>
+	</select>
+
+
+	<div class="propName">Value</div>
+	<div class="value" data-type="number"><input type="number" data-id="value" data-type="number" /></div>
+	<div class="value" data-type="string" style="display: none;"><input type="text" data-id="value" data-type="string" /></div>
+	<div class="value" data-type="boolean" style="display: none;">
+		<input type="checkbox" data-id="value" data-type="boolean" value="true" />
+	</div>
+	<div class="value" data-type="object" style="display: none;">
+		<textarea data-id="value" rows="4" cols="60" data-type="object"></textarea>
+	</div>
+	<button class="confirmAddProperty">Add</button>
+	<button class="cancelAddProperty">Cancel</button>
+</div>
+
 <div id="editPlayerDialog" class="dialog ldialog" style="display: none;">
-	<button class="editPlayerBtn">Edit</button><button class="deletePlayerBtn">Delete</button>
+	<br /><button class="addProperty">Add Property</button>
+	<br /><button class="editPlayerBtn">Save</button>
+	<!-- <button class="deletePlayerBtn">Delete</button> -->
 </div>
