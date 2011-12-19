@@ -150,7 +150,7 @@ Nodes.prototype.getPropertyData = function (objType, field) {
 			});
 
 			if (test.length === 0) {
-				console.log('Property ' + propertyName + ' does not have any input with a value of "true".');
+				console.warn('Property ' + propertyName + ' does not have any input with a value of "true".');
 				return;
 			}
 
@@ -215,7 +215,6 @@ Nodes.prototype.setPropertyData = function (objType, data, field, form) {
 			break;
 
 		case 'defaultSelect':
-			console.log(data);
             field.find('.dataValue option[value="' + data.value + '"]').attr('selected', true);
 			break;
 
@@ -239,6 +238,14 @@ Nodes.prototype.setPropertyData = function (objType, data, field, form) {
 Nodes.prototype.getNodeRepresentation = function (node, params) {
 	var type = node.type;
 	var desc = type + ' (' + node.id + ') ';	// default if nothing else is defined
+
+	if (window.app.language) {
+		if (!params) {
+			params = {};
+		}
+
+		params.language = window.app.language;
+	}
 
 	if (this.types[type].getNodeRepresentation) {
 		desc = this.types[type].getNodeRepresentation(node, params);

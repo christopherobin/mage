@@ -1,5 +1,6 @@
 function initApp(creator) {
     window.app.creator.renderer.init(renderOptions);
+	var viewTypes = app.creator.config.viewTypes;
 
     for(var types in viewTypes){
             $('#viewButtons').append('<button class="viewType" data-id="' + types + '">' + types + '</button>');
@@ -255,7 +256,7 @@ function deleteNodes(node, deleteType) {
     if(node) {
         nodes = [node.id];
         if(deleteType === 'allChilds') {
-            var descendents = creator.getDescendents(node.id, [], {});
+            var descendents = app.creator.getDescendents(node.id, [], {});
             nodes = nodes.concat(descendents);
         }
     } else {
@@ -272,30 +273,9 @@ function deleteNodes(node, deleteType) {
     if(confirm("Are you sure you want to delete this?")) {
 
 		mithril.gc.delNodes(nodes, function (error) {
-			var parentId;
 			if (error) {
 				return console.log('Could not delete nodes! ', nodes);
 			}
-
-			for(var i = 0; i < nodes.length; i++) {
-				var node = window.app.creator.nodes.nodesMap[nodes[i]];
-				if(node && node.cout && node.cout.parent && node.cout.parent.any) {
-					parentId = node.cout.parent.any[0];
-				}
-
-				deleteNodeFromLists(nodes[i]);
-				//should I remove all references on delete? or just leave them be till they're cleaned up on refresh?
-				//removeAllReferences(nodes[i], true);
-			}
-
-			if($('.curNode').length == 1) {
-				window.app.creator.nodeClick($('.curNode'));
-			} else {
-				var layer = $('.layer').has('.node[data-id="' + parentId + '"]');
-				var parentNode = ($('.node[data-id="' + parentId + '"]').length > 0) ? $('.node[data-id="' + parentId + '"]') : null;
-				window.app.creator.renderer.addLayer(parentNode, layer);
-			}
-
 	        $('#deleteDialog').dialog('close');
 		});
     }
@@ -365,18 +345,16 @@ function updateNodeArray(id, node) {
 }
 
 function deleteNodeFromLists(id) {
-    window.app.creator.nodes.nodesArr = window.app.creator.nodes.nodesArr.filter(function(node) { return node.id != id; });
+//    window.app.creator.nodes.nodesArr = window.app.creator.nodes.nodesArr.filter(function(node) { return node.id != id; });
     delete window.app.creator.nodes.nodesMap[id];
 
-/*
     for(var i = 0, len = window.app.creator.nodes.nodesArr.length; i < len; i++) {
-        if(window.app.creator.nodes.nodesArr[i].id == id) {
+        if(window.app.creator.nodes.nodesArr[i].id === id) {
             window.app.creator.nodes.nodesArr.splice(i, 1);
             len--;
             break;
         }
     }
-*/
 }
 
 
@@ -406,33 +384,36 @@ function removeAllReferences(id) {
     }
 }
 
-function removeReference(source, target, inout, ctype) {
+function removeReference(source, target, inout, ctype, state) {
     var type = [];
 	var node = window.app.creator.nodes.nodesMap[source];
+	inout    = (inout === 'output') ? 'cout' : 'cin';
+	
     if(node && node[inout] && node[inout][ctype]) {
         type = node[inout][ctype];
 	}
 
 
+	if (inout === 'cout') {
+		if(node.cout[ctype] && node.cout[ctype][state]) {
+			var outs = node.cout[ctype][state];
 
-	if (inout === 'output') {
-		var outs = node.cout[cType][state];
-
-		for (var i = 0, len = outs.length; i < len; i++) {
-			if (outs[i] == target) {
-				outs.splice(i, 1);
+			for (var i = 0, len = outs.length; i < len; i++) {
+				if (outs[i] == target) {
+					outs.splice(i, 1);
+				}
 			}
-		}
 
-		if (outs.length < 1) {
-			delete outs;
+			if (outs.length < 1) {
+				delete outs;
+			}
 		}
 	} else {
 		// TODO -- cin connectors
 	}
 
-    if(Object.keys(node[inout][cType]).length < 1) {
-        delete node[inout][cType];
+    if(Object.keys(node[inout][ctype]).length < 1) {
+        delete node[inout][ctype];
     }
 }
 
@@ -459,7 +440,7 @@ function detachConnection(con) {
     var state      = comp.state;
     var count      = sEndpoint.attr('data-count');
     var cType      = sEndpoint.attr('data-cType');
-    removeReference(source, target, inout, cType);
+    removeReference(source, target, inout, cType, state);
 
 
 	var node = window.app.creator.nodes.nodesMap[source];
@@ -578,7 +559,6 @@ function createConnection(con) {
 		}
 
         node[inout][cType][state].push(parseInt(target, 10));
-		console.log('node >>> ', node);
 
 		mithril.gc.editNodes([node], function (error) {
 			if (error) {

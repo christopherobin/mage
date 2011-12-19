@@ -508,7 +508,7 @@ $(function() {
     });
 
     $('.viewType').live('click', function(event, ui) {
-        viewType = $(this).data('id');
+        app.creator.viewType = $(this).data('id');
         changeView(window.app.creator.nodes.nodesMap[curParent]);
     });
 
@@ -524,7 +524,7 @@ function changeView(node) {
     else
         curType = undefined;
 
-    viewMode = viewTypes[viewType][((node && node.type) ? node.type : viewType)][0];
+    viewMode = viewTypes[app.creator.viewType][((node && node.type) ? node.type : app.creator.viewType)][0];
     renderFlag = true;
 //  jsPlumb.removeEveryEndpoint();
     $('#nodeCanvas').empty();

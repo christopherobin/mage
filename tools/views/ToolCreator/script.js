@@ -33,24 +33,23 @@
 		var nodeListArr    = [];
 		var curNodes       = {};
 
-		var creator        = window.app.creator = new Cardgame();			// instantiate creator variable with whatever game class you're using
+		var creator        = new Cardgame();
+		window.app.creator = creator;
 
 		window.mithril.gc.gmsync(function (error, nodes) {
 			if (!error) {
 
 				creator.nodes      = new Nodes(nodes);
-				creator.graphHdlr  = new Graph(connectionTypes);
-
 
 				creator.curParent;
 				creator.curType;
 
 				window.mithril.assets.getAssetMaps([], function (error, maps) {
 					window.app.creator.assetMaps = maps;
-					console.log('assets', window.app.creator.assetMaps);
-					$config("module.gm.nodetypes");							// Include the nodetype files. The nodetypes will register themselves in creator.nodes.types
+					$config("module.gm.nodetypes");
 
-					creator.renderer   = Object.create(Render);				// TODO: rewrite this to follow mithril design patterns
+					creator.graphHdlr  = new Graph(creator.config.connectionTypes);
+					creator.renderer   = Object.create(Render);
 					creator.setup();
 				});
 			}

@@ -115,7 +115,7 @@
 			editDlg[0].style.display = 'none';
 
 			// Load player data
-			mithril.player.getPlayerData(actorId, function (error, data) {
+			mithril.actor.getActorData(actorId, function (error, data) {
 				if (error)
 					return alert('Could not retrieve player data.');
 
