@@ -1,5 +1,6 @@
 function initApp(creator) {
     window.app.creator.renderer.init(renderOptions);
+	var viewTypes = app.creator.config.viewTypes;
 
     for(var types in viewTypes){
             $('#viewButtons').append('<button class="viewType" data-id="' + types + '">' + types + '</button>');
@@ -179,38 +180,11 @@ function addNode(type, cb) {
 
     content.type = type;
 
-	mithril.gc.gm.addNodes([content], function (error, newNodes) {
+	mithril.gc.addNodes([content], function (error, newNodes) {
 		if (error) {
 			return console.log('Could not add node(s) : ', content);
 		}
-
-		content.id = newNodes[0].id;
-		content.identifier = newNodes[0].identifier;
-		content.cout = content.cout || {};
-		content.data = nodeDataToObject(content.data);
-
-		window.app.creator.nodes.nodesMap[content.id] = content;
-		window.app.creator.nodes.nodesArr.push(content);
-
-		if(window.app.creator.nodes.nodesMap[content.id].type) {
-			window.app.creator.renderer.appendNode(window.app.creator.nodes.nodesMap[content.id], null, null, layer);
-		}
-
-		if(cb) {
-			cb(content.id);
-		}
-
-
-		if (content.cout.parent) {
-			window.app.creator.nodeClick($('.node[data-id="' + content.cout.parent.any[0] + '"]'));
-		} else if ($('.curNode').length == 1) {
-			$('.curNode').click();
-		} else {
-			var parentNode = ($('.node[data-id="' + parentId + '"]').length > 0) ? $('.node[data-id="' + parentId + '"]') : null;
-			window.app.creator.renderer.addLayer(parentNode, layer.jNode);
-		}
-
-		$('#dialogBox').dialog('close');
+		// must make sure "connect to node" function still works
 	});
 }
 
@@ -261,14 +235,13 @@ function editNode(node, raw) {      // edit node function
         }
     }
 
-	mithril.gc.gm.editNodes([node], function (error) {
+	mithril.gc.editNodes([node], function (error) {
 		if (error) {
 			console.log('Could not edit node : ', node);
 			window.app.creator.nodes.nodesMap[node.id] = temp;		// revert to the original if failed
 			updateNodeArray(node.id, temp);
 		} else {
-
-			node.data = nodeDataToObject(node.data);
+//			node.data = nodeDataToObject(node.data);
             $('#dialogBox').dialog('close');
 //            hideProgress();
             // TODO:: need to refresh the node display with the newly edited data
@@ -283,7 +256,7 @@ function deleteNodes(node, deleteType) {
     if(node) {
         nodes = [node.id];
         if(deleteType === 'allChilds') {
-            var descendents = creator.getDescendents(node.id, [], {});
+            var descendents = app.creator.getDescendents(node.id, [], {});
             nodes = nodes.concat(descendents);
         }
     } else {
@@ -299,31 +272,10 @@ function deleteNodes(node, deleteType) {
 
     if(confirm("Are you sure you want to delete this?")) {
 
-		mithril.gc.gm.delNodes(nodes, function (error) {
-			var parentId;
+		mithril.gc.delNodes(nodes, function (error) {
 			if (error) {
 				return console.log('Could not delete nodes! ', nodes);
 			}
-
-			for(var i = 0; i < nodes.length; i++) {
-				var node = window.app.creator.nodes.nodesMap[nodes[i]];
-				if(node && node.cout && node.cout.parent && node.cout.parent.any) {
-					parentId = node.cout.parent.any[0];
-				}
-
-				deleteNodeFromLists(nodes[i]);
-				//should I remove all references on delete? or just leave them be till they're cleaned up on refresh?
-				//removeAllReferences(nodes[i], true);
-			}
-
-			if($('.curNode').length == 1) {
-				window.app.creator.nodeClick($('.curNode'));
-			} else {
-				var layer = $('.layer').has('.node[data-id="' + parentId + '"]');
-				var parentNode = ($('.node[data-id="' + parentId + '"]').length > 0) ? $('.node[data-id="' + parentId + '"]') : null;
-				window.app.creator.renderer.addLayer(parentNode, layer);
-			}
-
 	        $('#deleteDialog').dialog('close');
 		});
     }
@@ -363,7 +315,6 @@ function nodeDataToObject(data) {
 				break;
 
 			case 'object':
-				console.log(prop.value);
 				try {
 					propData.value = JSON.parse(prop.value);
 				} catch (e) {
@@ -394,18 +345,16 @@ function updateNodeArray(id, node) {
 }
 
 function deleteNodeFromLists(id) {
-    window.app.creator.nodes.nodesArr = window.app.creator.nodes.nodesArr.filter(function(node) { return node.id != id; });
+//    window.app.creator.nodes.nodesArr = window.app.creator.nodes.nodesArr.filter(function(node) { return node.id != id; });
     delete window.app.creator.nodes.nodesMap[id];
 
-/*
     for(var i = 0, len = window.app.creator.nodes.nodesArr.length; i < len; i++) {
-        if(window.app.creator.nodes.nodesArr[i].id == id) {
+        if(window.app.creator.nodes.nodesArr[i].id === id) {
             window.app.creator.nodes.nodesArr.splice(i, 1);
             len--;
             break;
         }
     }
-*/
 }
 
 
@@ -435,33 +384,36 @@ function removeAllReferences(id) {
     }
 }
 
-function removeReference(source, target, inout, ctype) {
+function removeReference(source, target, inout, ctype, state) {
     var type = [];
 	var node = window.app.creator.nodes.nodesMap[source];
+	inout    = (inout === 'output') ? 'cout' : 'cin';
+	
     if(node && node[inout] && node[inout][ctype]) {
         type = node[inout][ctype];
 	}
 
 
+	if (inout === 'cout') {
+		if(node.cout[ctype] && node.cout[ctype][state]) {
+			var outs = node.cout[ctype][state];
 
-	if (inout === 'output') {
-		var outs = node.cout[cType][state];
-
-		for (var i = 0, len = outs.length; i < len; i++) {
-			if (outs[i] == target) {
-				outs.splice(i, 1);
+			for (var i = 0, len = outs.length; i < len; i++) {
+				if (outs[i] == target) {
+					outs.splice(i, 1);
+				}
 			}
-		}
 
-		if (outs.length < 1) {
-			delete outs;
+			if (outs.length < 1) {
+				delete outs;
+			}
 		}
 	} else {
 		// TODO -- cin connectors
 	}
 
-    if(Object.keys(node[inout][cType]).length < 1) {
-        delete node[inout][cType];
+    if(Object.keys(node[inout][ctype]).length < 1) {
+        delete node[inout][ctype];
     }
 }
 
@@ -488,10 +440,12 @@ function detachConnection(con) {
     var state      = comp.state;
     var count      = sEndpoint.attr('data-count');
     var cType      = sEndpoint.attr('data-cType');
-    removeReference(source, target, inout, cType);
+    removeReference(source, target, inout, cType, state);
 
 
 	var node = window.app.creator.nodes.nodesMap[source];
+
+
 /*
 	inout = (inout === 'output') ? 'cout' : 'cin';
 
@@ -511,9 +465,8 @@ function detachConnection(con) {
 		delete node[inout][cType];
 	}
 */
-	console.log(node);
 
-	window.mithril.gc.gm.editNodes([node], function (error) {
+	window.mithril.gc.editNodes([node], function (error) {
 		if (error) {
 			console.warn('Could not delete connection for node : ', node);
 		}
@@ -524,13 +477,13 @@ function detachConnection(con) {
         delConnection.onState = tEndpoint.attr('data-onstate');
 		delConnection.group   = count;
 
-		mithril.gc.gm.delInConnectors([delConnection], function (error) {
+		mithril.gc.delInConnectors([delConnection], function (error) {
 			if (error) {
 				console.log('Could not delete connection. ', delConnection);
 			}
 		});
     }else {
-		mithril.gc.gm.delOutConnectors([delConnection], function (error) {
+		mithril.gc.delOutConnectors([delConnection], function (error) {
 			if (error) {
 				console.log('Could not delete connection. ', delConnection);
 			}
@@ -561,7 +514,7 @@ function createConnection(con) {
 
     var inout     = (sEndpoint.attr('data-inout') == 'input') ? 'cin' : 'cout';
 
-    var pNode = { node: target.toString() };
+    var pNode = { node: target };
     var state = comp.state;
 
     if(state)
@@ -585,7 +538,7 @@ function createConnection(con) {
         window.app.creator.nodes.nodesMap[source][inout][cType][state][count].push(target);
 
 		var newConnection = { node: source, type: cType, onState: state, target: target, group: count };
-		mithril.gc.gm.addInConnectors([newConnection], function (error) {
+		mithril.gc.addInConnectors([newConnection], function (error) {
 			if (error) {
 				console.log('Unable to create connection : ', newConnection);
 			}
@@ -606,9 +559,8 @@ function createConnection(con) {
 		}
 
         node[inout][cType][state].push(parseInt(target, 10));
-		console.log('node >>> ', node);
 
-		mithril.gc.gm.editNodes([node], function (error) {
+		mithril.gc.editNodes([node], function (error) {
 			if (error) {
 				console.warn('Unable to create connection : ', node[inout][cType][state]);
 				return false;
@@ -788,11 +740,13 @@ function uploadFile() {
         hideProgress();
     }, false);
 
+	// TODO: remove baseDir (from php)
     xhr.open("post", baseDir + "/csv.php", true);
     xhr.send(fd);
 }
 
 function getSaves() {
+	// TODO: remove baseDir (from php)
     var data = {
         url : baseDir + '/csv.php?action=getsaves',
         type: 'GET',

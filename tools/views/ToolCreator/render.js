@@ -12,7 +12,7 @@ function getEndpoint(type, inout, x, y) {
 	var anchor = [];
 	var style = {};
 
-	if(anchors[type] === 'horizontal') {
+	if(app.creator.config.anchors[type] === 'horizontal') {
 		if(inout == 'input') {
 			anchor = [y - .025, x];
 			style = jQuery.extend(true, {}, Render.creator.graphHdlr.input[type]);
@@ -51,6 +51,7 @@ Render.init = function(creator, options) {
 }
 
 Render.renderNodes = function(firstChilds, childList, layer) {
+	var viewTypes  = app.creator.config.viewTypes;
 	var offsetX    = Render.offsetX;
 	var offsetY    = Render.offsetY;
 	var fnChildren = Render.creator.getNextRenderNodes[viewTypes[viewMode][((Render.creator.curType) ? Render.creator.curType : viewMode)][1]];
@@ -114,7 +115,7 @@ Render.renderNodes = function(firstChilds, childList, layer) {
 
 Render.renderNode = function(offsetX, offsetY, node, fnChildren, check, siblings, layer) {
 	var tree = { left: offsetX, right: (offsetX + nodeWidth), top: offsetY, bottom: (offsetY + nodeHeight) };
-	var renderDirec = anchors[traverseType[node.type]];		// anchors have horizontal/vertical rendering info
+	var renderDirec = app.creator.config.anchors[app.creator.config.traverseType[node.type]];		// anchors have horizontal/vertical rendering info
 
 	if (renderDirec == 'vertical') {
 		var x = tree.left;
@@ -122,7 +123,7 @@ Render.renderNode = function(offsetX, offsetY, node, fnChildren, check, siblings
 		var x = tree.right + nodeMarginH;
 	}
 
-	if (renderDirec == 'vertical' && connectionTypes[viewMode].type == 'out') {
+	if (renderDirec == 'vertical' && app.creator.config.connectionTypes[viewMode].type == 'out') {
 		var y = tree.bottom + nodeMarginV;
 	} else {
 		var y = tree.top;
@@ -136,7 +137,7 @@ Render.renderNode = function(offsetX, offsetY, node, fnChildren, check, siblings
 				var result = Render.renderNode(x, y, cons[i], fnChildren, check, siblings, layer);
 				tree.right = result.right;
 
-				if(connectionTypes[viewMode].type == 'out')
+				if(app.creator.config.connectionTypes[viewMode].type == 'out')
 					tree.bottom = Math.max(tree.bottom, result.bottom);
 				else {
 					tree.top = Math.max(tree.bottom, result.bottom) + nodeMarginV;		// for each child, pushes root node one more level down
@@ -190,7 +191,7 @@ Render.renderLabels = function(layer) {
 				var eWidth  = $(this).width() / 2;
 				var lOffset = lWidth - eWidth;
 
-				if(anchors[type] == 'horizontal')
+				if(app.creator.config.anchors[type] == 'horizontal')
 					label.addClass('vertical');
 				else
 					label.css({ 'top': 55, 'margin-left': margin - lOffset, 'z-index': 10000 });
@@ -201,7 +202,6 @@ Render.renderLabels = function(layer) {
 
 Render.appendNode = function(node, options, siblings, layer) {
 	var type = '';
-	//var html = $('#nodeGraphTemplate').clone();
 	var html = $('#nodeGraphTemplate').clone().show();			// use templates and don't use show... it's slow as peanut butter
 	$(html).attr('id', node.type + node.id);
 	$(html).attr('data-id', node.id);
@@ -211,11 +211,9 @@ Render.appendNode = function(node, options, siblings, layer) {
 //	var nodeCount = $('.node[data-type="' + node.type + '"]').length + 1;
 
 	if(handler) {
-//		$(html).find('img').attr('src', handler.icon);
 		$(html).find('.nodeType').html(node.type);
 		detail = Render.creator.nodes.getNodeRepresentation(node, { siblings: siblings});
 		if(!detail || detail == '')
-//			detail = node.type + ' -- ' + nodeCount;
 			detail = node.type + ' (' + node.id + ')';
 	}else
 		detail = 'No handler found for node type : ' + node.type;
@@ -223,14 +221,16 @@ Render.appendNode = function(node, options, siblings, layer) {
 	$(html).find('.nodeDesc').html(detail);
 
 	var appendedNode = $(html).appendTo(layer.jNode);
-	if (options && options.top)
+	if (options && options.top) {
 		appendedNode[0].style.top = parseInt(options.top) + 'px';
-	if (options && options.left)
+	}
+
+	if (options && options.left) {
 		appendedNode[0].style.left = parseInt(options.left) + 'px';
+	}
 
 	Render.attachEndpoints(appendedNode, layer);
 	toggleNodeBtns(appendedNode);
-//	Render.renderLabels();
 }
 
 Render.attachEndpoints = function(jNode, layer) {
@@ -238,7 +238,7 @@ Render.attachEndpoints = function(jNode, layer) {
 	var type              = jNode.attr('data-type');
 	var name              = type + id;
 	var nDef              = Render.creator.nodes.types[type];
-	var visibleConnectors = definedViews[viewType].connectors;
+	var visibleConnectors = app.creator.config.definedViews[app.creator.viewType].connectors;
 
 	// adds endpoints if the node data has any defined
 	// loop through for all visible connector types
@@ -271,7 +271,7 @@ Render.attachEndpoints = function(jNode, layer) {
 			}
 
 			// if connection type is output, add input if input is defined in the node definition
-			if(connectionTypes[connector].type == 'out') {
+			if(app.creator.config.connectionTypes[connector].type == 'out') {
 				if(nDef.input[connector]) {
 					Render.addEndpoint(jNode, 'input', '', layer, connector);
 				}
@@ -298,7 +298,7 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 	else
 		nodeDef.accepts = 1;
 
-	if(connectionTypes[cType].type == 'out') {		// out connection
+	if(app.creator.config.connectionTypes[cType].type == 'out') {		// out connection
 		if(inout == 'input') {		// input endpoint
 			endpoint   = getEndpoint(cType, 'input', 0.5, 0);
 			anchor     = endpoint.anchor;
@@ -425,7 +425,7 @@ Render.addEndpoint = function (jNode, inout, state, layer, cType) {
 
 Render.loadConnections = function (layer) {
 	viewMode         = layer.viewMode;
-	var visibleConnectors = definedViews[viewType].connectors;
+	var visibleConnectors = app.creator.config.definedViews[app.creator.viewType].connectors;
 //	var _makeOverlay = function() { return new jsPlumb.Overlays.Arrow({foldback:0.7, fillStyle:'gray', location:0.5, width:14}); };
 	var _makeOverlay = function() { return ['Arrow', { foldback:0.7, fillStyle:'gray', location:0.5, width:14 } ]; };
 
@@ -448,12 +448,6 @@ Render.loadConnections = function (layer) {
 
 						for (var state in cons) {
 							createOutConnections(state, cons[state], id, type, name, connector);
-						}
-
-
-
-						for(var i = 0; i < cons.length; i++) {
-							createOutConnections(cons[i], id, type, name, connector);
 						}
 					}
 				}
@@ -496,7 +490,7 @@ Render.loadConnections = function (layer) {
 
 			var conId = cons[i];
 			if(Render.creator.nodes.nodesMap[conId]) {
-				var conName = Render.creator.nodes.nodesMap[conId].type + Render.creator.nodes.nodesMap[conId].id;
+				var conName = Render.creator.nodes.nodesMap[conId].type + conId;
 				var sourceId = name + 'output' + cType + nType;
 				var targetId = conName + 'input' + cType;
 				var source = jsPlumb.getEndpoint(sourceId);
@@ -514,6 +508,8 @@ Render.loadConnections = function (layer) {
 					$(test.canvas).attr('data-target', conName);
 					$(test.canvas).attr('data-type', type);
 					$(test.canvas).attr('data-cType', cType);
+					$(test.canvas).attr('data-sourceNode', id);
+					$(test.canvas).attr('data-targetNode', conId);
 					$(test.canvas).attr('data-layer', layer.jNode.attr('data-layer'));
 					renderFlag = false;
 				}
@@ -523,6 +519,7 @@ Render.loadConnections = function (layer) {
 }
 
 Render.addLayer = function(node, curLayer) {
+	var viewTypes = app.creator.config.viewTypes;
 	if(curLayer) {
 		curLayer.nextAll().each(function() {
 			// Remove jsPlumb endpoints and connectors when removing a layer
@@ -544,15 +541,16 @@ Render.addLayer = function(node, curLayer) {
 	}
 
 	$('.addNodeBtn').remove();
+	viewMode = viewTypes[app.creator.viewType][((node && node.type) ? node.type : app.creator.viewType)][0]
+
 	var layer = {
-		viewMode:  viewTypes[viewType][((node && node.type) ? node.type : viewType)][0], 
+		viewMode:  viewMode, 
 		jNode:     $('<div class="layer"><button class="addNodeBtn greenGradient">Add Node</button></div>')
 	};
 
 	var lCount = $('.layer').length + 1;
 	layer.jNode.attr('data-layer', 'layer' + lCount);
 
-	viewMode =  viewTypes[viewType][((node && node.type) ? node.type : viewType)][0];
 	layer.jNode.appendTo($('#contentHolder'));
 	this.renderLayer(layer, node);
 //	if(layer.jNode.find('.node').length > 0) {
@@ -574,7 +572,7 @@ Render.renderLayer = function(layer, node) {
 	else
 		children = Render.creator.getChildren();
 
-	if(connectionTypes[viewMode].type == 'out')
+	if(app.creator.config.connectionTypes[viewMode].type == 'out')
 		inout = 'cout';
 	else
 		inout = 'cin';
@@ -618,3 +616,100 @@ Render.resizeLayer = function(layer) {
 	$('.curLayer').removeClass('curLayer');
 	layer.addClass('curLayer');
 }
+
+
+// render stuff based on events
+
+mithril.io.on('gc.nodesAdded', function (path, nodes) {
+	var parentId = $('.curNode').attr('data-id');
+	var curLayer = $('.curLayer');
+	var layers   = $('.layer');
+	var maxRight;
+
+	for (var i = 0, len = nodes.length; i < len; i += 1) {
+		var node = nodes[i];
+
+		node.cout = node.cout || {};
+
+		window.app.creator.nodes.nodesMap[node.id] = node;
+		window.app.creator.nodes.nodesArr.push(node);
+
+
+		maxRight = 0;
+
+		curLayer.find('.node').each(function () {
+			var right  = $(this).position().left + $(this).width();
+			if (right > maxRight) {
+				maxRight = right;
+			}
+		});
+
+
+		var options = { left: maxRight + 30};
+
+		if (layers.length === 1) {
+			Render.appendNode(node, options, null, { jNode: curLayer });
+		} else if(node.cout && node.cout.parent && node.cout.parent.any) {
+			if (node.cout.parent.any[0] === parentId) {
+				Render.appendNode(node, options, null, { jNode: curLayer });
+			}
+		}
+	}
+
+	Render.resizeLayer(curLayer);
+	scroll(maxRight, curLayer.position().top);
+	$('#dialogBox').dialog('close');
+});
+
+
+mithril.io.on('gc.nodesEdited', function (path, nodes) {
+	var nodesMap = window.app.creator.nodes.nodesMap;
+	var nodesArr = window.app.creator.nodes.nodesArr;
+
+	for (var i = 0, len = nodes.length; i < len; i += 1) {
+		var node   = nodes[i];
+		var jNode  = $('.node[data-id="' + node.id + '"]');
+
+
+		// update caches
+		nodesMap[node.id] = node;
+
+		for (var j = 0, jlen = nodesArr.length; j < jlen; j += 1) {
+			if (nodesArr[j].id === node.id) {
+				nodesArr[j] = node;
+			}
+		}
+
+		// update details
+		var detail = Render.creator.nodes.getNodeRepresentation(node);
+
+		if(!detail || detail == '') {
+			detail = node.type + ' (' + node.id + ')';
+		}
+
+		jNode.find('.nodeDesc').html(detail);
+
+
+		// remove old connectors
+		// No way to get all scopes, so I get all scopes with Object.keys
+		var connectors = jsPlumb.getConnections({ scope: Object.keys(node.cout), source: jNode.attr('id') });
+		// TODO: loop through cout (if connector doesn't exist, add it, if connector doesn't exist, remove it)
+//		for (var scope in 
+		
+	}
+});
+
+
+mithril.io.on('gc.nodesDeleted', function (path, nodes) {
+	for (var i = 0, len = nodes.length; i < len; i += 1) {
+		var id = nodes[i];
+		deleteNodeFromLists(id);
+		var ele = $('.node[data-id="' + id + '"]');
+
+		jsPlumb.detachAll(ele);
+		ele.remove();
+		$('._jsPlumb_endpoint[data-id="' + id + '"]').remove();
+	}
+
+	Render.resizeLayer($('.curLayer'));
+});

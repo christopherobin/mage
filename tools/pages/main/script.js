@@ -11,7 +11,7 @@ $html5client(module.obj);
 $html5client(module.npc);
 
 $file.bin("../../libtool/jquery-1.7.js");
-$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.min.js");
+$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.js");
 $file.bin("../../libtool/jquery.contextMenu.js");
 $file.bin("../../libtool/jquery.jsPlumb-1.3.3-all.js");
 $file.bin("../../libtool/tool.js");
@@ -32,6 +32,16 @@ window.mithril.loader.on('main.loaded', function () {
 	$('.btn_toview').click(function () {
 		var view = $(this).attr('data-target');
 		window.viewport.change(view);
+	});
+
+	$('#loginHolder #user').focus();
+
+	$('#loginHolder input').keypress(function (event) {
+		if (event.which === 13) {
+			$('#loginHolder #login').click();
+			event.preventDefault();
+			return false;
+		}
 	});
 
 	// TODO -- io is now loaded whenever I want, so I don't need this ajax stuff anymore
