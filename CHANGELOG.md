@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.4.2
+
+The client side code of Mithril has been split up a bit, in order to move some code out of the loader, and into an external page (landing).
+The only change to apply is to add $html5client(modulesystem); to the landing page script. Best place to put it, is right after
+$html5client(io); and $html5client(datatypes);, and before any actual modules.
+
+Also added in this release, is cacheability. Assets can now be tagged with a number (on regFile, after language) to indicate how cacheable a file
+is. The number's meaning:
+-1: never cache;
+0: always cache;
+N (positive integer): try to cache, lower means higher priority.
+
+
 ## v0.4.1
 
 ### Sessions
