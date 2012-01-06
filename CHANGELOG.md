@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.5.0
+
+Backwards compatibility break:
+The APIs obj.getFullCollection and obj.getFullCollectionByType have now received an options object, which may contain properties for data loading.
+- getFullCollectionByType(state, type, owner, options, cb)
+- getFullCollection(state, collectionId, options, cb)
+
+Options may be an object containing LivePropertyMap options, like:
+{
+	properties: {
+		loadAll: true
+	}
+}
+
+
 ## v0.4.2
 
 The client side code of Mithril has been split up a bit, in order to move some code out of the loader, and into an external page (landing).
