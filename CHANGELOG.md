@@ -2,7 +2,7 @@
 
 ## v0.5.0
 
-Backwards compatibility break:
+Backwards compatibility break in obj module:
 The APIs obj.getFullCollection and obj.getFullCollectionByType have now received an options object, which may contain properties for data loading.
 - getFullCollectionByType(state, type, owner, options, cb)
 - getFullCollection(state, collectionId, options, cb)
@@ -13,6 +13,9 @@ Options may be an object containing LivePropertyMap options, like:
 		loadAll: true
 	}
 }
+
+BC break in msg module:
+The MySQL schema has changed a little bit. Please refer to db/changes.sql. The API is unchanged.
 
 
 ## v0.4.2
