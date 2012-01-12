@@ -1,6 +1,6 @@
 <div id="toolSession">
-	<div id="gmListHolder" class="listHolder">
-		<div class="listTitle">GM List</div>
+	<div id="gmListHolder" class="sessionListHolder">
+		<div class="listTitle">GMs</div>
 
 		<ul id="gmList" class="list"></ul>
 
@@ -13,8 +13,13 @@
 		</div>
 	</div>
 
-	<div id="playerListHolder" class="listHolder">
-		<div class="listTitle">Player List</div>
+	<div id="playerListHolder" class="sessionListHolder">
+		<div class="listTitle">Players</div>
+		Search by
+		<input type="radio" name="searchType" value="actor" checked />Player Id
+<!--		<input type="radio" name="searchType" value="name" />Player name -->
+		<input type="text" id="searchValue" />
+		<button id="searchBtn">Search</button>
 
 		<ul id="playerList" class="list"></ul>
 
@@ -33,7 +38,7 @@
 	<button class="editGmBtn">Edit</button><button class="deleteGmBtn">Delete</button>
 </div>
 
-<div id="addPropertyDlg" style="display: none;">
+<div id="addPropertyDialog">
 	<div class="propName">Property</div>
 	<input type="text" data-id="property" />
 
@@ -47,20 +52,38 @@
 
 
 	<div class="propName">Value</div>
-	<div class="value" data-type="number"><input type="number" data-id="value" data-type="number" /></div>
-	<div class="value" data-type="string" style="display: none;"><input type="text" data-id="value" data-type="string" /></div>
+
+	<div class="value" data-type="number"><input type="number" /></div>
+
+	<div class="value" data-type="string" style="display: none;"><input type="text" /></div>
+
 	<div class="value" data-type="boolean" style="display: none;">
-		<input type="checkbox" data-id="value" data-type="boolean" value="true" />
+		<input type="checkbox" name="boolean" value="true" checked />
 	</div>
+
 	<div class="value" data-type="object" style="display: none;">
-		<textarea data-id="value" rows="4" cols="60" data-type="object"></textarea>
+		<textarea rows="4" cols="60" data-type="object"></textarea>
 	</div>
-	<button class="confirmAddProperty">Add</button>
-	<button class="cancelAddProperty">Cancel</button>
 </div>
 
-<div id="editPlayerDialog" class="dialog ldialog" style="display: none;">
-	<br /><button class="addProperty">Add Property</button>
-	<br /><button class="editPlayerBtn">Save</button>
-	<!-- <button class="deletePlayerBtn">Delete</button> -->
+<div id="editPlayerDialog" class="dialog ldialog">
+	<div id="gachaTabs">
+		<div id="dataTab" class="tabs activeTab" data-id="data">Data</div>
+		<div id="itemsTab" class="tabs" data-id="items">Items</div>
+	</div>
+
+	<div id="playerData" class="playerDetails" data-id="data">
+		<div id="playerDataValues"></div>
+
+		<div id="playerDataActions">
+			<button id="addProperty">Add Property</button>
+			<br /><button id="savePlayerDataBtn">Save</button>
+		</div>
+	</div>
+
+	<div id="playerItems" class="playerDetails" data-id="items" style="display: none;">
+		<div id="playerItemCollections"></div>
+
+		<br /><button class="addPlayerItemBtn">Add Item</button>
+	</div>
 </div>
