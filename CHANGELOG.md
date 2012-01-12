@@ -28,6 +28,8 @@ Also, the logger now has support for custom color selection. This can be configu
 an array of the format: `["output", "color name"]`, such as `["stdout", "yellow"]`. A list of accepted colors can be found on this website:
 [node-colors](https://github.com/Marak/colors.js) under "colors and styles!".
 
+On error, the actor ID is now always prepended to the error log output.
+
 
 ## v0.4.2
 
