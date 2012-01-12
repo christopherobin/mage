@@ -2,6 +2,8 @@
 
 ## v0.5.0
 
+### BC breaks
+
 Backwards compatibility break in obj module:
 The APIs obj.getFullCollection and obj.getFullCollectionByType have now received an options object, which may contain properties for data loading.
 - getFullCollectionByType(state, type, owner, options, cb)
@@ -16,6 +18,15 @@ Options may be an object containing LivePropertyMap options, like:
 
 BC break in msg module:
 The MySQL schema has changed a little bit. Please refer to db/changes.sql. The API is unchanged.
+
+### Logger
+
+The logger can now output execution times for user commands. If you want these output, simply add a context "time" to your logger configuration,
+besides the already existing "debug", "info" and "error".
+
+Also, the logger now has support for custom color selection. This can be configured by turning the output format, such as "stdout" or "file" into
+an array of the format: `["output", "color name"]`, such as `["stdout", "yellow"]`. A list of accepted colors can be found on this website:
+[node-colors](https://github.com/Marak/colors.js) under "colors and styles!".
 
 
 ## v0.4.2
