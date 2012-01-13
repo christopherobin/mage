@@ -53,8 +53,8 @@ window.mithril.loader.on('main.loaded', function () {
 		var xhr = new XMLHttpRequest();
 
 		xhr.onreadystatechange = function () {
-			if (xhr.readyState == 4) {
-				if (xhr.status == 401) {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 401) {
 					alert("Authentification failed.\nUsername or password incorrect.");
 					return;
 				} else if (xhr.responseText) {
@@ -79,7 +79,7 @@ window.mithril.loader.on('main.loaded', function () {
 						console.error(error);
 					});
 
-					mithril.setup(function(error) {
+					mithril.setup(function (error) {
 						if (error) {
 							console.log(JSON.stringify(error));
 						} else {
@@ -101,7 +101,7 @@ window.mithril.loader.on('main.loaded', function () {
 		xhr.send(params);
 	}
 
-	document.getElementById('login').addEventListener('click', function() {
+	document.getElementById('login').addEventListener('click', function () {
 		login();
 	});
 });
