@@ -5,11 +5,9 @@ function Tool(options) {
 	
 
 	this.init = function (cb) {
-		this.views	      = window.viewport;
-		this.viewport     = document.getElementById("viewport");
-
-		// Load gm modules
-		this.mithril      = window.mithril;
+		this.views    = window.viewport;
+		this.viewport = document.getElementById("viewport");
+		this.mithril  = window.mithril;
 
 		cb();
 	};
