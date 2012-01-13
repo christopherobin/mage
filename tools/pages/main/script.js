@@ -1,5 +1,6 @@
 $html5client(io);
 $html5client(datatypes);
+$html5client(modulesystem);
 $html5client(module.assets);
 $html5client(module.session);
 $html5client(module.shop);
