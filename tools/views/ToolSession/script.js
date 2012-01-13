@@ -16,8 +16,10 @@
 	
 	var origin = 'http://$cfg(server.clientHost.expose.host):$cfg(server.clientHost.expose.port)';
 
-	var gmsMap      = {};
-	var gmsArr      = [];
+	var gmsMap   = {};
+	var gmsArr   = [];
+
+	var itemsMap = {};
 	var curPlayer;
 
 	var btn_addGm           = document.getElementById('addGmBtn');
@@ -135,7 +137,7 @@
 
 	function generatePropField(attr, type, data) {
 		var input = '';
-		var prop = '<div class="propName">' + attr + '<button class="removeProperty">X</button></div>';
+		var prop = '<div class="propName">' + attr + '<button class="removeProperty removeBtn">X</button></div>';
 
 		input += '<div class="dataField" data-id="' + attr + '">';
 
@@ -177,10 +179,10 @@
 		for (var col in collections) {
 			var collection = collections[col];
 			// if the owner is the player, display
-			if (collection.owner === curPlayer.actorId) {
-				html += '<div class="collection"><div class="collectionType">' + collection.type + '</div>'
-				html += generateObjectsHtml(collection.members, items.objectsMap);
-				html += '</div>';
+			if (~~collection.owner === ~~curPlayer.actorId) {
+				html += '<div class="playerCollection"><div class="collectionType">' + collection.type + '</div>'
+				html += '<div class="playerObjects" data-id="' + collection.id + '">' + generateObjectsHtml(collection.members, items.objectsMap) + '</div>';
+				html += '<br /><button class="addPlayerItemBtn" data-collection="' + collection.id + '">Add Item</button></div>';
 			}
 		}
 
@@ -191,14 +193,22 @@
 		var html = '';
 
 		for (var i = 0, len = members.length; i < len; i++) {
-			var objId = members[i].id;
-			var obj   = objMap[objId];
+			var objId    = members[i].id;
+			var obj      = objMap[objId];
+			var objClass = itemsMap[obj.name];
 
 			if (!obj) {
 				return console.warn('Member object not found in objects list : ', members[i]);
 			}
 
-			html += '<div class="collectionObject" data-id="' + objId + '">' + obj.name + '</div>';
+			if (!objClass) {
+				return console.warn('Object not found in object definitions : ', obj.name, ' Object has possibly been removed, but player still owns a copy of the object');
+			}
+
+			html += '<div class="collectionObject" data-id="' + objId + '">';
+			html += ((objClass && objClass.data && objClass.data.name) ? objClass.data.name : obj.name);
+			html += '<button class="removePlayerItem removeBtn" data-id="' + objId + '">X</button>';
+			html += '</div>';
 		}
 
 		return html;
@@ -248,8 +258,28 @@
 	});
 
 
+	$('.addPlayerItemBtn').live('click', function (e) {
+		curCollection = $(this).attr('data-collection');
+		$('#addPlayerItemDialog').dialog('open');
+	});
+
+
 	$('.removeProperty').live('click', function (e) {
 		$(this).parents('.dataField').remove();
+	});
+
+
+	$('.removePlayerItem').live('click', function (e) {
+		var objId = $(this).attr('data-id');
+		var obj   = $(this).parents('.collectionObject');
+
+		window.mithril.obj.delObject(objId, function (error) {
+			if (error) {
+				return console.warn('Could not delete object ' + objId + ' from player ' + curPlayer.actorId);
+			}
+
+			obj.remove();
+		});
 	});
 
 
@@ -258,6 +288,14 @@
 		var type = $(this).find('option:selected').val();
 		dlg.find('.value').hide();
 		dlg.find('.value[data-type="' + type + '"]').show();
+	});
+
+
+	$('#searchValue').keypress(function (e) {
+		if (e.keyCode === 13) {
+			$('#searchBtn').click();
+			e.preventDefault();
+		}
 	});
 
 
@@ -278,7 +316,7 @@
 			// populate player list
 			$('#playerList').empty();
 			if (players.length === 0) {
-				$('#playersList').append('No players found');
+				$('#playerList').append('No players found');
 			}
 
 			for (var i = 0, len = players.length; i < len; i++) {
@@ -370,6 +408,17 @@
 		$(ul_playerList).empty();
 		$('#nav .btn_session').css({ color: 'white', background: 'black', "font-weight": 'bold' });
 
+		var objClasses = window.mithril.obj.getClassesByName();
+		var objHtml    = '';
+
+		for (var i = 0, len = objClasses.length; i < len; i++) {
+			var objClass = objClasses[i];
+			objHtml += '<option value="' + objClass.name + '">' + ((objClass.data && objClass.data.name) ? objClass.data.name : objClass.name) + '</option>';
+			itemsMap[objClass.name] = objClass;
+		}
+
+		$('#addPlayerItemDialog select').append(objHtml);
+
 
 		window.mithril.gm.getGms(function(error, gms) {		// List Gms
 
@@ -417,6 +466,31 @@
 				click: function () {
 					addProperty();
 				} 
+			}
+		]
+	});
+
+
+	$('#addPlayerItemDialog').dialog({
+		autoOpen: false,
+		width: 'auto',
+		modal: true,
+		title: 'Add item...',
+		buttons: [
+			{
+				text: 'Cancel',
+				click: function () {
+					$(this).dialog('close');
+				}
+			},
+			{
+				text: 'Add',
+				click: function () {
+					var className = $('#itemsList option:selected').val();
+					var quantity  = parseInt($('#itemsQuantity').val(), 10);
+
+					addItem(curPlayer.actorId, curCollection, className, null, null, quantity);
+				}
 			}
 		]
 	});
@@ -498,6 +572,28 @@
 	}
 
 
+	function addItem(actorId, collectionId, name, weight, tags, quantity) {
+		mithril.obj.addObjectToPlayer(actorId, collectionId, name, weight, tags, quantity, function (error, objIds) {
+			if (error) {
+				return console.warn('Could not add item ' + name + ' to player ' + actorId);
+			}
+
+			var objMap  = curPlayer.items.objectsMap;
+			var members = [];
+
+			for (var i = 0, len = objIds.length; i < len; i++) {
+				var id = objIds[i];
+				members.push({ id: id });
+				objMap[id] = { id: id, name: name };
+			}
+
+			var html = generateObjectsHtml(members, objMap);
+			$('.playerObjects[data-id="' + curCollection + '"]').append(html);
+			$('#addPlayerItemDialog').dialog('close');
+		});
+	}
+
+
 	function addGmToList(obj) {
 		var li     = $('<li class="gmHolder" data-id="' + obj.id + '"></li>');
 		var button = $('<button class="gmDetailBtn" data-id="' + obj.id + '">Detail</button>');
@@ -512,7 +608,7 @@
 		var li     = $('<li class="playerHolder" data-id="' + obj.actor + '"></li>');
 		var button = $('<button class="openPlayerDialog" data-id="' + obj.actor + '">Edit</button>');
 		
-		li.append(button).append((obj.data && obj.data.name) + ' ( ' + obj.actor + ' ) ' + isGm + '<button class="playAs" data-id="' + obj.actor + '">Play</button>');
+		li.append(button).append('<button class="playAs" data-id="' + obj.actor + '">Play</button>' + (obj.data && obj.data.name) + ' ( ' + obj.actor + ' ) ' + isGm);
 
 		$(ul_playerList).append(li);
 	}
