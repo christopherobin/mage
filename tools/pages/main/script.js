@@ -1,21 +1,18 @@
 $html5client(io);
 $html5client(datatypes);
+$html5client(modulesystem);
 $html5client(module.assets);
 $html5client(module.session);
 $html5client(module.shop);
-$html5client(module.giraffe);
 $html5client(module.gc);
 $html5client(module.gm);
-$html5client(module.sns);
 $html5client(module.actor);
 $html5client(module.player);
-$html5client(module.persistent);
 $html5client(module.obj);
-$html5client(module.msg);
 $html5client(module.npc);
 
 $file.bin("../../libtool/jquery-1.7.js");
-$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.min.js");
+$file.bin("../../libtool/jqueryui/jquery-ui-1.8.16.custom.js");
 $file.bin("../../libtool/jquery.contextMenu.js");
 $file.bin("../../libtool/jquery.jsPlumb-1.3.3-all.js");
 $file.bin("../../libtool/tool.js");
@@ -38,6 +35,16 @@ window.mithril.loader.on('main.loaded', function () {
 		window.viewport.change(view);
 	});
 
+	$('#loginHolder #user').focus();
+
+	$('#loginHolder input').keypress(function (event) {
+		if (event.which === 13) {
+			$('#loginHolder #login').click();
+			event.preventDefault();
+			return false;
+		}
+	});
+
 	// TODO -- io is now loaded whenever I want, so I don't need this ajax stuff anymore
 	function login() {
 		var params = 'username=' + document.getElementById('user').value + '&password=' + document.getElementById('password').value;	// TODO: input checking
@@ -46,8 +53,8 @@ window.mithril.loader.on('main.loaded', function () {
 		var xhr = new XMLHttpRequest();
 
 		xhr.onreadystatechange = function () {
-			if (xhr.readyState == 4) {
-				if (xhr.status == 401) {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 401) {
 					alert("Authentification failed.\nUsername or password incorrect.");
 					return;
 				} else if (xhr.responseText) {
@@ -72,7 +79,7 @@ window.mithril.loader.on('main.loaded', function () {
 						console.error(error);
 					});
 
-					mithril.setup(function(error) {
+					mithril.setup(function (error) {
 						if (error) {
 							console.log(JSON.stringify(error));
 						} else {
@@ -94,7 +101,7 @@ window.mithril.loader.on('main.loaded', function () {
 		xhr.send(params);
 	}
 
-	document.getElementById('login').addEventListener('click', function() {
+	document.getElementById('login').addEventListener('click', function () {
 		login();
 	});
 });

@@ -1,5 +1,104 @@
 # Changelog
 
+## v0.6.0
+
+### Shop API change
+
+The shop's ShopItemValidator functions used to return a map of items, with a quantity property on the item object.
+`{ itemId: { id: , quantity: 1, etc... }, itemId: etc... }`
+
+This is inherently unsafe when used with cached item definitions, which is very very easy to do (and likely what everybody is doing).
+For this reason, we have changed the API to require you to return a list of items like this:
+`{ itemId: { item: { id: , etc... }, quantity: 1 }, itemId: etc... }`
+
+Please check your code and make the necessary adjustments.
+
+### Builder
+
+The builder now allows for nested build descriptors in your code. For example, the following is now possible:
+
+`$dir($cfg(some.config.path))`
+
+
+## v0.5.0
+
+### BC breaks
+
+Backwards compatibility break in obj module:
+The APIs obj.getFullCollection and obj.getFullCollectionByType have now received an options object, which may contain properties for data loading.
+- getFullCollectionByType(state, type, owner, options, cb)
+- getFullCollection(state, collectionId, options, cb)
+
+Options may be an object containing LivePropertyMap options, like:
+{
+	properties: {
+		loadAll: true
+	}
+}
+
+BC break in msg module:
+The MySQL schema has changed a little bit. Please refer to db/changes.sql. The API is unchanged.
+
+### Logger
+
+The logger can now output execution times for user commands. If you want these output, simply add a context "time" to your logger configuration,
+besides the already existing "debug", "info" and "error".
+
+Also, the logger now has support for custom color selection. This can be configured by turning the output format, such as "stdout" or "file" into
+an array of the format: `["output", "color name"]`, such as `["stdout", "yellow"]`. A list of accepted colors can be found on this website:
+[node-colors](https://github.com/Marak/colors.js) under "colors and styles!".
+
+On error, the actor ID is now always prepended to the error log output.
+
+
+## v0.4.2
+
+The client side code of Mithril has been split up a bit, in order to move some code out of the loader, and into an external page (landing).
+The only change to apply is to add $html5client(modulesystem); to the landing page script. Best place to put it, is right after
+$html5client(io); and $html5client(datatypes);, and before any actual modules.
+
+Also added in this release, is cacheability. Assets can now be tagged with a number (on regFile, after language) to indicate how cacheable a file
+is. The number's meaning:
+-1: never cache;
+0: always cache;
+N (positive integer): try to cache, lower means higher priority.
+
+
+## v0.4.1
+
+### Sessions
+
+The session module is now more configurable (optionally). The following configuration parameters have been exposed:
+
+* `module.session.ttl` is the session's time-to-live, after having been idle. The format is human readable, eg: 60s, 3m, 1h, 1d. The default is 10m.
+* `module.session.keyLength` is the session key length in number of characters. The default is 16.
+
+### MMRP
+
+Mithril's server-to-server messaging protocol has a configuration setting "server.mmrp.expose.host" that has now become
+optional. You may still use it, to announce to the world what the host is that other servers may connect to. But by default,
+Mithril will now use DNS to resolve the IP of the server it is running on.
+
+### HTTP Server
+
+The HTTP server now has a heartbeat configuration setting for the event stream. This means that every N seconds, even if no
+events are to be sent to the browser, the server responds with a "HB" code. The client will understand this as a heartbeat and
+will reconnect. This mechanism is used to keep the server clean from zombie connections.
+
+Another change in configuration is that the protocol setting has been moved from the "expose" structure, into the main
+"clientHost" configuration. An example for the full configuration:
+
+`
+"clientHost": {
+	"protocol": "http",
+	"transports": {
+		"longpolling": { "heartbeat": 120 }
+	},
+	"bind": { "host": "0.0.0.0", "port": 4242 },
+	"expose": { "host": "zombieboss.rk.dev.wizcorp.jp", "port": 4242 }
+}
+`
+
 ## v0.4.0
 
 ### Membase / LivePropertyMap

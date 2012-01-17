@@ -1,7 +1,7 @@
 {
 	"name": "mithril",
 	"description": "Mithril game development platform for NodeJS",
-	"version": "0.4.0",
+	"version": "0.6.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -20,7 +20,7 @@
 		"node-bj": "0.0.3bogeyatsix-1.0",
 		"zmq": "1.0.2",
 		"cluster": "0.7.7",
-		"memcached": "0.0.5",
+		"memcached": "0.0.6",
 		"memcached-transactions": "git+https://github.com/Wizcorp/node-memcached-transactions.git",
 		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.3",
 		"oauth": "0.9.5",

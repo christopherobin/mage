@@ -74,7 +74,7 @@ function toggleNodeBtns(node) {
 
 	if(!nDef.output[viewMode] || nDef.output[viewMode].states.custom == null)
 		node.find('.addOutput').hide();
-	if(nDef.input[viewMode] == null || connectionTypes[viewMode].type == 'out')
+	if(nDef.input[viewMode] == null || app.creator.config.connectionTypes[viewMode].type == 'out')
 		node.find('.addInput').hide();
 //	if(connectionTypes[viewMode].type == 'out')
 //		node.find('.addInput').hide();

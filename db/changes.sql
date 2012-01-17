@@ -743,5 +743,10 @@ DROP TABLE `actor_data`;
 DROP TABLE `gc_node_actor_data`;
 
 
+-- 2012-01-10: Refactoring msg module, to always have a msg_to_actor record, even on messages to all players (actorId NULL).
+
+ALTER TABLE `msg_to_actor` CHANGE `actorId` `actorId` INT(10) UNSIGNED NULL;
+
+
 -- next change, add here.
 

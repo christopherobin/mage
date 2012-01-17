@@ -8,7 +8,7 @@
 //*********************************************************************************************************//
 
 function Cardgame() {
-//    Game.call(this);
+    Game.call(this);
 	var _this     = this;
 
 
@@ -166,8 +166,8 @@ function Cardgame() {
 		this.setupReplacements();
 
 		_this.renderer.init(this, {});
-
 		_this.renderer.addLayer();
+
 	};
 
 
@@ -187,7 +187,7 @@ function Cardgame() {
 		$('.viewToolCreator .nodeData[data-replacement="spirit"]').append(selectStart + spirits + selectEnd);
 		$('.viewToolCreator .nodeData[data-replacement="bonusSpirits"]').append(selectStart + '<option></option>' + spirits + selectEnd);
 
-		var opponents = '<div class="opponent"><select class="dataValue" data-id="spirit">' + spirits + '</select>';
+		var opponents = '<div class="opponent" style="display: none;"><select class="dataValue" data-id="spirit">' + spirits + '</select>';
 		opponents += ' Lvl <input type="number" class="dataValue" data-id="level" /></div>';
 
 		$('.viewToolCreator .nodeData[data-replacement="opponents"]').append(opponents);
@@ -200,7 +200,7 @@ function Cardgame() {
 			var asset  = assets[i];
 			var regex  = /^world\/(.*)/g;
 
-			var match    = expregex.exec(asset.fullIdent);
+			var match    = regex.exec(asset.fullIdent);
 
 			if (match) {
 				if (!this.backgrounds[match[1]]) {
@@ -641,8 +641,10 @@ function Cardgame() {
         return siblings;
     };
 
-    this.getPrevSiblings = function(id, siblings, refCheck, sibList, errors) {      // Get all previous nodes in the same branch, still not reversed
-        var cViewMode = viewTypes[viewType][((this.nodes.nodesMap[id] && this.nodes.nodesMap[id].type) ? this.nodes.nodesMap[id].type : viewType)][1];
+	// Get all previous nodes in the same branch, still not reversed
+    this.getPrevSiblings = function(id, siblings, refCheck, sibList, errors) {
+		var viewTypes = app.creator.config.viewTypes;
+        var cViewMode = viewTypes[app.creator.viewType][((this.nodes.nodesMap[id] && this.nodes.nodesMap[id].type) ? this.nodes.nodesMap[id].type : app.creator.viewType)][1];
         if (!sibList)
             sibList = _this.nodes.nodesArr;
 
@@ -673,7 +675,8 @@ function Cardgame() {
     };
 
     this.getNextSiblings = function(id, siblings, refCheck, errors) {
-        var cViewMode = viewTypes[viewType][((this.nodes.nodesMap[id] && this.nodes.nodesMap[id].type) ? this.nodes.nodesMap[id].type : viewType)][1];
+		var viewTypes = app.creator.config.viewTypes;
+        var cViewMode = viewTypes[app.creator.viewType][((this.nodes.nodesMap[id] && this.nodes.nodesMap[id].type) ? this.nodes.nodesMap[id].type : app.creator.viewType)][1];
         if (!refCheck[id]) {
             if (this.nodes.nodesMap[id] && this.nodes.nodesMap[id].cout && this.nodes.nodesMap[id].cout[cViewMode]) {
                 refCheck[id] = true;
@@ -761,8 +764,9 @@ function Cardgame() {
     };
 
     this.getTraverseNodes = function(node) {
-        cViewMode = viewTypes[viewType][((node && node.type) ? node.type : viewType)][1];
-        traverseList = [node];
+		var viewTypes = app.creator.config.viewTypes;
+        cViewMode     = viewTypes[app.creator.viewType][((node && node.type) ? node.type : app.creator.viewType)][1];
+        traverseList  = [node];
         rCheck = {};
 
         while(node) {
@@ -823,7 +827,7 @@ function Cardgame() {
 
         // Checks to make sure only Campaign or Section is a top level node (i.e. no parent)
         if(!n.cout || !n.cout.parent) {
-            if(topLevelNodes.indexOf(n.type) == -1) {
+            if(app.creator.config.topLevelNodes.indexOf(n.type) == -1) {
                 console.log(n.type);
                 errors.push({
                     errorType: 'errors',
@@ -905,7 +909,7 @@ function Cardgame() {
 
         // Checks node for more than one starting node
         var childs      = this.getChildren(n.id);
-        var tType       = traverseType[n.type];
+        var tType       = app.creator.config.traverseType[n.type];
         var firstChilds = this.getFirstChilds(childs, 'cout', function(node) {
             var children = [];
             if(node && node.cout[tType]) {
@@ -1125,4 +1129,4 @@ function Cardgame() {
 	}
 }
 
-//Cardgame.prototype = Object.create(Game.prototype);
+Cardgame.prototype = Object.create(Game.prototype);
