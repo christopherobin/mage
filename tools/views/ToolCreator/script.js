@@ -1,17 +1,17 @@
 (function () {
 	var mithril = window.mithril;
 	var viewport = window.viewport;
-	
+
 	var view = {};
-	
+
 	var elm = viewport.getViewElement("tool_creator");
-	
+
 	viewport.setViewHandler({
 		name: "tool_creator",
 		obj: view,
 		elm: elm
 	});
-	
+
 	var origin = 'http://$cfg(server.clientHost.expose.host):$cfg(server.clientHost.expose.port)';
 
 
@@ -46,20 +46,21 @@
 
 				window.mithril.assets.getAssetMaps([], function (error, maps) {
 					window.app.creator.assetMaps = maps;
-					$config("module.gm.nodetypes");
+
+					$dir($cfg("module.gm.nodetypes"));
 
 					creator.graphHdlr  = new Graph(creator.config.connectionTypes);
 					creator.renderer   = Object.create(Render);
 					creator.setup();
 				});
 			}
-		}); 
+		});
 	};
-	
+
 	view.onafterpaint = function (view) {
-		
+
 	};
-	
+
 	view.onclose = function () {
 		$('#nav .btn_creator').css({ color: 'white', background: 'gray', "font-weight": 'normal' });
 	};

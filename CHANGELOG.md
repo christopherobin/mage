@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.6.0
+
+### Shop API change
+
+The shop's ShopItemValidator functions used to return a map of items, with a quantity property on the item object.
+`{ itemId: { id: , quantity: 1, etc... }, itemId: etc... }`
+
+This is inherently unsafe when used with cached item definitions, which is very very easy to do (and likely what everybody is doing).
+For this reason, we have changed the API to require you to return a list of items like this:
+`{ itemId: { item: { id: , etc... }, quantity: 1 }, itemId: etc... }`
+
+Please check your code and make the necessary adjustments.
+
+### Builder
+
+The builder now allows for nested build descriptors in your code. For example, the following is now possible:
+
+`$dir($cfg(some.config.path))`
+
+
 ## v0.5.0
 
 ### BC breaks
@@ -27,6 +47,8 @@ besides the already existing "debug", "info" and "error".
 Also, the logger now has support for custom color selection. This can be configured by turning the output format, such as "stdout" or "file" into
 an array of the format: `["output", "color name"]`, such as `["stdout", "yellow"]`. A list of accepted colors can be found on this website:
 [node-colors](https://github.com/Marak/colors.js) under "colors and styles!".
+
+On error, the actor ID is now always prepended to the error log output.
 
 
 ## v0.4.2
