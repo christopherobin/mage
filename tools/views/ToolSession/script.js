@@ -443,6 +443,17 @@
 	};
 
 
+	$('#getAllPlayers').click(function (e) {
+		mithril.player.getPlayers(null, 50, null, function (error, players) {
+			$('#playerList').empty();
+			for (var i = 0, len = players.length; i < len; i++) {
+				addPlayerToList(players[i]);
+			}
+		});
+
+	});
+
+
 	$('#addPropertyDialog').dialog({
 		autoOpen: false,
 		width: 'auto',
@@ -537,7 +548,7 @@
 
 		// create a map of objects for quick lookup
 		var objMap = {};
-		var objs = items.objects;
+		var objs = items.objects || [];
 		for (var i = 0, len = objs.length; i < len; i++) {
 			objMap[objs[i].id] = objs[i];
 		}
