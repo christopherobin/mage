@@ -11,12 +11,10 @@ $dir("../../libtool/general");
 $file("../../libtool/viewport/viewport.js");
 
 
-function loadViews() {
-	$toolviewport(all);
-}
-
-
 function loadModules() {
+	// TODO: Loop through available modules and see if they expose a tool.
+	// If so, add it to the toolList (in the future possibly finegrain control which tools are available to which admin account
+
 	$html5client(datatypes);
 	$html5client(module.assets);
 	$html5client(module.session);
@@ -29,7 +27,7 @@ function loadModules() {
 }
 
 
-var app;
+//var app;
 
 window.mithril.loader.on('main.loaded', function () {
 	window.mithril.loader.displayPage('main');
@@ -37,8 +35,8 @@ window.mithril.loader.on('main.loaded', function () {
 
 
 	$('.btn_toview').click(function () {
-		var view = $(this).attr('data-target');
-		window.viewport.change(view);
+		var target = $(this).attr('data-target');
+		mithril.loader.loadPage(target);
 	});
 
 
@@ -64,16 +62,17 @@ window.mithril.loader.on('main.loaded', function () {
 			}
 
 			loadModules();
+
 			var options = { io: { defaultHooks: ['mithril.session'] } };
 			mithril.configure(options);
-
-			app = new Tool({ width: window.innerWidth, height: window.innerHeight });
-
 			mithril.session.setSessionKey(session);
 
+
+			// register what to do if there is io error
 			mithril.io.on('io.error', function (path, error) {
 				console.error(error);
 			});
+
 
 			mithril.setup(function (error) {
 				if (error) {
@@ -81,12 +80,11 @@ window.mithril.loader.on('main.loaded', function () {
 				} else {
 					console.log('ready');
 
-					app.init(function () {
-						loadViews();
-						var loginEle = document.getElementById('loginContainer');
-						loginEle.style.display = 'none';
-						window.viewport.change('tool_dashboard');
-					});
+					var loginEle = document.getElementById('loginContainer');
+					loginEle.style.display = 'none';
+
+					var toolList = document.getElementById('toolList');
+					toolList.style.display = 'block';
 				}
 			});
 		});
