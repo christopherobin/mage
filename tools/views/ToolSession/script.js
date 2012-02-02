@@ -219,22 +219,24 @@
 		var dialog = $('#playerDataValues');
 		var data   = getParams(dialog);
 
-		mithril.actor.editActor(curPlayer.actorId, data, function (error) {
-			var msg;
+		if (data) {
+			mithril.actor.editActor(curPlayer.actorId, data, function (error) {
+				var msg;
 
-			if (error) {
-				msg = $('<div class="error" style="display: none;">Error on Save!</div>');
-			} else {
-				msg = $('<div class="updated" style="display: none;">Saved!</div>');
-			}
+				if (error) {
+					msg = $('<div class="error" style="display: none;">Error on Save!</div>');
+				} else {
+					msg = $('<div class="updated" style="display: none;">Saved!</div>');
+				}
 
-			dialog.append(msg);
-			msg.toggle(300);
-			setTimeout(function() {
+				dialog.append(msg);
 				msg.toggle(300);
-				msg.remove();
-			}, 4500);
-		});
+				setTimeout(function() {
+					msg.toggle(300);
+					msg.remove();
+				}, 4500);
+			});
+		}
 	});
 
 
@@ -443,6 +445,17 @@
 	};
 
 
+	$('#getAllPlayers').click(function (e) {
+		mithril.player.getPlayers(null, 50, null, function (error, players) {
+			$('#playerList').empty();
+			for (var i = 0, len = players.length; i < len; i++) {
+				addPlayerToList(players[i]);
+			}
+		});
+
+	});
+
+
 	$('#addPropertyDialog').dialog({
 		autoOpen: false,
 		width: 'auto',
@@ -537,7 +550,7 @@
 
 		// create a map of objects for quick lookup
 		var objMap = {};
-		var objs = items.objects;
+		var objs = items.objects || [];
 		for (var i = 0, len = objs.length; i < len; i++) {
 			objMap[objs[i].id] = objs[i];
 		}
@@ -562,8 +575,19 @@
 
 		var type = dlg.find('select[data-id="type"] option:selected').val();
 		var value = dlg.find('.value[data-type="' + type + '"] input, .value[data-type="' + type + '"] textarea').val();
+
 		if (type === 'boolean') {
 			value = dlg.find('.value[data-type="boolean"] input:checked').length > 0;
+		}
+
+
+		if (type === 'object') {
+			try {
+				value = JSON.parse(value);
+			} catch (err) {
+				alert('Invalid JSON for property ', property);
+				return false;
+			}
 		}
 
 		var ele = generatePropField(property, type, value);
@@ -632,11 +656,18 @@
 			var value    = $(this).val();
 			switch (type) {
 				case 'number':
-					params.push({ property: property, value: parseInt(value) });
+					params.push({ property: property, value: parseInt(value, 10) });
 					break;
 
 				case 'object':
-					params.push({ property: property, value: JSON.parse(value) });
+					try {
+						value = JSON.parse(value);
+					} catch (err) {
+						alert('Invalid JSON for property ', property);
+						return false;
+					}
+
+					params.push({ property: property, value: value });
 					break;
 
 				case 'bool':
