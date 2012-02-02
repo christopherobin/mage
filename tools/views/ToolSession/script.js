@@ -241,14 +241,21 @@
 
 
 	$('.playAs').live('click', function (e) {
-		var id       = $(this).attr('data-id');
-		var loginUrl = origin + '/login?playerId=' + id;
-		var session;
+		if (mithril.gm.onLogin) {
+			mithril.gm.onLogin(function (error, response) {
+				if (error) {
+					console.warn('Cannot login : ', error);
+				}
 
-		$.get(loginUrl, function (data) {
-			session = data;
-			window.location = origin + '/app/game?language=EN#pages=landing,main&playerId=' + id + '&session=' + session;
-		});
+				if (response.url) {
+					window.location = response.url;
+				} else {
+					console.warn('No url provided in the login response');
+				}
+			});
+		} else {
+			console.warn('gm.onLogin not declared in game');
+		}
 
 		e.preventDefault();
 		return false;
