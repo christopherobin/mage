@@ -241,21 +241,18 @@
 
 
 	$('.playAs').live('click', function (e) {
-		if (mithril.gm.onLogin) {
-			mithril.gm.onLogin(function (error, response) {
-				if (error) {
-					console.warn('Cannot login : ', error);
-				}
+		var id = $(this).attr('data-id');
+		mithril.gm.play(id, function (error, response) {
+			if (error) {
+				console.warn('Cannot login : ', error);
+			}
 
-				if (response.url) {
-					window.location = response.url;
-				} else {
-					console.warn('No url provided in the login response');
-				}
-			});
-		} else {
-			console.warn('gm.onLogin not declared in game');
-		}
+			if (response.url) {
+				window.location = response.url;
+			} else {
+				console.warn('No url provided in the login response');
+			}
+		});
 
 		e.preventDefault();
 		return false;
