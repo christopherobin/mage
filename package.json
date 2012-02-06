@@ -15,7 +15,7 @@
 	"dependencies": {
 		"async": "0.1.9",
 		"mysql": "0.9.1",
-		"colors": "0.5.1",
+		"colors": "0.6.0-1",
 		"compress-buffer": "0.4.2",
 		"node-bj": "0.0.3bogeyatsix-1.0",
 		"zmq": "1.0.2",
