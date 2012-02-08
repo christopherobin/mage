@@ -3,6 +3,8 @@
 ## Next release
 
 Database changes have been made to the gm and gm_data tables. Please run the last ALTER statements in db/changes.sql.
+The Makefile in Mithril now has a lot of cool commands. Run "make help" in the Mithril root path to see what it can do!
+
 
 
 ## v0.6.1, v0.6.2
