@@ -21,11 +21,19 @@ $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 
 .list li {
 	list-style-type: none;
-
-	.gmDetailBtn, .playerDetailBtn {
-		margin-right: 10px;
-	}
 }
+
+.list li .gmDetailBtn {
+	margin-right: 10px;
+}
+
+
+
+.list li .playerDetailBtn {
+	margin-right: 10px;
+}
+
+
 
 .listTitle {
 	font-size: 24px;
@@ -44,13 +52,15 @@ $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 	border: 1px solid black;
 	padding: 3px;
 	margin: 15px;
-
-	.dialogTitle {
-		font-size: 18px;
-		font-weight: bold;
-		text-align: center;
-	}
 }
+
+
+.dialog .dialogTitle {
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+}
+
 
 .tabs {
 	text-align: center;
@@ -71,36 +81,42 @@ $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 
 .field {
 	text-align: left;
-
-	div {
-		display: inline-block;
-	}
-
-	input {
-		margin-right: 20px;
-	}
-
-	input[data-type="object"] {
-		width: 400px;
-	}
-
-	input[data-type="string"] {
-		width: 400px;
-	}
-
-	.dialogLabel {
-		width: 150px;
-		background: black;
-		color: white;
-		margin-right: 10px;
-		padding: 3px;
-		font-size: 12px;
-	}
-
-	.longLabel {
-		width: 150px;
-	}
 }
+
+
+.field div {
+	display: inline-block;
+}
+
+.field input {
+	margin-right: 20px;
+}
+
+.field input[data-type="object"] {
+	width: 400px;
+}
+
+.field input[data-type="string"] {
+	width: 400px;
+}
+
+
+.field .dialogLabel {
+	width: 150px;
+	background: black;
+	color: white;
+	margin-right: 10px;
+	padding: 3px;
+	font-size: 12px;
+}
+
+.field .longLabel {
+	width: 150px;
+}
+
+
+
+
 
 .playAs {
 	margin-right: 15px;
@@ -109,13 +125,13 @@ $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 
 .gmRightsList {
 	margin: 10px 0;
-
-	.gmRightDiv {
-		margin-right: 5px;
-		width: 110px;
-
-	}
 }
+
+.gmRightsList .gmRightDiv {
+	margin-right: 5px;
+	width: 110px;
+}
+
 
 .error {
 	font-weight: bold;
@@ -158,31 +174,32 @@ $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 #editPlayerDialog {
 	display: inline-block;
 	width: 1180px;
-
-	.removeBtn {
-		float: right;
-		margin: 0;
-		padding: 0 1px 0 0;
-		font-size: 8px;
-		width: 12px;
-		font-weight: bold;
-	}
-
-	.playerCollection {
-		border: solid 1px black;
-		margin-bottom: 15px;
+}
 
 
-		.collectionType {
-			background: black;
-			color: white;
-			padding: 2px 0 2px 5px;
-		}
+#editPlayerDialog .removeBtn {
+	float: right;
+	margin: 0;
+	padding: 0 1px 0 0;
+	font-size: 8px;
+	width: 12px;
+	font-weight: bold;
+}
 
-		.collectionObject {
-			margin: 2px;
-			padding: 2px 2px 2px 5px;
-			border: solid 1px gray;
-		}
-	}
+.playerCollection {
+	border: solid 1px black;
+	margin-bottom: 15px;
+}
+
+.playerCollection .collectionType {
+	background: black;
+	color: white;
+	padding: 2px 0 2px 5px;
+}
+
+
+.playerCollection .collectionObject {
+	margin: 2px;
+	padding: 2px 2px 2px 5px;
+	border: solid 1px gray;
 }
