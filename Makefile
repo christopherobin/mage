@@ -14,7 +14,7 @@ lint:
 git-setup:
 	./scripts/git-setup.sh
 
-# target: full setup (currently an alias for git-setup)
+# target: setup, Do a full setup (currently an alias for git-setup)
 setup: git-setup
 
 # target: clean, Cleans the NPM cache
