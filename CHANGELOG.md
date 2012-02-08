@@ -1,5 +1,10 @@
 # Changelog
 
+## Next release
+
+Database changes have been made to the gm and gm_data tables. Please run the last ALTER statements in db/changes.sql.
+
+
 ## v0.6.1, v0.6.2
 
 ### Batched user command execution
