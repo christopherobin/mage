@@ -28,7 +28,7 @@ do
 		jshint $file --config ./scripts/jshint.cfg
 		if [[ $? != 0 ]]
 		then
-			exitCode=$?
+			exitCode=1
 			let failures=$failures+1
 		else
 			let success=$success+1
