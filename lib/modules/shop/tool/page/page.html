@@ -17,7 +17,7 @@
 -->
 	<div data-id="collections" class="stage">
 		<div class="actions">
-			<button class="addBtn" data-id="addCollection">Add Collection</button>
+			<button class="addBtn" data-id="addCollection">Add Shop</button>
 		</div>
 		<div class="content collectionStage"></div>
 	</div>
@@ -41,10 +41,11 @@
 
 <div id="gachaToolBox">
 	<div id="toolBoxTabs">
-		<div data-id="cardList">Cards<br /><div class="checkAll"><input type="checkbox" name="all" /><br />All/None</div></div>
+		<div data-id="cardList">Items<br /><div class="checkAll"><input type="checkbox" name="all" /><br />All/None</div></div>
 		<div class="filters">
 			<input type="text" id="filterCards" data-type="name" /><br />
 
+<!--
 				<select class="cardRarity">
 					<option value="all">All</option>
 					<option value="N"> N</option>
@@ -54,6 +55,8 @@
 					<option value="SR"> SR</option>
 					<option value="SR+"> SR+</option>
 				</select>
+
+-->
 		</div>
 	</div>
 	<div id="cardList" class="toolLists">
@@ -67,10 +70,13 @@
 	Priority
 	<input type="number" id="gachaPriority" /><br />
 	Type
-	<select id="gachaType">
+	<input type="text" id="shopType" /><br />
+<!--	
+		<select id="gachaType">
 		<option value="gacha_free">free</option>
 		<option value="gacha_paid">paid</option>
 	</select>
+-->
 	<br /><br />Open Hours <button class="addHours">+</button><br />
 	<div id="gachaHours">
 	</div>
