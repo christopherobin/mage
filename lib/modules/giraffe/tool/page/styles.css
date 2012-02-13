@@ -1,0 +1,15 @@
+.giraffe\:tool {
+	background: white;
+	padding: 30px;
+	margin: 20px;
+	width: 100%;
+	font-family: 'Arial';
+}
+
+.giraffe_search {
+	margin: 10px 10px 10px 30px;
+}
+
+#results {
+	margin-top: 30px;
+}
