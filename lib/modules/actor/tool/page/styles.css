@@ -123,15 +123,6 @@ $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 }
 
 
-.gmRightsList {
-	margin: 10px 0;
-}
-
-.gmRightsList .gmRightDiv {
-	margin-right: 5px;
-	width: 110px;
-}
-
 
 .error {
 	font-weight: bold;
