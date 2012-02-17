@@ -1,0 +1,5 @@
+$file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
+
+.node {
+	color: white;
+}

@@ -1,0 +1,13 @@
+#dashboardMenu {
+    width: 100%;
+    background: gray;
+    color: #ffffff;
+    font-family: arial;
+    display: inline-block;
+    padding: 5px 0 5px 20px;
+}
+
+.toolLink {
+    width: 80px;
+    display: inline-block;
+}
