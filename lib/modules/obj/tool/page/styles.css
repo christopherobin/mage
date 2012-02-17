@@ -1,2 +1,61 @@
 $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 $file('../../../gm/toolpages/lib/base.css');
+
+#objTool {
+    margin: 10px;
+    padding: 10px;
+    background: white;
+    font-family: arial;
+}
+
+#objTool li {
+    list-style: none;
+}
+
+.listTitle {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.error {
+	font-weight: bold;
+	color: red;
+}
+
+.updated {
+	font-weight: bold;
+	color: green;
+}
+
+.propName {
+	width: 150px;
+	background: black;
+	color: white;
+	padding: 3px;
+	font-size: 10px;
+}
+
+.dataField {
+	vertical-align: top;
+	display: inline-block;
+	margin: 6px;
+}
+
+.removeBtn {
+	float: right;
+	margin: 0;
+	padding: 0 1px 0 0;
+	font-size: 8px;
+	width: 12px;
+	font-weight: bold;
+}
+
+.editObjClassDialog {
+    margin-right: 15px;
+}
+
+
+.delObjClassBtn {
+    margin-left: 15px;
+}

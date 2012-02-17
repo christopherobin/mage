@@ -1,3 +1,56 @@
-<div id="objstuff">
-TESTING!!
+<div id="objTool">
+    <div class="listTitle">obj</div>
+
+    <button class="addObjClassBtn">New</button>
+    <ul id="objClassList" class="list"></ul>
+    <button class="addObjClassBtn">New</button>
 </div>
+
+
+<div id="addPropertyDialog">
+	<div class="propName">Property</div>
+	<input type="text" data-id="property" />
+
+	<div class="propName">Type</div>
+	<select data-id="type">
+		<option value="number">number</option>
+		<option value="string">string</option>
+		<option value="boolean">boolean</option>
+		<option value="object">object</option>
+	</select>
+
+
+	<div class="propName">Value</div>
+
+	<div class="value" data-type="number"><input type="number" /></div>
+
+	<div class="value" data-type="string" style="display: none;"><input type="text" /></div>
+
+	<div class="value" data-type="boolean" style="display: none;">
+		<input type="checkbox" name="boolean" value="true" checked />
+	</div>
+
+	<div class="value" data-type="object" style="display: none;">
+		<textarea rows="4" cols="60" data-type="object"></textarea>
+	</div>
+</div>
+
+<div id="editObjClassDialog">
+    <div class="dataValues"></div>
+
+    <div class="objClassDataActions">
+        <button class="addProperty">Add Property</button>
+    </div>
+</div>
+
+<div id="addObjClassDialog">
+    Name<input class="name" type="text" /><br />
+    Weight<input class="weight" type="number" /><br />
+
+    <div class="dataValues"></div>
+
+    <div class="objClassDataActions">
+        <button class="addProperty">Add Property</button>
+    </div>
+</div>
+
