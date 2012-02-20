@@ -90,12 +90,22 @@
 	<input type="text" id="boosterName" /><br />
 	<br />
 	Weight
-	<input type="number" id="boosterWeight" />
+	<input type="number" id="boosterWeight" value="1" /><br />
+	<br />
+	Price
+	<input type="number" id="boosterPrice" value="50" /><br />
+	<br />
+	Currency
+	<select id="boosterCurrency">
+		<option value="coins">coins</option>
+		<option value="freeGachaToken">daily gacha</option>
+		
+	</select>
 </div>
 
 <div id="boosterDetail" style="display: none;">
 	<div class="actions">
-		<button class="minBtn">_</button>
+		<button class="minBtn">-</button>
 		<button class="addBtn" data-id="addRow">+</button>
 	</div>
 

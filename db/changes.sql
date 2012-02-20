@@ -702,22 +702,17 @@ ENGINE = InnoDB;
 
 -- 2011-10-14: Gm module tables, shop name to shop identifier
 
-CREATE  TABLE IF NOT EXISTS `gm` (
+CREATE TABLE `gm` (
   `actor` INT UNSIGNED NOT NULL ,
   `username` CHAR(16) NOT NULL ,
   `password` CHAR(40) NOT NULL ,
   PRIMARY KEY (`actor`, `username`) ,
   INDEX `fk_gm_actor` (`actor` ASC) ,
   UNIQUE (`username`) ,
-  CONSTRAINT `fk_gm_actor`
-    FOREIGN KEY (`actor` )
-    REFERENCES `actor` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+  CONSTRAINT `fk_gm_actor` FOREIGN KEY (`actor` ) REFERENCES `actor` (`id` ) ON DELETE CASCADE ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-
-CREATE  TABLE IF NOT EXISTS `gm_data` (
+CREATE TABLE `gm_data` (
   `actor` INT UNSIGNED NOT NULL ,
   `property` VARCHAR(50) NOT NULL ,
   `language` CHAR(2) NOT NULL ,
@@ -725,11 +720,7 @@ CREATE  TABLE IF NOT EXISTS `gm_data` (
   `value` VARCHAR(255) NOT NULL ,
   PRIMARY KEY (`actor`, `property`, `language`) ,
   INDEX `fk_gm_data_actor` (`actor` ASC) ,
-  CONSTRAINT `fk_gm_data_actor`
-    FOREIGN KEY (`actor` )
-    REFERENCES `gm` (`actor` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+  CONSTRAINT `fk_gm_data_actor` FOREIGN KEY (`actor` ) REFERENCES `gm` (`actor` ) ON DELETE CASCADE ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 ALTER TABLE `shop` CHANGE `name` `identifier` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
@@ -746,6 +737,15 @@ DROP TABLE `gc_node_actor_data`;
 -- 2012-01-10: Refactoring msg module, to always have a msg_to_actor record, even on messages to all players (actorId NULL).
 
 ALTER TABLE `msg_to_actor` CHANGE `actorId` `actorId` INT(10) UNSIGNED NULL;
+
+
+-- 2012-02-08: Fixes to the GM tables
+
+ALTER TABLE `gm` DROP PRIMARY KEY, ADD PRIMARY KEY (`actor`);
+ALTER TABLE `gm` CHANGE `username` `username` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL ,
+CHANGE `password` `password` VARCHAR( 40 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
+ALTER TABLE `gm` ADD UNIQUE `username_UNIQUE` ( `username` );
+ALTER TABLE `gm_data` CHANGE `language` `language` VARCHAR( 2 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
 
 
 -- next change, add here.
