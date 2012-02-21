@@ -1,13 +1,19 @@
 <div id="toolSession">
 	<div id="playerListHolder" class="sessionListHolder">
 		<div class="listTitle">Actors</div>
+
 		Search by
-		<input type="radio" name="searchType" value="actor" checked />Player Id
+        <select id="searchType">
+            <option value="actorId">actorId</option>
+        </select>
+
+
 		<input type="text" id="searchValue" />
-		<button id="searchBtn">Search</button>
+		<button id="actor_searchBtn">Search</button>
 		<button id="getAllPlayers">Get All</button>
 
 		<ul id="playerList" class="list"></ul>
+        <div id="actor_pageLinks"></div>
 
 		<button id="addPlayerBtn">Add Player</button>
 		<div id="playerDialog" class="dialog" style="display: none;">
