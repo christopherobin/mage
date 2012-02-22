@@ -1,5 +1,95 @@
 # Changelog
 
+## v0.6.1, v0.6.2
+
+### BC break:
+
+Database changes have been made to the gm and gm_data tables. Please run the last ALTER statements in db/changes.sql.
+The Makefile in Mithril now has a lot of cool commands. Run "make help" in the Mithril root path to see what it can do!
+
+### Batched user command execution
+
+The command system now allows for batched execution of any amount of user commands. The way to execute multiple commands in a single
+request is by calling the functions in a non-asynchronous way. This has been implemented in Mithril's setup process, causing all sync
+commands to bundle up into a single call. While a request is in progress, no other command may be queued, and a "busy" error will still
+occur, as it has before. The only typical cause for this "busy" error is now user interaction though, so it should still make fast
+double-taps fail.
+
+On the server side, the cache TTL can be configured per command center (ie: per application). This cache used to let you run into
+trouble when re-using an existing session, by responding with an old response for a new command execution (reported by Thibaut).
+That problem should no longer occur.
+
+Advantages:
+- A single round trip, instead of a slow sequential string of user commands.
+- No more "busy" errors you need to code around.
+- Only a single cached response (gzipped when possible) to aid unreliable network connections.
+- The server only has to verify credentials (session, giraffe hash) once, for all bundled commands at once.
+- Potential (though not yet implemented) for parallel execution on the server for read-only commands (such as sync).
+- Compressed responses when the content is large enough (currently only in the Node-0.6 branch). This has shown a huge gain.
+
+### Giraffe
+
+Push notifications can now be sent in batch using pushNotifications(messages, options). This function receives no state or callback
+since it's a full background operation (and generally quite slow).
+
+### Messages
+
+- Message expiration on sync.
+- Some SQL queries have been optimized to be faster.
+- a new delMessages user command.
+- the client function search() no longer requires an options object.
+### Logger
+
+The logger's output performance has improved dramatically (x3), by no longer relying on the slow console object, but by
+writing directly to stdout/stderr streams.
+
+Also, the logger has been completely rewritten to be more easily configurable. The new configuration looks like this:
+`
+{
+  "logging": {
+    "theme": "default",
+    "show": ["debug", "info", "error", "time"],
+    "hide": ["debug"],
+    "output": "terminal"/"file",
+    "path": "/var/log/myGame"
+  }
+}
+`
+Leaving out the logging, will display all channels (debug, info, etc) without color coding. Creating config and setting the theme
+to default will enable colors from the theme "default" (currently the only theme). Providing an array of channels in the "show"
+property, will show only these channels. Alternatively, a "hide" array will show all channels, except the ones in the given array.
+Using both "show" and "hide" makes no sense, but works. If output is "terminal", errors will go to stderr, and everything else to
+stdout. In other words, they all end up on your screen. Setting output to "file" will create a file for each channel that is being
+logged, in the directory specified in the "path" property.
+
+Your old configuration will still work, but will output a deprecation warning. Please update your config files as explained above.
+
+The refactoring of the logger module has made it so that the it could be externalized from Mithril as a separate module. We may
+eventually open source this, although the question is if the community is really waiting for yet-another-logger module.
+
+### Small changes
+
+- SNS: When a relation is requested, a module event is emitted called "relationRequested".
+- All console.log() statements in the Mithril client have been removed. Want to see network data? Open the network tab.
+- The Time module now calculates server/client time delta on the server, and no longer on the client.
+- The wizAssetHandler plugin handles parallel downloads now, and emits progress events sequentially.
+- The NPC sync data is now cached JSON, so will be faster.
+- When ZeroMQ bindings fail, Mithril now handles it more gracefully.
+
+### Bugfixes
+
+- Database errors were not being logged properly.
+- TimedValue would not emit some events at the right time.
+- On the client, updates on a special data type would overwrite the object instead of update it. (hotfix 0.6.0-1)
+- Manifest creation was broken.
+- The client side GREE module was not calling the callback after setup.
+- LivePropertyMap's importFromStaticPropertyMap was broken when copying objects.
+- The score module relied on the MySQL table game_playerstate. This has been removed.
+- The logger failed when logging undefined.
+- The appleAppStore receipt checking logic was failing under some circumstances. (hotfix 0.6.0-2)
+- obj.getObjectActors() failed when an object was not present in any collections. (hotfix 0.6.0-3)
+
+
 ## v0.6.0
 
 ### Shop API change
