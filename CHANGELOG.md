@@ -1,13 +1,11 @@
 # Changelog
 
-## Next release
+## v0.6.1, v0.6.2
+
+### BC break:
 
 Database changes have been made to the gm and gm_data tables. Please run the last ALTER statements in db/changes.sql.
 The Makefile in Mithril now has a lot of cool commands. Run "make help" in the Mithril root path to see what it can do!
-
-
-
-## v0.6.1, v0.6.2
 
 ### Batched user command execution
 
@@ -29,6 +27,17 @@ Advantages:
 - Potential (though not yet implemented) for parallel execution on the server for read-only commands (such as sync).
 - Compressed responses when the content is large enough (currently only in the Node-0.6 branch). This has shown a huge gain.
 
+### Giraffe
+
+Push notifications can now be sent in batch using pushNotifications(messages, options). This function receives no state or callback
+since it's a full background operation (and generally quite slow).
+
+### Messages
+
+- Message expiration on sync.
+- Some SQL queries have been optimized to be faster.
+- a new delMessages user command.
+- the client function search() no longer requires an options object.
 ### Logger
 
 The logger's output performance has improved dramatically (x3), by no longer relying on the slow console object, but by
