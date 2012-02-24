@@ -262,3 +262,23 @@ select {
 	font-family: sans-serif;
 	padding: 0 10px 0 10px;
 }
+
+#historyResults table {
+	width:100%;
+}
+
+#historyResults tr {
+	color:#fff;
+	font-family: sans-serif;
+}
+
+#historyResults tr > * {
+	padding:2px 2px 2px 10px;
+}
+
+#historyResults th {
+	letter-spacing: 3px;
+	text-align: left;
+	font-weight: normal;
+	font-size:18px;
+}
