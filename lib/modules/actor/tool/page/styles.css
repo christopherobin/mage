@@ -9,7 +9,6 @@ $file('../../../gm/toolpages/lib/base.css');
 	padding: 8px;
 	margin: 10px;
 	vertical-align: top;
-	width: 100%;
 }
 
 #playerListHolder {
@@ -123,17 +122,6 @@ $file('../../../gm/toolpages/lib/base.css');
 	margin-right: 15px;
 }
 
-
-
-.error {
-	font-weight: bold;
-	color: red;
-}
-
-.updated {
-	font-weight: bold;
-	color: green;
-}
 
 .propName {
 	width: 150px;

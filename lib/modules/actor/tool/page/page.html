@@ -3,9 +3,7 @@
 		<div class="listTitle">Actors</div>
 
 		Search by
-        <select id="searchType">
-            <option value="actorId">actorId</option>
-        </select>
+        <select id="searchType"></select>
 
 
 		<input type="text" id="searchValue" />
@@ -24,55 +22,18 @@
 </div>
 
 
-<div id="addPropertyDialog">
-	<div class="propName">Property</div>
-	<input type="text" data-id="property" />
-
-	<div class="propName">Type</div>
-	<select data-id="type">
-		<option value="number">number</option>
-		<option value="string">string</option>
-		<option value="boolean">boolean</option>
-		<option value="object">object</option>
-	</select>
-
-
-	<div class="propName">Value</div>
-
-	<div class="value" data-type="number"><input type="number" /></div>
-
-	<div class="value" data-type="string" style="display: none;"><input type="text" /></div>
-
-	<div class="value" data-type="boolean" style="display: none;">
-		<input type="checkbox" name="boolean" value="true" checked />
-	</div>
-
-	<div class="value" data-type="object" style="display: none;">
-		<textarea rows="4" cols="60" data-type="object"></textarea>
-	</div>
-</div>
-
 <div id="editPlayerDialog" class="dialog ldialog">
 	<div id="gachaTabs">
 		<div id="dataTab" class="tabs activeTab" data-id="data">Data</div>
-		<div id="itemsTab" class="tabs" data-id="items">Items</div>
+<!--		<div id="itemsTab" class="tabs" data-id="items">Items</div> -->
 	</div>
 
 	<div id="playerData" class="playerDetails" data-id="data">
-		<div id="playerDataValues"></div>
+		<div class="dataValues"></div>
 
 		<div id="playerDataActions">
 			<button id="addProperty">Add Property</button>
-			<br /><button id="savePlayerDataBtn">Save</button>
 		</div>
 	</div>
-
-	<div id="playerItems" class="playerDetails" data-id="items" style="display: none;">
-		<div id="playerItemCollections"></div>
-	</div>
 </div>
 
-<div id="addPlayerItemDialog" class="dialog ldialog">
-	<select id="itemsList"></select>
-	Qty. <input type="number" id="itemsQuantity" value="1" />
-</div>
