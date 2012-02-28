@@ -1,5 +1,6 @@
 $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 $file('../../../gm/toolpages/lib/base.css');
+$dir($cfg("module.gm.nodetypes"));
 
 ul {
     list-style-type: none;
@@ -111,7 +112,7 @@ ul {
 }
 
 #allItemList {
-    width: 41%; 
+    width: 41%;
     border: 2px solid #0078ae;
     margin: 5px 5px 10px 5px;
     padding: 10px;
@@ -192,7 +193,7 @@ ul {
 }
 
 .greenGradient {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5BC668), color-stop(34%,#2B7A19), color-stop(80%,#2B7A19), color-stop(100%,#5BC668));	
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5BC668), color-stop(34%,#2B7A19), color-stop(80%,#2B7A19), color-stop(100%,#5BC668));
 }
 
 .blackGradient {
