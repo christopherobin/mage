@@ -7,34 +7,6 @@
 </div>
 
 
-<div id="addPropertyDialog">
-	<div class="propName">Property</div>
-	<input type="text" data-id="property" />
-
-	<div class="propName">Type</div>
-	<select data-id="type">
-		<option value="number">number</option>
-		<option value="string">string</option>
-		<option value="boolean">boolean</option>
-		<option value="object">object</option>
-	</select>
-
-
-	<div class="propName">Value</div>
-
-	<div class="value" data-type="number"><input type="number" /></div>
-
-	<div class="value" data-type="string" style="display: none;"><input type="text" /></div>
-
-	<div class="value" data-type="boolean" style="display: none;">
-		<input type="checkbox" name="boolean" value="true" checked />
-	</div>
-
-	<div class="value" data-type="object" style="display: none;">
-		<textarea rows="4" cols="60" data-type="object"></textarea>
-	</div>
-</div>
-
 <div id="editObjClassDialog">
     <div class="dataValues"></div>
 
@@ -42,6 +14,7 @@
         <button class="addProperty">Add Property</button>
     </div>
 </div>
+
 
 <div id="addObjClassDialog">
     <div class="propName">className</div><input class="name" type="text" /><br />
@@ -54,3 +27,13 @@
     </div>
 </div>
 
+
+<div id="actorObjDialog">
+    <div id="actorObjCollections"></div>
+</div>
+
+
+<div id="addActorObjDialog">
+    <select id="itemsList"></select>
+    Qty. <input type="number" id="itemsQuantity" value="1" />
+</div>

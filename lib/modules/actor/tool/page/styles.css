@@ -123,17 +123,6 @@ $file('../../../gm/toolpages/lib/base.css');
 }
 
 
-
-.error {
-	font-weight: bold;
-	color: red;
-}
-
-.updated {
-	font-weight: bold;
-	color: green;
-}
-
 .propName {
 	width: 150px;
 	background: black;

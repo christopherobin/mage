@@ -11,3 +11,31 @@
     padding: 0 30px;
     display: inline-block;
 }
+
+.activeTool {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: white 0 0 15px;
+}
+
+.mithril-page {
+    position: absolute;
+    width: 100%;
+    top: 0;
+}
+
+body {
+    font-family: arial;
+}
+
+.error {
+    margin-left: 20px;
+    font-weight: bold;
+    color: red;
+}
+
+.updated {
+    margin-left: 20px;
+    font-weight: bold;
+    color: green;
+}
