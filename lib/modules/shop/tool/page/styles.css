@@ -8,7 +8,7 @@ $file('../../../gm/toolpages/lib/base.css');
 	background: white;
 	vertical-align: top;
 	display: inline-block;
-	width: 77%;
+	width: 75%;
 }
 
 select {
@@ -49,10 +49,22 @@ select {
 	color: white;
 }
 
+#tabs {
+    text-align: center;
+}
+
 #tabs div {
-	display: inline;
-	border: 1px solid black;
-	margin: 5px 10px;
+	display: inline-block;
+    padding: 5px 12px;
+    margin-bottom: 5px;
+    background: black;
+    color: white;
+}
+
+#tabs div.activeTab {
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: white 0 0 10px;
 }
 
 .stage {
@@ -70,7 +82,7 @@ select {
 
 #gachaToolBox {
 	font-size: 12px;
-	width: 280px;
+	width: 22%;
 	background-color: white;
 	z-index: 1000;
 	display: inline-block;
@@ -247,4 +259,30 @@ select {
 	border-bottom: 1px dotted black;
 	margin: 5px;
 	padding: 5px;
+}
+
+.historyControls label {
+	color: black;
+	font-family: sans-serif;
+	padding: 0 10px 0 10px;
+}
+
+#historyResults table {
+	width:100%;
+}
+
+#historyResults tr {
+	color: black;
+	font-family: sans-serif;
+}
+
+#historyResults tr > * {
+	padding:2px 2px 2px 10px;
+}
+
+#historyResults th {
+	letter-spacing: 3px;
+	text-align: left;
+	font-weight: normal;
+	font-size:18px;
 }

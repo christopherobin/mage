@@ -1,45 +1,37 @@
-<div id="nav" style="display: none;">
-<!--
-	<div class="btn_toview btn_session" data-target="tool_session">Player</div>
-	<div class="btn_toview btn_gacha" data-target="tool_gacha">Shop/Gacha</div>
-	<div class="btn_toview btn_creator" data-target="tool_creator">GC Nodes</div>
--->
-</div>
-
 <div id="toolGacha">
-<!--
+
 	<div id="tabs">
-		<div data-id="collections">Collections</div>
-		<div data-id="all">All Cards</div>
-		<div data-id="timeline">Timeline</div>
-		<div data-id="recurring">Recurring</div>
+		<div data-id="shops" class="activeTab">Shops</div>
+		<div data-id="purchaseHistory">Purchase History</div>
 	</div>
--->
-	<div data-id="collections" class="stage">
+
+	<div data-id="shops" class="stage">
+
 		<div class="actions">
 			<button class="addBtn" data-id="addCollection">Add Shop</button>
 		</div>
 		<div class="content collectionStage"></div>
+
 	</div>
 
-	<div data-id="all" class="stage" style="display: none;">
-		<div class="actions">
-			<button class="addBtn" data-id="addGacha">Add Gacha</button>
-		</div>
-		<div class="content gachaStage">
-		</div>
-	</div>
+    <div data-id="purchaseHistory" class="stage" style="display: none;">
 
-	<div data-id="timeline" class="stage" style="display: none;">
-	timeline
-	</div>
+        <div class="historyControls">
 
-	<div data-id="recurring" class="stage" style="display: none;">
-	recurring
-	</div>
+            <label for="historyFrom">From: </label><input type="calendar" id="historyFrom" />
+            <label for="historyTo">To:</label><input type="calendar" id="historyTo" />
+            <label for="HistoryActorId">ActorId: </label><input type="text" id="historyActorId" />
+
+            <input type="button" value="Search" id="historySearch" />
+
+        </div>
+
+        <div id="historyResults"></div>
+
+    </div>
 </div>
 
-<div id="gachaToolBox">
+<div id="gachaToolBox" class="toolDependency" data-dependency="shops">
 	<div id="toolBoxTabs">
 		<div data-id="cardList">Items<br /><div class="checkAll"><input type="checkbox" name="all" /><br />All/None</div></div>
 		<div class="filters">
@@ -71,7 +63,7 @@
 	<input type="number" id="gachaPriority" /><br />
 	Type
 	<input type="text" id="shopType" /><br />
-<!--	
+<!--
 		<select id="gachaType">
 		<option value="gacha_free">free</option>
 		<option value="gacha_paid">paid</option>
@@ -99,7 +91,7 @@
 	<select id="boosterCurrency">
 		<option value="coins">coins</option>
 		<option value="freeGachaToken">daily gacha</option>
-		
+
 	</select>
 </div>
 
