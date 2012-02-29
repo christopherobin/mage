@@ -1,14 +1,6 @@
 $file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
 $file('../../../gm/toolpages/lib/base.css');
 
-h1, h2 {
-	font-family: sans-serif;
-	font-weight: normal;
-	letter-spacing: 5px;
-	margin: 10px;
-	color: #fff;
-}
-
 #toolGacha {
 	margin: 10px 10px;
 	font-family: 'Arial';
@@ -57,10 +49,22 @@ select {
 	color: white;
 }
 
+#tabs {
+    text-align: center;
+}
+
 #tabs div {
-	display: inline;
-	border: 1px solid black;
-	margin: 5px 10px;
+	display: inline-block;
+    padding: 5px 12px;
+    margin-bottom: 5px;
+    background: black;
+    color: white;
+}
+
+#tabs div.activeTab {
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: white 0 0 10px;
 }
 
 .stage {
@@ -258,7 +262,7 @@ select {
 }
 
 .historyControls label {
-	color:#fff;
+	color: black;
 	font-family: sans-serif;
 	padding: 0 10px 0 10px;
 }
@@ -268,7 +272,7 @@ select {
 }
 
 #historyResults tr {
-	color:#fff;
+	color: black;
 	font-family: sans-serif;
 }
 
