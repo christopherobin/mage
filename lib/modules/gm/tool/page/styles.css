@@ -30,9 +30,22 @@ $file('../../../gm/toolpages/lib/base.css');
 }
 
 .gmRightsList .gmRightDiv {
-	margin-right: 5px;
+	margin: 5px;
 	width: 120px;
 	display: inline-block;
+    padding: 5px;
+    border: solid 1px #bbb;
 }
 
+.viewableTag {
+    margin-left: 20px;
+}
 
+.modNameTag {
+    background: black;
+    color: white;
+}
+
+#editGm
+
+$(""div.dialog < .ui-dialog-buttonpane button:first
