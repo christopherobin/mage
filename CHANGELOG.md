@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.6.3
+
+### BC break:
+
+A command center is now created on each app automatically. To access it, just talk to yourApp.commandCenter(.expose() etc). This means
+that you now have to make sure you create the app before talking to its command center. Before they were more separated and some games
+had reverse logic: create a command center and then later instantiate the app. It also means you can no longer call
+mithril.addCommandCenter(), since the command center automatically exists.
+
+### "Firewall" option
+
+It is now possible to register a firewall function on your app. The function receives 1 argument, which is the connection object of
+type net.Socket, as described here: http://nodejs.org/docs/latest/api/net.html#net.Socket
+The function's return value will be evaluated and if falsy, the connection is not accepted. This applies to both the command center
+and the page serving. A typical example:
+
+`
+myApp.firewall = function (conn) {
+	return myAllowedIpAddresses.indexOf(conn.remoteAddress) !== -1;
+};
+`
+
+
 ## v0.6.1, v0.6.2
 
 ### BC break:
