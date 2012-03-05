@@ -1,0 +1,47 @@
+$file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
+$file('../../../gm/toolpages/lib/base.css');
+
+#gmTool {
+	background: white;
+	margin: 10px;
+	padding: 10px;
+}
+
+#gmList {
+	list-style: none;
+}
+
+.editGmBtn {
+	margin-right: 20px;
+}
+
+.delGmBtn {
+	margin-left: 20px;
+}
+
+.listTitle {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.gmRightsList {
+	margin: 10px 0;
+}
+
+.gmRightsList .gmRightDiv {
+	margin: 5px;
+	width: 120px;
+	display: inline-block;
+    padding: 5px;
+    border: solid 1px #bbb;
+}
+
+.viewableTag {
+    margin-left: 20px;
+}
+
+.modNameTag {
+    background: black;
+    color: white;
+}

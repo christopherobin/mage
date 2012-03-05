@@ -1,0 +1,41 @@
+#dashboardMenu {
+    width: 100%;
+    background: gray;
+    color: #ffffff;
+    font-family: arial;
+    display: inline-block;
+    padding: 5px 0;
+}
+
+.toolLink {
+    padding: 0 30px;
+    display: inline-block;
+}
+
+.activeTool {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: white 0 0 15px;
+}
+
+.mithril-page {
+    position: absolute;
+    width: 100%;
+    top: 0;
+}
+
+body {
+    font-family: arial;
+}
+
+.error {
+    margin-left: 20px;
+    font-weight: bold;
+    color: red;
+}
+
+.updated {
+    margin-left: 20px;
+    font-weight: bold;
+    color: green;
+}
