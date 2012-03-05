@@ -1,0 +1,20 @@
+$file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
+$file('../../../gm/toolpages/lib/base.css');
+
+.giraffeTool {
+	background: white;
+	padding: 10px;
+	margin: 10px;
+	font-family: 'Arial';
+}
+
+#results {
+	margin-top: 30px;
+}
+
+.listTitle {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+}
+

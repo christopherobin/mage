@@ -1,0 +1,99 @@
+<div id="creator">
+
+<div id="title">
+	<span class="titleName"> Mithril Creator</span>
+</div>
+
+<div id="toolBox">
+	<div id="toolHeader">Toolbox</div>
+	<div class="toolContainer">
+		<ul id="toolButtons">
+			<li id="toolTop">Top</li>
+			<li id="prevLayer">Previous Layer</li>
+			<li id="layerTop">Layer Top</li>
+			<li id="refreshLayer">Refresh Layer</li>
+		</ul>
+	</div>
+
+	<div class="toolContainer">
+		Popup Type: 
+		<select id="popupType">
+			<option value="normal">normal</option>
+			<option value="debug">debug</option>
+			<option value="none">none</option>
+		</select>
+	</div>
+
+	<div class="toolContainer verifyBox">
+		Verify Content:
+		<input type="button" id="checkStructure" class="checkBtn" value="Check Structure" />
+		<input type="button" id="checkData"      class="checkBtn" value="Check Data" />
+	</div>
+</div>
+
+<div id="contentHolder">
+</div>
+
+<div id="nodeGraphTemplate" class="node" style="display: none;">
+	<button class="addInput greenGradient">+</button>
+	<div class="nodeContent">
+		<div class="nodeType"></div>
+		<div class="nodeDesc"></div>
+		<button class="editNode">Edit</button><button class="deleteNode redGradient">-</button>
+	</div>
+	<button class="addOutput greenGradient">+</button>
+</div>
+
+<div id="treeTemplate">
+
+</div>
+
+<div id="dialogBox"></div>
+<div id="stateDialogBox"></div>
+
+<!--
+<div id="exportDialog">
+<?php foreach($imexportTypes as $ie): ?>
+	<input type="radio" name="exportType" value="<?php echo $ie; ?>" /> <?php echo $ie; ?><br />
+<?php endforeach; ?>
+</div>
+
+<div id="importDialog">
+<?php foreach($imexportTypes as $ie): ?>
+	<input type="radio" name="importType" value="<?php echo $ie; ?>" /> <?php echo $ie; ?><br />
+<?php endforeach; ?>
+	<br />
+	<div id="previousHolder">
+		Previous : <br />
+		<select id="previousSaves"></select><br /><br />
+	</div>
+	<div id="fileSelect">
+		Select csv file :<br />
+		<input type="file" name="importFile" id="importFile" />
+		<button id="fileClear" style="display: none;">Clear</button>
+	</div>
+</div>
+-->
+
+<div id="addNodeDialog"></div>
+
+<div id="deleteDialog">
+	<input type="radio" name="deleteType" value="allChilds" checked /> All Children<br />
+	<input type="radio" name="deleteType" value="nodeOnly" /> Node Only<br />
+</div>
+
+<div id="pasteDialog">
+	<input type="radio" name="pasteType" value="allChilds" checked /> All Children<br />
+	<input type="radio" name="pasteType" value="nodeOnly" /> Node Only<br />
+</div>
+
+<div id="errorDialog"></div>
+<div id="preview" style="display: none;"></div>
+<div id="darkScreen" style="display: none;"></div>
+<div id="spinner"></div>
+
+
+
+$dir($cfg("module.gm.nodetypes"));
+<!-- End of view -->
+</div>
