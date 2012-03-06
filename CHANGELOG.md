@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.6.4
+
+### Actor language improvements
+
+Before, an actor's language was (wrongfully) stored on the player record. Sessions depended on this, so that meant that content
+managers needed a player record in order to have a session. This has been resolved and language is now an optional property on
+the actor's livePropertyMap, and it defaults to EN. Incidentally, this also has the following positive side effects:
+- session registration now no longer requires a MySQL query, but instead pulls the language out of Membase.
+- emitting events to other players should now be dramatically faster.
+
+A small BC break is that player.getLanguages() no longer exists, but nobody (except Mithril itself) was using that anyway.
+
+
 ## v0.6.3
 
 ### BC break:
