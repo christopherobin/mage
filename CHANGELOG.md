@@ -12,12 +12,10 @@ the actor's livePropertyMap, and it defaults to EN. Incidentally, this also has 
 
 A small BC break is that player.getLanguages() no longer exists, but nobody (except Mithril itself) was using that anyway.
 
-
 ### Tool changes
 
-Gm rights changed from an array to an object. 
+Gm rights changed from an array to an object.
 Example : {"actor":{"viewable":false},"giraffe":{"viewable":true},"game":{"viewable":true}}
-
 
 
 ## v0.6.3
