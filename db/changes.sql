@@ -748,5 +748,10 @@ ALTER TABLE `gm` ADD UNIQUE `username_UNIQUE` ( `username` );
 ALTER TABLE `gm_data` CHANGE `language` `language` VARCHAR( 2 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
 
 
+-- 2012-03-07: Fix to the msg module, the change from 2012-01-10 does not work (fails silently)
+
+ALTER TABLE `msg_to_actor` DROP PRIMARY KEY, ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST, CHANGE `actorId` `actorId` INT UNSIGNED NULL DEFAULT NULL;
+
+
 -- next change, add here.
 
