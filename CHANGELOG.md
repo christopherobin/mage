@@ -37,9 +37,10 @@ could do background downloads with a parallelism of 1 (sequential downloads) in 
 This use case has been tested to work well. The asset system will start using the local URL from the moment the asset has been
 downloaded, even if the player has been inside of the game for a long time.
 
-The progress per phase can be followed through the events "phaseStart" and "phaseEnd" which both receive as their first and
-only parameter an array of assets that will be downloaded, or in the case of "phaseEnd" have been downloaded (or failed to
-download, this array does not indicate any failures). All other events are unchanged.
+The progress per phase can be followed through the events "phaseStart" and "phaseComplete" which both receive as their first
+parameter the name of the phase, and as a second parameter an array of assets that will be downloaded, or in the case of
+"phaseComplete" have been downloaded (but keep in mind that this array contains both successful and failed downloads).
+All other events are unchanged.
 
 
 ## v0.6.4
