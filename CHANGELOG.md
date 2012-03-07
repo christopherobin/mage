@@ -2,6 +2,11 @@
 
 ## v0.6.5
 
+### Messages to all players
+
+The msg module now supports sending to all players by providing a "null" receiver when sending.
+NOTE: The MySQL schema has changed to make this possible. Please refer to db/changes.sql. The API is backwards compatible.
+
 ### wizAssetsHandler power-up
 
 The wizAssetsHandler has become much more powerful. It now chunks up all files-to-download into several phases. Each phase can be
@@ -52,7 +57,7 @@ A small BC break is that player.getLanguages() no longer exists, but nobody (exc
 ### Tool changes
 
 Gm rights changed from an array to an object.
-Example : {"actor":{"viewable":false},"giraffe":{"viewable":true},"game":{"viewable":true}}
+Example: {"actor":{"viewable":false},"giraffe":{"viewable":true},"game":{"viewable":true}}
 
 
 ## v0.6.3
