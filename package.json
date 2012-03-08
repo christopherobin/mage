@@ -1,7 +1,7 @@
 {
 	"name": "mithril",
 	"description": "Mithril game development platform for NodeJS",
-	"version": "0.6.5",
+	"version": "0.6.6",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
