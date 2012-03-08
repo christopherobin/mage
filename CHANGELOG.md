@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.6.6
+
+The app.firewall function used to receive a single parameter that was the net.Socket object. It has now been augmented with
+a 2nd, transport specific, parameter. The only transport we currently have is the HTTP server, so this argument will always
+be a ServerRequest object from Node.js's http module: http://nodejs.org/docs/latest/api/http.html#http_class_http_serverrequest
+
+
 ## v0.6.5
 
 ### Messages to all players
