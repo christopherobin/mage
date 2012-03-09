@@ -1,5 +1,55 @@
 # Changelog
 
+## v0.6.6
+
+The app.firewall function used to receive a single parameter that was the net.Socket object. It has now been augmented with
+a 2nd, transport specific, parameter. The only transport we currently have is the HTTP server, so this argument will always
+be a ServerRequest object from Node.js's http module: http://nodejs.org/docs/latest/api/http.html#http_class_http_serverrequest
+
+
+## v0.6.5
+
+### Messages to all players
+
+The msg module now supports sending to all players by providing a "null" receiver when sending.
+NOTE: The MySQL schema has changed to make this possible. Please refer to db/changes.sql. The API is backwards compatible.
+
+### wizAssetsHandler power-up
+
+The wizAssetsHandler has become much more powerful. It now chunks up all files-to-download into several phases. Each phase can be
+configured with 2 settings:
+- maxCacheability
+- parallel
+
+maxCacheability is a number that indicates up to (inclusive) which cache level (this is configured per asset in the asset map)
+files need to be downloaded. Files that have a negative cache level are never downloaded. Files with a cache level too high to
+match maxCacheability of this particular phase are skipped and possibly downloaded in a next phase. Files are never downloaded
+more than once, so two phases can overlap safely. The default maxCacheability is Infinity, so every asset (except negative) will
+match.
+
+The parallel parameter is used to indicate to the downloader how many files to download in parallel. The default is 1, meaning
+sequential only.
+
+The system is fully backwards compatible, because it comes preconfigured with one phase: "main", which has a maxCacheability of
+Infinity and parallel value of 2. You can change this phase or add a new phase by calling:
+
+`
+var phaseName = 'main'; // or your own name of choice to create a new phase
+
+myAssetHandler.setup(phaseName, { maxCacheability: 0, parallel: 5 });
+`
+
+The typical use case is tag critical assets as cacheability 0, meaning "must have". Once these are downloaded, the next phase
+could do background downloads with a parallelism of 1 (sequential downloads) in order to decrease the effect on the connection.
+This use case has been tested to work well. The asset system will start using the local URL from the moment the asset has been
+downloaded, even if the player has been inside of the game for a long time.
+
+The progress per phase can be followed through the events "phaseStart" and "phaseComplete" which both receive as their first
+parameter the name of the phase, and as a second parameter an array of assets that will be downloaded, or in the case of
+"phaseComplete" have been downloaded (but keep in mind that this array contains both successful and failed downloads).
+All other events are unchanged.
+
+
 ## v0.6.4
 
 ### Actor language improvements
@@ -12,12 +62,10 @@ the actor's livePropertyMap, and it defaults to EN. Incidentally, this also has 
 
 A small BC break is that player.getLanguages() no longer exists, but nobody (except Mithril itself) was using that anyway.
 
-
 ### Tool changes
 
-Gm rights changed from an array to an object. 
-Example : {"actor":{"viewable":false},"giraffe":{"viewable":true},"game":{"viewable":true}}
-
+Gm rights changed from an array to an object.
+Example: {"actor":{"viewable":false},"giraffe":{"viewable":true},"game":{"viewable":true}}
 
 
 ## v0.6.3
