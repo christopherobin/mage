@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## v0.6.7
 
 ### WebApp object improvements
 
