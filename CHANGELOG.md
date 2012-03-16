@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.6.7-1
+
+### SNS module hotfix
+
+- Many SQL rewrites in SNS that should make it a lot faster to execute.
+- When auto-connecting a relation request, we were double checking the existence of the relation. This is now fixed.
+- Bidirectional relations now always have the lower actor ID as "actorA", and the higher actor ID as "actorB". To update
+  your database, please run the following query for each of the bidirectional (!!!) relation types:
+  UPDATE sns_relation SET actorA = (@tmp:=actorA), actorA = actorB, actorB = @tmp WHERE actorA > actorB AND type = 'MY_BIDIRECTIONAL_RELATION_TYPE';
+
+
 ## v0.6.7
 
 ### WebApp object improvements
