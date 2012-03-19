@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.7.0
+
+### Player language (DB change!)
+
+The player module no longer has anything to do with language. Language is now stored on the actor. That means that the following APIs have changed.
+
+- `mithril.actor.addActor(state, name, language, cb)` now receives a language code which is stored as an actor property called "language".
+- `mithril.player.addPlayer(state, actorId, vipLevel, cb)` no longer receives a language code.
+- `mithril.player.getPlayer` and `mithril.player.getPlayers` may no longer ask for language.
+  `getPlayers` still loads all actor properties however, and language is among them (but not for old players!)
+
+Please make sure your games do not use these APIs, or update how they are used.
+Everyone: there has been a DB change, please apply!
+
+### Obj API extensions (server side)
+
+- `mithril.obj.getCollectionTypeById(state, id, owner, options, cb)` for getting just the type of a collection.
+- `mithril.obj.findCollectionById(state, collectionId, cb)` is like getCollectionById, but is allowed to fail.
+
+### Bugfixes
+
+- ObjCategory.prototype.getObjects() should now only return objects that are in a collection owned by the player.
+
+
 ## v0.6.7-1
 
 ### SNS module hotfix
