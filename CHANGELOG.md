@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.6.7-1
+
+### SNS module hotfix
+
+- Many SQL rewrites in SNS that should make it a lot faster to execute.
+- When auto-connecting a relation request, we were double checking the existence of the relation. This is now fixed.
+- Bidirectional relations now always have the lower actor ID as "actorA", and the higher actor ID as "actorB". To update
+  your database, please run the following query for each of the bidirectional (!!!) relation types:
+  UPDATE sns_relation SET actorA = (@tmp:=actorA), actorA = actorB, actorB = @tmp WHERE actorA > actorB AND type = 'MY_BIDIRECTIONAL_RELATION_TYPE';
+
+
+## v0.6.7
+
+### WebApp object improvements
+
+#### Adding full HTML pages to your app
+
+Previously, an app could only expose a single full HTML "file", through the `myApp.setIndexPage()` API. This method still
+exists, but preferably, you now use `myApp.addIndexPage(pageName, pathToPageFiles, options)`. The API is the same as
+`setIndexPage()`, except that the `pageName` argument and the `route` option must be provided. The page name is to identify
+the page for logging and debugging purposes. The route option is a sub-route on top of /app/appName that allows you to expose
+the built page any way you want. Alternatively, it accepts an option `routes`, which is an array of sub-routes.
+
+#### Route exposure
+
+WebApp objects now expose a `route` property, which is the route at which the loader can be accessed. This is useful when
+creating a URL to the loader, so you can avoid needless constant string duplication (eg: "/app/mygame").
+
+### Bugfixes
+
+- If events are emitted to an undefined actor, this will now ignore the event. This was a problem in Node.js tools.
+- LivePropertyMap now outputs an error when trying to write undefined.
+- If there was no stylesheet for a mithril page, the string "undefined" would end up being injected.
+- More aggressive error checking during wizAssetsHandler downloads.
+
+
 ## v0.6.6
 
 The app.firewall function used to receive a single parameter that was the net.Socket object. It has now been augmented with
