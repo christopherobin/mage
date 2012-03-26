@@ -1,6 +1,3 @@
-$file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
-$file('../../../gm/toolpages/lib/base.css');
-
 .giraffeTool {
 	background: white;
 	padding: 10px;
