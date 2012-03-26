@@ -2,3 +2,6 @@
 input, textarea { -webkit-user-select: text; }
 q:before, q:after { content: ''; }
 body { background: #000; margin: 0; }
+
+$file('../../../gm/toolpages/lib/jqueryui/jquery-ui.custom.less');
+$file('../../../gm/toolpages/lib/base.css');

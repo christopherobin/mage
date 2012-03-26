@@ -32,6 +32,10 @@ be able to expand browser support at a later time.
 For tools and data import logic, we have enhanced `gc.editNodes` to accept nodes based on an identifier instead of an id (the user decides which to
 provide). Also, following the same API as `addNodes` and `editNodes`, a `replaceNodes` API was added that does create or update based on existence.
 
+On the client side, gc nodes now have the following 2 functions to find nodes (not IDs) over out connectors:
+- `getOutNodes(connectorType, [onState])` for quick lookup of nodes.
+- `getOutNodesToSelf(connectorType)` for quick reverse lookup of nodes. This one in particular is very fast and useful.
+
 ### Bugfixes
 
 - ObjCategory.prototype.getObjects() should now only return objects that are in a collection owned by the player.
