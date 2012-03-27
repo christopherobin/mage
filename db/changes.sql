@@ -753,5 +753,10 @@ ALTER TABLE `gm_data` CHANGE `language` `language` VARCHAR( 2 ) CHARACTER SET ut
 ALTER TABLE `msg_to_actor` DROP PRIMARY KEY, ADD COLUMN id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST, CHANGE `actorId` `actorId` INT UNSIGNED NULL DEFAULT NULL;
 
 
+-- v0.7.0: Player table reduction
+
+ALTER TABLE `player` DROP `language`, DROP `lastLoginTime`;
+
+
 -- next change, add here.
 
