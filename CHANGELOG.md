@@ -36,6 +36,12 @@ On the client side, gc nodes now have the following 2 functions to find nodes (n
 - `getOutNodes(connectorType, [onState])` for quick lookup of nodes.
 - `getOutNodesToSelf(connectorType)` for quick reverse lookup of nodes. This one in particular is very fast and useful.
 
+### LivePropertyMap
+
+We've added a function `LivePropertyMap.prototype.load({ options }, cb)` that behaves like the LPM constructor and allows you to load extra
+properties into the LPM at a later time. The options are the same as when you normally create an LPM, eg: `{ load: ['some', 'property', 'names'] }`.
+If certain properties had already been loaded before, they are skipped, so you don't have to worry about double loading.
+
 ### Bugfixes
 
 - ObjCategory.prototype.getObjects() should now only return objects that are in a collection owned by the player.
