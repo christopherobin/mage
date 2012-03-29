@@ -1,5 +1,19 @@
 # Changelog
 
+
+## v0.7.1
+
+### npc_data and shop_item_object_data (DB change!) from varchar(255) to mediumtext
+
+Not a BC break, but please make these DB changes.
+
+### Npc module change
+
+Removed mithril.npc.addNpc and mithril.npc.editNpc since they were untested and wrong.
+Added mithril.npc.replaceNpc
+
+
+
 ## v0.7.0
 
 ### Player language (DB change!)
