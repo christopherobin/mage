@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.7.1
+
+### Session invalidation
+
+Changing the backend code version through `mithril.session.setCurrentVersion(version, message)` will invalidate all sessions
+that were not created on that version. Specify a string as a message to display to users. For multilanguage purposes,
+message may also be of this format: `{ EN: 'foo', JA: 'baaru', NL: 'kom op nou!' }`.
+
 ## v0.7.0
 
 ### Player language (DB change!)
