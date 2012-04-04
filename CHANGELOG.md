@@ -1,7 +1,43 @@
 # Changelog
 
-
 ## v0.7.1
+
+### Session invalidation
+
+Changing the backend code version through `mithril.session.setCurrentVersion(version, message)` will invalidate all sessions
+that were not created on that version. Specify a string as a message to display to users. For multilanguage purposes,
+message may also be of this format: `{ EN: 'foo', JA: 'baaru', NL: 'kom op nou!' }`.
+
+### TimedState datatype
+
+Mithril now exposes a TimedState datatype. It behaves quite similar to TimedNumber, but you use it to create time-driven state machines.
+An example:
+- The farm is idle by default.
+- The player can sow the field, after which the farm is growing.
+- After growing for 60 minutes, the farm becomes ready.
+- When ready, the player can harvest after which the farm becomes idle again.
+
+This flow contains 3 states: idle, growing and ready. Growing is time based, the others do not change over time but require user input.
+TimedState allows you to implement this in a very simple way. When creating a TimedState, you call the following:
+
+`var farm = mithril.core.datatypes.createValue('TimedState', {
+	states: {
+		idle: null,
+		growing: [60 * 60, 'ready'],
+		ready: null
+	},
+	stored: { state: 'idle' }
+});`
+
+This creates a farm value that is idle, until `farm.setState('growing');` is called. After 3600 seconds, the state reported by
+`farm.getCurrentState()` will automatically switch to ready. After harvesting, you would be expected to call `farm.setState('idle');`.
+
+### LivePropertyMap
+
+LivePropertyMap now has an `exists(propertyName, language, tag)` method. Before, there was already a `has()` method like that. The
+difference is that has() responds false if the property is not loaded. The exists() method will respond true, even if the property
+has not been loaded, but is known to exist.
+
 
 ### npc_data and shop_item_object_data (DB change!) from varchar(255) to mediumtext
 
@@ -10,7 +46,7 @@ Not a BC break, but please make these DB changes.
 ### Npc module change
 
 Removed mithril.npc.addNpc and mithril.npc.editNpc since they were untested and wrong.
-Added mithril.npc.replaceNpc
+Added mithril.npc.replaceNpc() that will add an npc if not existent and replace it if existent.
 
 
 
