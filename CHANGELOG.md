@@ -32,6 +32,12 @@ TimedState allows you to implement this in a very simple way. When creating a Ti
 This creates a farm value that is idle, until `farm.setState('growing');` is called. After 3600 seconds, the state reported by
 `farm.getCurrentState()` will automatically switch to ready. After harvesting, you would be expected to call `farm.setState('idle');`.
 
+### LivePropertyMap
+
+LivePropertyMap now has an `exists(propertyName, language, tag)` method. Before, there was already a `has()` method like that. The
+difference is that has() responds false if the property is not loaded. The exists() method will respond true, even if the property
+has not been loaded, but is known to exist.
+
 
 ## v0.7.0
 
