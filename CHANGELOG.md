@@ -8,6 +8,31 @@ Changing the backend code version through `mithril.session.setCurrentVersion(ver
 that were not created on that version. Specify a string as a message to display to users. For multilanguage purposes,
 message may also be of this format: `{ EN: 'foo', JA: 'baaru', NL: 'kom op nou!' }`.
 
+### TimedState datatype
+
+Mithril now exposes a TimedState datatype. It behaves quite similar to TimedNumber, but you use it to create time-driven state machines.
+An example:
+- The farm is idle by default.
+- The player can sow the field, after which the farm is growing.
+- After growing for 60 minutes, the farm becomes ready.
+- When ready, the player can harvest after which the farm becomes idle again.
+
+This flow contains 3 states: idle, growing and ready. Growing is time based, the others do not change over time but require user input.
+TimedState allows you to implement this in a very simple way. When creating a TimedState, you call the following:
+
+`var farm = mithril.core.datatypes.createValue('TimedState', {
+	states: {
+		idle: null,
+		growing: [60 * 60, 'ready'],
+		ready: null
+	},
+	stored: { state: 'idle' }
+});`
+
+This creates a farm value that is idle, until `farm.setState('growing');` is called. After 3600 seconds, the state reported by
+`farm.getCurrentState()` will automatically switch to ready. After harvesting, you would be expected to call `farm.setState('idle');`.
+
+
 ## v0.7.0
 
 ### Player language (DB change!)
