@@ -39,6 +39,17 @@ difference is that has() responds false if the property is not loaded. The exist
 has not been loaded, but is known to exist.
 
 
+### npc_data and shop_item_object_data (DB change!) from varchar(255) to mediumtext
+
+Not a BC break, but please make these DB changes.
+
+### Npc module change
+
+Removed mithril.npc.addNpc and mithril.npc.editNpc since they were untested and wrong.
+Added mithril.npc.replaceNpc() that will add an npc if not existent and replace it if existent.
+
+
+
 ## v0.7.0
 
 ### Player language (DB change!)
