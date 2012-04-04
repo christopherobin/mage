@@ -38,7 +38,6 @@ LivePropertyMap now has an `exists(propertyName, language, tag)` method. Before,
 difference is that has() responds false if the property is not loaded. The exists() method will respond true, even if the property
 has not been loaded, but is known to exist.
 
-
 ### npc_data and shop_item_object_data (DB change!) from varchar(255) to mediumtext
 
 Not a BC break, but please make these DB changes.
@@ -47,7 +46,6 @@ Not a BC break, but please make these DB changes.
 
 Removed mithril.npc.addNpc and mithril.npc.editNpc since they were untested and wrong.
 Added mithril.npc.replaceNpc() that will add an npc if not existent and replace it if existent.
-
 
 
 ## v0.7.0
