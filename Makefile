@@ -13,6 +13,10 @@ clean:
 install:
 	npm install
 
+# target: test, Runs all tests.
+test:
+	npm test
+
 # target: lint, Lints every JavaScript file in the project that are staged to be comitted.
 lint:
 	./scripts/lint-staged.sh

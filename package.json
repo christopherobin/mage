@@ -27,6 +27,9 @@
 		"multipart-parser": "0.0.2",
 		"node-uuid": "1.2.0"
 	},
+	"dev-dependencies": {
+		"vows": "0.6.2"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Wizcorp/Mithril.git"
@@ -37,5 +40,8 @@
 			"type": "Private",
 			"url": "http://www.wizcorp.jp"
 		}
-	]
+	],
+	"scripts": {
+		"test": "NODE_PATH=lib node_modules/.bin/vows --spec"
+	}
 }
