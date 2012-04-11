@@ -32,6 +32,12 @@ TimedState allows you to implement this in a very simple way. When creating a Ti
 This creates a farm value that is idle, until `farm.setState('growing');` is called. After 3600 seconds, the state reported by
 `farm.getCurrentState()` will automatically switch to ready. After harvesting, you would be expected to call `farm.setState('idle');`.
 
+# chooseWeighted
+
+The mithril.core.helpers library has a new function: `chooseWeighted(spec)`. The `spec` parameter is a collection of key/value pairs
+where the key is a name, and value is a weight (integer). The function randomly returns one of the keys of the given spec,
+based on each key's weight. It returns null on error or if there was nothing to be chosen.
+
 ### LivePropertyMap
 
 LivePropertyMap now has an `exists(propertyName, language, tag)` method. Before, there was already a `has()` method like that. The
@@ -42,7 +48,7 @@ has not been loaded, but is known to exist.
 
 Not a BC break, but please make these DB changes.
 
-### Npc module change
+### NPC module change
 
 Removed mithril.npc.addNpc and mithril.npc.editNpc since they were untested and wrong.
 Added mithril.npc.replaceNpc() that will add an npc if not existent and replace it if existent.
