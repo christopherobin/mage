@@ -34,7 +34,8 @@ exports.tests = vows.describe(__filename).addBatch({
 		'handles leap years properly': function () {
 			var topic = new Cron('0 0 0 29 2'),
 				next = new Date([2099]);
-			topic.next = next;
+			assert.equal(topic.isInvalid(), false);
+			//topic.next = next;
 
 			var events = [];
 			for (var iter = 0; iter < 5; ++iter) {

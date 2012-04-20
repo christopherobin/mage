@@ -95,7 +95,7 @@ vows.describe(__filename).addBatch({
 				beat.on('run', function (ms) {
 					++times;
 					if (ms % 50 !== 0) {
-						that.callback("Damn! " + ms + " % 50 !== 0");
+						that.callback(new Error("Damn! " + ms + " % 50 !== 0"));
 					}
 				});
 
@@ -103,7 +103,7 @@ vows.describe(__filename).addBatch({
 					if (times === 10) {
 						that.callback();
 					} else {
-						that.callback("Damn! times !== 10");
+						that.callback(new Error("Expected 10, got " + times));
 					}
 				});
 
