@@ -66,7 +66,7 @@
 @sans: 'Open Sans','Lucida Grande',"Lucida Sans Unicode","Lucida Sans",Verdana,Tahoma,sans-serif;
 @code: 'Menlo','DejaVu Sans Mono','Bitstream Vera Sans Mono','Consolas','Lucida Console','courier new',monospace;
 
-.schedulerServerTool {
+#schedulerServerTool {
 	font-family: @sans !important;
 	color: #333;
 	pre, code, kbd, samp {
@@ -99,7 +99,7 @@
 		display: inline-block;
 		vertical-align: top;
 	}
-	.schedule_info .table tr td {
+	#schedulerServerToolScheduleInfoTable tr td {
 		&:first-child {
 			font-weight: bold;
 		}
