@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.7.1
+## v0.8.0
 
 ### Session invalidation
 
@@ -32,17 +32,51 @@ TimedState allows you to implement this in a very simple way. When creating a Ti
 This creates a farm value that is idle, until `farm.setState('growing');` is called. After 3600 seconds, the state reported by
 `farm.getCurrentState()` will automatically switch to ready. After harvesting, you would be expected to call `farm.setState('idle');`.
 
-# chooseWeighted
+### TimedNumber bugfix
+
+Fixed a bug in TimedNumber that would corrupt the data when `setRange()` or `setIncrement()` was called.
+To the best of my knowledge, no games used this API yet. From now on, they should use it though.
+
+### chooseWeighted
 
 The mithril.core.helpers library has a new function: `chooseWeighted(spec)`. The `spec` parameter is a collection of key/value pairs
 where the key is a name, and value is a weight (integer). The function randomly returns one of the keys of the given spec,
 based on each key's weight. It returns null on error or if there was nothing to be chosen.
+
+### SNS
+
+Added an API for removing multiple relation requests (array of IDs) at once: `sns.delRelationRequests(state, requestIds, cb)`.
+
+When resetting an SNS relation, the new creationTime was not being sent to the client.
 
 ### LivePropertyMap
 
 LivePropertyMap now has an `exists(propertyName, language, tag)` method. Before, there was already a `has()` method like that. The
 difference is that has() responds false if the property is not loaded. The exists() method will respond true, even if the property
 has not been loaded, but is known to exist.
+
+A new `getAll([language, tag])` method has been added that returns all properties in a simple { name: value } map.
+
+Before, on the client livePropertyMap delete-events would only emit through "del.propertyName". Now you can also catch
+every delete operation on the property map, by listening for "del". The arguments it receives are propertyName and value.
+
+Improved stability and performance of the LivePropertyMap.
+
+### Assets
+
+Assets on the client side now have a `Asset#getContents(httpOptions, cb)` API to download the actual data of a file. This will be
+useful for downloading gettext translation files for example. The callback receives an `error` argument, and a `data` (string)
+argument.
+
+The client module's appleAssetMapToContent can now also replace background images in CSSStyleSheet and StyleSheetList (DOM) objects,
+no longer just strings.
+
+### Shop and appleAppStore
+
+Shop now sets a `forActorId` property on the lastPurchase object.
+
+The appleAppStore API now has a `purchaseWithoutReceipt` method and user command that can be used from the tools to give players
+a free "purchase".
 
 ### npc_data and shop_item_object_data (DB change!) from varchar(255) to mediumtext
 
@@ -52,6 +86,23 @@ Not a BC break, but please make these DB changes.
 
 Removed mithril.npc.addNpc and mithril.npc.editNpc since they were untested and wrong.
 Added mithril.npc.replaceNpc() that will add an npc if not existent and replace it if existent.
+
+Other code has been refactored and should run better now.
+
+### Players tool
+
+Fixed pagination in the players module and added a sort (asc/desc) option. The tool now reflects this in that it always shows the latest players
+(descending), and the button for creating new players has thus moved to the top of the list.
+
+Fixed the bug where clicking on the active page tab would hide the entire tool's contents.
+
+### Small changes
+
+* Every time a gc node's progress was being set, it was also needlessly being loaded.
+* Fixed a bug that would break the logger if no error channel was defined in the configuration.
+* State objects no longer rely on the session module being loaded. This is useful for offline scripts that cause events, but don't need to emit them.
+* The obj.collection.edit event now sends back the id of the collection.
+* TimedState and TimedNumber now always emit their changes asynchronously. Even when the change comes from the server, a setTimeout of 0 is used, so that other data can be updated before event handlers fire.
 
 
 ## v0.7.0
