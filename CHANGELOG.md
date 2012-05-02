@@ -2,6 +2,10 @@
 
 ## v0.8.0
 
+### DB changes in shop and npc modules
+
+Have a look at db/changes.sql for the latest migration queries.
+
 ### Session invalidation
 
 Changing the backend code version through `mithril.session.setCurrentVersion(version, message)` will invalidate all sessions
@@ -51,14 +55,14 @@ When resetting an SNS relation, the new creationTime was not being sent to the c
 
 ### LivePropertyMap
 
-LivePropertyMap now has an `exists(propertyName, language, tag)` method. Before, there was already a `has()` method like that. The
-difference is that has() responds false if the property is not loaded. The exists() method will respond true, even if the property
-has not been loaded, but is known to exist.
+LivePropertyMap now has an `exists(propertyName, language || null, tag || null)` method. Before, there was already a `has()` method
+like that. The difference is that `has()` responds false if the property is not loaded. The exists() method will respond true, even
+if the property has not been loaded, but is known to exist.
 
-A new `getAll([language, tag])` method has been added that returns all properties in a simple { name: value } map.
+A new `getAll(language || null, tag || null)` method has been added that returns all properties in a simple `{ name: value }` map.
 
-Before, on the client livePropertyMap delete-events would only emit through "del.propertyName". Now you can also catch
-every delete operation on the property map, by listening for "del". The arguments it receives are propertyName and value.
+Before, on the client livePropertyMap delete-events would only emit through a `del.propertyName` event. Now you can also catch
+every delete operation on the property map, by listening for `del`. The arguments it receives are propertyName and value.
 
 Improved stability and performance of the LivePropertyMap.
 
@@ -68,8 +72,8 @@ Assets on the client side now have a `Asset#getContents(httpOptions, cb)` API to
 useful for downloading gettext translation files for example. The callback receives an `error` argument, and a `data` (string)
 argument.
 
-The client module's appleAssetMapToContent can now also replace background images in CSSStyleSheet and StyleSheetList (DOM) objects,
-no longer just strings.
+The client module's `applyAssetMapToContent(content)` method can now also replace background images in `CSSStyleSheet` and
+`StyleSheetList` (DOM) objects, no longer just strings.
 
 ### Shop and appleAppStore
 
@@ -77,10 +81,6 @@ Shop now sets a `forActorId` property on the lastPurchase object.
 
 The appleAppStore API now has a `purchaseWithoutReceipt` method and user command that can be used from the tools to give players
 a free "purchase".
-
-### npc_data and shop_item_object_data (DB change!) from varchar(255) to mediumtext
-
-Not a BC break, but please make these DB changes.
 
 ### NPC module change
 
