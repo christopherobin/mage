@@ -758,7 +758,7 @@ ALTER TABLE `msg_to_actor` DROP PRIMARY KEY, ADD COLUMN id INT UNSIGNED NOT NULL
 ALTER TABLE `player` DROP `language`, DROP `lastLoginTime`;
 
 
--- v0.7.1: npc_data/shop_item_object_data varchar(255) to mediumtext
+-- v0.8.0: npc_data/shop_item_object_data varchar(255) to mediumtext
 
 ALTER TABLE `npc_data` CHANGE `value` `value` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
 ALTER TABLE `shop_item_object_data` CHANGE `value` `value` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
