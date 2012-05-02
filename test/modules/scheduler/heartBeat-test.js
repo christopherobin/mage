@@ -107,7 +107,7 @@ vows.describe(__filename).addBatch({
 					}
 				});
 
-				beat.next = now;
+				beat.next = new Date(now);
 				beat.run();
 			},
 			'beats the expected number of times': function (err) {
