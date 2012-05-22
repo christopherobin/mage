@@ -4,9 +4,79 @@
 
 ### IO subsystem changes
 
+The IO subsystem has been simplified and improved. This means it will be more predictable in its behavior, but also requires a
+slightly stricter error handling strategy by game developers.
 
+#### Error handling
 
+Instead of "server error" and "user error", on the client we now differentiate between transport error and normal errors.
 
+*Transport errors*
+The transport errors apply to the entire batch of user commands, and are expressed through the `io.error` event that you are already
+familiar with.
+
+There are 3 transport errors:
+* io.error.auth: when authentication failed (mithril.io.discard() and re-authentication required).
+* io.error.network: when there was a transmission failure (mithril.io.resend() required).
+* io.error.busy: you were executing a user command while another batch was already being executed (mithril.io.discard() required).
+
+As you may have noticed, there is now a mithril.io.discard() method. What this does is throw away the last command batch. Unless
+`mithril.io.discard()` or `mithril.io.resend()` is called, the command system will be waiting in a locked state (so be careful!).
+
+This means that on every "io.error" event you will call one of these 2 methods. If you want user interaction to make the resend choice,
+you can call them asynchronously without problems.
+
+*Normal errors*
+Errors that originated inside of the game flow will always end up in your callback. There is no need to call io.discard() here, since
+that is done automatically. Before your callback is called, the IO system is always unlocked. So keep in mind, the typical "server"
+errors will now definitely end up in your callbacks!
+
+#### Queueing
+
+A new feature is queueing! That means that you can safely queue up user commands (on a per-case basis) while others are being executed.
+This is useful in cases where you really cannot anticipate if another command is already running or not. An example:
+
+`mithril.io.queue(function () {
+	mithril.quest.doQuest(function (error) {
+		// etc
+	});
+});`
+
+This will instantly execute your function, but any user commands that get called will be queued up until they can be executed. If
+they can be executed immediately however, they will be, so there are no needless delays. The reason why there is a special API for
+queueing is that without it, button bashing would cause queuing to occur, which is not desirable. Instead, they will still generate
+a "io.error.busy" error.
+
+#### Event flow for overlays
+
+The IO system emits a bunch of events, and `io.discarded` has been added to this list. So in order to make nice blocking overlays,
+you can listen to these 2 events, which are guaranteed to be called sooner or later:
+* io.send: we're on our way to the server (show overlay).
+* io.discarded: the command queue was discarded successfully (hide overlay).
+
+Some added candy:
+* io.resend: we're (again) on our way to the server (render "retrying..." inside overlay).
+* io.response: this happens right after the queue got discarded, and we're about to call our command callbacks (not too useful).
+* io.queued: a queue just got created, since we're already talking with the server (not too useful).
+
+#### Event flow for error handling
+
+`mithril.io.on('io.error.network', function () {
+	overlay.writeStatus('Please make sure you are connected.');
+
+	window.setTimeout(function () { mithril.io.resend(); }, 5000);
+});
+
+mithril.io.on('io.error.busy', function () {
+	console.warn('Silently ignoring IO busy case.');
+	// not discarding the active command list, since the busy error was triggered because commands were already being sent
+});
+
+mithril.io.once('io.error.auth', function () {
+	window.alert('Your game session expired, reloading...');
+	window.location.reload();
+});
+`
 
 ## v0.8.1
 
