@@ -80,9 +80,10 @@ mithril.io.once('io.error.auth', function () {
 
 ### Small improvements
 
-* obj module's sync method is no longer required to be exposed.
 * Added LivePropertyMap#getAllExistingProperties() (no arguments) method that returns an array of all parsed property names, even the ones not loaded.
 * TimedValue (server side) now has a setInterval(interval) method.
+* The shop client now has a getShopsByType(type) method that returns an array of shop objects that match the given type.
+* The obj module's sync method is no longer required to be exposed.
 
 
 ## v0.8.1
