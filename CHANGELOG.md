@@ -2,6 +2,11 @@
 
 ## v0.9.0
 
+### New GREE module
+
+We have replaced the old GREE module that was Japan-only, with a module that will work with the GGP system. It's a work in progress,
+so you can definitely expect many updates for it in the near future.
+
 ### IO subsystem changes
 
 The IO subsystem has been simplified and improved. This means it will be more predictable in its behavior, but also requires a
