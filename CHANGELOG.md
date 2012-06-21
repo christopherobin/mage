@@ -23,7 +23,7 @@ familiar with.
 There are 3 transport errors:
 * io.error.auth: when authentication failed (mithril.io.discard() and re-authentication required).
 * io.error.network: when there was a transmission failure (mithril.io.resend() required).
-* io.error.busy: you were executing a user command while another batch was already being executed (mithril.io.discard() required).
+* io.error.busy: you were executing a user command while another batch was already being executed (nothing required here, this is a simple notification).
 
 As you may have noticed, there is now a mithril.io.discard() method. What this does is throw away the last command batch. Unless
 `mithril.io.discard()` or `mithril.io.resend()` is called, the command system will be waiting in a locked state (so be careful!).
