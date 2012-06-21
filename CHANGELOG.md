@@ -1,5 +1,160 @@
 # Changelog
 
+## v0.9.0
+
+### New GREE module
+
+We have replaced the old GREE module that was Japan-only, with a module that will work with the GGP system. It's a work in progress,
+so you can definitely expect many updates for it in the near future.
+
+### IO subsystem changes
+
+The IO subsystem has been simplified and improved. This means it will be more predictable in its behavior, but also requires a
+slightly stricter error handling strategy by game developers.
+
+#### Error handling
+
+Instead of "server error" and "user error", on the client we now differentiate between transport error and normal errors.
+
+*Transport errors*
+The transport errors apply to the entire batch of user commands, and are expressed through the `io.error` event that you are already
+familiar with.
+
+There are 3 transport errors:
+* io.error.auth: when authentication failed (mithril.io.discard() and re-authentication required).
+* io.error.network: when there was a transmission failure (mithril.io.resend() required).
+* io.error.busy: you were executing a user command while another batch was already being executed (nothing required here, this is a simple notification).
+
+As you may have noticed, there is now a mithril.io.discard() method. What this does is throw away the last command batch. Unless
+`mithril.io.discard()` or `mithril.io.resend()` is called, the command system will be waiting in a locked state (so be careful!).
+
+This means that on every "io.error" event you will call one of these 2 methods. If you want user interaction to make the resend choice,
+you can call them asynchronously without problems.
+
+*Normal errors*
+Errors that originated inside of the game flow will always end up in your callback. There is no need to call io.discard() here, since
+that is done automatically. Before your callback is called, the IO system is always unlocked. So keep in mind, the typical "server"
+errors will now definitely end up in your callbacks!
+
+#### Queueing user commands
+
+A new feature is queueing! That means that you can safely queue up user commands (on a per-case basis) while others are being executed.
+This is useful in cases where you really cannot anticipate if another command is already running or not. An example:
+
+`mithril.io.queue(function () {
+	mithril.quest.doQuest(function (error) {
+		// etc
+	});
+});`
+
+This will instantly execute your function, but any user commands that get called will be queued up until they can be executed. If
+they can be executed immediately however, they will be, so there are no needless delays. The reason why there is a special API for
+queueing is that without it, button bashing would cause queuing to occur, which is not desirable. Instead, they will still generate
+a "io.error.busy" error.
+
+#### Event flow for overlays
+
+The IO system emits a bunch of events, and `io.discarded` has been added to this list. So in order to make nice blocking overlays,
+you can listen to these 2 events, which are guaranteed to be called sooner or later:
+* io.send: we're on our way to the server (show overlay).
+* io.discarded: the command queue was discarded successfully (hide overlay).
+
+Some added candy:
+* io.resend: we're (again) on our way to the server (render "retrying..." inside overlay).
+* io.response: this happens right after the queue got discarded, and we're about to call our command callbacks (not too useful).
+* io.queued: a queue just got created, since we're already talking with the server (not too useful).
+
+#### Event flow for error handling
+
+`mithril.io.on('io.error.network', function () {
+	overlay.writeStatus('Please make sure you are connected.');
+
+	window.setTimeout(function () { mithril.io.resend(); }, 5000);
+});
+
+mithril.io.on('io.error.busy', function () {
+	console.warn('Silently ignoring IO busy case.');
+	// not discarding the active command list, since the busy error was triggered because commands were already being sent
+});
+
+mithril.io.once('io.error.auth', function () {
+	window.alert('Your game session expired, reloading...');
+	window.location.reload();
+});
+`
+
+### Introducing Memcache (config required!)
+
+The command center now caches to memcache, instead of membase. It should be much more efficient now, and have no more negative
+impact on the in-memory caches that membase uses for the values related to your players.
+
+This does mean we need to configure an extra datastore.
+Please add a data config entry, following these steps:
+- copy "kv", but call it "kvcache"
+- change the port to 11911
+- keep the prefix the same
+
+Notify the team that deploys your code into production that config has changed!
+
+### wizAssetsHandler
+
+The wizAssetsHandler has received some power ups. Backwards compatibility is maintained, but instead of calling `run()` and having
+everything happen on the auto-pilot, there is now a way to download the assets in a more controlled way.
+
+`wizAssetsHandler.analyze(function (error, deleteList, downloadPlan) {})`
+The analyze function returns an array with files to be deleted. The download plan object contains all phases that will have to run.
+The phases describe which assets will be downloaded when.
+
+`wizAssetsHandler.deleteFiles(deleteList, cb)`
+The deleteFiles function deletes all the files you feed it. This should basically always be the list returned by the analyze function.
+
+`downloadPlan.runAllPhases(cb)`
+The download plan will run all phases that have not yet run.
+
+`downloadPlan.runPhase(phaseName, cb)`
+With this function you control exactly when phases run, one by one.
+
+`downloadPlan.resetCounters()`
+Resets the downloadPlan.totalDownloads and downloadPlan.downloadProgress counters to exclude the assets that have already been downloaded.
+
+### LivePropertyMap
+
+When opening a LivePropertyMap object, the options you pass it have changed a little bit. Properties mentioned in `{ load: ['a', 'b'] }` are now
+no longer treated as optional. That means some of your existing code *will break*! You can make properties optional by describing them as such:
+`{ load: ['a', 'b'], optional: ['c', 'd'] }`. This does mean you will no longer have to check if a non-optional property was returned or not.
+It is guaranteed to have been returned, else it would have triggered an error......
+
+### Small improvements
+
+* Added LivePropertyMap#getAllExistingProperties() (no arguments) method that returns an array of all parsed property names, even the ones not loaded.
+* TimedValue (server side) now has a setInterval(interval) method.
+* The shop client now has a getShopsByType(type) method that returns an array of shop objects that match the given type.
+* The obj module's sync method is no longer required to be exposed.
+* The obj module will now trigger an error when trying to remove a non-existing object from a collection.
+* Sessions can now be expired on demand by calling session.expire(state, cb);
+* Improved error logging in zeromq.
+* The loader now has a getPage(name) function that returns the DOM element for the page.
+* Added mithril.assets.getAllFromContext(name) function on the client that returns an array of asset objects.
+* Added improved error logging to Giraffe.
+* Added better error logs for membase connection issues.
+* Added error messages to commandCenter caching.
+* Client side property maps now emit one more argument on set/del: previousValue.
+* Giraffe module now does a more aggressive check for user existence.
+* GC: exposed addOutConnectors() for use with import scripts.
+* Expose replaceNpcData for import scripts.
+* Assets client module can now replace fonts live on a stylesheet object, just like it does with background images.
+* Updated node-memcached to v0.0.11.
+
+### Bugfixes
+
+* Fixed a bug in wizAssetsHandler that prevented assets from being downloaded.
+* Failing to cache a page due to a full localStorage threw an exception and broke the flow.
+* Fixed a bug in the loader that prevented a mithril-page with an empty HTML block to be rendered.
+* Emitting undefined on the server no longer breaks.
+* Added check in livePropertyMap that verifies that the propertykeys result is an actual string.
+* Membase now bails out when the retrieved value is a boolean "true", which might be a bug in node-memcached.
+* obj.getCollectionActors() was not applying language filters correctly.
+
 ## v0.8.1
 
 ### pauser module
