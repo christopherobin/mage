@@ -143,7 +143,7 @@ It is guaranteed to have been returned, else it would have triggered an error...
 * GC: exposed addOutConnectors() for use with import scripts.
 * Expose replaceNpcData for import scripts.
 * Assets client module can now replace fonts live on a stylesheet object, just like it does with background images.
-* Updated node-memcached to v0.0.10.
+* Updated node-memcached to v0.0.11.
 
 ### Bugfixes
 
