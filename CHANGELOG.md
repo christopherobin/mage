@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.9.0-1
+
+Hotfix that should address a login issue in the giraffe module. You are advise to confirm the correct behavior of login for new
+users and existing users into giraffe.
+
 ## v0.9.0
 
 ### New GREE module
