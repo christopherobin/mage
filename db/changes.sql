@@ -758,11 +758,23 @@ ALTER TABLE `msg_to_actor` DROP PRIMARY KEY, ADD COLUMN id INT UNSIGNED NOT NULL
 ALTER TABLE `player` DROP `language`, DROP `lastLoginTime`;
 
 
--- v0.7.1: npc_data/shop_item_object_data varchar(255) to mediumtext
+-- v0.8.0: npc_data/shop_item_object_data varchar(255) to mediumtext
 
 ALTER TABLE `npc_data` CHANGE `value` `value` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
 ALTER TABLE `shop_item_object_data` CHANGE `value` `value` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL;
 
+-- v?.?.?: table required by lib/module/gree
+CREATE TABLE IF NOT EXISTS `gree_purchases` (
+  `paymentId` varchar(64) COLLATE utf8_bin NOT NULL,
+  `actorId` int(10) unsigned NOT NULL,
+  `platform` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `completionCode` varchar(20) COLLATE utf8_bin NOT NULL,
+  `orderedTime` int(11) NOT NULL,
+  `executedTime` int(11) NOT NULL,
+  `paymentItems` text COLLATE utf8_bin NOT NULL,
+  `message` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`paymentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- next change, add here.
 
