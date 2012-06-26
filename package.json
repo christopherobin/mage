@@ -16,7 +16,7 @@
 		"async":                  "0.1.22",
 		"mysql":                  "0.9.6",
 		"colors":                 "0.6.0-1",
-		"node-bj":                "0.0.3bogeyatsix-1.0",
+		"mdns":                   "0.0.7",
 		"zmq":                    "git+https://github.com/jcayzac/zeromq.node.git#polling-0.8.x",
 		"memcached":              "0.0.11",
 		"memcached-transactions": "git+https://github.com/Wizcorp/node-memcached-transactions.git",
