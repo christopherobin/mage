@@ -1,5 +1,80 @@
 # Changelog
 
+### New assets system
+Assets are now automagically registered from the repository. You still need to create an `AssetMap` object, then call its `addFolder()` method. Contextes, languages and asset variants (retina, etc) are automatically detected based on the folder structure. The path to an asset must be of the form `folder/context/language/descriptor[@profile1,profile2,...].extension`. Just like before, `descriptor` can point to the depths of some subfolder (e.g. `ui/buttons/button1`. Profiles are symbolic names that map to a set of requirements defined in the config file.
+
+#### Configuration example
+`modules: {
+	assets: {
+		// These can also be passed in the object accepted by AssetMap's constructor,
+		// Also, if you want different configs for different asset maps while still having
+		// all the config here, you can name your asset maps and put all these in
+		// modules.assets.maps.<name>.<baseUrl|uriProtocol|cacheability|profiles>
+		baseUrl: {
+			img: 'http://somewhe.re/img'
+		},
+		cacheability: {
+			img: [
+				// Maps regexes to cacheability. Order defines precedence.
+				["^ui/boss/", 50],
+				["^ui/", 0]
+			]
+		},
+		profiles: {
+			retina: {
+				// Each value here is optional
+				density: 2,        // match if client's density >= 2
+				screen: [320, 480] // match if client's screen >= 320x480
+			}
+		}
+	}
+}`
+
+#### Asset folder example
+`zombieboss/
+	assets/
+		img/
+			default/  # default language and common stuff
+				ui/
+					boss/
+						boss1.png
+						boss1@retina.png
+					button1.png
+					button1@retina.png
+			ja/ # Japanese localized stuff
+				ui/
+					button1.png
+`
+
+#### WebApp creation
+You must tell your webapp what client configurations to support, so that it can pre-build mithril pages for all the different clients. This is done by passing `languages`, `densities` and `screens` to the constructor like this:
+
+`var app = new WebApp('game', { languages: ['en', 'ja', 'fr' ], densities: [1, 1.5, 2], screens: [[320, 480]] });`
+
+When omitted, `languages` defaults to `['en']`, `densities` defaults to `[1]` and `screens` defaults to `[[1, 1]]` (it's a minimum requirement that will match all screen sizes). The above also makes `en` the default language and `1` the default density in the generated loader code.
+
+#### AssetMap creation
+`var assets = new mithril.assets.AssetMap();
+assets.addFolder('assets', function (err, assets) {
+	...
+	app.addPage(...., { assetMap: assets });
+	... start your game
+});
+`
+
+#### Page assets (popups etc)
+You can register popups using `AssetMap.prototype.addPage(context, descriptor, path, version, cacheability)` like this:
+
+`['popup1', 'popup2', ...].forEach(function (id) {
+	assets.addPage('popup', id, '/' + id, 1, 3);
+	app.addIndexPage(id, 'www/pages/' + id, { route: id });
+});`
+
+`version` is optional and defaults to 1. `cacheability` is optional too and defaults to the default cacheability.
+
+#### Limitations
+In the current version, only one file format per asset is supported. Thus, if two files resolve to the exact same asset but have different extensions, only the last one will make it into the asset map. In a future version the module will pick the best format for the client platform (e.g. `aac` for iOS, `mp3` for Android, etc).
+
 ## v0.9.0-1
 
 Hotfix that should address a login issue in the giraffe module. You are advise to confirm the correct behavior of login for new
