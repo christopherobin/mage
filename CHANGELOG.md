@@ -5,7 +5,7 @@
 ### New assets system
 
 Assets are now automagically registered from the repository. You still need to create
-an `AssetMap` object, then call its `addFolder()` method. Contextes, languages and
+an `AssetMap` object, then call its `addFolder()` method. Contexts, languages and
 asset variants (retina, etc) are automatically detected based on the folder structure.
 The path to an asset must be of the form
 `folder/context/language/descriptor[@profile1,profile2,...].extension`. Just like before,
