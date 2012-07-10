@@ -1,9 +1,27 @@
 # Changelog
 
+## v0.9.1
+
+### Shokoti
+
+The Shokoti scheduler libraries have been integrated! Please refer to the Shokoti repo for more information on how to use it.
+
+### Small improvements
+
+* TimedState can now get a custom interval whenever the state gets set manually.
+* TimedState#getCurrentState(true) will now not just give the state, but an object that contains state and the time at which it got that state.
+* LivePropertyMap#countAllExistingProperties() will return the amount of properties that exist (regardless of having been loaded).
+
+### Fixes
+
+Certain issues surrounding the stricter LivePropertyMap have been addressed (gc node progress, among other things).
+
+
 ## v0.9.0-1
 
-Hotfix that should address a login issue in the giraffe module. You are advise to confirm the correct behavior of login for new
+Hotfix that should address a login issue in the giraffe module. You are advised to confirm the correct behavior of login for new
 users and existing users into giraffe.
+
 
 ## v0.9.0
 
@@ -159,6 +177,7 @@ It is guaranteed to have been returned, else it would have triggered an error...
 * Added check in livePropertyMap that verifies that the propertykeys result is an actual string.
 * Membase now bails out when the retrieved value is a boolean "true", which might be a bug in node-memcached.
 * obj.getCollectionActors() was not applying language filters correctly.
+
 
 ## v0.8.1
 
