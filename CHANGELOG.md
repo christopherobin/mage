@@ -6,15 +6,26 @@
 
 The Shokoti scheduler libraries have been integrated! Please refer to the Shokoti repo for more information on how to use it.
 
-### Small improvements
+### EventEmitter
+
+* The `EventEmitter.on/once` methods now receive an optional extra parameter that identifies the this-reference for your event handler.
+* Added a `EventEmitter#hasListeners(evt)` method that returns `true` if any listeners for `evt` exist, `false` otherwise.
+* If `removeListener()` was called during emission of that same event, an error was caused.
+
+### TimedState
 
 * TimedState can now get a custom interval whenever the state gets set manually.
 * TimedState#getCurrentState(true) will now not just give the state, but an object that contains state and the time at which it got that state.
+
+### LivePropertyMap
+
 * LivePropertyMap#countAllExistingProperties() will return the amount of properties that exist (regardless of having been loaded).
+* Certain issues surrounding the stricter LivePropertyMap have been addressed (gc node progress, among others).
 
-### Fixes
+### Other improvements
 
-Certain issues surrounding the stricter LivePropertyMap have been addressed (gc node progress, among other things).
+* Giraffe was sometimes responding with Error objects, which cannot be transported through the HTTP server, causing an error.
+* The code behind `wizAssetsHandler.analyze()` has been optimized to use less memory.
 
 
 ## v0.9.0-1
