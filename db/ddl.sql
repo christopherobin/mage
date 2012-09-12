@@ -562,23 +562,19 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `gree_user`
+-- Table `gree_purchases`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `gree_user` (
-  `playerId` INT UNSIGNED NOT NULL ,
-  `greeUserId` INT UNSIGNED NOT NULL ,
-  `token` VARCHAR(255) NOT NULL ,
-  `tokenSecret` VARCHAR(255) NOT NULL ,
-  `status` ENUM('installed', 'suspended', 'uninstalled') NOT NULL ,
-  PRIMARY KEY (`playerId`) ,
-  INDEX `fk_gree_user_playerId` (`playerId` ASC) ,
-  INDEX `key_viewerId` (`greeUserId` ASC) ,
-  CONSTRAINT `fk_gree_user_playerId`
-    FOREIGN KEY (`playerId` )
-    REFERENCES `player` (`actor` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `gree_purchases` (
+  `paymentId` varchar(64) COLLATE utf8_bin NOT NULL,
+  `actorId` int(10) unsigned NOT NULL,
+  `platform` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `completionCode` varchar(20) COLLATE utf8_bin NOT NULL,
+  `orderedTime` int(10) unsigned NOT NULL,
+  `executedTime` int(10) unsigned NOT NULL,
+  `paymentItems` text COLLATE utf8_bin NOT NULL,
+  `message` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`paymentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
 -- -----------------------------------------------------
@@ -680,34 +676,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `gree_payment`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `gree_payment` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `playerId` INT UNSIGNED NOT NULL ,
-  `paymentId` VARCHAR(50) NOT NULL ,
-  `creationTime` INT UNSIGNED NOT NULL ,
-  `orderedTime` INT UNSIGNED NULL ,
-  `status` ENUM('new','paid','cancelled','expired') NOT NULL ,
-  `shopPurchaseId` INT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_gree_payment_playerId` (`playerId` ASC) ,
-  INDEX `fk_gree_payment_shopPurchaseId` (`shopPurchaseId` ASC) ,
-  INDEX `key_paymentId` (`paymentId`(20) ASC) ,
-  CONSTRAINT `fk_gree_payment_playerId`
-    FOREIGN KEY (`playerId` )
-    REFERENCES `gree_user` (`playerId` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_gree_payment_shopPurchaseId`
-    FOREIGN KEY (`shopPurchaseId` )
-    REFERENCES `shop_purchase` (`id` )
-    ON DELETE RESTRICT
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `shop_currency`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `shop_currency` (
@@ -788,25 +756,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `gree_payment_item`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `gree_payment_item` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `paymentId` INT UNSIGNED NOT NULL ,
-  `description` VARCHAR(255) NOT NULL ,
-  `unitPriceCoin` INT UNSIGNED NOT NULL ,
-  `quantity` INT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_gree_payment_item_paymentId` (`paymentId` ASC) ,
-  CONSTRAINT `fk_gree_payment_item_paymentId`
-    FOREIGN KEY (`paymentId` )
-    REFERENCES `gree_payment` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `shop_item_object`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `shop_item_object` (
@@ -822,17 +771,6 @@ CREATE  TABLE IF NOT EXISTS `shop_item_object` (
     REFERENCES `shop_item` (`id` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `gree_invitation`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `gree_invitation` (
-  `greeUserId` INT UNSIGNED NOT NULL ,
-  `invitedByGreeUserId` INT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`greeUserId`) ,
-  INDEX `key_invitedByGreeUserId` (`invitedByGreeUserId` ASC) )
 ENGINE = InnoDB;
 
 
