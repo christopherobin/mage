@@ -13,9 +13,12 @@
 	},
 	"main": "lib/mithril",
 	"dependencies": {
+		"loggly":  "0.3.11",
+		"ws": "0.4.22",
+		"graylog2": "0.0.2",
 		"async": "0.1.22",
 		"mysql": "0.9.1",
-		"colors": "0.6.0-1",
+		"colors": "git+https://github.com/stelcheck/colors.js.git#master",
 		"mdns": "0.0.7",
 		"zmq": "2.1.0",
 		"memcached": "0.0.11",
