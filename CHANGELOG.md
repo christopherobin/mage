@@ -1,5 +1,209 @@
 # Changelog
 
+## v0.10.0
+
+### Node.js 0.8+
+
+#### Cluster
+
+This Mithril release has been adjusted for Node.js 0.8 compatibility. The biggest change
+is in the cluster implementation, which is no longer an external dependency, but comes with
+Node.js instead. It's more powerful and now accepted as the one true way to spawn workers.
+
+#### zlib
+
+Node.js 0.6+ comes with a built-in zlib library, which behaves much better than others which
+are available through npm. Mithril now uses this zlib library both for compressing the built
+frontend code, and for compressing big user command responses.
+
+### Error logging with State
+
+state.userError() is now officially deprecated. Please only use `state.error(code, logMessage, cb)`
+where only the logMessage is optional (null or undefined). The code will always find its way
+to the response callback on the frontend.
+
+State objects received a `setDescription(str)` method, which allows one to add context to a state's
+error messages. The command center by default sets the description of its states to "moduleName.userCommand".
+
+### New assets system
+
+Assets are now automagically registered from the repository. You still need to create
+an `AssetMap` object, then call its `addFolder()` method. Contexts, languages and
+asset variants (retina, etc) are automatically detected based on the folder structure.
+The path to an asset must be of the form
+`folder/context/language/descriptor[@profile1,profile2,...].extension`. Just like before,
+`descriptor` can point to the depths of some subfolder (e.g. `ui/buttons/button1`).
+Profiles are symbolic names that map to a set of requirements defined in the config file.
+
+#### Configuration example
+
+`modules: {
+	assets: {
+		// These can also be passed in the object accepted by AssetMap's constructor,
+		// Also, if you want different configs for different asset maps while still having
+		// all the config here, you can name your asset maps and put all these in
+		// modules.assets.maps.<name>.<baseUrl|uriProtocol|cacheability|profiles>
+		baseUrl: {
+			img: 'http://somewhe.re/img'
+		},
+		cacheability: {
+			img: [
+				// Maps regexes to cacheability. Order defines precedence.
+				["^ui/boss/", 50],
+				["^ui/", 0]
+			]
+		},
+		profiles: {
+			retina: {
+				// Each value here is optional
+				density: 2,        // match if client's density >= 2
+				screen: [320, 480] // match if client's screen >= 320x480
+			}
+		}
+	}
+}`
+
+#### Asset folder example
+
+`zombieboss/
+	assets/
+		img/
+			default/  # default language and common stuff
+				ui/
+					boss/
+						boss1.png
+						boss1@retina.png
+					button1.png
+					button1@retina.png
+			ja/ # Japanese localized stuff
+				ui/
+					button1.png
+`
+
+#### WebApp creation
+
+You must tell your webapp what client configurations to support, so that it can
+pre-build mithril pages for all the different clients. This is done by passing
+`languages`, `densities` and `screens` to the constructor like this:
+
+`var app = new WebApp('game', { languages: ['en', 'ja', 'fr' ], densities: [1, 1.5, 2], screens: [[320, 480]] });`
+
+When omitted, `languages` defaults to `['en']`, `densities` defaults to `[1]` and
+`screens` defaults to `[[1, 1]]` (it's a minimum requirement that will match all
+screen sizes). The above also makes `en` the default language and `1` the default
+density in the generated loader code.
+
+#### AssetMap creation
+
+`var assets = new mithril.assets.AssetMap();
+assets.addFolder('assets');
+...
+app.addPage(...., { assetMap: true });
+... start your game
+`
+
+#### Page assets (popups etc)
+
+You can register popups using `AssetMap.prototype.addPage(context, descriptor, path, version, cacheability)`
+like this:
+
+`['popup1', 'popup2', ...].forEach(function (id) {
+	assets.addPage('popup', id, '/' + id, 1, 3);
+	app.addIndexPage(id, 'www/pages/' + id, { route: id });
+});`
+
+`version` is optional and defaults to 1. `cacheability` is optional too and defaults
+to the default cacheability.
+
+#### Limitations
+
+In the current version, only one file format per asset is supported. Thus, if two
+files resolve to the exact same asset but have different extensions, only the last
+one will make it into the asset map. In a future version the module will pick the
+best format for the client platform (e.g. `aac` for iOS, `mp3` for Android, etc).
+
+### Mithril loader changes
+
+The Mithril page loader has been augmented with a "maintenance" event. This event fires when a server
+responds with a 5xx HTTP status code during page retrieval. The contents and content-type will be emitted
+with the event, so that customized messages can be displayed during a game's downtime. For example:
+
+`
+mithril.loader.on('maintenance', function (msg, mimetype) {
+	// msg: the content of the response
+	// mimetype: the content-type header of msg
+});
+`
+
+### GREE
+
+We made the gree configuration environment aware. That means you can put the following in your base.json config:
+`
+	"module": {
+		"gree": {
+			"environments": {
+				"sandbox": {
+					"consumer": {
+						"key": "i got the key",
+						"secret": "i got the secret"
+					},
+					"appId": "31337",
+					"endpoint": "http://os-sb.gree.net/api/rest"
+				},
+				"production": {
+					"consumer": {
+						"key": "i got another key",
+						"secret": "i got another secret"
+					},
+					"appId": "12345",
+					"endpoint": "http://os.gree.net/api/rest"
+				}
+			}
+		}
+	}
+`
+And in your environment's config file add:
+`
+	"module": {
+		"gree": {
+			"env": "sandbox" or "production"
+		}
+	}
+`
+
+#### Also:
+
+* Bugfix: a few error cases in the GREE module's purchase handler would not close the state object.
+* The GREE module was not storing orderedTime and executedTime properly.
+
+### These smaller features
+
+* Every user command now emits "io.CommandName" events on its module, receiving 2 arguments: response, requestParameters.
+* Added a `mithril.getModule(name)` method which returns a module object (almost the same as: mithril[name]).
+* TimedState (client) when emitting the change event, now also emits a 2nd argument which is the full next change description.
+* PropertyMaps on the client now have a `count()` function to count properties.
+* CommandCenter now time-logs execution time of individual user commands.
+* Mithril's version is now exposed on `mithril.version`.
+* The page builder got a huge speedboost when building webpages.
+* wizAssetsHandler now has a `deleteAllFiles(cb)` method which does what the name implies, which can be useful for testing.
+* The assets module client method "applyAssetMapToContent" now also rewrites mui:// URLs in webkit-border-image and border-image rules.
+* Shutdown has become much more graceful, allowing for more controlled datasource connection management.
+* Increased default I/O timeout on the client from 10sec to 15sec.
+
+### Bugfixes
+
+* A few bugs in the scheduler were fixed that would leave state objects open.
+* An iOS6 aggressive caching bug has been circumvented by always responding "Pragma: no-cache" even to POST requests.
+
+### EventEmitter bug
+
+A bit of special attention to a bug that got fixed in the client side EventEmitter class. Removing event listeners from the
+event emitter while emitting could cause certain event handlers not to be called. This affects everybody, since the EventEmitter
+library sits in the loaders. To fix this for olders builds, please re-include the new EventEmitter from the "FrontEnd" repository,
+where it's also been published. Reincluding this file will not destroy any existing EventEmitters, it will simply override their
+logic.
+
+
 ## v0.9.1
 
 ### Shokoti
