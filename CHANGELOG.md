@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.10.1
+
+### Basic auth support on clientHost expose config
+
+Adding the properties "authUser": "myname", "authPass": "123" to your clientHost's expose config,
+will notify the loader and I/O system to inject a header into their HTTP requests.
+
+### GREE purchase improvements
+
+Retrying a purchase will no longer fail, but return the already acknowledge purchase record, like
+a normal purchase would.
+
+
 ## v0.10.0
 
 ### Node.js 0.8+
