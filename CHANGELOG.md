@@ -8,6 +8,12 @@ $cfg() build entries now contain quotation marks around strings (they are JSON.s
 That means you can no longer write: `var a = 'hello $cfg(myname)';`.
 Instead you'll have to write: `var a = 'hello ' + $cfg('myname');`.
 
+### State timeout
+
+State objects can now time out. The Command center sets this up automatically for states it creates
+for each user command call, if you have it set up using the following API:
+`myApp.commandCenter.setUserCommandTimeout(30 * 1000);`.
+
 ### Basic auth support on clientHost expose config
 
 Adding the properties "authUser": "myname", "authPass": "123" to your clientHost's expose config,
