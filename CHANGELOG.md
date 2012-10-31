@@ -2,6 +2,12 @@
 
 ## v0.10.1
 
+### $cfg() builder change
+
+$cfg() build entries now contain quotation marks around strings (they are JSON.stringify() output).
+That means you can no longer write: `var a = 'hello $cfg(myname)';`.
+Instead you'll have to write: `var a = 'hello ' + $cfg('myname');`.
+
 ### Basic auth support on clientHost expose config
 
 Adding the properties "authUser": "myname", "authPass": "123" to your clientHost's expose config,
