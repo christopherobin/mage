@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.10.1
+
+### $cfg() builder change
+
+$cfg() build entries now contain quotation marks around strings (they are JSON.stringify() output).
+That means you can no longer write: `var a = 'hello $cfg(myname)';`.
+Instead you'll have to write: `var a = 'hello ' + $cfg('myname');`.
+
+### State timeout
+
+State objects can now time out. The Command center sets this up automatically for states it creates
+for each user command call, if you have it set up using the following API:
+`myApp.commandCenter.setUserCommandTimeout(30 * 1000);`.
+
+### Basic auth support on clientHost expose config
+
+Adding the properties "authUser": "myname", "authPass": "123" to your clientHost's expose config,
+will notify the loader and I/O system to inject a header into their HTTP requests.
+
+### GREE purchase improvements
+
+Retrying a purchase will no longer fail, but return the already acknowledge purchase record, like
+a normal purchase would.
+
+
 ## v0.10.0
 
 ### Node.js 0.8+
