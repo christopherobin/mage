@@ -1,5 +1,48 @@
 # Changelog
 
+## v0.10.2
+
+### wizAssetsHandler
+
+wizAssetsHandler can now retry failed downloads. It does this by default up to 3 times, with 50
+milliseconds in between tries. You can set up the retry behavior per download phase. The options
+you give when calling setPhase() have been augmented with:
+- "retries": integer, use Infinity to make it never stop retrying
+- "retryDelay": integer, msec between each try
+
+The following events have been added to wizAssetsHandler:
+
+- "retryDownloadFile" (phaseName, retriesRemaining, asset): A download failed, and is being retried.
+- "failedDownloadFile" (phaseName, error, asset): All retries failed.
+
+### Shokoti
+
+Shokoti configuration has been changed a bit, when using HTTP basic authentication. Since basic
+authentication has become part of the clientHost configuration (see v0.10.1), Shokoti client now
+uses that in its communication with the Shokoti server. That means that the "callbackAuth" entry
+is no longer needed. Please remove it if you used it.
+
+### Directory builder consistency
+
+When building the frontend pages, directories are scanned and aggregated by the DirBuilder. This
+builder was not sorting the files and directories it read, so it was possible that a build on
+server A looked different from the one on server B. This inconsistency causes cache to be much less
+effective (although we don't have any numbers on this). If a game's file dependencies are poorly
+managed, it could even cause bugs in your game.
+
+This has now been resolved. When directories are scanned, files and subdirectories are now always
+returned in alphabetical order.
+
+### Smaller fixes
+
+* Basic auth rules were not being applied to user commands and msgstream.
+* Better logging of 404 errors on the server side (goodbye 'app "foo" not found').
+* Bad incoming HTTP requests are now detected more reliably and logged more clearly.
+* EventEmitter#once was not passing along the 4th argument (thisObj) to EventEmitter#on.
+* node-memcached updated from 0.0.11 to 0.1.4.
+* node-memcached-transactions updated from 0.1.0 to 0.1.1.
+
+
 ## v0.10.1
 
 ### $cfg() builder change
