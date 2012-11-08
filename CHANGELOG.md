@@ -39,6 +39,9 @@ returned in alphabetical order.
 * Better logging of 404 errors on the server side (goodbye 'app "foo" not found').
 * Bad incoming HTTP requests are now detected more reliably and logged more clearly.
 * EventEmitter#once was not passing along the 4th argument (thisObj) to EventEmitter#on.
+* node-memcached updated from 0.0.11 to 0.1.4.
+* node-memcached-transactions updated from 0.1.0 to 0.1.1.
+
 
 ## v0.10.1
 
