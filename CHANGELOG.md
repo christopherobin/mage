@@ -2,12 +2,25 @@
 
 ## v0.10.2 (in development)
 
-
 ### wizAssetsHandler
 
+wizAssetsHandler can now retry failed downloads. It does this by default up to 3 times, with 50
+milliseconds in between tries. You can set up the retry behavior per download phase. The options
+you give when calling setPhase() have been augmented with:
+- "retries": integer, use Infinity to make it never stop retrying
+- "retryDelay": integer, msec between each try
+
+The following events have been added to wizAssetsHandler:
+
+- "retryDownloadFile" (phaseName, retriesRemaining, asset): A download failed, and is being retried.
+- "failedDownloadFile" (phaseName, error, asset): All retries failed.
 
 ### Shokoti
 
+Shokoti configuration has been changed a bit, when using HTTP basic authentication. Since basic
+authentication has become part of the clientHost configuration (see v0.10.1), Shokoti client now
+uses that in its communication with the Shokoti server. That means that the "callbackAuth" entry
+is no longer needed. Please remove it if you used it.
 
 ### Directory builder consistency
 
