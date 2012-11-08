@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.10.2 (in development)
+
+
+### wizAssetsHandler
+
+
+### Shokoti
+
+
+### Directory builder consistency
+
+When building the frontend pages, directories are scanned and aggregated by the DirBuilder. This
+builder was not sorting the files and directories it read, so it was possible that a build on
+server A looked different from the one on server B. This inconsistency causes cache to be much less
+effective (although we don't have any numbers on this). If a game's file dependencies are poorly
+managed, it could even cause bugs in your game.
+
+This has now been resolved. When directories are scanned, files and subdirectories are now always
+returned in alphabetical order.
+
+### Smaller fixes
+
+* Basic auth rules were not being applied to user commands and msgstream.
+* Better logging of 404 errors on the server side (goodbye 'app "foo" not found').
+* Bad incoming HTTP requests are now detected more reliably and logged more clearly.
+
+
 ## v0.10.1
 
 ### $cfg() builder change
