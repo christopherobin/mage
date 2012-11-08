@@ -38,7 +38,7 @@ returned in alphabetical order.
 * Basic auth rules were not being applied to user commands and msgstream.
 * Better logging of 404 errors on the server side (goodbye 'app "foo" not found').
 * Bad incoming HTTP requests are now detected more reliably and logged more clearly.
-
+* EventEmitter#once was not passing along the 4th argument (thisObj) to EventEmitter#on.
 
 ## v0.10.1
 
