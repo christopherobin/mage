@@ -1,6 +1,6 @@
 # Mithril
 
-## Installing Mithril server for NodeJS
+## Installing Mithril server for Node.js
 
 ### Installing your game's dependencies
 
