@@ -1,75 +1,86 @@
 Logging
 =======
 
-
 Wherever meaningful, error level logging should receive an Error object.
 
 ## Examples
 
 ### try-catch block
-``
+`
 try {
-        throw new SyntaxError('You are too grey for me');
+        throw new Error('You are too grey for me');
+} catch (error) {
+        mithril.core.logger.error(error);
 }
-catch (err) {
-        mithril.core.logger.error(err);
-}
-``
+`
 
-### Pass an on-the-fly error object
+### Passing rich data that certain logging services may be able to query
 
-``
-function callbackFunction (err, data) {
-        if (err) {
-            mithril.core.logger.error(new Error(err));
-        }
+`
+mithril.core.logger.debug('Trying to run quest', questId).data(questData);
+`
 
-        mithril.core.logger.debug('so far, so, good').data(data);
-}
-``
+### Passing details
 
-## Default Mithril Channels
+`
+mithril.core.logger.debug('User logged in', actorId)
+  .details('Used Facebook mobile login')
+  .details('URL', facebookServiceUrl);
+`
 
-The default channels have been expanded to be more granular and more meaningful; this should help production operation by allowing us to throw alerts properly (only 3-4 emergencies or alerts a minute should alert operation, but it might take 100's of user errors a minute to trigger the same alerting)
+
+## Built-in Logging Channels
+
+The default channels have been expanded to be more granular and more meaningful;
+this should help production operation by allowing us to throw alerts properly
+(only 3-4 emergencies or alerts a minute should alert operation, but it might
+take 100's of user errors a minute to trigger the same alerting).
 
 ### emergency
 
-Internal service or external service unavailability
+Internal service or external service unavailability. The app cannot boot or
+stopped unexpectedly.
 
 ### alert
 
+There are major issues that affect the correct operation of the application.
 * Internal service (datastore API call, etc) or external service
 * API calls throw Exception or return errors
 
 ### critical
 
-An request has broken; user session or data is broken or corrupted
+A user request has gone wrong; user session or data is broken or corrupted.
+The user is expected to require a restart.
 
 ### error
 
-An user request has errored; unhanded exceptions
+A user request has errored and the user experience is expected to be negatively
+impacted.
 
 ### warning
 
-* User requests is in an unusual state, but the situation has been handled gracefully
+Acceptable problems that are expected to happen and will always be dealt with
+gracefully.
+* A user made an unusual request
 * System warning
 
 ### notice
 
-Service setup completion, build completion, and other non-error state change within the game.
+Events regarding the state of services. Server up, server down, setup
+completion, build completion, and other non-error state change within the game.
 
 ### info
 
-Requests and outcomes: SHOULD include meaningful data in regards to mutation of the user's related data
+Summarizing requests from the end-user and their outcomes.
 
 ### debug
 
-Relevant game debugging information: internal process of a request
+Relevant game debugging information that goes beyond verbose. Always turned on during development.
 
-### vebose
+### verbose
 
-Mithril internal. Use this to see Mithril internal info (NEVER LOG TO THIS AS A GAME DEVELOPER)
+For very low-level debug information (I/O details, etc). Often used by Mithril internals.
 
 ### time
 
-Generally used for storing benchmark information.
+Generally used for logging benchmark information.
