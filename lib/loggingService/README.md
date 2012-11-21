@@ -8,24 +8,27 @@ Wherever meaningful, error level logging should receive an Error object.
 ### try-catch block
 `
 try {
-        throw new Error('You are too grey for me');
+  throw new Error('You are too grey for me');
 } catch (error) {
-        mithril.core.logger.error(error);
+  mithril.core.logger.error(error);
 }
 `
 
 ### Passing rich data that certain logging services may be able to query
 
 `
-mithril.core.logger.debug('Trying to run quest', questId).data(questData);
+mithril.core.logger.debug
+  .data(questData)
+  .log('Trying to run quest', questId);
 `
 
 ### Passing details
 
 `
-mithril.core.logger.debug('User logged in', actorId)
-  .details('Used Facebook mobile login')
-  .details('URL', facebookServiceUrl);
+mithril.core.logger.debug
+  .details('Used Facebook mobile login').
+  .details('URL', facebookServiceUrl).
+  .log('User logged in', actorId);
 `
 
 
