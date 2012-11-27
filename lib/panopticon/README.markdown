@@ -46,8 +46,8 @@ methods are
    `n` for this `id`.
  - `panopticon.set(id, n)`, where 'n' is added to the previous value if 'n' is
     a finite number. If `n` is not a finite number, then it defaults to 1.
- - `panopticon.sample(id, n)` Keeps track of the max, min, average and standard
-    deviation of `n` over an interval.
+ - `panopticon.sample(id, n)`, which keeps track of the max, min, average and
+    standard deviation of `n` over an interval.
 
 When your application is shutting down, it should call `panopticon.stop()` to
 clear timers.
@@ -67,5 +67,10 @@ if (cluster.isMaster) {
 
 The node.js implementation of setTimeout is buggy. The resulting timeout can
 (and does) fire early sometimes, contrary to expectations. This lead to some
-acrobatics to ensure that when it does fire early, it is reinitialised. This
-can be seen in `Panopticon.prototype.timeUp`.
+acrobatics to ensure that when it does fire early, it is reinitialised. This can
+be seen in `Panopticon.prototype.timeUp`.
+
+The standard deviation method used by `panopticon.sample` is single pass. This
+leaves it more prone than a two pass algorithm to round off errors. The specific
+algorithm used is the one found in *The Art of Computer Programming, Volume 2:
+Seminumerical Algorithms*, section 4.2.2.
