@@ -71,6 +71,7 @@ acrobatics to ensure that when it does fire early, it is reinitialised. This can
 be seen in `Panopticon.prototype.timeUp`.
 
 The standard deviation method used by `panopticon.sample` is single pass. This
-leaves it more prone than a two pass algorithm to round off errors. The specific
-algorithm used is the one found in *The Art of Computer Programming, Volume 2:
-Seminumerical Algorithms*, section 4.2.2.
+leaves it more prone than a two pass algorithm to round off errors. A single
+pass method is used to avoid growing arrays whilst accumulating a batch. The
+specific algorithm used is the one found in *The Art of Computer Programming,
+Volume 2: Seminumerical Algorithms*, section 4.2.2.
