@@ -15,10 +15,45 @@ per instance, rather than parsing a small object for every sample taken.
 
 ## Usage
 
-Panopticon is loaded as a regular module. It should be loaded after a cluster
-has been established if the `cluster` module is being used. In that case, the
-master must have code to make use of the data aggregated by Panopticon. When a
-Each n.5 interval (approximately), Panopticon will emit a dataset.
+Require panopticon like a regular node.js module:
+
+```javascript
+var Panopticon = require('panopticon');
+```
+
+Panopticon itself is a constructor, so when you're ready to start it, make a new
+object
+
+```javascript
+var panopticon = new Panopticon(startTime, interval);
+```
+
+where startTime (ms since the unix epoch) is an optional time to start from, and
+interval is the time delay (in ms) between batches of data. If no start time is
+provided, then it defaults to 0. Similarly, if no sane interval is provided, it
+interval defaults to 10 seconds.
+
+It is important to note that for consistent sample collection, when startTime
+is given it must be the same across all workers and the master.
+
+By default the PID of each worker and the master are logged, as well as the
+number of workers (not including the master). Everything else needs to be sent
+to the panopticon object using one of its acquisition methods. In each case the
+`id` is the identifier that should be associated with this piece of data. The
+methods are
+
+ - `panopticon.set(id, n)`, where 'n', a finite number, may replace a previous
+   `n` for this `id`.
+ - `panopticon.set(id, n)`, where 'n' is added to the previous value if 'n' is
+    a finite number. If `n` is not a finite number, then it defaults to 1.
+ - `panopticon.sample(id, n)` Keeps track of the max, min, average and standard
+    deviation of `n` over an interval.
+
+When your application is shutting down, it should call `panopticon.stop()` to
+clear timers.
+
+On the master, halfway between collections from the workers and itself the
+panopticon object emits aggregated data. This *only happens on the master*.
 
 ```javascript
 if (cluster.isMaster) {
@@ -28,23 +63,9 @@ if (cluster.isMaster) {
 }
 ```
 
-Sending Panopticon data is extremely simple. By defaut, the master and every
-worker have their PIDs logged. Everything else is sent to Panopticon using on of
-its three `exports` functions, `set`, `inc` and `sample`. In every case, `id` is
-a string that you want to have as a field name in the sub-object for each worker
-logging.
+## Points to note
 
- - `panopticon.set(id, n)`, where 'n', a finite number, replaces.
- - `panopticon.set(id, n)`, where 'n' is added to the previous value is 'n' is
-a finite number, replaces. If `n` is not a finite number, then it defaults to 1.
- - `panopticon.sample(id, n)` Keeps track of the max, min, average and standard
- deviation of `n` over an interval.
-
- At the end of each interval a worker subobject is reinitialised to just contain
- its PID.
-
- ## Bugs
- At the time of writing, there is a bug in the node.js implementation of
- setTimeout which can lead to a the timeOut occuring early. If this happens,
- logging of a worker or master may stop until a sample command restarts the
- timeout.
+The node.js implementation of setTimeout is buggy. The resulting timeout can
+(and does) fire early sometimes, contrary to expectations. This lead to some
+acrobatics to ensure that when it does fire early, it is reinitialised. This
+can be seen in `Panopticon.prototype.timeUp`.
