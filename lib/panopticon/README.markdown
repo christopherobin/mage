@@ -56,11 +56,9 @@ On the master, halfway between collections from the workers and itself the
 panopticon object emits aggregated data. This *only happens on the master*.
 
 ```javascript
-if (cluster.isMaster) {
-	panopticon.on('delivery', function (aggregatedData) {
-		// Do something with aggregatedData
-	});
-}
+panopticon.on('delivery', function (aggregatedData) {
+	// Do something with aggregatedData
+});
 ```
 
 ## Points to note
