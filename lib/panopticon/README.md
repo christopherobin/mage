@@ -31,7 +31,7 @@ var panopticon = new Panopticon(startTime, interval);
 where startTime (ms since the unix epoch) is an optional time to start from, and
 interval is the time delay (in ms) between batches of data. If no start time is
 provided, then it defaults to 0. Similarly, if no sane interval is provided, it
-interval defaults to 10 seconds.
+defaults to 10 seconds.
 
 It is important to note that for consistent sample collection, when startTime
 is given it must be the same across all workers and the master.
