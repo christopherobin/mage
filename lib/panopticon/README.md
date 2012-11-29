@@ -65,7 +65,7 @@ This interval is returned so that there may be multiple panoptica running. The
 interval is effectively an identifier.
 
 ## Panoptica
-Multiple instances of Panopticon may be instantiated. The motivation for this
+Multiple Panopticon may be instantiated. The motivation for this
 is sampling over different intervals concurrently. Internally Panopticon keeps
 track of instances with ids counting up from zero. To ensure consistency
 panoptica must be instantiated in the same order, meaning that you should
