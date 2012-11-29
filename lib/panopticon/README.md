@@ -25,7 +25,7 @@ Panopticon itself is a constructor, so when you're ready to start it, make a new
 object
 
 ```javascript
-var panopticon = new Panopticon(startTime, interval);
+var panopticon = new Panopticon(startTime);
 ```
 
 where startTime (ms since the unix epoch) is an optional time to start from, and
@@ -65,14 +65,14 @@ This interval is returned so that there may be multiple panoptica running. The
 interval is effectively an identifier.
 
 ## Panoptica
-Multiple Panoptica may be instantiated. The motivation for this
+Multiple panoptica may be instantiated. The motivation for this
 is sampling over different intervals concurrently. Internally Panopticon keeps
 track of instances with ids counting up from zero. To ensure consistency
 panoptica must be instantiated in the same order, meaning that you should
-avoid instantiating Panoptica in separate asynchronous functions with indefinite
+avoid instantiating panoptica in separate asynchronous functions with indefinite
 execution order. Try to keep them in a synchronous group.
 
-If a worker goes down, you may safely restart it. New Panoptica instances catch
+If a worker goes down, you may safely restart it. New panoptica instances catch
 up to the current interval and report to the master as normal.
 
 ## Points to note
