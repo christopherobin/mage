@@ -64,6 +64,17 @@ panopticon.on('delivery', function (aggregatedData, interval) {
 This interval is returned so that there may be multiple panoptica running. The
 interval is effectively an identifier.
 
+## Panoptica
+Multiple instances of Panopticon may be instantiated. The motivation for this
+is sampling over different intervals concurrently. Internally Panopticon keeps
+track of instances with ids counting up from zero. To ensure consistency
+panoptica must be instantiated in the same order, meaning that you should
+avoid instantiating Panoptica in separate asynchronous functions with indefinite
+execution order. Try to keep them in a synchronous group.
+
+If a worker goes down, you may safely restart it. New Panoptica instances catch
+up to the current interval and report to the master as normal.
+
 ## Points to note
 
 The node.js implementation of setTimeout is buggy. The resulting timeout can
