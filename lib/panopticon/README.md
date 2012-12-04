@@ -17,17 +17,19 @@ var Panopticon = require('panopticon');
 Panopticon itself is a constructor, so when you're ready to start it, make a new object
 
 ```javascript
-var panopticon = new Panopticon(startTime);
+var panopticon = new Panopticon(startTime, interval, scaleFactor);
 ```
 
-where startTime (ms since the unix epoch) is an optional time to start from, and interval is the time delay (in ms) between batches of data. If no start time is provided, then it defaults to 0. Similarly, if no sane interval is provided, it defaults to 10 seconds.
+where startTime (ms since the unix epoch) is an optional time to start from, interval is the time delay (in ms) between batches of data and scaleFactor scales the reporting from incrementers. If no start time is provided, then it defaults to `0`. Similarly, if no sane interval is provided, it defaults to 10 seconds. By default the scale of reporting for incrementers is in kilohertz.
+
+If no value is passed in for `scaleFactor`, it defaults to `1` (reports in kHz). Panopticon internally calculates the rate of increments, so it needs to be told if this scale is wrong. For example, to change the reporting of incrementers to Hz, set this value to 1000. This only affects incrementers, since these are counted up over an interval and then divided by the length of an interval to estimate increments per millisecond (kHz). Sets and samples are your responsibility, so if these should be reporting in something other than kHz for those, then you must give panopticon the data in the scale desired.
 
 It is important to note that for consistent sample collection, when startTime is given it must be the same across all workers and the master.
 
 By default the PID of each worker and the master are logged, as well as the number of workers (not including the master). Everything else needs to be sent to the panopticon object using one of its acquisition methods. In each case the `id` is the identifier that should be associated with this piece of data. The methods are
 
- - `panopticon.set(id, n)`, where 'n', a finite number, may replace a previous `n` for this `id`.
- - `panopticon.set(id, n)`, where 'n' is added to the previous value if 'n' is a finite number. If `n` is not a finite number, then it defaults to 1.
+ - `panopticon.set(id, n)`, where `n`, a finite number, may replace a previous `n` for this `id`.
+ - `panopticon.set(id, n)`, where `n` is added to the previous value if `n` is a finite number. If `n` is not a finite number, then it defaults to `1`.
  - `panopticon.sample(id, n)`, which keeps track of the max, min, average and standard deviation of `n` over an interval.
 
 When your application is shutting down, it should call `panopticon.stop()` to clear timers.
@@ -35,17 +37,17 @@ When your application is shutting down, it should call `panopticon.stop()` to cl
 On the master, halfway between collections from the workers and itself the panopticon object emits aggregated data. This *only happens on the master*.
 
 ```javascript
-panopticon.on('delivery', function (aggregatedData, interval) {
+panopticon.on('delivery', function (aggregatedData) {
 	// Do something with aggregatedData
 });
 ```
 
-This interval is returned so that there may be multiple panoptica running. The interval is effectively an identifier.
-
 ## Panoptica
-Multiple panoptica may be instantiated. The motivation for this is sampling over different intervals concurrently. Internally Panopticon keeps track of instances with ids counting up from zero. To ensure consistency panoptica must be instantiated in the same order, meaning that you should avoid instantiating panoptica in separate asynchronous functions with indefinite execution order. Try to keep them in a synchronous group.
+Multiple panoptica may be instantiated. The motivation for this is sampling over different intervals concurrently. Internally Panopticon keeps track of instances with IDs counting up from zero. To ensure consistency panoptica must be instantiated in the same order, meaning that you should avoid instantiating panoptica in separate asynchronous functions with indefinite execution order. Try to keep them in a synchronous group.
 
 If a worker goes down, you may safely restart it. New panoptica instances catch up to the current interval and report to the master as normal.
+
+To differentiate between different panoptica, each aggregated data has an `id` key, which is the same as the `id` of the panopticon responsible for it.
 
 ## Points to note
 
