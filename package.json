@@ -20,7 +20,7 @@
 		"mysql": "0.9.1",
 		"colors": "git+https://github.com/stelcheck/colors.js.git#master",
 		"mdns": "0.0.7",
-		"zmq": "2.1.0",
+		"zmq": "2.2.0",
 		"memcached": "0.1.4",
 		"memcached-transactions": "0.1.1",
 		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.3",
