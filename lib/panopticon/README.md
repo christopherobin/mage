@@ -29,8 +29,9 @@ It is important to note that for consistent sample collection, when startTime is
 By default the PID of each worker and the master are logged, as well as the number of workers (not including the master). Everything else needs to be sent to the panopticon object using one of its acquisition methods. In each case the `id` is the identifier that should be associated with this piece of data. The methods are
 
  - `panopticon.set(id, n)`, where `n`, a finite number, may replace a previous `n` for this `id`.
- - `panopticon.set(id, n)`, where `n` is added to the previous value if `n` is a finite number. If `n` is not a finite number, then it defaults to `1`.
+ - `panopticon.inc(id, n)`, where `n` is added to the previous value if `n` is a finite number. If `n` is not a finite number, then it defaults to `1`.
  - `panopticon.sample(id, n)`, which keeps track of the max, min, average and standard deviation of `n` over an interval.
+ - `panopticon.timedSample(id, dt)`, which is like sample, but takes the output of a high resolution timer `dt` (or rather the difference between two timers).
 
 When your application is shutting down, it should call `panopticon.stop()` to clear timers.
 
