@@ -44,6 +44,7 @@ panopticon.on('delivery', function (aggregatedData) {
 ```
 
 ## Panoptica
+
 Multiple panoptica may be instantiated. The motivation for this is sampling over different intervals concurrently. Internally Panopticon keeps track of instances with IDs counting up from zero. To ensure consistency panoptica must be instantiated in the same order, meaning that you should avoid instantiating panoptica in separate asynchronous functions with indefinite execution order. Try to keep them in a synchronous group.
 
 If a worker goes down, you may safely restart it. New panoptica instances catch up to the current interval and report to the master as normal.
