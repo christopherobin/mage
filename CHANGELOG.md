@@ -1,5 +1,69 @@
 # Changelog
 
+## v0.11.0
+
+### A new logger
+
+Mithril has been outfitted with a new logger. It is backwards compatible. However, in order to make
+good use of it, you should be using its extended API. For starters, there is now a *logger module*.
+
+#### Writers
+
+
+#### Configuration
+
+
+#### Migration
+
+To have access to the logger module, initialize it as any other built-in module:
+`mithril.useModule('logger');`
+
+This module should also be included on the HTML5 client side, which enables you to do more powerful
+logging there as well.
+
+
+
+### Smarter multi-server connections
+
+Servers (master process) connecting to other servers will now validate that their peer is running
+the same version of the game (driven by your package.json) as itself. If the version is not exactly
+equal, they will not connect.
+
+This feature is useful when doing a rolling restart of your game, when launching a new version.
+You wouldn't want the new version to start connecting to the running instances that are being shut
+down.
+
+### Built-in JSON linting
+
+If there is a parse error in your configuration JSON file(s), the lint-result will be output
+immediately. This should save you time when trying to find the error.
+
+You may also access this JSON parser helper yourself, by calling:
+`mithril.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
+containing the human readable lint-information in its `message` property.
+
+### Small refactoring
+
+#### mithril core module
+
+Changed the mithril.isShuttingDown boolean to mithril.getRunState(), which returns a string changing
+from "init", to "setup", to "running", to "quitting".
+
+Moved the app version information into mithril.rootPackage:
+`{ name: 'game name', version: 'game version' }`
+
+#### Builder
+
+There was a built-in builder type called "configDirBuilder", which has been removed. That builder
+took a config entry, and interpreted it as a path, then started including that path. The same can
+be achieved by embedding: `$dir($cfg('entry'))`.
+
+#### Benchmark
+
+The benchmark helper function has been moved into `mithril.core.helpers.benchmark`, and now
+measures benchmarks in nanoseconds.
+
+
 ## v0.10.2
 
 ### wizAssetsHandler
