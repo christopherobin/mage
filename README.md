@@ -13,7 +13,7 @@ In your game project, where you should have a package.json, execute the followin
 ### Installing MAGE
 
 The "npm install" command will have recreated a directory called "node_modules". We now have to install MAGE there.
-After cloning the Mithril repository, we'll install MAGE's dependencies, the same way we installed the game's dependencies.
+After cloning the MAGE repository, we'll install MAGE's dependencies, the same way we installed the game's dependencies.
 
 1. `cd node_modules`
 2. `git clone --branch develop git@github.com:Wizcorp/mage.git` or `git clone --branch develop https://github.com/Wizcorp/mage.git`
