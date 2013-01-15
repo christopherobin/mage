@@ -10,14 +10,14 @@ Wherever meaningful, error level logging should receive an Error object.
 try {
   throw new Error('You are too grey for me');
 } catch (error) {
-  mithril.core.logger.error(error);
+  mage.core.logger.error(error);
 }
 `
 
 ### Passing rich data that certain logging services may be able to query
 
 `
-mithril.core.logger.debug
+mage.core.logger.debug
   .data(questData)
   .log('Trying to run quest', questId);
 `
@@ -25,7 +25,7 @@ mithril.core.logger.debug
 ### Passing details
 
 `
-mithril.core.logger.debug
+mage.core.logger.debug
   .details('Used Facebook mobile login').
   .details('URL', facebookServiceUrl).
   .log('User logged in', actorId);
@@ -82,7 +82,7 @@ Relevant game debugging information that goes beyond verbose. Always turned on d
 
 ### verbose
 
-For very low-level debug information (I/O details, etc). Often used by Mithril internals.
+For very low-level debug information (I/O details, etc). Often used by MAGE internals.
 
 ### time
 
