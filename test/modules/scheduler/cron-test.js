@@ -1,7 +1,7 @@
 var vows = require('vows'),
 	assert = require('assert'),
-	Cron = require('modules/scheduler/cron'),
-	Schedule = require('modules/scheduler/schedule');
+	Cron = require('modules/scheduler/Cron'),
+	Schedule = require('modules/scheduler/Schedule');
 
 exports.tests = vows.describe(__filename).addBatch({
 	'A Cron': {

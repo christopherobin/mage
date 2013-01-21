@@ -9,7 +9,7 @@
 		"url": "http://github.com/Wizcorp/Mithril/issues"
 	},
 	"engines": {
-		"node": ">=0.8.2"
+		"node":">=0.8.2"
 	},
 	"main": "lib/mithril",
 	"dependencies": {
