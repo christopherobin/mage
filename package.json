@@ -1,17 +1,17 @@
 {
-	"name": "mithril",
-	"description": "Mithril game development platform for Node.js",
+	"name": "mage",
+	"description": "MAGE game development platform for Node.js",
 	"version": "0.10.2",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
 		"mail": "info@wizcorp.jp",
-		"url": "http://github.com/Wizcorp/Mithril/issues"
+		"url": "http://github.com/Wizcorp/mage/issues"
 	},
 	"engines": {
 		"node":">=0.8.2"
 	},
-	"main": "lib/mithril",
+	"main": "lib/mage",
 	"dependencies": {
 		"async": "0.1.22",
 		"mdns": "1.0.0",
@@ -35,7 +35,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Wizcorp/Mithril.git"
+		"url": "https://github.com/Wizcorp/mage.git"
 	},
 	"private": true,
 	"licences": [
