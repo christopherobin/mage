@@ -1,8 +1,8 @@
 var vows = require('vows'),
 	assert = require('assert'),
 	events = require('events'),
-	HeartBeat = require('modules/scheduler/HeartBeat'),
-	Schedule = require('modules/scheduler/Schedule');
+	HeartBeat = require('modules/scheduler/heartBeat'),
+	Schedule = require('modules/scheduler/schedule');
 
 vows.describe(__filename).addBatch({
 	'A HeartBeat': {
