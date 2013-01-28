@@ -24,7 +24,7 @@
 		"graylog2": "0.0.2",
 		"mysql": "0.9.1",
 		"colors": "git+https://github.com/stelcheck/colors.js.git#master",
-		"memcached": "0.1.4",
+		"memcached": "0.2.0",
 		"memcached-transactions": "0.1.1",
 		"rumplestiltskin": "0.0.1",
 		"tomes": "0.0.5",
