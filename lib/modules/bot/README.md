@@ -4,7 +4,7 @@
 
 
 ##Index
-1. [Files You Will Need Add/Modify](#Files You Will Need Add/Modify)
+1. [Files You Will Need To Add/Modify](#Files You Will Need To Add/Modify)
 * [Server API](#Server API)
  * [lib/bot.js](#lib/bot.js)
  * [lib/index.js](#lib/index.js)
@@ -19,8 +19,8 @@
 
 
 
-<a name='Files You Will Need Add/Modify'/>
-##Files You Will Need Add/Modify
+<a name='Files You Will Need To Add/Modify'/>
+##Files You Will Need To Add/Modify
 <div style="text-align: right"><a href="#top">back to top</a></div>
 
 ###Server API
