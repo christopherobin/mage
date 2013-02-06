@@ -11,9 +11,9 @@
  * [configs/game/custom.js](#configs/game/custom.js)
 * [Testing API](#Testing API)
 * [JS Driven Client](#JS Driven Client)
- * [www/botScenarios/< SCENARIO GROUP >.js](#www/botScenarios/&lt; SCENARIO GROUP &gt;.js)
- * [www/botPages/< BOT NAME >/script.js](#www/botPages/&lt; BOT NAME &gt;/script.js)
- * [www/botPages/< BOT NAME >/page.html](#www/botPages/&lt; BOT NAME &gt;/page.html)
+ * [www/botScenarios/&lt;SCENARIO GROUP&gt;.js](#www/botScenarios/&lt;SCENARIO GROUP&gt;.js)
+ * [www/botPages/&lt;BOT NAME&gt;/script.js](#www/botPages/&lt;BOT NAME&gt;/script.js)
+ * [www/botPages/&lt;BOT NAME&gt;/page.html](#www/botPages/&lt;BOT NAME&gt;/page.html)
  * [www/libgame/nextTick.js](#www/libgame/nextTick.js)
 * [Testing client](#Testing client)
 
@@ -29,9 +29,9 @@
 - configs/game/custom.js: Add configurations for the bot app & module
 
 ###JS Driven Client:
-- www/botScenarios/< SCENARIO GROUP >.js: Registers scenario functions
-- www/botPages/< BOT NAME >/script.js: This is where the magic happens, this is your loader/landing/bot logic.
-- www/botPages/< BOT NAME >/page.html: Wrapper html page which includes above bot script.
+- www/botScenarios/&lt;SCENARIO GROUP&gt;.js: Registers scenario functions
+- www/botPages/&lt;BOT NAME&gt;/script.js: This is where the magic happens, this is your loader/landing/bot logic.
+- www/botPages/&lt;BOT NAME&gt;/page.html: Wrapper html page which includes above bot script.
 - www/libgame/nextTick.js: Copy from DRS game, contains enhanced setTimout and nextTick functions.
 
 
@@ -59,7 +59,7 @@ var paths = {
 };
 
 // List your different bots here
-bot.addTestPage('< BOT NAME >', paths.www + '/botPages/< BOT NAME >');
+bot.addTestPage('&lt;BOT NAME&gt;', paths.www + '/botPages/&lt;BOT NAME&gt;');
 
 bot.register('createBotPlayer', function (state, args, cb) {
     // ....
@@ -163,7 +163,7 @@ Here we will need to add two sections to the config. apps.bot & module.bot
 <pre>
 "module": {
     "bot": {
-            "psk": "< PRE SHARED KEY >"
+            "psk": "&lt;PRE SHARED KEY&gt;"
     }
 }
 </pre>
@@ -186,9 +186,9 @@ be able to use tools such as tsung, seige or even curl to start performing game
 actions. A quick way to test this is to use curl in the following manner:
 
 <pre>
-curl --url http://< HOST >/bot/< USER COMMAND > \
-     -H "Host: < EXPOSED DOMAIN NAME >" \
-     -d $'[{"name":"bot.psk","key":"< PSK >"}]\n{"options":{< ADDITIONAL OPTIONS >}}'
+curl --url http://&lt;HOST&gt;/bot/&lt;USER COMMAND&gt; \
+     -H "Host: &lt;EXPOSED DOMAIN NAME&gt;" \
+     -d $'[{"name":"bot.psk","key":"&lt;PSK&gt;"}]\n{"options":{&lt;ADDITIONAL OPTIONS&gt;}}'
 </pre>
 
 
@@ -203,8 +203,8 @@ curl --url http://< HOST >/bot/< USER COMMAND > \
 <div style="text-align: right"><a href="#top">back to top</a></div>
 
 
-<a name='www/botScenarios/&lt; SCENARIO GROUP &gt;.js'/>
-###www/botScenarios/< SCENARIO GROUP >.js
+<a name='www/botScenarios/&lt;SCENARIO GROUP&gt;.js'/>
+###www/botScenarios/&lt;SCENARIO GROUP&gt;.js
 
 These file would be where you would register your scenarios. Each scenario will
 consist of a routine it would run along with a condition which would be checked
@@ -224,7 +224,7 @@ example please take a look at DeadRising-TheSurvival game.
 	var bot = mage.bot;
 
 	// Scenario which plays current mission & boss
-	bot.addScenario('< SCENARIO NAME >', function (options, cb) {
+	bot.addScenario('&lt;SCENARIO NAME&gt;', function (options, cb) {
 		// Code to execute up running this scenario
 	}, function (options) {
 		// What should be checked prior to running this scenario
@@ -234,8 +234,8 @@ example please take a look at DeadRising-TheSurvival game.
 </pre>
 
 
-<a name='www/botPages/&lt; BOT NAME &gt;/script.js'/>
-###www/botPages/< BOT NAME >/script.js
+<a name='www/botPages/&lt;BOT NAME&gt;/script.js'/>
+###www/botPages/&lt;BOT NAME&gt;/script.js
 <div style="text-align: right"><a href="#top">back to top</a></div>
 
 This is where the magic happens for the bot. This file is a hybrid between a
@@ -285,8 +285,8 @@ DeadRising-TheSurvival game.
 </pre>
 
 
-<a name='www/botPages/&lt; BOT NAME &gt;/page.html'/>
-###www/botPages/< BOT NAME >/page.html
+<a name='www/botPages/&lt;BOT NAME&gt;/page.html'/>
+###www/botPages/&lt;BOT NAME&gt;/page.html
 <div style="text-align: right"><a href="#top">back to top</a></div>
 
 This is a mere html wrapper for our bot. You generally don't need to do much
@@ -329,12 +329,12 @@ a browser.
 ###Browser
 Open your browser JS console and open the following page
 <pre>
-http://< HOST >/app/bot/< BOT NAME >#psk=< PRE SHARED KEY >
+http://&lt;HOST&gt;/app/bot/&lt;BOT NAME&gt;#psk=&lt;PRE SHARED KEY&gt;
 </pre>
 
 ###PhantomJS
 Download the loader and running it with the arguments PSK and BOT NAME
 <pre>
-curl -s http://< HOST >/app/bot/phantom | gunzip > phantom.js
-phantomjs phantom.js < PRE SHARED KEY > < BOT NAME >
+curl -s http://&lt;HOST&gt;/app/bot/phantom | gunzip&gt; phantom.js
+phantomjs phantom.js &lt;PRE SHARED KEY&gt; &lt;BOT NAME&gt;
 </pre>
