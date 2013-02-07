@@ -75,7 +75,7 @@ configuration is:
 	"type": "memcached",
 	"config": {
 		"servers": ["a servers array", "or object"],
-		"options": { "options": "to pass to node-memcached" },
+		"options": { "options to pass": "to node-memcached" },
 		"prefix": "prefix for all your keys"
 	}
 }
@@ -120,8 +120,14 @@ contains 3 child labels:
 * `readOrder` is an array with vault names, describing the order in which we read data.
 * `writeOrder` is an array with vault names, describing the order in which we write data.
 
+The vaults entry is a key/value map, where the key is the unique *name* of the vault. It's up to you
+to decide on these names. Perhaps often, the name of the vault will match the type of the vault, but
+this is absolutely not required. Choose whatever makes sense for your project. The only name that is
+reserved is "mage-client", which is named that way by the MAGE command center.
 
-
+Each vault entry in the configuration has 2 properties: `type` and `config`. The type is a fixed
+ID that is unique for each vault engine. Read *Built-in vault types* to see these IDs and how to
+configure vaults of that type.
 
 ```json
 {
@@ -136,8 +142,6 @@ contains 3 child labels:
         }
 }
 ```
-
-
 
 
 ## How to use archivist
