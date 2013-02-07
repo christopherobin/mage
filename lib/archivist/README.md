@@ -1,9 +1,12 @@
-Archivist
-=========
+# Archivist
 
-The archivist rules your data. It's purpose is to help you manage your data,
+The archivist rules your data. Its purpose is to help you manage your data,
 all through a simple unified API, regardless of which database systems you use.
-Some interesting features:
+
+
+## Advantages
+
+Redundant storage
 
 * Transparent storage of single documents into multiple databases.
 * Read fallback, when using multiple databases.
@@ -14,8 +17,9 @@ Some interesting features:
 * Built-in encoding logic (utf8, buffer, etc) for storage and transportation.
 
 
-Quick start guide
------------------
+
+
+## Quick start guide
 
 
 
@@ -23,8 +27,7 @@ Quick start guide
 
 
 
-How to use archivist
---------------------
+## How to use archivist
 
 
 
