@@ -91,7 +91,7 @@ ValueHandlers are an API, unique per vault, that implement how values are stored
 this logic is driven around "topics" and "indexes", that these value handlers can translate into
 logic that fits the vault in question.
 
-For example, the topic "weapons" with index { actorId: 123 } can be translated into the following
+For example, the topic `weapons` with index `{ actorId: 123 }` can be translated into the following
 memcached key: `weapons/actorId:123`, or into the following MySQL structure:
 ```json
 { table: "weapons", pk: { "actorId": 123 } }
@@ -108,6 +108,14 @@ Each document that is stored, can be stored along with its media type. Think of 
 Media types can be useful in order to recreate a living version of binary- or string-serialized
 data. Archivist comes with built-in knowledge of media types and has the ability to convert between
 them.
+
+If you want to create a fresh new Tome, you must conjure it, as described in the documentation of
+[node-tomes](https://npmjs.org/package/tomes). You may also store other types of data. Tomes are
+simply supported out-of-the-box and you are encouraged to use them. You can access the `Tome` class
+by requiring it from MAGE by calling:
+```javascript
+var Tome = mage.require('tomes').Tome;
+```
 
 
 ## Quick start guide
@@ -196,16 +204,6 @@ instance, you can use the following:
 
 ```javascript
 var archivist = new mage.core.archivist.Archivist();
-```
-
-The `Archivist` class exposes the following API.
-
-If you want to create a Tome, you must conjure it, as described in the documentation of
-[node-tomes](https://npmjs.org/package/tomes). You may also store other types of data. Tomes are
-simply supported out-of-the-box and you are encouraged to use them. You can access the `Tome` class
-by requiring it from MAGE by calling:
-```javascript
-var Tome = mage.require('tomes').Tome;
 ```
 
 The following API documentation should tell you how to store, read, delete data and how to set their
