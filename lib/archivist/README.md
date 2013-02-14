@@ -162,7 +162,7 @@ Example configuration:
                         },
                         "mysql": {
                             "type": "mysql",
-                            "config": { "uri": "mysql://bob:secret@localhost/bob_game" }
+                            "config": { "url": "mysql://bob:secret@localhost/bob_game" }
                         }
                 },
                 "readOrder": ["memcached", "mysql", "static"],
@@ -191,8 +191,8 @@ set up these vault handlers. In order to keep your configuration maintainable, i
 sense to categorize your topics. Imagine for example the following configuration:
 
 ```javascript
-var dynamicVaults = { mysql: null, memcached: null };
-var staticVaults = { file: null };
+var dynamicVaults = { mysql: true, memcached: true };
+var staticVaults = { file: true };
 
 exports.player = dynamicVaults;
 exports.inventory = dynamicVaults;

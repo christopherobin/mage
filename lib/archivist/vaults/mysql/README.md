@@ -5,7 +5,7 @@ The node-mysql module is supported through the built-in "mysql" vault type. Its 
 {
 	"type": "mysql",
 	"config": {
-		"uri": "mysql uri as described in the node-mysql readme"
+		"url": "mysql url as described in the node-mysql readme"
 	}
 }
 ```
