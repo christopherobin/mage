@@ -221,15 +221,16 @@ it to be overwritten.
 
 ### `archivist.read(topic, index[, options], callback)`
 
-Reads data from a vault. The callback receives two arguments: `(error, data)`. Read errors are
-considered fatal, and you should abort your operations. But a read failure on a single vault doesn't
-have to be fatal if the next vault in line can still deliver. If a value has already been read or
-created before in this archivist's instance, that value has been cached and will be returned.
+Reads data from all vaults configured for this topic, returning the first successful read. The
+callback receives two arguments: `(error, data)`. Read errors are considered fatal, and you should
+abort your operations. However, a read failure on a single vault doesn't have to be fatal if the
+next vault in line can still deliver. If a value has already been read or created before in this
+archivist instance, that value has been cached and will be returned.
 
 The following options are available to you:
 
 *`optional` (boolean, default: false)*
-Indicates whether it's considered an error if data is not found.
+Indicates whether it's considered an error if data is not found in any of the vaults.
 
 *`mediaTypes` (array, default: `['application/x-tome', 'application/octet-stream']`)*
 Indicates that you only accept these media types, in the given order of priority. If data of another
@@ -243,7 +244,7 @@ encoding is read, a conversion attempt will be made (eg: JavaScript object to ut
 Options to be passed to the encoders. The JavaScript object to utf8 JSON encoder for example,
 accepts: `{ pretty: true }`, to trigger indented JSON stringification.
 
-The options object is optional, and your callback may be the third argument.
+The options object is not required, and your callback may be passed as the third argument.
 
 
 ### `archivist.update(topic, index, data[, mediaType, encoding, expirationTime])`
