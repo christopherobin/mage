@@ -6,22 +6,23 @@ all through a simple unified API, regardless of which data stores you use.
 
 ## Advantages
 
+
 ### Redundant storage
 
-Each data store is represented by a "vault". You can configure multiple
-vaults of the same time, in order to split your data into as many
+You can configure multiple data stores of the same type, in order to split your data into as many
 MySQL databases, couchbase clusters and file systems as you want.
 
-This allows you to write to many stores at once (defined by write-order).
-It also allows you to configure a read-order, by which data gets loaded.
-This is very useful in scenarios like "try memcached first, else try
-MySQL".
+This allows you to write to many stores at once (defined by write-order). It also allows you to
+configure a read-order, by which data gets loaded. This is very useful in scenarios like "try
+memcached first, else try MySQL".
+
 
 ### Friendly default integration logic with a bunch of database systems
 
-For all built-in vaults, all serialization and access logic is built-in with friendly default
+For all built-in data stores, all serialization and access logic is built-in with friendly default
 behaviors. That means that you can store into a key/value store like memcached and into an SQL
 data store -- through a single API -- without having to program or configure anything specific.
+
 
 ### A solution for static content
 
@@ -29,113 +30,127 @@ The archivist API works equally well for SQL databases, key/value stores and fil
 means that it's an out-of-the-box solution for your static content, using an API that is consistent
 with how you manage all your other data.
 
-### Highly customizable integration if needed
 
-Whenever you do want full control over how data gets stored into the vaults, you can take control.
+### Highly customizable database integration if needed
+
+Whenever you do want full control over how data gets stored, you have the ability to do so.
+
 
 ### Integration with tomes
 
-Integration with [tomes](https://npmjs.org/package/tomes) is built in. This
-has a number of specific advantages.
+Integration with [tomes](https://npmjs.org/package/tomes) is built in. This has a number of specific
+advantages.
 
 * No need to tell archivist to store changes, since they are automatically detected.
 * Tomes can be transported transparently to and from the browser.
 
 
-## Built-in vault types
-
-### mage-client (for synchronizing to browser)
-
-This vault is used to send updates to the player, so that their data is always synchronized in
-real time. This vault is always created when the execution of a user command starts. It requires no
-configuration.
+## Terminology
 
 
-### mysql (node-mysql)
+### Topics and Indexes
 
-The node-mysql module is supported through the built-in "mysql" vault type. Its configuration is:
-```json
-{
-	"type": "mysql",
-	"config": {
-		"uri": "mysql uri as described in the node-mysql readme"
-	}
-}
+Each document you store is identified by a topic and an index. Topic is always a string, and
+index is always a key/value object. Some typical examples of topic/index pairs could be:
+
+```
+topic: "player", index: { actorId: 123 }
+topic: "inventory", index: { actorId: "456" }
+topic: "cards", index: { actorId: 123, type: "deck" }
 ```
 
-This URI format is documented in the [node-mysql readme](https://npmjs.org/package/mysql).
+In SQL terms: consider topic your table, and index your primary key.
 
 
-### memcached (node-memcached)
+### Vaults
 
-The node-memcached module is supported through the built-in "memcached" vault type. Its
-configuration is:
+Vaults represent the data stores where your data is stored. Each vault type has its own API for
+talking to the underlying service, but also exposes a separate `Archive API` that is used internally
+to store documents. You generally won't access vaults directly. You can leave that to the archivist.
+You will however have to configure them, so that each vault knows where to store data.
+
+The following vault types are currently implemented:
+* [File](vaults/file/README.md)
+* [MySQL](vaults/mysql/README.md)
+* [Memcached](vaults/memcached/README.md)
+* [MAGE Client](vaults/mage-client/README.md)
+
+Please read their documentation on how to set them up.
+
+
+### Archivist
+
+The *archivist* directs your documents to-and-from the vaults. It's your primary point of access,
+and provides a simple API for reading and writing data. In MAGE, you can always access it through
+`state.archivist`.
+
+
+### ValueHandlers
+
+ValueHandlers are an API, unique per vault, that implement how values are stored and read. A lot of
+this logic is driven around "topics" and "indexes", that these value handlers can translate into
+logic that fits the vault in question.
+
+For example, the topic "weapons" with index { actorId: 123 } can be translated into the following
+memcached key: `weapons/actorId:123`, or into the following MySQL structure:
 ```json
-{
-	"type": "memcached",
-	"config": {
-		"servers": ["a servers array", "or object"],
-		"options": { "options to pass": "to node-memcached" },
-		"prefix": "prefix for all your keys"
-	}
-}
+{ table: "weapons", pk: { "actorId": 123 } }
 ```
 
-The `servers` and `options` objects are described in the
-[node-memcached readme](https://npmjs.org/package/memcached).
-Both `options` and `prefix` are optional.
+Each vault has friendly defaults, but those can always be overridden with custom logic. For more
+information on how to do this, please read the documentation for each vault.
 
 
-### file (Node.js built-in "fs"-module)
+### MediaTypes
 
-For static content, it often makes a lot of sense to store your files on disk, in your repository.
-The "file" vault makes this possible. You can configure it like this:
-
-```json
-{
-	"type": "file",
-	"config": { "path": "/tmp" }
-}
-```
-
-
-## Server API
-
-
-
-## Client API
-
+Each document that is stored, can be stored along with its media type. Think of `image/jpeg`,
+`text/plain`, `application/octet-stream`, `application/json`, but also `application/x-tome`.
+Media types can be useful in order to recreate a living version of binary- or string-serialized
+data. Archivist comes with built-in knowledge of media types and has the ability to convert between
+them.
 
 
 ## Quick start guide
 
 To start using archivist in your game, you will have to execute the following steps.
 
+
 ### Configure your vaults
 
 The archivist configuration sits on the root of your config file under the label `archivist`. It
 contains 3 child labels:
 
-* `vaults` describes where you store all your data.
+* `vaults` describes where you store all your data. The keys are the names you give to your vaults.
 * `readOrder` is an array with vault names, describing the order in which we read data.
 * `writeOrder` is an array with vault names, describing the order in which we write data.
 
 The vaults entry is a key/value map, where the key is the unique *name* of the vault. It's up to you
 to decide on these names. Perhaps often, the name of the vault will match the type of the vault, but
 this is absolutely not required. Choose whatever makes sense for your project. The only name that is
-reserved is "mage-client", which is named that way by the MAGE command center.
+reserved is `mage-client`, which is named that way by the MAGE command center. You will want to make
+sure that the `mage-client` vault is represented in your `writeOrder`.
 
-Each vault entry in the configuration has 2 properties: `type` and `config`. The type is a fixed
-ID that is unique for each vault engine. Read *Built-in vault types* to see these IDs and how to
-configure vaults of that type.
+Each vault entry in the configuration has 2 properties: `type` and `config`. The type property is a
+fixed ID that is unique for each type of vault. Read the vault documentation referred to in the
+*Vaults* section to see these IDs and how to configure vaults of that type.
 
+Example configuration:
 ```json
 {
         "archivist": {
                 "vaults": {
-                        "static": { "type": "file", "config": { "path": "/tmp" } },
-                        "memcached": { "type": "memcached", "config": { "servers": ["localhost:11211"], "prefix": "bob/" } },
-                        "mysql": { "type": "mysql", "config": { "uri": "mysql://bob:secret@localhost/bob_game" } }
+                        "static": {
+                            "type": "file",
+                            "config": { "path": "/tmp" }
+                        },
+                        "memcached": {
+                            "type": "memcached",
+                            "config": { "servers": ["localhost:11211"], "prefix": "bob/" }
+                        },
+                        "mysql": {
+                            "type": "mysql",
+                            "config": { "uri": "mysql://bob:secret@localhost/bob_game" }
+                        }
                 },
                 "readOrder": ["memcached", "mysql", "static"],
                 "writeOrder": ["mage-client", "memcached", "mysql", "static"]
@@ -144,9 +159,190 @@ configure vaults of that type.
 ```
 
 
-## How to use archivist
+### Configure your topics
+
+In your game's `lib` folder, please create a new folder called `archivist`. This folder will be
+`require`d by MAGE's archivist, in order to receive your topic configuration per vault-name.
+Consider doing the whole configuration in one file: `lib/archivist/index.js`.
+
+The format is as follows:
+```javascript
+exports.myTopicName = {
+	myVaultName: myVaultHandlers
+};
+```
+
+Where you do this for each topic you want to store in your vaults. The `myVaultHandlers` object is
+optional, and may be left `null` or `undefined`. Read about "Advanced usage" to see how you can
+set up these vault handlers. In order to keep your configuration maintainable, it makes a lot of
+sense to categorize your topics. Imagine for example the following configuration:
+
+```javascript
+var dynamicVaults = { mysql: null, memcached: null };
+var staticVaults = { file: null };
+
+exports.player = dynamicVaults;
+exports.inventory = dynamicVaults;
+exports.cards = dynamicVaults;
+exports.cardDefinitions = staticVaults;
+exports.itemDefinitions = staticVaults;
+```
 
 
+## Using the Server API
+
+You can always access the archivist through `state.archivist`. If you really need to make your own
+instance, you can use the following:
+
+```javascript
+var archivist = new mage.core.archivist.Archivist();
+```
+
+The `Archivist` class exposes the following API.
+
+If you want to create a Tome, you must conjure it, as described in the documentation of
+[node-tomes](https://npmjs.org/package/tomes). You may also store other types of data. Tomes are
+simply supported out-of-the-box and you are encouraged to use them. You can access the `Tome` class
+by requiring it from MAGE by calling:
+```javascript
+var Tome = mage.require('tomes').Tome;
+```
+
+The following API documentation should tell you how to store, read, delete data and how to set their
+expiration time.
 
 
+### `archivist.create(topic, index, data[, mediaType, encoding, expirationTime])`
+
+Marks the `data` you pass as something you want to store in your vaults, applying the given `topic`
+and `index`. If no `mediaType` is given, archivist will try to detect one. If no `encoding` is
+given, archivist will try to detect one. If you want to store this data for a limited time, you can
+pass an `expirationTime` (unix timestamp in seconds). If a value already existed, you should expect
+it to be overwritten.
+
+
+### `archivist.read(topic, index[, options], callback)`
+
+Reads data from a vault. The callback receives two arguments: `(error, data)`. Read errors are
+considered fatal, and you should abort your operations. But a read failure on a single vault doesn't
+have to be fatal if the next vault in line can still deliver. If a value has already been read or
+created before in this archivist's instance, that value has been cached and will be returned.
+
+The following options are available to you:
+
+*`optional` (boolean, default: false)*
+Indicates whether it's considered an error if data is not found.
+
+*`mediaTypes` (array, default: `['application/x-tome', 'application/octet-stream']`)*
+Indicates that you only accept these media types, in the given order of priority. If data of another
+media type is read, a conversion attempt will be made (eg: JSON to Tome).
+
+*`encodings` (array, default: `['live']`)*
+Indicates that you only accept these encodings, in the given order of priority. If data of another
+encoding is read, a conversion attempt will be made (eg: JavaScript object to utf8 JSON).
+
+*`encodingOptions` (object, default: undefined)*
+Options to be passed to the encoders. The JavaScript object to utf8 JSON encoder for example,
+accepts: `{ pretty: true }`, to trigger indented JSON stringification.
+
+The options object is optional, and your callback may be the third argument.
+
+
+### `archivist.update(topic, index, data[, mediaType, encoding, expirationTime])`
+
+Marks the `data` you pass as something you want to overwrite in your vaults, applying the given
+`topic` and `index`. If no `mediaType` is given, archivist will apply the one it already knows
+about this value (if a read happened before), else it will try to detect one. If no `encoding` is
+given, archivist will try to detect one. If you want to store this data for a limited time, you can
+pass an `expirationTime` (unix timestamp).
+
+If a vault allows for diff-logic to occur, and the data passed allows diffs to be read, this will be
+used.
+
+For certain types of data, like Tomes, you do not have to call this function. Whenever you change
+a Tome's contents, it will call `update` automatically.
+
+
+### `archivist.del(topic, index)`
+
+Marks data pointed to by `topic` and `index` as something you want to delete. A subsequent read will
+fail.
+
+
+### `archivist.touch(topic, index, expirationTime)`
+
+Marks data with a new expiration time (unix timestamp in seconds).
+
+
+### `archivist.distribute(callback)`
+
+This takes all the queued up operations (create, update, del, touch) and executes them on each of
+the relevant vaults. This distribution is automatically done by the `state` object in MAGE when it
+closes without errors, so you should never have to call this yourself.
+
+
+## Client API
+
+The archivist is exposed on the browser through a MAGE module called "archivist". You can use it
+like any other built-in module by running the following snippet in your game's bootstrap file:
+```javascript
+mage.useModule('archivist');
+```
+
+On the client side, like with any other module, please build it with:
+```javascript
+$html5client('module.archivist');
+```
+
+You can now read from the vaults by calling using the APIs described in the following paragraphs.
+Of course it goes without saying that you should be careful not to expose user commands to games
+that can mutate data directly. You will want to limit the game's access to the `read` API. Tools
+however will benefit from the other methods.
+
+
+### `archivist.read(topic, index, options, cb)`
+
+Calls into the server archivist's read method. The arguments are identical. If the data is already
+available on the client's caches, it will be returned to the callback immediately without hitting
+the server.
+
+
+### `archivist.create(topic, index, data, mediaType, encoding, expirationTime, cb)`
+
+Calls into the server archivist's create method. The arguments are identical. Once the data has been
+created, it will stay in the client's caches. A read will immediately return with the created data.
+
+
+### `archivist.touch(topic, index, expirationTime, cb)`
+
+Calls into the server archivist's touch method. The arguments are identical. If the data is
+available on the client's caches, that data's expiration time is also updated.
+
+
+### `archivist.del(topic, index, cb)`
+
+Calls into the server archivist's del method. The arguments are identical. If the data is
+available on the client's caches, it will be removed there too.
+
+
+### `archivist.applyDiff(topic, index, diff, cb)`
+
+For data types that support diff-updates (like Tomes), this will allow you to send the diff and
+expect the data to be updated on the server side.
+
+
+## Advanced vault usage
+
+
+### Direct access to a vault's native API
+
+If you want to access vault directly, you can ask the archivist for the instance. If you want to
+write data, you can call `archivist.getWriteVault(vaultName)`. A vault you want to read from can
+be requested by calling `archivist.getReadVault(vaultName)`. For more information on the APIs
+exposed by each vault, please refer to their documentation.
+
+
+### Writing your own VaultHandlers
+
+TODO
 
