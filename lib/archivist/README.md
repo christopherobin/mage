@@ -138,6 +138,11 @@ this is absolutely not required. Choose whatever makes sense for your project. T
 reserved is `mage-client`, which is named that way by the MAGE command center. You will want to make
 sure that the `mage-client` vault is represented in your `writeOrder`.
 
+It's important to note that both the `readOrder` and `writeOrder` are system-wide. It's likely that
+not every topic will be stored on every vault. Whenever we read or write a given topic, the
+configured order is traversed, and vaults not linked to the topic are ignored. You cannot change
+the ordering for individual topics.
+
 Each vault entry in the configuration has 2 properties: `type` and `config`. The type property is a
 fixed ID that is unique for each type of vault. Read the vault documentation referred to in the
 *Vaults* section to see these IDs and how to configure vaults of that type.
