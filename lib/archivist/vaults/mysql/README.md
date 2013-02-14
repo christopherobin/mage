@@ -10,4 +10,4 @@ The node-mysql module is supported through the built-in "mysql" vault type. Its 
 }
 ```
 
-This URI format is documented in the [node-mysql readme](https://npmjs.org/package/mysql).
+This URL format is documented in the [node-mysql readme](https://npmjs.org/package/mysql).
