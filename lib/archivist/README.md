@@ -212,7 +212,10 @@ var archivist = new mage.core.archivist.Archivist();
 ```
 
 The following API documentation should tell you how to store, read, delete data and how to set their
-expiration time.
+expiration time. Keep in mind that there could be vault types that do not support particular
+operations. A typical one would be `touch`, which is generally not well supported. But even other
+operations may trigger an error. For example, when trying to `write` to a read-only vault, or
+opposite.
 
 
 ### `archivist.create(topic, index, data[, mediaType, encoding, expirationTime])`
