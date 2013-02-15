@@ -351,5 +351,95 @@ exposed by each vault, please refer to their documentation.
 
 ### Writing your own ValueHandlers
 
-TODO
+Value handlers are a collection of APIs that enable a vault to get data to and from its underlying
+data store. The total set of APIs is limited, and each vault type has its own required subset. For
+more information on the specifics per vault type, please refer to their documentation.
 
+You can integrate these in the way explained in the "Configure your topics" paragraph. Keep in mind
+that whenever you choose to implement one of the APIs for a topic, the non-implemented ones will
+still exist in their default implementations.
+
+The following APIs can be implemented.
+
+
+#### `serialize(value)`
+
+The serialize method receives a `VaultValue` instance which can contain data, in an `encoding`,
+tagged with a `MediaType` and aware of its `topic` and `index`. When preparing data to be stored
+into a vault, the serialize method may have to change the encoding to better fit the requirements of
+the vault, and even return completely different/altered data (imagine prepending header/meta
+information to the real data). Finally, the returned data is used by the vault.
+
+Example:
+```javascript
+function serialize(value) {
+	return value.setEncoding(['utf8', 'buffer']).data;
+}
+```
+
+
+#### `deserialize(data, value)`
+
+The deserialize method receives the data as it was returned by the vault. It has the duty to
+initialize the passed `VaultValue` instance with that data, in the right `encoding` and `MediaType`.
+If encoding and/or MediaType are omitted, they will be guessed by the underlying system. This can be
+acceptable when the data is returned in deserialized form by the vault.
+
+Example:
+```javascript
+function deserialize(data, value) {
+	value.initWithData(null, data, null);
+}
+```
+
+
+#### `key(value)`
+
+Every vault needs a key function to access data. Generally, the key function will take the `topic`
+and `index` from the passed `VaultValue` and turn those into something that is appropriate for the
+vault. This can be a string (eg. in the case of memcached), but also a rich object (eg. in the case
+of MySQL). Think of the key as the minimal information required to find a piece of data in a vault.
+
+Example (typical SQL):
+```javascript
+function key(value) {
+	return {
+		table: value.topic,  // topic is used as the table name
+		pk: value.index      // { columnName: value }
+	};
+}
+```
+
+
+#### `shard(value)`
+
+The shard method is similar to the key method, except it doesn't pinpoint the exact location of
+data, but a general location, in order to facilitate sharding. A good example is the MAGE Client
+vault, which needs to emit data changes to different users based on certain very specific
+information. Incidentally, this is currently the *only* ValueHandler method you *have to*
+implement yourself.
+
+Example (MAGE Client):
+```javascript
+function shard(value) {
+	// the MAGE Client shard is one or more actor IDs
+
+	return value.index.actorId;
+}
+```
+
+Example (MAGE Client, multiple actors):
+```javascript
+function shard(value) {
+	// the MAGE Client shard is one or more actor IDs
+
+	value.setEncoding('live');
+
+	return [value.index.actorId].concat(value.data.friendIds);
+}
+```
+
+
+### How to manipulate a VaultValue
+
+TODO
