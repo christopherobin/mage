@@ -98,7 +98,7 @@ memcached key: `weapons/actorId:123`, or into the following MySQL structure:
 ```
 
 Each vault has friendly defaults, but those can always be overridden with custom logic. For more
-information on how to do this, please read the documentation for each vault.
+information on how to do this, please read "Writing your own ValueHandlers".
 
 
 ### MediaTypes
@@ -181,11 +181,11 @@ Consider doing the whole configuration in one file: `lib/archivist/index.js`.
 The format is as follows:
 ```javascript
 exports.myTopicName = {
-	myVaultName: myVaultHandlers
+	myVaultName: myValueHandlers
 };
 ```
 
-Where you do this for each topic you want to store in your vaults. The `myVaultHandlers` object is
+Where you do this for each topic you want to store in your vaults. The `myValueHandlers` object is
 optional, and may be left `null` or `undefined`. Read about "Advanced usage" to see how you can
 set up these vault handlers. In order to keep your configuration maintainable, it makes a lot of
 sense to categorize your topics. Imagine for example the following configuration:
@@ -349,7 +349,7 @@ be requested by calling `archivist.getReadVault(vaultName)`. For more informatio
 exposed by each vault, please refer to their documentation.
 
 
-### Writing your own VaultHandlers
+### Writing your own ValueHandlers
 
 TODO
 
