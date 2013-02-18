@@ -94,7 +94,7 @@ logic that fits the vault in question.
 For example, the topic `weapons` with index `{ actorId: 123 }` can be translated into the following
 memcached key: `weapons/actorId:123`, or into the following MySQL structure:
 ```json
-{ table: "weapons", pk: { "actorId": 123 } }
+{ "table": "weapons", "pk": { "actorId": 123 } }
 ```
 
 Each vault has friendly defaults, but those can always be overridden with custom logic. For more
