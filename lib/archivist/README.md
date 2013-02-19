@@ -394,7 +394,7 @@ still exist in their default implementations.
 The following APIs can be implemented.
 
 
-#### `serialize(value)`
+#### Serializing data
 
 The serialize method receives a `VaultValue` instance which can contain data, in an `encoding`,
 tagged with a `MediaType` and aware of its `topic` and `index`. When preparing data to be stored
@@ -410,7 +410,7 @@ function serialize(value) {
 ```
 
 
-#### `deserialize(data, value)`
+#### Deserializing data
 
 The deserialize method receives the data as it was returned by the vault. It has the duty to
 initialize the passed `VaultValue` instance with that data, in the right `encoding` and `MediaType`.
@@ -425,7 +425,7 @@ function deserialize(data, value) {
 ```
 
 
-#### `key(value)`
+#### Generating a key
 
 Every vault needs a key function to access data. Generally, the key function will take the `topic`
 and `index` from the passed `VaultValue` and turn those into something that is appropriate for the
@@ -443,7 +443,7 @@ function key(value) {
 ```
 
 
-#### `shard(value)`
+#### Selecting a shard
 
 The shard method is similar to the key method, except it doesn't pinpoint the exact location of
 data, but a general location, in order to facilitate sharding. A good example is the MAGE Client
