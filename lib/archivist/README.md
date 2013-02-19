@@ -218,7 +218,11 @@ operations may trigger an error. For example, when trying to `write` to a read-o
 opposite.
 
 
-### `archivist.create(topic, index, data[, mediaType, encoding, expirationTime])`
+### Creating data
+
+```javascript
+archivist.create(topic, index, data, mediaType, encoding, expirationTime);
+```
 
 Marks the `data` you pass as something you want to store in your vaults, applying the given `topic`
 and `index`. If no `mediaType` is given, archivist will try to detect one. If no `encoding` is
@@ -227,35 +231,33 @@ pass an `expirationTime` (unix timestamp in seconds). If a value already existed
 it to be overwritten.
 
 
-### `archivist.read(topic, index[, options], callback)`
+### Reading data
 
-Reads data from all vaults configured for this topic, returning the first successful read. The
-callback receives two arguments: `(error, data)`. Read errors are considered fatal, and you should
-abort your operations. However, a read failure on a single vault doesn't have to be fatal if the
-next vault in line can still deliver. If a value has already been read or created before in this
-archivist instance, that value has been cached and will be returned.
+```javascript
+archivist.read(topic, index, options, function (error, data) { });
+```
+
+Reads data from all vaults configured for this topic, returning the first successful read. Read
+errors are considered fatal, and you should abort your operations. However, a read failure on a
+single vault doesn't have to be fatal if the next vault in line can still deliver. If a value has
+already been read or created before in this archivist instance, that value has been cached and
+will be returned.
 
 The following options are available to you:
 
-*`optional` (boolean, default: false)*
-Indicates whether it's considered an error if data is not found in any of the vaults.
+* `optional`: (boolean, default: false) Indicates whether it's considered an error if data is not found in any of the vaults.
+* `mediaTypes`: (array, default: `['application/x-tome', 'application/octet-stream']`) Indicates that you only accept these media types, in the given order of priority. If data of another media type is read, a conversion attempt will be made (eg: JSON to Tome).
+* `encodings`: (array, default: `['live']`) Indicates that you only accept these encodings, in the given order of priority. If data of another encoding is read, a conversion attempt will be made (eg: JavaScript object to utf8 JSON).
+* `encodingOptions`: (object, default: undefined) Options to be passed to the encoders. The JavaScript object to utf8 JSON encoder for example, accepts: `{ pretty: true }`, to trigger indented JSON stringification.
 
-*`mediaTypes` (array, default: `['application/x-tome', 'application/octet-stream']`)*
-Indicates that you only accept these media types, in the given order of priority. If data of another
-media type is read, a conversion attempt will be made (eg: JSON to Tome).
-
-*`encodings` (array, default: `['live']`)*
-Indicates that you only accept these encodings, in the given order of priority. If data of another
-encoding is read, a conversion attempt will be made (eg: JavaScript object to utf8 JSON).
-
-*`encodingOptions` (object, default: undefined)*
-Options to be passed to the encoders. The JavaScript object to utf8 JSON encoder for example,
-accepts: `{ pretty: true }`, to trigger indented JSON stringification.
-
-The options object is not required, and your callback may be passed as the third argument.
+This options object is not required, and your callback may be passed as the third argument.
 
 
-### `archivist.update(topic, index, data[, mediaType, encoding, expirationTime])`
+### Updating data
+
+```javascript
+archivist.update(topic, index, data, mediaType, encoding, expirationTime);
+```
 
 Marks the `data` you pass as something you want to overwrite in your vaults, applying the given
 `topic` and `index`. If no `mediaType` is given, archivist will apply the one it already knows
@@ -270,18 +272,30 @@ For certain types of data, like Tomes, you do not have to call this function. Wh
 a Tome's contents, it will call `update` automatically.
 
 
-### `archivist.del(topic, index)`
+### Deleting data
+
+```javascript
+archivist.del(topic, index);
+```
 
 Marks data pointed to by `topic` and `index` as something you want to delete. A subsequent read will
 fail.
 
 
-### `archivist.touch(topic, index, expirationTime)`
+### Setting an expiration time
+
+```javascript
+archivist.touch(topic, index, expirationTime);
+```
 
 Marks data with a new expiration time (unix timestamp in seconds).
 
 
-### `archivist.distribute(callback)`
+### Distributing changes to all vaults
+
+```javascript
+archivist.distribute(function (error) { });
+```
 
 This takes all the queued up operations (create, update, del, touch) and executes them on each of
 the relevant vaults. This distribution is automatically done by the `state` object in MAGE when it
@@ -307,32 +321,50 @@ that can mutate data directly. You will want to limit the game's access to the `
 however will benefit from the other methods.
 
 
-### `archivist.read(topic, index, options, cb)`
+### Creating data
+
+```javascript
+archivist.create(topic, index, data, mediaType, encoding, expirationTime, function (error) { });
+```
+
+Calls into the server archivist's create method. The arguments are identical. Once the data has been
+created, it will stay in the client's caches. A read will immediately return with the created data.
+
+
+### Reading data
+
+```javascript
+archivist.read(topic, index, options, function (error, data) { });
+```
 
 Calls into the server archivist's read method. The arguments are identical. If the data is already
 available on the client's caches, it will be returned to the callback immediately without hitting
 the server.
 
 
-### `archivist.create(topic, index, data, mediaType, encoding, expirationTime, cb)`
+### Setting the expiration time
 
-Calls into the server archivist's create method. The arguments are identical. Once the data has been
-created, it will stay in the client's caches. A read will immediately return with the created data.
-
-
-### `archivist.touch(topic, index, expirationTime, cb)`
+```javascript
+archivist.touch(topic, index, expirationTime, function (error) { });
+```
 
 Calls into the server archivist's touch method. The arguments are identical. If the data is
 available on the client's caches, that data's expiration time is also updated.
 
 
-### `archivist.del(topic, index, cb)`
+### Deleting data
+```javascript
+archivist.del(topic, index, function (error) { });
+```
 
 Calls into the server archivist's del method. The arguments are identical. If the data is
 available on the client's caches, it will be removed there too.
 
 
-### `archivist.applyDiff(topic, index, diff, cb)`
+### Applying a diff to data
+```
+archivist.applyDiff(topic, index, diff, function (error) { });
+```
 
 For data types that support diff-updates (like Tomes), this will allow you to send the diff and
 expect the data to be updated on the server side.
