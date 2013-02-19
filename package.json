@@ -22,7 +22,7 @@
 		"loggly": "0.3.11",
 		"ws": "0.4.22",
 		"graylog2": "0.0.2",
-		"mysql": "2.0.0-alpha6",
+		"mysql": "2.0.0-alpha7",
 		"colors": "git+https://github.com/stelcheck/colors.js.git#master",
 		"memcached": "0.2.0",
 		"memcached-transactions": "0.1.1",
