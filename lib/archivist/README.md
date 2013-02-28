@@ -181,18 +181,33 @@ Consider doing the whole configuration in one file: `lib/archivist/index.js`.
 The format is as follows:
 ```javascript
 exports.myTopicName = {
-	myVaultName: myValueHandlers
+	readOptions: {
+	},
+	vaults: {
+		myVaultName: myValueHandlers
+	}
 };
 ```
 
-Where you do this for each topic you want to store in your vaults. The `myValueHandlers` object is
-optional, and may be left `null` or `undefined`. Read about "Advanced usage" to see how you can
-set up these vault handlers. In order to keep your configuration maintainable, it makes a lot of
-sense to categorize your topics. Imagine for example the following configuration:
+Where you do this for each topic you want to store in your vaults. The `readOptions` object may be
+supplied as an alternative default `options` object when reading from your archivist. If not given,
+the following defaults are used:
+```json
+{
+	"mediaTypes": ["application/x-tome", "application/octet-stream"],
+	"encodings": ["live"],
+	"optional": false
+}
+```
+
+The `myValueHandlers` object may be replaced with `true` in order to get all default behaviors for
+that vault type. Read about "Advanced usage" to see how you can set up these vault handlers with
+custom behaviors. In order to keep your configuration maintainable, it makes a lot of sense to
+categorize your topics. Imagine for example the following configuration:
 
 ```javascript
-var dynamicVaults = { mysql: true, memcached: true };
-var staticVaults = { file: true };
+var dynamicVaults = { vaults: { mysql: true, memcached: true } };
+var staticVaults = { vaults: { file: true } };
 
 exports.player = dynamicVaults;
 exports.inventory = dynamicVaults;
@@ -468,6 +483,13 @@ function shard(value) {
 	value.setEncoding('live');
 
 	return [value.index.actorId].concat(value.data.friendIds);
+}
+```
+
+Example (MAGE Client, static data for all actors):
+```javascript
+function shard(value) {
+	return true;
 }
 ```
 
