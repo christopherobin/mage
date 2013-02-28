@@ -190,8 +190,8 @@ exports.myTopicName = {
 ```
 
 Where you do this for each topic you want to store in your vaults. The `readOptions` object may be
-supplied as an alternative default `options` object when reading from your archivist. If not given,
-the following defaults are used:
+supplied to overwrite default `options` that are used when reading from your archivist. The
+following defaults are defined, and they can be individually replaced:
 ```json
 {
 	"mediaTypes": ["application/x-tome", "application/octet-stream"],
