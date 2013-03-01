@@ -73,7 +73,7 @@ The following vault types are currently implemented:
 * [File](vaults/file/README.md)
 * [MySQL](vaults/mysql/README.md)
 * [Memcached](vaults/memcached/README.md)
-* [MAGE Client](vaults/mage-client/README.md)
+* [Client](vaults/client/README.md)
 
 Please read their documentation on how to set them up.
 
@@ -135,8 +135,8 @@ contains 3 child labels:
 The vaults entry is a key/value map, where the key is the unique *name* of the vault. It's up to you
 to decide on these names. Perhaps often, the name of the vault will match the type of the vault, but
 this is absolutely not required. Choose whatever makes sense for your project. The only name that is
-reserved is `mage-client`, which is named that way by the MAGE command center. You will want to make
-sure that the `mage-client` vault is represented in your `writeOrder`.
+reserved is `client`, which is named that way by the MAGE command center. You will want to make
+sure that the `client` vault is represented in your `writeOrder`.
 
 It's important to note that both the `readOrder` and `writeOrder` are system-wide. It's likely that
 not every topic will be stored on every vault. Whenever we read or write a given topic, the
@@ -166,7 +166,7 @@ Example configuration:
                         }
                 },
                 "readOrder": ["memcached", "mysql", "static"],
-                "writeOrder": ["mage-client", "memcached", "mysql", "static"]
+                "writeOrder": ["client", "memcached", "mysql", "static"]
         }
 }
 ```
@@ -461,24 +461,23 @@ function key(value) {
 #### Selecting a shard
 
 The shard method is similar to the key method, except it doesn't pinpoint the exact location of
-data, but a general location, in order to facilitate sharding. A good example is the MAGE Client
-vault, which needs to emit data changes to different users based on certain very specific
-information. Incidentally, this is currently the *only* ValueHandler method you *have to*
-implement yourself.
+data, but a general location, in order to facilitate sharding. A good example is the Client vault,
+which needs to emit data changes to different users based on certain very specific information.
+Incidentally, this is currently the *only* ValueHandler method you *have to* implement yourself.
 
-Example (MAGE Client):
+Example (Client):
 ```javascript
 function shard(value) {
-	// the MAGE Client shard is one or more actor IDs
+	// the Client shard is one or more actor IDs
 
 	return value.index.actorId;
 }
 ```
 
-Example (MAGE Client, multiple actors):
+Example (Client, multiple actors):
 ```javascript
 function shard(value) {
-	// the MAGE Client shard is one or more actor IDs
+	// the Client shard is one or more actor IDs
 
 	value.setEncoding('live');
 
@@ -486,7 +485,7 @@ function shard(value) {
 }
 ```
 
-Example (MAGE Client, static data for all actors):
+Example (Client, static data for all actors):
 ```javascript
 function shard(value) {
 	return true;
