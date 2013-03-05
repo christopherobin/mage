@@ -9,9 +9,9 @@ setup: git-setup
 clean:
 	npm cache clean
 
-# target: install, Installs all Node.js dependencies.
+# target: install, Installs all Node.js and Component dependencies.
 install:
-	npm install
+	./scripts/install.sh
 
 # target: test, Runs all tests.
 test:

@@ -1,0 +1,13 @@
+{
+  "name": "loader",
+  "description": "The loader for MAGE.",
+  "version": "0.0.1",
+  "dependencies": {
+    "component/emitter": "*",
+    "component/inherit": "*"
+  },
+  "scripts": [
+    "index.js"
+  ],
+  "main": "index.js"
+}
