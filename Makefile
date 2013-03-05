@@ -9,7 +9,7 @@ setup: git-setup
 clean:
 	npm cache clean
 
-# target: install, Installs all Node.js and Component dependencies.
+# target: install, Installs all Node.js dependencies.
 install:
 	./scripts/install.sh
 
