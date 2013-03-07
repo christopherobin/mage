@@ -31,6 +31,14 @@ If you're superlazy, you can exploit the variable number of arguments to do:
 var mage = require('mage').useModule('gm', 'session', 'scheduler', ...);
 ```
 
+Finally, may also pass in the module list as an array:
+
+```javascript
+var mageModules = ['gm', 'session', 'scheduler', ...];
+
+var mage = require('mage').useModule(mageModules);
+```
+
 The change in `addModule` is breaking, but as all `addModules` are clustered in one place you will find this change very simple to implement. In the old system you would use `addModule` as:
 
 ```javascript
@@ -52,18 +60,16 @@ var mage = require('mage').addModule(
 );
 ```
 
-Food for thought:
+As with `useModule`, you may also use an array:
 
 ```javascript
-var modules = [
+var gameModules = [
 	'./lib/modules/shop',
 	'./lib/modules/stats',
 	'./lib/modules/inventory'
 ];
 
-var mage = require('mage');
-
-mage.addModule.apply(mage, modules);
+var mage = require('mage').addModule(gameModules);
 ```
 
 ## v0.11.0
