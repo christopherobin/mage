@@ -1,5 +1,71 @@
 # Changelog
 
+## NEXT
+
+### Module loading
+
+Mage `useModule` and `addModule` have changed. In the case of `useModule`, it may now take multiple arguments, and returns the mage object. That means that where you may have written:
+
+```javascript
+var mage = require('mage');
+
+mage.useModule('gm');
+mage.useModule('session');
+mage.useModule('scheduler');
+...
+```
+
+you can save your fingers by writing:
+
+```javascript
+var mage = require('mage')
+	.useModule('gm')
+	.useModule('session')
+	.useModule('scheduler')
+	...
+```
+
+If you're superlazy, you can exploit the variable number of arguments to do:
+
+```javascript
+var mage = require('mage').useModule('gm', 'session', 'scheduler', ...);
+```
+
+The change in `addModule` is breaking, but as all `addModules` are clustered in one place you will find this change very simple to implement. In the old system you would use `addModule` as:
+
+```javascript
+var mage = require('mage');
+
+mage.addModule('shop', './lib/modules/shop');
+mage.addModule('stats', './lib/modules/stats');
+mage.addModule('inventory', './lib/modules/inventory');
+...
+```
+
+In every case the zeroth argument is effectively redundant, as it appears in the path to a game module. Once the zeroth argument in each of the above is dropped, your code will work. Of course, you can exploit exactly the same goodness as the new `useModule` to chain these up or add one module per argument:
+
+```javascript
+var mage = require('mage').addModule(
+	'./lib/modules/shop',
+	'./lib/modules/stats',
+	'./lib/modules/inventory'
+);
+```
+
+Food for thought:
+
+```javascript
+var modules = [
+	'./lib/modules/shop',
+	'./lib/modules/stats',
+	'./lib/modules/inventory'
+];
+
+var mage = require('mage');
+
+mage.addModule.apply(mage, modules);
+```
+
 ## v0.11.0
 
 ### A new logger
