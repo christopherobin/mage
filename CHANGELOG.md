@@ -79,7 +79,7 @@ function start() {
 
 mage.setup(configFiles);
 
-mage.on('readyToStart', start);
+mage.once('readyToStart', start);
 ```
 
 This is verbose, and not to everyone's taste, but it's more in line with how node.js core modules work.
