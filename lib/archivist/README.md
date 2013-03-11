@@ -71,6 +71,7 @@ You will however have to configure them, so that each vault knows where to store
 
 The following vault types are currently implemented:
 * [File](vaults/file/README.md)
+* [Memory](vaults/memory/README.md)
 * [MySQL](vaults/mysql/README.md)
 * [Memcached](vaults/memcached/README.md)
 * [Client](vaults/client/README.md)
@@ -233,30 +234,30 @@ operations may trigger an error. For example, when trying to `write` to a read-o
 opposite.
 
 
-### Creating data
+### Adding new data
 
 ```javascript
-archivist.create(topic, index, data, mediaType, encoding, expirationTime);
+archivist.add(topic, index, data, mediaType, encoding, expirationTime);
 ```
 
 Marks the `data` you pass as something you want to store in your vaults, applying the given `topic`
 and `index`. If no `mediaType` is given, archivist will try to detect one. If no `encoding` is
 given, archivist will try to detect one. If you want to store this data for a limited time, you can
 pass an `expirationTime` (unix timestamp in seconds). If a value already existed, you should expect
-it to be overwritten.
+this call to fail.
 
 
-### Reading data
+### Getting data
 
 ```javascript
-archivist.read(topic, index, options, function (error, data) { });
+archivist.get(topic, index, options, function (error, data) { });
 ```
 
 Reads data from all vaults configured for this topic, returning the first successful read. Read
-errors are considered fatal, and you should abort your operations. However, a read failure on a
-single vault doesn't have to be fatal if the next vault in line can still deliver. If a value has
-already been read or created before in this archivist instance, that value has been cached and
-will be returned.
+errors are considered fatal, and you should abort your operations. However, if a vault is responsive
+but simply doesn't hold the value you requested, the next vault in line may still be able to deliver.
+If a value has already been read or written to before in this archivist instance, that value has
+been cached and will be returned.
 
 The following options are available to you:
 
@@ -268,23 +269,23 @@ The following options are available to you:
 This options object is not required, and your callback may be passed as the third argument.
 
 
-### Updating data
+### Overwriting data
 
 ```javascript
-archivist.update(topic, index, data, mediaType, encoding, expirationTime);
+archivist.set(topic, index, data, mediaType, encoding, expirationTime);
 ```
 
-Marks the `data` you pass as something you want to overwrite in your vaults, applying the given
+Marks the `data` you pass as something you want to write to all your vaults, applying the given
 `topic` and `index`. If no `mediaType` is given, archivist will apply the one it already knows
-about this value (if a read happened before), else it will try to detect one. If no `encoding` is
-given, archivist will try to detect one. If you want to store this data for a limited time, you can
-pass an `expirationTime` (unix timestamp).
+about this value (if a `get` or `add` happened before), else it will try to detect one. If no
+`encoding` is given, archivist will try to detect one. If you want to store this data for a limited
+time, you can pass an `expirationTime` (unix timestamp).
 
 If a vault allows for diff-logic to occur, and the data passed allows diffs to be read, this will be
 used.
 
 For certain types of data, like Tomes, you do not have to call this function. Whenever you change
-a Tome's contents, it will call `update` automatically.
+a Tome's contents, it will call `set` automatically for you.
 
 
 ### Deleting data
@@ -293,8 +294,8 @@ a Tome's contents, it will call `update` automatically.
 archivist.del(topic, index);
 ```
 
-Marks data pointed to by `topic` and `index` as something you want to delete. A subsequent read will
-fail.
+Marks data pointed to by `topic` and `index` as something you want to delete. A subsequent `get`
+will not yield any data.
 
 
 ### Setting an expiration time
@@ -312,7 +313,7 @@ Marks data with a new expiration time (unix timestamp in seconds).
 archivist.distribute(function (error) { });
 ```
 
-This takes all the queued up operations (create, update, del, touch) and executes them on each of
+This takes all the queued up operations (add, set, del, touch) and executes them on each of
 the relevant vaults. This distribution is automatically done by the `state` object in MAGE when it
 closes without errors, so you should never have to call this yourself.
 
@@ -332,27 +333,37 @@ $html5client('module.archivist');
 
 You can now read from the vaults by calling using the APIs described in the following paragraphs.
 Of course it goes without saying that you should be careful not to expose user commands to games
-that can mutate data directly. You will want to limit the game's access to the `read` API. Tools
+that can mutate data directly. You will want to limit the game's access to the `get` API. Tools
 however will benefit from the other methods.
 
 
 ### Creating data
 
 ```javascript
-archivist.create(topic, index, data, mediaType, encoding, expirationTime, function (error) { });
+archivist.add(topic, index, data, mediaType, encoding, expirationTime, function (error) { });
 ```
 
-Calls into the server archivist's create method. The arguments are identical. Once the data has been
-created, it will stay in the client's caches. A read will immediately return with the created data.
+Calls into the server archivist's `add` method. The arguments are identical. Once the data has been
+created, it will stay in the client's caches. A `get` will immediately return with the created data.
+
+
+### Overwriting data
+
+```javascript
+archivist.set(topic, index, data, mediaType, encoding, expirationTime, function (error) { });
+```
+
+Calls into the server archivist's `set` method. The arguments are identical. Once the data has been
+written, it will stay in the client's caches. A `get` will immediately return with the new data.
 
 
 ### Reading data
 
 ```javascript
-archivist.read(topic, index, options, function (error, data) { });
+archivist.get(topic, index, options, function (error, data) { });
 ```
 
-Calls into the server archivist's read method. The arguments are identical. If the data is already
+Calls into the server archivist's `get` method. The arguments are identical. If the data is already
 available on the client's caches, it will be returned to the callback immediately without hitting
 the server.
 
