@@ -320,7 +320,9 @@ provide a full index object, but values in the index you don't know should be ex
 `null`. You can therefore, for example, query for all players in the game by calling:
 
 ```javascript
-archivist.listIndexes('player', { id: null }, callback);
+archivist.listIndexes('player', { id: null }, function (error, indexes) {
+	/* indexes is now [{ id: 5 }, { id: 20 }] */
+});
 ```
 
 
