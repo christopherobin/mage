@@ -130,6 +130,7 @@ The archivist configuration sits on the root of your config file under the label
 contains 3 child labels:
 
 * `vaults` describes where you store all your data. The keys are the names you give to your vaults.
+* `listOrder` is an array with vault names, describing the order in which we list indexes.
 * `readOrder` is an array with vault names, describing the order in which we read data.
 * `writeOrder` is an array with vault names, describing the order in which we write data.
 
@@ -139,9 +140,9 @@ this is absolutely not required. Choose whatever makes sense for your project. T
 reserved is `client`, which is named that way by the MAGE command center. You will want to make
 sure that the `client` vault is represented in your `writeOrder`.
 
-It's important to note that both the `readOrder` and `writeOrder` are system-wide. It's likely that
-not every topic will be stored on every vault. Whenever we read or write a given topic, the
-configured order is traversed, and vaults not linked to the topic are ignored. You cannot change
+It's important to note that the `listOrder`, `readOrder` and `writeOrder` are system-wide. It's
+likely that not every topic will be stored on every vault. Whenever we read or write a given topic,
+the configured order is traversed, and vaults not linked to the topic are ignored. You cannot change
 the ordering for individual topics.
 
 Each vault entry in the configuration has 2 properties: `type` and `config`. The type property is a
@@ -166,6 +167,7 @@ Example configuration:
                             "config": { "url": "mysql://bob:secret@localhost/bob_game" }
                         }
                 },
+                "listOrder": ["mysql", "static"],
                 "readOrder": ["memcached", "mysql", "static"],
                 "writeOrder": ["client", "memcached", "mysql", "static"]
         }
@@ -305,6 +307,21 @@ archivist.touch(topic, index, expirationTime);
 ```
 
 Marks data with a new expiration time (unix timestamp in seconds).
+
+
+### Finding data
+
+```javascript
+archivist.listIndexes(topic, partialIndex, function (error, arrayOfIndexes) { });
+```
+
+Returns an array of indexes on the given topic matching the partial index you provide. You must
+provide a full index object, but values in the index you don't know should be explicitly set to
+`null`. You can therefore, for example, query for all players in the game by calling:
+
+```javascript
+archivist.listIndexes('player', { id: null }, callback);
+```
 
 
 ### Distributing changes to all vaults
@@ -454,16 +471,16 @@ function deserialize(data, value) {
 #### Generating a key
 
 Every vault needs a key function to access data. Generally, the key function will take the `topic`
-and `index` from the passed `VaultValue` and turn those into something that is appropriate for the
-vault. This can be a string (eg. in the case of memcached), but also a rich object (eg. in the case
-of MySQL). Think of the key as the minimal information required to find a piece of data in a vault.
+and `index` and turn those into something that is appropriate for the vault. This can be a string
+(eg. in the case of memcached), but also a rich object (eg. in the case of MySQL). Think of the key
+as the minimal information required to find a piece of data in a vault.
 
 Example (typical SQL):
 ```javascript
-function key(value) {
+function key(topic, index) {
 	return {
-		table: value.topic,  // topic is used as the table name
-		pk: value.index      // { columnName: value }
+		table: topic,  // topic is used as the table name
+		pk: index      // { columnName: value }
 	};
 }
 ```
