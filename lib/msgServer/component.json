@@ -7,7 +7,8 @@
     "component/inherit": "*"
   },
   "scripts": [
-    "client.js"
+    "client.js",
+    "transports/http/client.js"
   ],
   "main": "client.js"
 }
