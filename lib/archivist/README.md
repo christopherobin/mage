@@ -334,14 +334,23 @@ An array of sorting rules. Each rule has the format:
 ```json
 { "name": "fieldName in the index", "direction": "asc or desc" }
 ```
-For example: `[{ name: 'id', direction: 'desc' }]`. You may give multiple of these in order of
-importance.
+
+You may give multiple of these in order of importance. Use `direction` to specify ascending or
+descending sort-order.
 
 **chunk**
 
 An array of the format `[start, length]` where both values are integers and `length` is optional.
 This will limit the output to just that part of the result (after sorting is applied), which allows
 for paginating your results.
+
+Options example:
+```json
+{
+	"sort": [{ "name": "id", "direction": "desc" }],
+	"chunk": [20, 10]
+}
+```
 
 
 ### Distributing changes to all vaults
