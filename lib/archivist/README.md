@@ -315,9 +315,10 @@ Marks data with a new expiration time (unix timestamp in seconds).
 archivist.listIndexes(topic, partialIndex, options, function (error, arrayOfIndexes) { });
 ```
 
-Returns an array of indexes on the given topic matching the partial index you provide. You must
-provide a full index object, but values in the index you don't know should be explicitly set to
-`null`. You can therefore, for example, query for all players in the game by calling:
+Returns an array of indexes on the given topic matching the partial index you provide. The options
+object is not required, and your callback may be passed as the third argument. You must provide a
+full index object, but values in the index you don't know should be explicitly set to `null`. You
+can therefore, for example, query for all players in the game by calling:
 
 ```javascript
 archivist.listIndexes('player', { id: null }, function (error, indexes) {
@@ -327,7 +328,8 @@ archivist.listIndexes('player', { id: null }, function (error, indexes) {
 
 You may pass the following options:
 
-*sort*
+**sort**
+
 An array of sorting rules. Each rule has the format:
 ```json
 { "name": "fieldName in the index", "direction": "asc or desc" }
@@ -335,12 +337,11 @@ An array of sorting rules. Each rule has the format:
 For example: `[{ name: 'id', direction: 'desc' }]`. You may give multiple of these in order of
 importance.
 
-*chunk*
+**chunk**
+
 An array of the format `[start, length]` where both values are integers and `length` is optional.
 This will limit the output to just that part of the result (after sorting is applied), which allows
 for paginating your results.
-
-The options object is not required, and your callback may be passed as the third argument.
 
 
 ### Distributing changes to all vaults
@@ -415,6 +416,7 @@ available on the client's caches, that data's expiration time is also updated.
 
 
 ### Deleting data
+
 ```javascript
 archivist.del(topic, index, function (error) { });
 ```
@@ -424,12 +426,22 @@ available on the client's caches, it will be removed there too.
 
 
 ### Applying a diff to data
-```
+
+```javascript
 archivist.applyDiff(topic, index, diff, function (error) { });
 ```
 
 For data types that support diff-updates (like Tomes), this will allow you to send the diff and
 expect the data to be updated on the server side.
+
+
+### Finding data
+
+```javascript
+archivist.listIndexes(topic, partialIndex, options, function (error, indexes) { });
+```
+
+Calls into the server archivist's listIndexes method. The arguments are identical.
 
 
 ## Advanced vault usage
