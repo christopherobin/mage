@@ -321,7 +321,7 @@ Marks data with a new expiration time (unix timestamp in seconds).
 ### Finding data
 
 ```javascript
-archivist.listIndexes(topic, partialIndex, options, function (error, arrayOfIndexes) { });
+archivist.list(topic, partialIndex, options, function (error, arrayOfIndexes) { });
 ```
 
 Returns an array of indexes on the given topic matching the partial index you provide. The options
@@ -329,7 +329,7 @@ object is not required, and your callback may be passed as the third argument. Y
 query for all players in the game by calling:
 
 ```javascript
-archivist.listIndexes('player', {}, function (error, indexes) {
+archivist.list('player', {}, function (error, indexes) {
 	/* indexes is now [{ id: 5 }, { id: 20 }, ...] */
 });
 ```
@@ -455,10 +455,10 @@ expect the data to be updated on the server side.
 ### Finding data
 
 ```javascript
-archivist.listIndexes(topic, partialIndex, options, function (error, indexes) { });
+archivist.list(topic, partialIndex, options, function (error, indexes) { });
 ```
 
-Calls into the server archivist's listIndexes method. The arguments are identical.
+Calls into the server archivist's list method. The arguments are identical.
 
 
 ## Advanced vault usage
