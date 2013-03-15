@@ -312,7 +312,7 @@ Marks data with a new expiration time (unix timestamp in seconds).
 ### Finding data
 
 ```javascript
-archivist.listIndexes(topic, partialIndex, function (error, arrayOfIndexes) { });
+archivist.listIndexes(topic, partialIndex, options, function (error, arrayOfIndexes) { });
 ```
 
 Returns an array of indexes on the given topic matching the partial index you provide. You must
@@ -324,6 +324,23 @@ archivist.listIndexes('player', { id: null }, function (error, indexes) {
 	/* indexes is now [{ id: 5 }, { id: 20 }] */
 });
 ```
+
+You may pass the following options:
+
+*sort*
+An array of sorting rules. Each rule has the format:
+```json
+{ "name": "fieldName in the index", "direction": "asc or desc" }
+```
+For example: `[{ name: 'id', direction: 'desc' }]`. You may give multiple of these in order of
+importance.
+
+*chunk*
+An array of the format `[start, length]` where both values are integers and `length` is optional.
+This will limit the output to just that part of the result (after sorting is applied), which allows
+for paginating your results.
+
+The options object is not required, and your callback may be passed as the third argument.
 
 
 ### Distributing changes to all vaults
