@@ -341,10 +341,10 @@ descending sort-order.
 **chunk**
 
 An array of the format `[start, length]` where both values are integers and `length` is optional.
-This will limit the output to just that part of the result (after sorting is applied), which allows
-for paginating your results.
+This will limit the sorted result to the indexes starting at `start` (counts from 0) until
+`start + length`. This allows for paginating your results.
 
-Options example:
+Options example (sorted by id (descending), page 3 with 10 results per page):
 ```json
 {
 	"sort": [{ "name": "id", "direction": "desc" }],
