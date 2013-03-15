@@ -186,15 +186,19 @@ The format is as follows:
 exports.myTopicName = {
 	readOptions: {
 	},
+	index: ['propName', 'propName'],
 	vaults: {
 		myVaultName: myValueHandlers
 	}
 };
 ```
 
-Where you do this for each topic you want to store in your vaults. The `readOptions` object may be
-supplied to overwrite default `options` that are used when reading from your archivist. The
-following defaults are defined, and they can be individually replaced:
+Where you do this for each topic you want to store in your vaults. The `index` array must be
+provided if your topic depends on an index. This array is the signature of the indexes you will
+provide when referring to data.
+
+The `readOptions` object may be supplied to overwrite default `options` that are used when reading
+from your archivist. The following defaults are defined, and they can be individually replaced:
 ```json
 {
 	"mediaTypes": ["application/x-tome", "application/octet-stream"],
@@ -209,14 +213,19 @@ custom behaviors. In order to keep your configuration maintainable, it makes a l
 categorize your topics. Imagine for example the following configuration:
 
 ```javascript
-var dynamicVaults = { vaults: { mysql: true, memcached: true } };
-var staticVaults = { vaults: { file: true } };
+function dynamicTopic(index) {
+	return { index: index, vaults: { mysql: true, memcached: true } };
+}
 
-exports.player = dynamicVaults;
-exports.inventory = dynamicVaults;
-exports.cards = dynamicVaults;
-exports.cardDefinitions = staticVaults;
-exports.itemDefinitions = staticVaults;
+function staticTopic() {
+	return { vaults: { file: true } };
+}
+
+exports.player = dynamicTopic(['id']);
+exports.inventory = dynamicTopic(['playerId']);
+exports.cards = dynamicTopic(['playerId']);
+exports.cardDefinitions = staticTopic();
+exports.itemDefinitions = staticTopic();
 ```
 
 
@@ -316,13 +325,12 @@ archivist.listIndexes(topic, partialIndex, options, function (error, arrayOfInde
 ```
 
 Returns an array of indexes on the given topic matching the partial index you provide. The options
-object is not required, and your callback may be passed as the third argument. You must provide a
-full index object, but values in the index you don't know should be explicitly set to `null`. You
-can therefore, for example, query for all players in the game by calling:
+object is not required, and your callback may be passed as the third argument. You can, for example,
+query for all players in the game by calling:
 
 ```javascript
-archivist.listIndexes('player', { id: null }, function (error, indexes) {
-	/* indexes is now [{ id: 5 }, { id: 20 }] */
+archivist.listIndexes('player', {}, function (error, indexes) {
+	/* indexes is now [{ id: 5 }, { id: 20 }, ...] */
 });
 ```
 
