@@ -47,6 +47,6 @@
 		}
 	],
 	"scripts": {
-		"test": "NODE_PATH=lib node_modules/.bin/vows --spec"
+		"test": "node lib/testEngine"
 	}
 }
