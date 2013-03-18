@@ -1,27 +1,24 @@
-<a name='top'/>
 #How To Write A Bot
 
 
-
 ##Index
-1. [Files You Will Need To Add/Modify](#Files You Will Need To Add/Modify)
-* [Server API](#Server API)
- * [lib/bot.js](#lib/bot.js)
- * [lib/index.js](#lib/index.js)
- * [configs/game/custom.js](#configs/game/custom.js)
-* [Testing API](#Testing API)
-* [JS Driven Client](#JS Driven Client)
- * [www/botScenarios/&lt;SCENARIO GROUP&gt;.js](#www/botScenarios/&lt;SCENARIO GROUP&gt;.js)
- * [www/botPages/&lt;BOT NAME&gt;/script.js](#www/botPages/&lt;BOT NAME&gt;/script.js)
- * [www/botPages/&lt;BOT NAME&gt;/page.html](#www/botPages/&lt;BOT NAME&gt;/page.html)
- * [www/libgame/nextTick.js](#www/libgame/nextTick.js)
-* [Testing client](#Testing client)
+1. [Files You Will Need To Add/Modify](#files-you-will-need-to-addmodify)
+* [Server API](#server-api)
+ * [lib/bot.js](#libbotjs)
+ * [lib/index.js](#libindexjs)
+ * [configs/game/custom.js](#configsgamecustomjs)
+* [Testing API](#testing-api)
+* [JS Driven Client](#js-driven-client)
+ * [www/botScenarios/&lt;SCENARIO GROUP&gt;.js](#wwwbotscenariosscenario-groupjs)
+ * [www/botPages/&lt;BOT NAME&gt;/script.js](#wwwbotpagesbot-namescriptjs)
+ * [www/botPages/&lt;BOT NAME&gt;/page.html](#wwwbotpagesbot-namepagehtml)
+ * [www/libgame/nextTick.js](#wwwlibgamenexttickjs)
+* [Testing client](#testing-client)
 
 
 
-<a name='Files You Will Need To Add/Modify'/>
 ##Files You Will Need To Add/Modify
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 ###Server API
 - lib/bot.js:  Registers bot pages and missing API functions
@@ -36,12 +33,10 @@
 
 
 
-
-<a name='Server API'/>
 ##Server API
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
-<a name='lib/bot.js'/>
+
 ###lib/bot.js
 
 This file can generally be copied from another game and modified. The main sections
@@ -86,9 +81,9 @@ bot.register('confirmBotPlayer', function (state, args, cb) {
 </pre>
 
 
-<a name='lib/index.js'/>
+
 ###lib/index.js
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 The general change that needs to be done here is to take game user commands and
 wrap them into a generic function. This will be needed by the bot to also expose
@@ -138,9 +133,9 @@ mage.setup(configFiles, function () {
 </pre>
 
 
-<a name='configs/game/custom.js'/>
+
 ###configs/game/custom.js
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 Here we will need to add two sections to the config. apps.bot & module.bot
 
@@ -173,12 +168,8 @@ Here we will need to add two sections to the config. apps.bot & module.bot
 
 
 
-
-
-
-<a name='Testing API'/>
 ##Testing API
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 With this you should be able to access the bot API, which should allow you to write
 a client in any format and in turn access the game as a botting mechanism. You should
@@ -197,13 +188,11 @@ curl --url http://&lt;HOST&gt;/bot/&lt;USER COMMAND&gt; \
 
 
 
-
-<a name='JS Driven Client'/>
 ##JS Driven Client
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 
-<a name='www/botScenarios/&lt;SCENARIO GROUP&gt;.js'/>
+
 ###www/botScenarios/&lt;SCENARIO GROUP&gt;.js
 
 These file would be where you would register your scenarios. Each scenario will
@@ -234,9 +223,11 @@ example please take a look at DeadRising-TheSurvival game.
 </pre>
 
 
-<a name='www/botPages/&lt;BOT NAME&gt;/script.js'/>
+
+
+
 ###www/botPages/&lt;BOT NAME&gt;/script.js
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 This is where the magic happens for the bot. This file is a hybrid between a
 loader page, a landing page and the bot itself. Most of the code can be copied
@@ -285,9 +276,10 @@ DeadRising-TheSurvival game.
 </pre>
 
 
-<a name='www/botPages/&lt;BOT NAME&gt;/page.html'/>
+
+
 ###www/botPages/&lt;BOT NAME&gt;/page.html
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 This is a mere html wrapper for our bot. You generally don't need to do much
 here if you just want a plain inhuman, automated bot. The code below should
@@ -305,18 +297,16 @@ $dir.js("./");
 
 
 
-<a name='www/libgame/nextTick.js'/>
 ###www/libgame/nextTick.js
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 This file can be directly copied from anyone of the games which have it. If in
 doubt take it from DeadRising-TheSurvival game.
 
 
 
-<a name='Testing client'/>
 ##Testing client
-<div style="text-align: right"><a href="#top">back to top</a></div>
+[back to top](#how-to-write-a-bot)
 
 This can be done in few ways, however I will list the 2 easiest methods here.
 Firstly as we are using complete frontend code for our clients we can easily
