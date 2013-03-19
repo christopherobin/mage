@@ -10,7 +10,7 @@ Mage `addModule` and `useModule` are now deprecated. A universal `useModules` co
 var mage = require('mage');
 
 // Add a path to search for modules in.
-mage.addModulesPath('./modules');
+mage.addModulesPath('./lib/modules');
 
 // useModules takes one module per argument.
 mage.useModules(
