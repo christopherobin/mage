@@ -293,9 +293,9 @@ the result will map to the input.
 *queries*
 ```json
 [
-	{ "topic": "players", index: { "id": "abc" } },
-	{ "topic": "players", index: { "id": "def" } },
-	{ "topic": "players", index: { "id": "hij" } }
+	{ "topic": "players", "index": { "id": "abc" } },
+	{ "topic": "players", "index": { "id": "def" } },
+	{ "topic": "players", "index": { "id": "hij" } }
 ]
 ```
 
