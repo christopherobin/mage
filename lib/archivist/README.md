@@ -314,9 +314,9 @@ The result is an array where the output order matches the input order:
 *queries*
 ```json
 {
-	"a": { "topic": "players", index: { "id": "abc" } },
-	"b": { "topic": "players", index: { "id": "def" } },
-	"c": { "topic": "players", index: { "id": "hij" } }
+	"a": { "topic": "players", "index": { "id": "abc" } },
+	"b": { "topic": "players", "index": { "id": "def" } },
+	"c": { "topic": "players", "index": { "id": "hij" } }
 }
 ```
 
