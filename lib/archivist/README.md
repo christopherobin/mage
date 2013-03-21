@@ -323,11 +323,11 @@ The result is an array where the output order matches the input order:
 *multiData*
 The result is an object map where the keys match the input keys:
 ```json
-[
+{
 	"a": { "name": "Bob" },
 	"b": undefined,
 	"c": { "name": "Harry" }
-]
+}
 ```
 
 
