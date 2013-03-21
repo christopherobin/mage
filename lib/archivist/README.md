@@ -152,25 +152,25 @@ fixed ID that is unique for each type of vault. Read the vault documentation ref
 Example configuration:
 ```json
 {
-        "archivist": {
-                "vaults": {
-                        "static": {
-                            "type": "file",
-                            "config": { "path": "/tmp" }
-                        },
-                        "memcached": {
-                            "type": "memcached",
-                            "config": { "servers": ["localhost:11211"], "prefix": "bob/" }
-                        },
-                        "mysql": {
-                            "type": "mysql",
-                            "config": { "url": "mysql://bob:secret@localhost/bob_game" }
-                        }
-                },
-                "listOrder": ["mysql", "static"],
-                "readOrder": ["memcached", "mysql", "static"],
-                "writeOrder": ["client", "memcached", "mysql", "static"]
-        }
+	"archivist": {
+		"vaults": {
+			"static": {
+				"type": "file",
+				"config": { "path": "/tmp" }
+			},
+			"memcached": {
+				"type": "memcached",
+				"config": { "servers": ["localhost:11211"], "prefix": "bob/" }
+			},
+			"mysql": {
+				"type": "mysql",
+				"config": { "url": "mysql://bob:secret@localhost/bob_game" }
+			}
+		},
+		"listOrder": ["mysql", "static"],
+		"readOrder": ["memcached", "mysql", "static"],
+		"writeOrder": ["client", "memcached", "mysql", "static"]
+	}
 }
 ```
 
@@ -280,6 +280,8 @@ The following options are available to you:
 This options object is not required, and your callback may be passed as the third argument.
 
 
+#### Multi-get
+
 ```javascript
 archivist.mget(queries, options, function (error, multiData) { });
 ```
@@ -288,9 +290,9 @@ For multi-get operations, please use `mget`. The options are identical to and ju
 the `get` method. There are two supported `queries` formats: the array and the map. In both cases,
 the result will map to the input.
 
-**Array style queries**
+##### Array style queries
 
-*queries*
+###### queries
 
 ```json
 [
@@ -300,7 +302,7 @@ the result will map to the input.
 ]
 ```
 
-*multiData*
+###### multiData
 
 The result is an array where the output order matches the input order:
 ```json
@@ -311,9 +313,9 @@ The result is an array where the output order matches the input order:
 ]
 ```
 
-**Object map style queries**
+##### Object map style queries
 
-*queries*
+###### queries
 
 ```json
 {
@@ -323,7 +325,7 @@ The result is an array where the output order matches the input order:
 }
 ```
 
-*multiData*
+###### multiData
 
 The result is an object map where the keys match the input keys:
 ```json
