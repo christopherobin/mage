@@ -291,6 +291,7 @@ the result will map to the input.
 **Array style queries**
 
 *queries*
+
 ```json
 [
 	{ "topic": "players", "index": { "id": "abc" } },
@@ -300,6 +301,7 @@ the result will map to the input.
 ```
 
 *multiData*
+
 The result is an array where the output order matches the input order:
 ```json
 [
@@ -312,6 +314,7 @@ The result is an array where the output order matches the input order:
 **Object map style queries**
 
 *queries*
+
 ```json
 {
 	"a": { "topic": "players", "index": { "id": "abc" } },
@@ -321,6 +324,7 @@ The result is an array where the output order matches the input order:
 ```
 
 *multiData*
+
 The result is an object map where the keys match the input keys:
 ```json
 {
