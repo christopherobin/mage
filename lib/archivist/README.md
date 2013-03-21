@@ -284,7 +284,7 @@ This options object is not required, and your callback may be passed as the thir
 archivist.mget(queries, options, function (error, multiData) { });
 ```
 
-For multi-get operations, please use `mget`. The options identical to and just as optional as in
+For multi-get operations, please use `mget`. The options are identical to and just as optional as in
 the `get` method. There are two supported `queries` formats: the array and the map. In both cases,
 the result will map to the input.
 
