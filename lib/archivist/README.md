@@ -152,25 +152,25 @@ fixed ID that is unique for each type of vault. Read the vault documentation ref
 Example configuration:
 ```json
 {
-        "archivist": {
-                "vaults": {
-                        "static": {
-                            "type": "file",
-                            "config": { "path": "/tmp" }
-                        },
-                        "memcached": {
-                            "type": "memcached",
-                            "config": { "servers": ["localhost:11211"], "prefix": "bob/" }
-                        },
-                        "mysql": {
-                            "type": "mysql",
-                            "config": { "url": "mysql://bob:secret@localhost/bob_game" }
-                        }
-                },
-                "listOrder": ["mysql", "static"],
-                "readOrder": ["memcached", "mysql", "static"],
-                "writeOrder": ["client", "memcached", "mysql", "static"]
-        }
+	"archivist": {
+		"vaults": {
+			"static": {
+				"type": "file",
+				"config": { "path": "/tmp" }
+			},
+			"memcached": {
+				"type": "memcached",
+				"config": { "servers": ["localhost:11211"], "prefix": "bob/" }
+			},
+			"mysql": {
+				"type": "mysql",
+				"config": { "url": "mysql://bob:secret@localhost/bob_game" }
+			}
+		},
+		"listOrder": ["mysql", "static"],
+		"readOrder": ["memcached", "mysql", "static"],
+		"writeOrder": ["client", "memcached", "mysql", "static"]
+	}
 }
 ```
 
@@ -278,6 +278,63 @@ The following options are available to you:
 * `encodingOptions`: (object, default: undefined) Options to be passed to the encoders. The JavaScript object to utf8 JSON encoder for example, accepts: `{ pretty: true }`, to trigger indented JSON stringification.
 
 This options object is not required, and your callback may be passed as the third argument.
+
+
+#### Multi-get
+
+```javascript
+archivist.mget(queries, options, function (error, multiData) { });
+```
+
+For multi-get operations, please use `mget`. The options are identical to and just as optional as in
+the `get` method. There are two supported `queries` formats: the array and the map. In both cases,
+the result will map to the input.
+
+##### Array style queries
+
+###### queries
+
+```json
+[
+	{ "topic": "players", "index": { "id": "abc" } },
+	{ "topic": "players", "index": { "id": "def" } },
+	{ "topic": "players", "index": { "id": "hij" } }
+]
+```
+
+###### multiData
+
+The result is an array where the output order matches the input order:
+```json
+[
+	{ "name": "Bob" },
+	undefined,
+	{ "name": "Harry" }
+]
+```
+
+##### Object map style queries
+
+###### queries
+
+```json
+{
+	"a": { "topic": "players", "index": { "id": "abc" } },
+	"b": { "topic": "players", "index": { "id": "def" } },
+	"c": { "topic": "players", "index": { "id": "hij" } }
+}
+```
+
+###### multiData
+
+The result is an object map where the keys match the input keys:
+```json
+{
+	"a": { "name": "Bob" },
+	"b": undefined,
+	"c": { "name": "Harry" }
+}
+```
 
 
 ### Overwriting data
@@ -411,15 +468,19 @@ Calls into the server archivist's `set` method. The arguments are identical. Onc
 written, it will stay in the client's caches. A `get` will immediately return with the new data.
 
 
-### Reading data
+### Getting data
 
 ```javascript
 archivist.get(topic, index, options, function (error, data) { });
 ```
 
-Calls into the server archivist's `get` method. The arguments are identical. If the data is already
-available on the client's caches, it will be returned to the callback immediately without hitting
-the server.
+```javascript
+archivist.mget(queries, options, function (error, data) { });
+```
+
+Call into the server archivist's `get` and `mget` method. The arguments are identical. If any of the
+data is already available in the client's caches, it will be returned to the callback immediately
+without hitting the server.
 
 
 ### Setting the expiration time
