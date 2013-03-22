@@ -1,5 +1,89 @@
 # Changelog
 
+## NEXT
+
+### Module loading
+
+Mage `addModule` and `useModule` are now deprecated. A universal `useModules` command is now provided to handle both game and mage module use. The new system is based on the concept of a search path. This is best shown by example:
+
+```javascript
+var mage = require('mage');
+
+// Add a path to search for modules in.
+mage.addModulesPath('./lib/modules');
+
+// useModules takes one module per argument.
+mage.useModules(
+	'gm',
+	'session',
+	'actor',
+	'assets',
+	'player',
+	'scheduler',
+	'tinyModule'
+);
+```
+
+Mage already knows where to look for core modules, but you need to tell it where to look for your game modules using `mage.addModulesPath`. You can add more than one modules path if you like; the order in which you add them is the order in which they will be searched for a module. Core modules are always checked last, so you can override them easily. Of course, the name must resolve to a module!
+
+Some mage methods are chainable, so if you prefer it the previous snippet can be rewritten as:
+
+```javascript
+var mage = require('mage').addModulesPath('./modules').useModules(
+	'gm',
+	'session',
+	'actor',
+	'assets',
+	'player',
+	'scheduler',
+	'tinyModule'
+);
+```
+
+This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as arguments, although it would be unusual to use more than one.
+
+### Booting mage
+
+Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to change anything). In short, the `callback` argument in `mage.setup(configs, callback)` is now optional. You can instead listen for the `'readyToStart'` event on `mage`.
+
+#### Method 1
+
+You already use this method.
+```javascript
+var configFiles = ['./configs/custom.json'];
+
+function start() {
+	// Your exposures etc.
+	var app = new mage.core.app.web.WebApp('sandbox', { languages: ['en'] });
+	app.commandCenter.expose({}, { scheduler: ['runTask'] });
+
+	mage.start();
+}
+
+mage.setup(configFiles, start);
+```
+
+#### Method 2
+
+If you like, you can do the following instead.
+```javascript
+var configFiles = ['./configs/custom.json'];
+
+function start() {
+	// Your exposures etc.
+	var app = new mage.core.app.web.WebApp('sandbox', { languages: ['en'] });
+	app.commandCenter.expose({}, { scheduler: ['runTask'] });
+
+	mage.start();
+}
+
+mage.setup(configFiles);
+
+mage.once('readyToStart', start);
+```
+
+This is verbose, and not to everyone's taste, but it's more in line with how node.js core modules work.
+
 ## v0.11.0
 
 ### A new logger
