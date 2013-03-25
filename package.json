@@ -33,7 +33,7 @@
 		"rumplestiltskin": "0.0.1",
 		"panopticon": "0.1.1"
 	},
-	"main" : "lib/mage",
+	"main": "lib/mage",
 	"devDependencies": {
 		"vows": "0.6.2",
 		"jshint": "1.1.x"
