@@ -54,7 +54,7 @@ var paths = {
 };
 
 // List your different bots here
-bot.addTestPage('&lt;BOT NAME&gt;', paths.www + '/botPages/&lt;BOT NAME&gt;');
+bot.addTestPage('<BOT NAME>', paths.www + '/botPages/<BOT NAME>');
 
 bot.register('createBotPlayer', function (state, args, cb) {
 	// ....
