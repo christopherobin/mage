@@ -1,7 +1,7 @@
-#How To Write A Bot
+# How To Write A Bot
 
 
-##Index
+## Index
 1. [Files You Will Need To Add/Modify](#files-you-will-need-to-addmodify)
 * [Server API](#server-api)
  * [lib/bot.js](#libbotjs)
@@ -17,15 +17,15 @@
 
 
 
-##Files You Will Need To Add/Modify
+## Files You Will Need To Add/Modify
 [back to top](#how-to-write-a-bot)
 
-###Server API
+### Server API
 - lib/bot.js:  Registers bot pages and missing API functions
 - lib/index.js: Includes lib/bot.js and exposes the API
 - configs/game/custom.js: Add configurations for the bot app & module
 
-###JS Driven Client:
+### JS Driven Client:
 - www/botScenarios/&lt;SCENARIO GROUP&gt;.js: Registers scenario functions
 - www/botPages/&lt;BOT NAME&gt;/script.js: This is where the magic happens, this is your loader/landing/bot logic.
 - www/botPages/&lt;BOT NAME&gt;/page.html: Wrapper html page which includes above bot script.
@@ -33,18 +33,18 @@
 
 
 
-##Server API
+## Server API
 [back to top](#how-to-write-a-bot)
 
 
-###lib/bot.js
+### lib/bot.js
 
 This file can generally be copied from another game and modified. The main sections
 of interest are registration of your bot pages, how a bot is identified and what
 game specific player properties need to be set. For a more in-depth example take
 a look at DeadRising-TheSurvival game.
 
-<pre>
+```javascript
 var mage = require('mage');
 var bot = mage.bot;
 var async = require('async');
@@ -57,32 +57,32 @@ var paths = {
 bot.addTestPage('&lt;BOT NAME&gt;', paths.www + '/botPages/&lt;BOT NAME&gt;');
 
 bot.register('createBotPlayer', function (state, args, cb) {
-    // ....
-    // General create actor routine
-    // ....
+	// ....
+	// General create actor routine
+	// ....
 
-    // Identify as bot player i.e. props.set('isBot', true);
+	// Identify as bot player i.e. props.set('isBot', true);
 
-    // Set game specific player properties i.e. props.set('mana', mana);
-    
-    // ....
-    // General create player routine
-    // ....
+	// Set game specific player properties i.e. props.set('mana', mana);
+	
+	// ....
+	// General create player routine
+	// ....
 });
 
 bot.register('updateBotPlayer', function (state, args, cb) {
-    // Refresh game specific player properties i.e. props.set('mana', mana);
+	// Refresh game specific player properties i.e. props.set('mana', mana);
 });
 
 bot.register('confirmBotPlayer', function (state, args, cb) {
-    // Identify if player is bot
-    // i.e. var isBot = props.get('isBot'); if (isBot !== true) { return error; }
+	// Identify if player is bot
+	// i.e. var isBot = props.get('isBot'); if (isBot !== true) { return error; }
 });
-</pre>
+```
 
 
 
-###lib/index.js
+### lib/index.js
 [back to top](#how-to-write-a-bot)
 
 The general change that needs to be done here is to take game user commands and
@@ -91,11 +91,11 @@ them under the bot app. For a working example please take a look at
 DeadRising-TheSurvival game.
 
 
-<pre>
+```javascript
 // ....
 
 function exposeGameUserCommands(app) {
-    // Your app.commandCenter.expose game specific user commands
+	// Your app.commandCenter.expose game specific user commands
 }
 
 // ....
@@ -108,12 +108,12 @@ function setupBot(cb) {
 
 	// Create bot API
 	mage.bot.createAPI(function (botApp) {
-            // Expose game user commands under botApp
-            exposeGameUserCommands(botApp);
-            
-            // Expose app
-            botApp.expose(cb);
-        });
+		// Expose game user commands under botApp
+		exposeGameUserCommands(botApp);
+
+		// Expose app
+		botApp.expose(cb);
+	});
 }
 
 // ....
@@ -130,45 +130,45 @@ mage.setup(configFiles, function () {
 	});
 });
 
-</pre>
+```
 
 
 
-###configs/game/custom.js
+### configs/game/custom.js
 [back to top](#how-to-write-a-bot)
 
 Here we will need to add two sections to the config. apps.bot & module.bot
 
-<pre>
+```javascript
 "apps": {
-    "bot": {
-            "delivery": {
-                    "serverCache": false,
-                    "useManifest": false,
-                    "compress": true,
-                    "postprocessors": {
-                            "css": "less",
-                            "js": []
-                    }
-            }
-    }
+	"bot": {
+		"delivery": {
+			"serverCache": false,
+			"useManifest": false,
+			"compress": true,
+			"postprocessors": {
+				"css": "less",
+				"js": []
+			}
+		}
+	}
 }
-</pre>
+```
 
-<pre>
+```javascript
 "module": {
-    "bot": {
-            "psk": "&lt;PRE SHARED KEY&gt;"
-    }
+	"bot": {
+		"psk": "<PRE SHARED KEY>"
+	}
 }
-</pre>
+```
 
 
 
 
 
 
-##Testing API
+## Testing API
 [back to top](#how-to-write-a-bot)
 
 With this you should be able to access the bot API, which should allow you to write
@@ -176,11 +176,11 @@ a client in any format and in turn access the game as a botting mechanism. You s
 be able to use tools such as tsung, seige or even curl to start performing game
 actions. A quick way to test this is to use curl in the following manner:
 
-<pre>
-curl --url http://&lt;HOST&gt;/bot/&lt;USER COMMAND&gt; \
-     -H "Host: &lt;EXPOSED DOMAIN NAME&gt;" \
-     -d $'[{"name":"bot.psk","key":"&lt;PSK&gt;"}]\n{"options":{&lt;ADDITIONAL OPTIONS&gt;}}'
-</pre>
+```
+curl --url http://<HOST>/bot/<USER COMMAND> \
+	 -H "Host: <EXPOSED DOMAIN NAME>" \
+	 -d $'[{"name":"bot.psk","key":"<PSK>"}]\n{"options":{<ADDITIONAL OPTIONS>}}'
+```
 
 
 
@@ -188,12 +188,12 @@ curl --url http://&lt;HOST&gt;/bot/&lt;USER COMMAND&gt; \
 
 
 
-##JS Driven Client
+## JS Driven Client
 [back to top](#how-to-write-a-bot)
 
 
 
-###www/botScenarios/&lt;SCENARIO GROUP&gt;.js
+### www/botScenarios/&lt;SCENARIO GROUP&gt;.js
 
 These file would be where you would register your scenarios. Each scenario will
 consist of a routine it would run along with a condition which would be checked
@@ -205,7 +205,7 @@ to quickly test for breakage when large overhauls are done. For an in-depth
 example please take a look at DeadRising-TheSurvival game.
 
 
-<pre>
+```javascript
 (function (window) {
 	// Load external dependencies to local variables
 	var mage = window.mage;
@@ -213,20 +213,20 @@ example please take a look at DeadRising-TheSurvival game.
 	var bot = mage.bot;
 
 	// Scenario which plays current mission & boss
-	bot.addScenario('&lt;SCENARIO NAME&gt;', function (options, cb) {
+	bot.addScenario('<SCENARIO NAME>', function (options, cb) {
 		// Code to execute up running this scenario
 	}, function (options) {
 		// What should be checked prior to running this scenario
 		// return TRUE to run or FALSE to skip
 	});
 }(window));
-</pre>
+```
 
 
 
 
 
-###www/botPages/&lt;BOT NAME&gt;/script.js
+### www/botPages/&lt;BOT NAME&gt;/script.js
 [back to top](#how-to-write-a-bot)
 
 This is where the magic happens for the bot. This file is a hybrid between a
@@ -235,7 +235,7 @@ from another game however the runBot function will change depending on what you
 are trying to achieve. For an in-depth example please take a lookg at
 DeadRising-TheSurvival game.
 
-<pre>
+```javascript
 // ....
 // General include code
 // ....
@@ -273,31 +273,31 @@ DeadRising-TheSurvival game.
 		});
 	});
 }(window));
-</pre>
+```
 
 
 
 
-###www/botPages/&lt;BOT NAME&gt;/page.html
+### www/botPages/&lt;BOT NAME&gt;/page.html
 [back to top](#how-to-write-a-bot)
 
 This is a mere html wrapper for our bot. You generally don't need to do much
 here if you just want a plain inhuman, automated bot. The code below should
 suffice for 99% of situations.
 
-<pre>
-&lt;html&gt;
+```html
+<html>
 
-&lt;body&gt;&lt;script&gt;
+<body><script>
 $dir.js("./");
-&lt;/script&gt;&lt;/body&gt;
+</script></body>
 
-&lt;/html&gt;
-</pre>
+</html>
+```
 
 
 
-###www/libgame/nextTick.js
+### www/libgame/nextTick.js
 [back to top](#how-to-write-a-bot)
 
 This file can be directly copied from anyone of the games which have it. If in
@@ -305,7 +305,7 @@ doubt take it from DeadRising-TheSurvival game.
 
 
 
-##Testing client
+## Testing client
 [back to top](#how-to-write-a-bot)
 
 This can be done in few ways, however I will list the 2 easiest methods here.
@@ -316,15 +316,15 @@ of using phantomJS is that it is a headless client option which has no need for
 a browser.
 
 
-###Browser
+### Browser
 Open your browser JS console and open the following page
-<pre>
-http://&lt;HOST&gt;/app/bot/&lt;BOT NAME&gt;#psk=&lt;PRE SHARED KEY&gt;
-</pre>
+```
+http://<HOST>/app/bot/<BOT NAME>#psk=<PRE SHARED KEY>
+```
 
-###PhantomJS
+### PhantomJS
 Download the loader and running it with the arguments PSK and BOT NAME
-<pre>
-curl -s http://&lt;HOST&gt;/app/bot/phantom | gunzip&gt; phantom.js
-phantomjs phantom.js &lt;PRE SHARED KEY&gt; &lt;BOT NAME&gt;
-</pre>
+```
+curl -s http://<HOST>/app/bot/phantom | gunzip > phantom.js
+phantomjs phantom.js <PRE SHARED KEY> <BOT NAME>
+```
