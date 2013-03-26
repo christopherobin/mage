@@ -157,6 +157,11 @@ This module should also be included on the HTML5 client side, which enables you 
 logging there as well.
 
 
+### Sampler
+
+__Description needed__.
+
+
 ### Smarter multi-server connections
 
 Servers (master process) connecting to other servers will now validate that their peer is running
@@ -195,7 +200,8 @@ Gives you the power to use a JavaScript Object as a key. You can find it here: h
 
 #### panopticon
 
-__Description needed__. You can find it here: https://github.com/Wizcorp/panopticon
+Panopticon handles data collection across the node.js clustered application. Sampler makes use of this.
+You can find it here: https://github.com/Wizcorp/panopticon
 
 #### mysql
 
