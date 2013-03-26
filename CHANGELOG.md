@@ -9,19 +9,19 @@
 Here's some handy scripts to help you fix up your code:
 
 To replace selected instances (MAC OS X):
-```
+```bash
 for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i '' "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
 ```
 
 To replace selected instances (Linux Flavour):
-```
+```bash
 for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
 ```
 
 
 ### Archivist
 
-DataSources has been superceded by the Archivist module. Learn more in /lib/archivist/README.md
+DataSources has been superceded by the Archivist module. You are highly encouraged to use Archivist as DataSources will be removed in a future release. Learn more about Archivist in [/lib/archivist/README.md](/lib/archivist/README.md)
 
 
 ### Daemonization
@@ -135,7 +135,7 @@ This is verbose, and not to everyone's taste, but it's more in line with how nod
 ### A new logger
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
-good use of it, you should be using its extended API. For starters, there is now a *logger module*.
+good use of it, you should be using its extended API. For starters, there is now a logger module, read about it in [/lib/loggingService/README.md](/lib/loggingService/README.md).
 
 #### Writers
 
