@@ -1,7 +1,7 @@
 # Changelog
 
 
-## v.NEXT
+## v.__NEXT__
 
 
 ### Mithril is now called Mage
@@ -21,12 +21,14 @@ for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed
 
 ### Archivist
 
-DataSources has been superceded by the Archivist module. You are highly encouraged to use Archivist as DataSources will be removed in a future release. Learn more about Archivist in [/lib/archivist/README.md](/lib/archivist/README.md)
+DataSources has been superceded by the Archivist module. You are highly encouraged to use Archivist as
+DataSources will be removed in a future release. Learn more about Archivist
+in [/lib/archivist/README.md](/lib/archivist/README.md)
 
 
 ### Daemonization
 
-Description needed.
+__Description needed__
 
 
 ### Module removal
@@ -51,7 +53,9 @@ You can retrieve them from the v0.10.2 of Mage if you still want to use them.
 
 ### Module loading
 
-Mage `addModule` and `useModule` are now deprecated. A universal `useModules` command is now provided to handle both game and mage module use. The new system is based on the concept of a search path. This is best shown by example:
+Mage `addModule` and `useModule` are now deprecated. A universal `useModules` command is now provided to
+handle both game and mage module use. The new system is based on the concept of a search path. This is best
+shown by example:
 
 ```javascript
 var mage = require('mage');
@@ -71,7 +75,10 @@ mage.useModules(
 );
 ```
 
-Mage already knows where to look for core modules, but you need to tell it where to look for your game modules using `mage.addModulesPath`. You can add more than one modules path if you like; the order in which you add them is the order in which they will be searched for a module. Core modules are always checked last, so you can override them easily. Of course, the name must resolve to a module!
+Mage already knows where to look for core modules, but you need to tell it where to look for your game modules
+using `mage.addModulesPath`. You can add more than one modules path if you like; the order in which you add
+them is the order in which they will be searched for a module. Core modules are always checked last, so you
+can override them easily. Of course, the name must resolve to a module!
 
 Some mage methods are chainable, so if you prefer it the previous snippet can be rewritten as:
 
@@ -87,12 +94,15 @@ var mage = require('mage').addModulesPath('./modules').useModules(
 );
 ```
 
-This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as arguments, although it would be unusual to use more than one.
+This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as
+arguments, although it would be unusual to use more than one.
 
 
 ### Booting mage
 
-Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to change anything). In short, the `callback` argument in `mage.setup(configs, callback)` is now optional. You can instead listen for the `'readyToStart'` event on `mage`.
+Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to
+change anything). In short, the `callback` argument in `mage.setup(configs, callback)` is now optional. You
+can instead listen for the `'readyToStart'` event on `mage`.
 
 #### Method 1
 
@@ -135,15 +145,8 @@ This is verbose, and not to everyone's taste, but it's more in line with how nod
 ### A new logger
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
-good use of it, you should be using its extended API. For starters, there is now a logger module, read about it in [/lib/loggingService/README.md](/lib/loggingService/README.md).
-
-#### Writers
-
-Description needed.
-
-#### Configuration
-
-Description needed.
+good use of it, you should be using its extended API. For starters, there is now a logger module,
+read about it in [/lib/loggingService/README.md](/lib/loggingService/README.md).
 
 #### Migration
 
@@ -177,38 +180,38 @@ containing the human readable lint-information in its `message` property.
 
 ### Bot module
 
-Description needed.
+__Description needed__.
 
 
 ### Dependency changes
 
-#### Tomes
+#### tomes
 
 An evented storage agnostic data API. You can find it here: https://github.com/Wizcorp/node-tomes
 
-#### Rumplestiltskin
+#### rumplestiltskin
 
 Gives you the power to use a JavaScript Object as a key. You can find it here: https://github.com/Wizcorp/node-rumplestiltskin
 
-#### Panopticon
+#### panopticon
 
-Description needed. You can find it here: https://github.com/Wizcorp/panopticon
+__Description needed__. You can find it here: https://github.com/Wizcorp/panopticon
 
-#### Mysql
+#### mysql
 
-Description needed. Updated from v0.9.1 to v2.0.0-alpha7
+__Description needed__. Updated from v0.9.1 to v2.0.0-alpha7
 
-#### Memcached
+#### memcached
 
-Description needed. Updated from v0.1.4 to v0.2.2
+__Description needed__. Updated from v0.1.4 to v0.2.2
 
-#### Jshint
+#### jshint
 
 Your code should lint, pre-commit hook will use the locally installed jshint. Added as a dev dependency.
 
-#### Zmq
+#### zmq
 
-Description needed. Updated from v2.2.0 to v2.3.0
+__Description needed__. Updated from v2.2.0 to v2.3.0
 
 
 ### Small refactoring
@@ -226,6 +229,8 @@ Moved the app version information into mage.rootPackage:
 There was a built-in builder type called "configDirBuilder", which has been removed. That builder
 took a config entry, and interpreted it as a path, then started including that path. The same can
 be achieved by embedding: `$dir($cfg('entry'))`.
+
+The manifest builder now successfully builds manifests.
 
 #### Benchmark
 
