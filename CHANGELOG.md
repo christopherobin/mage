@@ -1,6 +1,53 @@
 # Changelog
 
-## NEXT
+
+## v.NEXT
+
+
+### Mithril is now called Mage
+
+Here's some handy scripts to help you fix up your code:
+
+To replace selected instances (MAC OS X):
+```
+for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i '' "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
+```
+
+To replace selected instances (Linux Flavour):
+```
+for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
+```
+
+
+### Archivist
+
+DataSources has been superceded by the Archivist module. Learn more in /lib/archivist/README.md
+
+
+### Daemonization
+
+Description needed.
+
+
+### Module removal
+
+The following modules have been removed:
+
+ * appleAppStore
+ * gc
+ * giraffe
+ * history
+ * manage
+ * msg
+ * npc
+ * obj
+ * persistent
+ * score
+ * shop
+ * sns
+
+You can retrieve them from the v0.10.2 of Mage if you still want to use them.
+
 
 ### Module loading
 
@@ -42,6 +89,7 @@ var mage = require('mage').addModulesPath('./modules').useModules(
 
 This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as arguments, although it would be unusual to use more than one.
 
+
 ### Booting mage
 
 Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to change anything). In short, the `callback` argument in `mage.setup(configs, callback)` is now optional. You can instead listen for the `'readyToStart'` event on `mage`.
@@ -77,34 +125,33 @@ function start() {
 	mage.start();
 }
 
-mage.setup(configFiles);
-
 mage.once('readyToStart', start);
+mage.setup(configFiles);
 ```
 
 This is verbose, and not to everyone's taste, but it's more in line with how node.js core modules work.
 
-## v0.11.0
 
 ### A new logger
 
-Mithril has been outfitted with a new logger. It is backwards compatible. However, in order to make
+Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
 good use of it, you should be using its extended API. For starters, there is now a *logger module*.
 
 #### Writers
 
+Description needed.
 
 #### Configuration
 
+Description needed.
 
 #### Migration
 
 To have access to the logger module, initialize it as any other built-in module:
-`mithril.useModule('logger');`
+`mage.useModules('logger');`
 
 This module should also be included on the HTML5 client side, which enables you to do more powerful
 logging there as well.
-
 
 
 ### Smarter multi-server connections
@@ -117,23 +164,61 @@ This feature is useful when doing a rolling restart of your game, when launching
 You wouldn't want the new version to start connecting to the running instances that are being shut
 down.
 
+
 ### Built-in JSON linting
 
 If there is a parse error in your configuration JSON file(s), the lint-result will be output
 immediately. This should save you time when trying to find the error.
 
 You may also access this JSON parser helper yourself, by calling:
-`mithril.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
+`mage.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
 containing the human readable lint-information in its `message` property.
+
+
+### Bot module
+
+Description needed.
+
+
+### Dependency changes
+
+#### Tomes
+
+An evented storage agnostic data API. You can find it here: https://github.com/Wizcorp/node-tomes
+
+#### Rumplestiltskin
+
+Gives you the power to use a JavaScript Object as a key. You can find it here: https://github.com/Wizcorp/node-rumplestiltskin
+
+#### Panopticon
+
+Description needed. You can find it here: https://github.com/Wizcorp/panopticon
+
+#### Mysql
+
+Description needed. Updated from v0.9.1 to v2.0.0-alpha7
+
+#### Memcached
+
+Description needed. Updated from v0.1.4 to v0.2.2
+
+#### Jshint
+
+Your code should lint, pre-commit hook will use the locally installed jshint. Added as a dev dependency.
+
+#### Zmq
+
+Description needed. Updated from v2.2.0 to v2.3.0
+
 
 ### Small refactoring
 
-#### mithril core module
+#### Mage core module
 
-Changed the mithril.isShuttingDown boolean to mithril.getRunState(), which returns a string changing
+Changed the mage.isShuttingDown boolean to mage.getRunState(), which returns a string changing
 from "init", to "setup", to "running", to "quitting".
 
-Moved the app version information into mithril.rootPackage:
+Moved the app version information into mage.rootPackage:
 `{ name: 'game name', version: 'game version' }`
 
 #### Builder
@@ -144,7 +229,7 @@ be achieved by embedding: `$dir($cfg('entry'))`.
 
 #### Benchmark
 
-The benchmark helper function has been moved into `mithril.core.helpers.benchmark`, and now
+The benchmark helper function has been moved into `mage.core.helpers.benchmark`, and now
 measures benchmarks in nanoseconds.
 
 
