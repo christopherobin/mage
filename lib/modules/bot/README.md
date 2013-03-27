@@ -87,8 +87,7 @@ bot.register('confirmBotPlayer', function (state, args, cb) {
 
 The general change that needs to be done here is to take game user commands and
 wrap them into a generic function. This will be needed by the bot to also expose
-them under the bot app. For a working example please take a look at
-DeadRising-TheSurvival game.
+them under the bot app. For a working example please talk with the mage team.
 
 
 ```javascript
@@ -304,7 +303,7 @@ $dir.js("./");
 [back to top](#how-to-write-a-bot)
 
 This file can be directly copied from anyone of the games which have it. If in
-doubt take it from DeadRising-TheSurvival game.
+doubt please talk with the mage team.
 
 
 
