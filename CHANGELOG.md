@@ -279,6 +279,11 @@ The manifest builder now successfully builds manifests again.
 The benchmark helper function has been moved into `mage.core.helpers.benchmark`, and now
 measures execution time in nanoseconds.
 
+#### Lint!
+
+MAGE now lints 100%!
+Small sidenote: tool dependencies like jQuery obviously don't lint.
+
 
 ## v0.10.2
 
