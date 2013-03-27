@@ -4,9 +4,10 @@
 ## v.__NEXT__
 
 
-### Mithril is now called Mage
+### Mithril is now called MAGE!
 
-Here's some handy scripts to help you fix up your code:
+This also means that the module you require is no longer called `mithril`, but is now called `mage`.
+Here are some handy scripts to help you fix up your code:
 
 To replace selected instances (MAC OS X):
 ```bash
@@ -259,7 +260,7 @@ but regularly happen when you start piping your output to another process (like 
 Changed the mage.isShuttingDown boolean to mage.getRunState(), which returns a string changing
 from `init`, to `setup`, to `running`, to `quitting`.
 
-Moved the app version information into mage.rootPackage:
+Moved the app version information into `mage.rootPackage`:
 
 ```json
 {
@@ -274,7 +275,7 @@ There was a built-in builder type called "configDirBuilder", which has been remo
 took a config entry, and interpreted it as a path, then started including that path. The same can
 be achieved by embedding: `$dir($cfg('entry'))`.
 
-The manifest builder now successfully builds manifests.
+The manifest builder now successfully builds manifests again.
 
 #### Benchmark
 
