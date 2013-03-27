@@ -41,8 +41,8 @@
 
 This file can generally be copied from another game and modified. The main sections
 of interest are registration of your bot pages, how a bot is identified and what
-game specific player properties need to be set. For a more in-depth example take
-a look at DeadRising-TheSurvival game.
+game specific player properties need to be set. For some in-depth examples please
+talk with the mage team.
 
 ```javascript
 var mage = require('mage');
@@ -199,14 +199,14 @@ curl --url http://<HOST>/bot/<USER COMMAND> \
 
 ### www/botScenarios/&lt;SCENARIO GROUP&gt;.js
 
-These file would be where you would register your scenarios. Each scenario will
+These files would be where you would register your scenarios. Each scenario will
 consist of a routine it would run along with a condition which would be checked
 before it runs. This helps enhance the writting speed of the bot operation.
 Generally these scenarios should be written by game developers as the game
 production progresses and will come in very handy for unit testing. Most games
 should be shipped with a unit testing bot which allows backend/frontend developers
-to quickly test for breakage when large overhauls are done. For an in-depth
-example please take a look at DeadRising-TheSurvival game.
+to quickly test for breakage when large overhauls are done. For some in-depth
+examples please talk with the mage team.
 
 
 ```javascript
@@ -236,8 +236,7 @@ example please take a look at DeadRising-TheSurvival game.
 This is where the magic happens for the bot. This file is a hybrid between a
 loader page, a landing page and the bot itself. Most of the code can be copied
 from another game however the runBot function will change depending on what you
-are trying to achieve. For an in-depth example please take a lookg at
-DeadRising-TheSurvival game.
+are trying to achieve. For some in-depth examples please talk with the mage team.
 
 ```javascript
 // ....
@@ -312,7 +311,7 @@ doubt take it from DeadRising-TheSurvival game.
 ## Testing client
 [back to top](#how-to-write-a-bot)
 
-This can be done in few ways, however I will list the 2 easiest methods here.
+This can be done in few ways, however two easy methods are listed below.
 Firstly as we are using complete frontend code for our clients we can easily
 just open up the bot page in a browser and it should begin running. Or we can
 use the phantomJS loader and use phantomJS to run our client for us. The advantage
