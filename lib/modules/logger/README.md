@@ -308,7 +308,7 @@ configuration property is optional, and should generally be left out.
 	"logging": {
 		"html5": {
 			"console": {
-				"channels": [">=debug"],
+				"channels": [">=verbose"],
 				"disableOverride": false
 			}
 		}
@@ -322,7 +322,7 @@ configuration property is optional, and should generally be left out.
 	"logging": {
 		"html5": {
 			"server": {
-				"channels": [">=critical"],
+				"channels": [">=verbose"],
 				"disableOverride": false
 			}
 		}
