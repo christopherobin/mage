@@ -46,7 +46,7 @@ var logger = mage.logger.context('shop');
 // all logging should now be done on logger
 ```
 
-### logger.[channel](arg1, .., argN)
+### logger.&lt;channel&gt;(arg1, .., argN)
 
 Each channel name is a method on a logger. This allows you to write:
 
@@ -61,20 +61,20 @@ methods. All those methods can be chained. Because you are no longer using the c
 function, you have to call the `log` method at the end of the chain to provide the log message (see
 examples below).
 
-### logger.[channel].details(arg1, .., argN)
+### logger.&lt;channel&gt;.details(arg1, .., argN)
 
 To provide additional human readable details. This function can be called multiple times to provide
 multiple lines of information.
 
-### logger.[channel].context(context1, .., contextN)
+### logger.&lt;channel&gt;.context(context1, .., contextN)
 
 This adds the contexts to this one log entry, on top of the ones that were already set before.
 
-### logger.[channel].data(key, value)
+### logger.&lt;channel&gt;.data(key, value)
 
 Add a queryable key/value pair to the log entry.
 
-### logger.[channel].data(valueMap)
+### logger.&lt;channel&gt;.data(valueMap)
 
 Add many key/value pairs to the queryable data of this log entry.
 
@@ -187,7 +187,7 @@ the server:
 
 And the following are available on the client:
 
-* console: console.log/warn/error wrapper
+* console: outputs to console.log/warn/error
 * server: send log entries to the server to be reported in a server-side writer
 
 Configuration happens in your config file in:
@@ -250,8 +250,8 @@ Available themes: `default`, `dark`, `light`.
 				"channels": [">=info"],
 				"config": {
 					"servers": [
-						{ "host": "192.168.100.85", port: 12201 },
-						{ "host": "192.168.100.86", port: 12201 }
+						{ "host": "192.168.100.85", "port": 12201 },
+						{ "host": "192.168.100.86", "port": 12201 }
 					],
 					"facility": "Application identifier"
 				}
