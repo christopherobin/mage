@@ -22,9 +22,9 @@ for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed
 
 ### Archivist
 
-DataSources and PropertyMaps have been superceded by the Archivist module. You are highly encouraged
-to use Archivist as DataSources will be removed in a future release. Learn more about Archivist
-in [/lib/archivist/README.md](/lib/archivist/README.md)
+DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
+highly encouraged to use Archivist from now on, since DataSources will be removed in a future
+release. Learn more about Archivist in [/lib/archivist/README.md](/lib/archivist/README.md).
 
 
 ### Daemonization
