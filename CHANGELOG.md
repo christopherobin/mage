@@ -4,9 +4,10 @@
 ## v.__NEXT__
 
 
-### Mithril is now called Mage
+### Mithril is now called MAGE!
 
-Here's some handy scripts to help you fix up your code:
+This also means that the module you require is no longer called `mithril`, but is now called `mage`.
+Here are some handy scripts to help you fix up your code:
 
 To replace selected instances (MAC OS X):
 ```bash
@@ -21,14 +22,15 @@ for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed
 
 ### Archivist
 
-DataSources has been superceded by the Archivist module. You are highly encouraged to use Archivist as
-DataSources will be removed in a future release. Learn more about Archivist
-in [/lib/archivist/README.md](/lib/archivist/README.md)
+DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
+highly encouraged to use Archivist from now on, since DataSources will be removed in a future
+release. Learn more about Archivist in [/lib/archivist/README.md](/lib/archivist/README.md).
 
 
 ### Daemonization
 
-__Description needed__
+Mage now supports daemonization out-of-the-box. That means that you can control your application's
+runtime by passing a command on your command line. Run `node . help` to get a list of commands.
 
 
 ### Module removal
@@ -146,7 +148,7 @@ This is verbose, and not to everyone's taste, but it's more in line with how nod
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
 good use of it, you should be using its extended API. For starters, there is now a logger module,
-read about it in [/lib/loggingService/README.md](/lib/loggingService/README.md).
+read about it in [/lib/modules/logger/README.md](/lib/modules/logger/README.md).
 
 #### Migration
 
@@ -156,10 +158,11 @@ To have access to the logger module, initialize it as any other built-in module:
 This module should also be included on the HTML5 client side, which enables you to do more powerful
 logging there as well.
 
+When you use the logger module, you should always access the logger through `mage.logger`, **not**
+`mage.core.logger`, which is now reserved for MAGE's internal use.
+
 
 ### Sampler
-
-The sampler library
 
 The sampler library is an interface for Panopticon. It uses configuration to handle the setup of panoptica,
 and exposes the methods of these panoptica as a group. Sampler handles the sending of data to all of the panoptica,
@@ -195,9 +198,9 @@ default), and `"sampleMage"` turns on the sampling of mage internals.
 
 ### Smarter multi-server connections
 
-Servers (master process) connecting to other servers will now validate that their peer is running
-the same version of the game (driven by your package.json) as itself. If the version is not exactly
-equal, they will not connect.
+Servers (master process) connecting to other servers (mmrp) will now validate that their peer is
+running the same version of the game (driven by your package.json) as itself. If the version is not
+exactly equal, they will not connect.
 
 This feature is useful when doing a rolling restart of your game, when launching a new version.
 You wouldn't want the new version to start connecting to the running instances that are being shut
@@ -212,11 +215,6 @@ immediately. This should save you time when trying to find the error.
 You may also access this JSON parser helper yourself, by calling:
 `mage.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
 containing the human readable lint-information in its `message` property.
-
-
-### Bot module
-
-__Description needed__.
 
 
 ### Dependency changes
@@ -236,19 +234,20 @@ You can find it here: https://github.com/Wizcorp/panopticon
 
 #### mysql
 
-__Description needed__. Updated from v0.9.1 to v2.0.0-alpha7
+Updated from v0.9.1 to v2.0.0-alpha7
 
 #### memcached
 
-__Description needed__. Updated from v0.1.4 to v0.2.2
-
-#### jshint
-
-Your code should lint, pre-commit hook will use the locally installed jshint. Added as a dev dependency.
+Updated from v0.1.4 to v0.2.2
 
 #### zmq
 
-__Description needed__. Updated from v2.2.0 to v2.3.0
+Updated from v2.2.0 to v2.3.0
+
+#### epipebomb
+
+The epipebomb module was added to suppress EPIPE warnings on stdout and stderr, which are innocent,
+but regularly happen when you start piping your output to another process (like grep).
 
 
 ### Small refactoring
@@ -256,10 +255,16 @@ __Description needed__. Updated from v2.2.0 to v2.3.0
 #### Mage core module
 
 Changed the mage.isShuttingDown boolean to mage.getRunState(), which returns a string changing
-from "init", to "setup", to "running", to "quitting".
+from `init`, to `setup`, to `running`, to `quitting`.
 
-Moved the app version information into mage.rootPackage:
-`{ name: 'game name', version: 'game version' }`
+Moved the app version information into `mage.rootPackage`:
+
+```json
+{
+	"name": "game name",
+	"version": "0.1.2"
+}
+```
 
 #### Builder
 
@@ -267,12 +272,12 @@ There was a built-in builder type called "configDirBuilder", which has been remo
 took a config entry, and interpreted it as a path, then started including that path. The same can
 be achieved by embedding: `$dir($cfg('entry'))`.
 
-The manifest builder now successfully builds manifests.
+The manifest builder now successfully builds manifests again.
 
 #### Benchmark
 
 The benchmark helper function has been moved into `mage.core.helpers.benchmark`, and now
-measures benchmarks in nanoseconds.
+measures execution time in nanoseconds.
 
 
 ## v0.10.2
