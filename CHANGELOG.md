@@ -100,6 +100,12 @@ This is a breaking change, but easy to implement. `addModulesPath` can optionall
 arguments, although it would be unusual to use more than one.
 
 
+### Deprecated: app.expose()
+
+Apps are now automatically exposed, so calls in your bootstrap sequence to `myApp.expose` and
+`tools.expose` should be removed.
+
+
 ### Booting mage
 
 Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to
