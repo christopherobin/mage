@@ -29,7 +29,8 @@ in [/lib/archivist/README.md](/lib/archivist/README.md)
 
 ### Daemonization
 
-__Description needed__
+Mage now supports daemonization out-of-the-box. That means that you can control your application's
+runtime by passing a command on your command line. Run `node . help` to get a list of commands.
 
 
 ### Module removal
@@ -238,10 +239,6 @@ Updated from v0.9.1 to v2.0.0-alpha7
 #### memcached
 
 Updated from v0.1.4 to v0.2.2
-
-#### jshint
-
-Your code should lint, pre-commit hook will use the locally installed jshint. Added as a dev dependency.
 
 #### zmq
 
