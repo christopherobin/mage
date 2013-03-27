@@ -139,26 +139,30 @@ mage.setup(configFiles, function () {
 
 Here we will need to add two sections to the config. apps.bot & module.bot
 
-```javascript
-"apps": {
-	"bot": {
-		"delivery": {
-			"serverCache": false,
-			"useManifest": false,
-			"compress": true,
-			"postprocessors": {
-				"css": "less",
-				"js": []
+```json
+{
+	"apps": {
+		"bot": {
+			"delivery": {
+				"serverCache": false,
+				"useManifest": false,
+				"compress": true,
+				"postprocessors": {
+					"css": "less",
+					"js": []
+				}
 			}
 		}
 	}
 }
 ```
 
-```javascript
-"module": {
-	"bot": {
-		"psk": "<PRE SHARED KEY>"
+```json
+{
+	"module": {
+		"bot": {
+			"psk": "<PRE SHARED KEY>"
+		}
 	}
 }
 ```
@@ -176,7 +180,7 @@ a client in any format and in turn access the game as a botting mechanism. You s
 be able to use tools such as tsung, seige or even curl to start performing game
 actions. A quick way to test this is to use curl in the following manner:
 
-```
+```bash
 curl --url http://<HOST>/bot/<USER COMMAND> \
 	 -H "Host: <EXPOSED DOMAIN NAME>" \
 	 -d $'[{"name":"bot.psk","key":"<PSK>"}]\n{"options":{<ADDITIONAL OPTIONS>}}'
@@ -318,13 +322,13 @@ a browser.
 
 ### Browser
 Open your browser JS console and open the following page
-```
+```bash
 http://<HOST>/app/bot/<BOT NAME>#psk=<PRE SHARED KEY>
 ```
 
 ### PhantomJS
 Download the loader and running it with the arguments PSK and BOT NAME
-```
+```bash
 curl -s http://<HOST>/app/bot/phantom | gunzip > phantom.js
 phantomjs phantom.js <PRE SHARED KEY> <BOT NAME>
 ```
