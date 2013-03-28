@@ -1,5 +1,298 @@
 # Changelog
 
+
+## v0.12.0
+
+
+### Mithril is now called MAGE!
+
+This also means that the module you require is no longer called `mithril`, but is now called `mage`.
+Here are some handy scripts to help you fix up your code:
+
+To replace selected instances (MAC OS X):
+```bash
+for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i '' "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
+```
+
+To replace selected instances (Linux Flavour):
+```bash
+for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
+```
+
+
+### Archivist
+
+DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
+highly encouraged to use Archivist from now on, since DataSources will be removed in a future
+release. Learn more about Archivist in [/lib/archivist/README.md](/lib/archivist/README.md).
+
+
+### Daemonization
+
+Mage now supports daemonization out-of-the-box. That means that you can control your application's
+runtime by passing a command on your command line. Run `node . help` to get a list of commands.
+
+
+### Module removal
+
+The following modules have been removed:
+
+ * appleAppStore
+ * gc
+ * giraffe
+ * history
+ * manage
+ * msg
+ * npc
+ * obj
+ * persistent
+ * score
+ * shop
+ * sns
+
+You can retrieve them from the v0.10.2 of Mage if you still want to use them.
+
+
+### Module loading
+
+Mage `addModule` and `useModule` are now deprecated. A universal `useModules` command is now provided to
+handle both game and mage module use. The new system is based on the concept of a search path. This is best
+shown by example:
+
+```javascript
+var mage = require('mage');
+
+// Add a path to search for modules in.
+mage.addModulesPath('./lib/modules');
+
+// useModules takes one module per argument.
+mage.useModules(
+	'gm',
+	'session',
+	'actor',
+	'assets',
+	'player',
+	'scheduler',
+	'tinyModule'
+);
+```
+
+Mage already knows where to look for core modules, but you need to tell it where to look for your game modules
+using `mage.addModulesPath`. You can add more than one modules path if you like; the order in which you add
+them is the order in which they will be searched for a module. Core modules are always checked last, so you
+can override them easily. Of course, the name must resolve to a module!
+
+Some mage methods are chainable, so if you prefer it the previous snippet can be rewritten as:
+
+```javascript
+var mage = require('mage').addModulesPath('./modules').useModules(
+	'gm',
+	'session',
+	'actor',
+	'assets',
+	'player',
+	'scheduler',
+	'tinyModule'
+);
+```
+
+This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as
+arguments, although it would be unusual to use more than one.
+
+
+### Deprecated: app.expose()
+
+Apps are now automatically exposed, so calls in your bootstrap sequence to `myApp.expose` and
+`tools.expose` should be removed.
+
+
+### Booting mage
+
+Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to
+change anything). In short, the `callback` argument in `mage.setup(configs, callback)` is now optional. You
+can instead listen for the `'readyToStart'` event on `mage`.
+
+#### Method 1
+
+You already use this method.
+```javascript
+var configFiles = ['./configs/custom.json'];
+
+function start() {
+	// Your exposures etc.
+	var app = new mage.core.app.web.WebApp('sandbox', { languages: ['en'] });
+	app.commandCenter.expose({}, { scheduler: ['runTask'] });
+
+	mage.start();
+}
+
+mage.setup(configFiles, start);
+```
+
+#### Method 2
+
+If you like, you can do the following instead.
+```javascript
+var configFiles = ['./configs/custom.json'];
+
+function start() {
+	// Your exposures etc.
+	var app = new mage.core.app.web.WebApp('sandbox', { languages: ['en'] });
+	app.commandCenter.expose({}, { scheduler: ['runTask'] });
+
+	mage.start();
+}
+
+mage.once('readyToStart', start);
+mage.setup(configFiles);
+```
+
+This is verbose, and not to everyone's taste, but it's more in line with how node.js core modules work.
+
+
+### A new logger
+
+Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
+good use of it, you should be using its extended API. For starters, there is now a logger module,
+read about it in [/lib/modules/logger/README.md](/lib/modules/logger/README.md).
+
+#### Migration
+
+To have access to the logger module, initialize it as any other built-in module:
+`mage.useModules('logger');`
+
+This module should also be included on the HTML5 client side, which enables you to do more powerful
+logging there as well.
+
+When you use the logger module, you should always access the logger through `mage.logger`, **not**
+`mage.core.logger`, which is now reserved for MAGE's internal use.
+
+
+### Sampler
+
+The sampler library is an interface for Panopticon. It uses configuration to handle the setup of panoptica,
+and exposes the methods of these panoptica as a group. Sampler handles the sending of data to all of the panoptica,
+so you only need to worry about the API:
+
+ - `sampler.set(path, id, n)`, where `n`, a finite number, may replace a previous `n` for this `id`.
+ - `sampler.inc(path, id, n)`, where `n` is added to the previous value if `n` is a finite number. If `n` is not
+a finite number, then it defaults to `1`.
+ - `sampler.sample(path, id, n)`, which keeps track of the max, min, average and standard deviation of `n` over an
+interval.
+ - `sampler.timedSample(path, id, dt)`, which is like sample, but takes the output of a high resolution timer `dt`
+(or rather the difference between two timers).
+
+These methods take the same arguments as a panopticon, so please see the Panopticon documentation for more detail.
+
+The sampler needs some configuration. To the top level of your custom config file, add something like:
+
+```json
+{
+	"sampler": {
+		"intervals": {
+			"observium1": 2500,
+			"observium2": 30000
+		},
+		"bind": { "protocol": "http", "file": "./stats.sock" },
+		"sampleMage": true
+	}
+}
+```
+
+where the key-val pairs in `"intervals"` are named intervals and their durations (in ms), `"bind"` defines a
+socket or address to serve sample data from (this may be optional in the future, as what you see should be the
+default), and `"sampleMage"` turns on the sampling of mage internals.
+
+
+### Smarter multi-server connections
+
+Servers (master process) connecting to other servers (mmrp) will now validate that their peer is
+running the same version of the game (driven by your package.json) as itself. If the version is not
+exactly equal, they will not connect.
+
+This feature is useful when doing a rolling restart of your game, when launching a new version.
+You wouldn't want the new version to start connecting to the running instances that are being shut
+down.
+
+
+### Built-in JSON linting
+
+If there is a parse error in your configuration JSON file(s), the lint-result will be output
+immediately. This should save you time when trying to find the error.
+
+You may also access this JSON parser helper yourself, by calling:
+`mage.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
+containing the human readable lint-information in its `message` property.
+
+
+### Dependency changes
+
+#### tomes
+
+An evented storage agnostic data API. You can find it here: https://github.com/Wizcorp/node-tomes
+
+#### rumplestiltskin
+
+Gives you the power to use a JavaScript Object as a key. You can find it here: https://github.com/Wizcorp/node-rumplestiltskin
+
+#### panopticon
+
+Panopticon handles data collection across the node.js clustered application. Sampler makes use of this.
+You can find it here: https://github.com/Wizcorp/panopticon
+
+#### mysql
+
+Updated from v0.9.1 to v2.0.0-alpha7
+
+#### memcached
+
+Updated from v0.1.4 to v0.2.2
+
+#### zmq
+
+Updated from v2.2.0 to v2.3.0
+
+#### epipebomb
+
+The epipebomb module was added to suppress EPIPE warnings on stdout and stderr, which are innocent,
+but regularly happen when you start piping your output to another process (like grep).
+
+
+### Small refactoring
+
+#### Mage core module
+
+Changed the mage.isShuttingDown boolean to mage.getRunState(), which returns a string changing
+from `init`, to `setup`, to `running`, to `quitting`.
+
+Moved the app version information into `mage.rootPackage`:
+
+```json
+{
+	"name": "game name",
+	"version": "0.1.2"
+}
+```
+
+#### Builder
+
+There was a built-in builder type called "configDirBuilder", which has been removed. That builder
+took a config entry, and interpreted it as a path, then started including that path. The same can
+be achieved by embedding: `$dir($cfg('entry'))`.
+
+The manifest builder now successfully builds manifests again.
+
+#### Benchmark
+
+The benchmark helper function has been moved into `mage.core.helpers.benchmark`, and now
+measures execution time in nanoseconds.
+
+#### Lint!
+
+MAGE now lints 100%!
+Small sidenote: tool dependencies like jQuery obviously don't lint.
+
+
 ## v0.10.2
 
 ### wizAssetsHandler

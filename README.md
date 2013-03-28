@@ -1,6 +1,6 @@
-# Mithril
+# MAGE
 
-## Installing Mithril server for Node.js
+## Installing MAGE server for Node.js
 
 ### Installing your game's dependencies
 
@@ -10,14 +10,14 @@ In your game project, where you should have a package.json, execute the followin
 1. `rm -rf node_modules`
 2. `npm install`
 
-### Installing Mithril
+### Installing MAGE
 
-The "npm install" command will have recreated a directory called "node_modules". We now have to install Mithril there.
-After cloning the Mithril repository, we'll install Mithril's dependencies, the same way we installed the game's dependencies.
+The "npm install" command will have recreated a directory called "node_modules". We now have to install MAGE there.
+After cloning the MAGE repository, we'll install MAGE's dependencies, the same way we installed the game's dependencies.
 
 1. `cd node_modules`
-2. `git clone --branch develop git@github.com:Wizcorp/Mithril.git mithril` or `git clone --branch develop https://github.com/Wizcorp/Mithril.git mithril`
-3. `cd mithril`
+2. `git clone --branch develop git@github.com:Wizcorp/mage.git` or `git clone --branch develop https://github.com/Wizcorp/mage.git`
+3. `cd mage`
 4. `rm -rf node_modules`
 5. `npm install`
 
@@ -25,14 +25,14 @@ And we're all done! You can now run your game.
 
 ## Versions
 
-Mithril should generally only be used from the master branch. Version numbering is being applied using the following logic.
+MAGE should generally only be used from the master branch. Version numbering is being applied using the following logic.
 
 	Major.Minor.Build
 
 ### The meaning of version change
 
 When a new version is released this may introduce backwards compatibility (BC) issues. Whenever a feature has been planned
-to be removed from Mithril, using it will trigger a console warning 'X has been deprecated, and should no longer be used'.
+to be removed from MAGE, using it will trigger a console warning 'X has been deprecated, and should no longer be used'.
 
 __Major version change__
 
