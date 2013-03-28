@@ -1,7 +1,7 @@
 # Changelog
 
 
-## v.__NEXT__
+## v0.12.0
 
 
 ### Mithril is now called MAGE!
