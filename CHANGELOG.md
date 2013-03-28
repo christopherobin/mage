@@ -1,5 +1,12 @@
 # Changelog
 
+## _NEXT_
+
+### `useModules` enhancement
+
+You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
+many arguments as you like, and you can mix and match arguments with module names and arrays of
+module names however you like.
 
 ## v0.12.0
 
