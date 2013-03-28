@@ -187,13 +187,15 @@ These methods take the same arguments as a panopticon, so please see the Panopti
 The sampler needs some configuration. To the top level of your custom config file, add something like:
 
 ```json
-"sampler": {
-    "intervals": {
-        "observium1": 2500,
-        "observium2": 30000
-    },
-    "bind": { "protocol": "http", "file": "./stats.sock" },
-    "sampleMage": true
+{
+	"sampler": {
+		"intervals": {
+			"observium1": 2500,
+			"observium2": 30000
+		},
+		"bind": { "protocol": "http", "file": "./stats.sock" },
+		"sampleMage": true
+	}
 }
 ```
 
