@@ -1,7 +1,14 @@
 # Changelog
 
+## _NEXT_
 
-## v.__NEXT__
+### `useModules` enhancement
+
+You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
+many arguments as you like, and you can mix and match arguments with module names and arrays of
+module names however you like.
+
+## v0.12.0
 
 
 ### Mithril is now called MAGE!
@@ -100,6 +107,12 @@ This is a breaking change, but easy to implement. `addModulesPath` can optionall
 arguments, although it would be unusual to use more than one.
 
 
+### Deprecated: app.expose()
+
+Apps are now automatically exposed, so calls in your bootstrap sequence to `myApp.expose` and
+`tools.expose` should be removed.
+
+
 ### Booting mage
 
 Booting mage can be done in a more event driven way if you choose (if you choose not then you don't need to
@@ -181,13 +194,15 @@ These methods take the same arguments as a panopticon, so please see the Panopti
 The sampler needs some configuration. To the top level of your custom config file, add something like:
 
 ```json
-"sampler": {
-    "intervals": {
-        "observium1": 2500,
-        "observium2": 30000
-    },
-    "bind": { "protocol": "http", "file": "./stats.sock" },
-    "sampleMage": true
+{
+	"sampler": {
+		"intervals": {
+			"observium1": 2500,
+			"observium2": 30000
+		},
+		"bind": { "protocol": "http", "file": "./stats.sock" },
+		"sampleMage": true
+	}
 }
 ```
 
