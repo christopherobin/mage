@@ -32,7 +32,8 @@
 		"node-uuid": "1.4.0",
 		"jsonlint": "1.5.1",
 		"component-builder": "*",
-		"panopticon": "0.1.1"
+		"panopticon": "0.1.1",
+		"semver": "*"
 	},
 	"devDependencies": {
 		"jshint": "1.1.x",
