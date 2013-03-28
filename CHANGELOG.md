@@ -1,7 +1,14 @@
 # Changelog
 
+## _NEXT_
 
-## v.__NEXT__
+### `useModules` enhancement
+
+You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
+many arguments as you like, and you can mix and match arguments with module names and arrays of
+module names however you like.
+
+## v0.12.0
 
 
 ### Mithril is now called MAGE!
@@ -187,13 +194,15 @@ These methods take the same arguments as a panopticon, so please see the Panopti
 The sampler needs some configuration. To the top level of your custom config file, add something like:
 
 ```json
-"sampler": {
-    "intervals": {
-        "observium1": 2500,
-        "observium2": 30000
-    },
-    "bind": { "protocol": "http", "file": "./stats.sock" },
-    "sampleMage": true
+{
+	"sampler": {
+		"intervals": {
+			"observium1": 2500,
+			"observium2": 30000
+		},
+		"bind": { "protocol": "http", "file": "./stats.sock" },
+		"sampleMage": true
+	}
 }
 ```
 
