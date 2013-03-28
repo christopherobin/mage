@@ -22,6 +22,25 @@ exports.ucResponseData = {
 };
 ```
 
+If you want to change the TTL for this cache, you can do this per application you expose. This used
+to be done through `myApp.commandCenter.responseCacheTTL = 123;`, but that no longer works. The TTL
+is now in your configuration in:
+```json
+
+{
+	"apps": {
+		"mygame": {
+			"responseCache": 180
+		},
+		"tool": {
+			"responseCache": false
+		}
+	}
+}
+```
+
+A number will be used for TTL, false will indicate that you don't want to apply any response cache.
+
 
 ### `useModules` enhancement
 
