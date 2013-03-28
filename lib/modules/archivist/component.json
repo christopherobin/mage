@@ -2,7 +2,7 @@
   "name": "archivist",
   "description": "Data API for MAGE.",
   "version": "0.0.1",
-  "local": [ "tomes", "rumplestiltskin", "msgServer" ],
+  "local": [ "tomes", "rumplestiltskin", "msgServer", "time" ],
   "paths": [ "node_modules", "lib" ],
   "scripts": [
     "client.js"
