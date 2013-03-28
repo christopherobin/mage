@@ -2,12 +2,13 @@
 
 ## _NEXT_
 
-### Moved user commands response cache onto Archivist
+### Moved User Command Response Cache into Archivist
 
-The User Response Cache that is built into the command center protects your users from bad TCP
-connections dropping their data. It makes sure that under all circumstances, your client state stays
-consistent with the server state. This system has now been moved to Archivist, so to use it, please
-expose the two topics `ucResponseMeta` and `ucResponseData` in a manner similar to this:
+The user command response cache that is built into the command center protects your users from bad
+TCP connections dropping their data. It makes sure that under all circumstances, your client state
+stays consistent with the server state. This system has now been moved to Archivist, so to use it,
+please expose the two topics `ucResponseMeta` and `ucResponseData` in your `lib/archivist` in a
+manner similar to this:
 
 ```javascript
 exports.ucResponseMeta = {
