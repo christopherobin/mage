@@ -2,6 +2,46 @@
 
 ## _NEXT_
 
+### Moved User Command Response Cache into Archivist
+
+The user command response cache that is built into the command center protects your users from bad
+TCP connections dropping their data. It makes sure that under all circumstances, your client state
+stays consistent with the server state. This system has now been moved to Archivist, so to use it,
+please expose the two topics `ucResponseMeta` and `ucResponseData` in your `lib/archivist` in a
+manner similar to this:
+
+```javascript
+exports.ucResponseMeta = {
+	index: ['session'],
+	vaults: { memcached: true }
+};
+
+exports.ucResponseData = {
+	index: ['session'],
+	vaults: { memcached: true }
+};
+```
+
+If you want to change the TTL for this cache, you can do this per application you expose. This used
+to be done through `myApp.commandCenter.responseCacheTTL = 123;`, but that no longer works. The TTL
+is now defined in seconds in your configuration as:
+```json
+
+{
+	"apps": {
+		"mygame": {
+			"responseCache": 180
+		},
+		"tool": {
+			"responseCache": false
+		}
+	}
+}
+```
+
+A number will be used for TTL, false will indicate that you don't want to apply any response cache.
+
+
 ### `useModules` enhancement
 
 You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
