@@ -2,6 +2,7 @@
 
 ## _NEXT_
 
+
 ### Moved User Command Response Cache into Archivist
 
 The user command response cache that is built into the command center protects your users from bad
@@ -47,6 +48,7 @@ A number will be used for TTL, false will indicate that you don't want to apply 
 You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
 many arguments as you like, and you can mix and match arguments with module names and arrays of
 module names however you like.
+
 
 ## v0.12.0
 
