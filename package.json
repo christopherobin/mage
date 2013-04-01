@@ -11,7 +11,6 @@
 	"engines": {
 		"node": "0.8.x"
 	},
-	"main": "lib/mage",
 	"dependencies": {
 		"async": "0.1.22",
 		"mdns": "1.0.0",
@@ -35,6 +34,7 @@
 		"js-yaml": "2.0.3",
 		"config": "0.4.21"
 	},
+	"main": "lib/mage",
 	"devDependencies": {
 		"vows": "0.6.2",
 		"jshint": "1.1.x"
@@ -51,6 +51,6 @@
 		}
 	],
 	"scripts": {
-		"test": "NODE_PATH=lib node_modules/.bin/vows --spec"
+		"test": "node lib/testEngine"
 	}
 }
