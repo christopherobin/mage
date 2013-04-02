@@ -3,6 +3,19 @@
 ## _NEXT_
 
 
+### `useModules` enhancement
+
+You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
+many arguments as you like, and you can mix and match arguments with module names and arrays of
+module names however you like.
+
+
+### Bot module
+
+The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a readme that should
+get you started.
+
+
 ### Moved User Command Response Cache into Archivist
 
 The user command response cache that is built into the command center protects your users from bad
@@ -41,13 +54,6 @@ is now defined in seconds in your configuration as:
 ```
 
 A number will be used for TTL, false will indicate that you don't want to apply any response cache.
-
-
-### `useModules` enhancement
-
-You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
-many arguments as you like, and you can mix and match arguments with module names and arrays of
-module names however you like.
 
 
 ## v0.12.0
