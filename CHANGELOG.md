@@ -12,8 +12,8 @@ module names however you like.
 
 ### Bot module
 
-The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a readme that should
-get you started.
+The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
+[/lib/modules/bot/README.md](/lib/modules/bot/README.md) that should help get you started.
 
 
 ### Moved User Command Response Cache into Archivist

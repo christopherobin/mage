@@ -235,7 +235,7 @@ are trying to achieve. For some in-depth examples please talk with the mage team
 	var bot = mage.bot;
 
 	function botInitialise(cb) {
-		// What to do before we can actully begin running scenarios.
+		// What to do before we can actually begin running scenarios.
 	}
 
 	function botRun(cb) {
@@ -300,13 +300,13 @@ a browser.
 
 ### Browser
 
-Open your browser JS console and open the following page:
+Navigate to the following page (make sure your JS console is open to confirm that the bot is running):
 
 `http://<HOST>/app/bot/<BOT NAME>#psk=<PRE SHARED KEY>`
 
 ### PhantomJS
 
-Download the loader and running it with the arguments PSK and BOT NAME.
+Download the loader and run it with the arguments PSK and BOT NAME.
 
 ```bash
 curl -s http://<HOST>/app/bot/phantom | gunzip > phantom.js
