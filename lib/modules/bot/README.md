@@ -21,11 +21,13 @@
 [back to top](#how-to-write-a-bot)
 
 ### Server API
+
 - lib/bot.js:  Registers bot pages and missing API functions
 - lib/index.js: Includes lib/bot.js and exposes the API
 - configs/game/custom.js: Add configurations for the bot app & module
 
 ### JS Driven Client:
+
 - www/botScenarios/&lt;SCENARIO GROUP&gt;.js: Registers scenario functions
 - www/botPages/&lt;BOT NAME&gt;/script.js: This is where the magic happens, this is your loader/landing/bot logic.
 - www/botPages/&lt;BOT NAME&gt;/page.html: Wrapper html page which includes above bot script.
@@ -64,7 +66,7 @@ bot.register('createBotPlayer', function (state, args, cb) {
 	// Identify as bot player i.e. props.set('isBot', true);
 
 	// Set game specific player properties i.e. props.set('mana', mana);
-	
+
 	// ....
 	// General create player routine
 	// ....
@@ -110,8 +112,7 @@ function setupBot(cb) {
 		// Expose game user commands under botApp
 		exposeGameUserCommands(botApp);
 
-		// Expose app
-		botApp.expose(cb);
+		cb();
 	});
 }
 
@@ -167,10 +168,6 @@ Here we will need to add two sections to the config. apps.bot & module.bot
 ```
 
 
-
-
-
-
 ## Testing API
 [back to top](#how-to-write-a-bot)
 
@@ -186,14 +183,8 @@ curl --url http://<HOST>/bot/<USER COMMAND> \
 ```
 
 
-
-
-
-
-
 ## JS Driven Client
 [back to top](#how-to-write-a-bot)
-
 
 
 ### www/botScenarios/&lt;SCENARIO GROUP&gt;.js
@@ -225,10 +216,6 @@ examples please talk with the mage team.
 }(window));
 ```
 
-
-
-
-
 ### www/botPages/&lt;BOT NAME&gt;/script.js
 [back to top](#how-to-write-a-bot)
 
@@ -245,24 +232,19 @@ are trying to achieve. For some in-depth examples please talk with the mage team
 // Bot Logic
 (function (window) {
 	var mage = window.mage;
-	var missions = mage.missions;
 	var bot = mage.bot;
 
-
 	function botInitialise(cb) {
-		// What to do before we can actully begin running scenarios
+		// What to do before we can actually begin running scenarios.
 	}
-
 
 	function botRun(cb) {
-		// Botting routine, this is where we run our scenarios
+		// Botting routine, this is where we run our scenarios.
 	}
-
 
 	function botClose() {
-		// Cleanup routine. Let's be clean about our operations, shall we
+		// Cleanup routine.
 	}
-
 
 	// Logic flow
 	botInitialise(function (error) {
@@ -298,13 +280,11 @@ $dir.js("./");
 ```
 
 
-
 ### www/libgame/nextTick.js
 [back to top](#how-to-write-a-bot)
 
 This file can be directly copied from anyone of the games which have it. If in
 doubt please talk with the mage team.
-
 
 
 ## Testing client
@@ -319,13 +299,15 @@ a browser.
 
 
 ### Browser
-Open your browser JS console and open the following page
-```bash
-http://<HOST>/app/bot/<BOT NAME>#psk=<PRE SHARED KEY>
-```
+
+Navigate to the following page (make sure your JS console is open to confirm that the bot is running):
+
+`http://<HOST>/app/bot/<BOT NAME>#psk=<PRE SHARED KEY>`
 
 ### PhantomJS
-Download the loader and running it with the arguments PSK and BOT NAME
+
+Download the loader and run it with the arguments PSK and BOT NAME.
+
 ```bash
 curl -s http://<HOST>/app/bot/phantom | gunzip > phantom.js
 phantomjs phantom.js <PRE SHARED KEY> <BOT NAME>
