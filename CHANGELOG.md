@@ -1,6 +1,6 @@
 # Changelog
 
-## _NEXT_
+## v0.12.1
 
 
 ### `useModules` enhancement
