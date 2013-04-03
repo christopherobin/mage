@@ -1,0 +1,13 @@
+{
+  "name": "logger",
+  "description": "The logger, for MAGE.",
+  "version": "0.0.1",
+  "local": [ "msgServer" ],
+  "dependencies": {
+  	"component/emitter": "*"
+  },
+  "scripts": [
+    "client.js"
+  ],
+  "main": "client.js"
+}
