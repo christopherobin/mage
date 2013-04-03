@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.12.0",
+	"version": "0.12.1",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -9,7 +9,7 @@
 		"url": "http://github.com/Wizcorp/mage/issues"
 	},
 	"engines": {
-		"node": ">=0.8.2"
+		"node": "0.8.x"
 	},
 	"main": "lib/mage",
 	"dependencies": {
