@@ -9,7 +9,8 @@
   "scripts": [
     "client.js",
     "transports/http/client.js",
-    "transports/http-longpolling/client.js"
+    "transports/http-longpolling/client.js",
+    "transports/http-shortpolling/client.js"
   ],
   "main": "client.js"
 }
