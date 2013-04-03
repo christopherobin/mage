@@ -1,6 +1,26 @@
 # Changelog
 
-## _NEXT_
+## v0.12.2
+
+Fixed a bug that prevented master and worker processes from finding each other in MMRP.
+This bug was introduced in v0.12.0, so everybody using either v0.12.0 or v0.12.1 is encouraged
+to upgrade!
+
+
+## v0.12.1
+
+
+### `useModules` enhancement
+
+You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
+many arguments as you like, and you can mix and match arguments with module names and arrays of
+module names however you like.
+
+
+### Bot module
+
+The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
+[/lib/modules/bot/README.md](/lib/modules/bot/README.md) that should help get you started.
 
 
 ### Moved User Command Response Cache into Archivist
@@ -41,13 +61,6 @@ is now defined in seconds in your configuration as:
 ```
 
 A number will be used for TTL, false will indicate that you don't want to apply any response cache.
-
-
-### `useModules` enhancement
-
-You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
-many arguments as you like, and you can mix and match arguments with module names and arrays of
-module names however you like.
 
 
 ## v0.12.0
