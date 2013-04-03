@@ -1,6 +1,6 @@
 # Changelog
 
-## __NEXT__
+## v0.12.2
 
 Fixed a bug that prevented master and worker processes from finding each other in MMRP.
 This bug was introduced in v0.12.0, so everybody using either v0.12.0 or v0.12.1 is encouraged
