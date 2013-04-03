@@ -8,7 +8,8 @@
   },
   "scripts": [
     "client.js",
-    "transports/http/client.js"
+    "transports/http/client.js",
+    "transports/http-longpolling/client.js"
   ],
   "main": "client.js"
 }
