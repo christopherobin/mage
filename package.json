@@ -30,15 +30,11 @@
 		"oauth": "0.9.10",
 		"node-uuid": "1.4.0",
 		"jsonlint": "1.5.1",
-<<<<<<< HEAD
 		"panopticon": "0.1.1",
 		"js-yaml": "2.0.3",
-		"config": "0.4.21"
-=======
+		"config": "0.4.21",
 		"component-builder": "*",
-		"panopticon": "0.1.1",
 		"semver": "*"
->>>>>>> 0014fa614c03d9002aedd311ae794543c91d5f53
 	},
 	"main": "lib/mage",
 	"devDependencies": {
