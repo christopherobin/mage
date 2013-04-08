@@ -1,0 +1,7 @@
+{
+	"bind": {
+		"protocol": "http",
+		"file": "./stats.sock"
+	},
+	"sampleMage": true
+}
