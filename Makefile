@@ -11,7 +11,7 @@ clean:
 
 # target: install, Installs all Node.js dependencies.
 install:
-	npm install
+	./scripts/install.sh
 
 # target: test, Runs all tests.
 test:

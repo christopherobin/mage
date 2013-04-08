@@ -1,0 +1,16 @@
+{
+  "name": "msgServer",
+  "description": "The io layer for MAGE.",
+  "version": "0.0.1",
+  "dependencies": {
+    "component/emitter": "*",
+    "component/inherit": "*"
+  },
+  "scripts": [
+    "client.js",
+    "transports/http/client.js",
+    "transports/http-longpolling/client.js",
+    "transports/http-shortpolling/client.js"
+  ],
+  "main": "client.js"
+}
