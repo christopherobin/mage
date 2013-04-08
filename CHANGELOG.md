@@ -1,5 +1,14 @@
 # Changelog
 
+## v__NEXT__
+
+Fixed a bug with msgServer that caused events to not be emitted on the client when an event was
+stored after an event had already been emitted to the client and the communication channel
+disconnected.
+
+Changed the generated usercommands to use new Function so that developers can see what parameters
+are available for the usercommand.
+
 ## v0.12.2
 
 Fixed a bug that prevented master and worker processes from finding each other in MMRP.
