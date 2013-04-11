@@ -11,7 +11,7 @@
   ],
   "paths": [ "lib" ],
   "scripts": [
-    "lib/client.js"
+    "lib/main/client.js"
   ],
-  "main": "lib/client.js"
+  "main": "lib/mage/client.js"
 }
