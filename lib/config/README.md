@@ -1,14 +1,14 @@
 # Configuration
 
 Configuration is hierarchical, and based upon the `NODE_ENV` environment variable. Configuration
-can be found in a number of places, and may be either JSON or YAML. In ascending importance:
+can be found in a number of places, and may be either JSON or YAML. In **ascending** importance:
 
  1. Module `default` files
  2. Game `default` file
- 3. Personal configuration file.
+ 3. Personal configuration file
 
-These are loaded in order, so if a field exists in the game default configuration, and also in a
-module default configuration, then the game configuration wins.
+For example, if a field exists in the game default configuration, and also in a module default
+configuration, then the game configuration wins.
 
 ## Module default files
 
@@ -45,15 +45,15 @@ configuration object will look like (considering only the added data):
 }
 ```
 
-Remember, this is the lowest importance of configuration. If you can choose to override it with
-the game default configuration file, or a personal configuration file.
+Remember, this is the lowest importance of configuration. You can choose to override it with the
+game default configuration file, or a personal configuration file.
 
 ## Game default file
 
 The game default file should contain fields common to, or sensible as defaults in, all
 environments. Remember, the production and personal configurations files override the content of
 this file, so having things in here does not limit you. This file lives in the top level of your
-game project, in the `config/`.
+game project, in the `config/` folder.
 
 ## Personal configuration file
 
@@ -62,29 +62,14 @@ configuration. These files live in the `config/` directory along with the `defau
 file. The value of `NODE_ENV` should be equal to the name of the configuration file you want to
 use, sans extension. i.e. If your `NODE_ENV` resolves to `me`, then the personal configuration file
 to be used should be called `me.json` or `me.yaml` (don't have both in the directory, just don't).
-Make sure you set this environment variable in you `.bash_profile` or `.profile` so you don't have
+Make sure you set this environment variable in your `.bash_profile` or `.profile` so you don't have
 to keep typing it.
-
-
-Configuration is now read and managed differently (no more of that soft linking business). At the
-top level of your project there should be a `config` directory. This is configurable with an
-environment variable, but we do not recommend doing so. In this directory, there should be a
-`default` configuration file. This is always read, and should contain sensible defaults where
-where possible. To use a particular configuration file, the name must match the `NODE_ENV`
-environment variable. We recommend you set this to your initials in your `.bash_profile`. When the
-game boots, your configuration file is merged with the default file, with your configuration
-overriding the default. This should allow your configuration to be small.
-
-Modules may include their own defaults. In the module directory a file called `default` will be
-loaded. This resolves to `mage.core.config.module[<module name>]`. This module default is
-considered the least significant, and the game `config` file (and thus personal configurations)
-will overrule it. You are encouraged to use module default configurations.
 
 ## Methods
 
 The methods of the configuration object should be avoided most of the time and are mainly for mage
 internal use. However, there may be cases for which configuration is automatically generated etc.
-, in which case these methods may be useful.
+, when these methods may be useful.
 
 `mage.core.config` exposes the following methods:
 
@@ -107,5 +92,5 @@ module default configuration file. This mechanism is used when Mage loads module
 A safe getter function, so you don't have to check the existence of keys or wrap a try-catch
 around your code. The `modulePath` should be an array of keys of increasing depth. The optional
 `alt` parameter is a value to use if there is no value found at this path. By default `undefined`
-will be returned if the object does not have this path. It should not be necessary to
-use this function in most cases if you have module defaults.
+will be returned if the object does not have this path. It should not be necessary to use this
+function in most cases if you have module defaults.
