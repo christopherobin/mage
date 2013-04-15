@@ -51,7 +51,7 @@ game default configuration file, or a personal configuration file.
 ## Game default file
 
 The game default file should contain fields common to, or sensible as defaults in, all
-environments. Remember, the production and personal configurations files override the content of
+environments. Remember, the production and personal configuration files override the content of
 this file, so having things in here does not limit you. This file lives in the top level of your
 game project, in the `config/` folder.
 
