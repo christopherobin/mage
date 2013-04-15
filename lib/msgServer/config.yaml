@@ -1,0 +1,13 @@
+clientHost:
+	protocol: http
+	transports:
+		longpolling:
+			heartbeat: 120
+	bind:
+		protocol: http
+		file: ./server.sock
+
+# You will need to add a host and port o expose on.
+# expose:
+# 	host: sanbox.me.node.wizcorp.jp
+# 	port: 80

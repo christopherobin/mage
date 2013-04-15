@@ -3,7 +3,7 @@
 Configuration is hierarchical, and based upon the `NODE_ENV` environment variable. Configuration
 can be found in a number of places, and may be either JSON or YAML. In **ascending** importance:
 
- 1. Module `default` files
+ 1. Module `config` files
  2. Game `default` file
  3. Personal configuration file
 
@@ -24,7 +24,7 @@ A typical module is a folder that may look like:
 
 When you tell Mage to use a module, it will automatically know that it should look for and load the
 default configuration file. It may be a YAML or a JSON file. Your choice. If no file is found, then
-Mage doesn't mind and assumes that no configuration was necessary. A `default.yaml` file that
+Mage doesn't mind and assumes that no configuration was necessary. A `config.yaml` file that
 looks like:
 
 ```yaml
@@ -85,7 +85,8 @@ intended for Mage internal use and should not be used in games.
 ### `setModuleDefault`
 
 Used to define the default configuration of a game module. This should be avoided in favour of the
-module default configuration file. This mechanism is used when Mage loads module default files.
+module default configuration file. This mechanism is used when Mage loads module default
+configuration files.
 
 ### `get`
 
