@@ -20,7 +20,7 @@ A typical module is a folder that may look like:
   - `index.js`
   - `client.js`
   - `component.json`
-  - `default.json`
+  - `config.yaml`
 
 When you tell Mage to use a module, it will automatically know that it should look for and load the
 default configuration file. It may be a YAML or a JSON file. Your choice. If no file is found, then
