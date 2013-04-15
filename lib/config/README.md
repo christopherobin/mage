@@ -76,6 +76,7 @@ internal use. However, there may be cases for which configuration is automatical
  - `setDefaults(defaults);`
  - `setModuleDefault(moduleName, defualtObject);`
  - `get(modulePath, [alt]);`
+ - `loadModuleConfig(moduleName, modulePath);`
 
 ### `setDefaults`
 
@@ -95,3 +96,8 @@ around your code. The `modulePath` should be an array of keys of increasing dept
 `alt` parameter is a value to use if there is no value found at this path. By default `undefined`
 will be returned if the object does not have this path. It should not be necessary to use this
 function in most cases if you have module defaults.
+
+### `loadModuleConfig`
+
+This should be used by Mage only. This function is used when Mage is setting up a module, and is
+responsible for loading the default configuration file, if one exists.
