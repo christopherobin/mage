@@ -74,7 +74,7 @@ internal use. However, there may be cases for which configuration is automatical
 `mage.core.config` exposes the following methods:
 
  - `setDefaults(defaults);`
- - `setModuleDefault(moduleName, defualtObject);`
+ - `setModuleDefault(moduleName, defaultObject);`
  - `get(modulePath, [alt]);`
  - `loadModuleConfig(moduleName, modulePath);`
 
