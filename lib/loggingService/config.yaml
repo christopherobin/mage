@@ -1,0 +1,6 @@
+server:
+    terminal:
+        channels: [ ">=verbose" ]
+        config:
+            jsonIndent: 2
+            theme: default
