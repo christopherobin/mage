@@ -29,7 +29,7 @@
 		"tomes": "0.0.14",
 		"oauth": "0.9.10",
 		"node-uuid": "1.4.0",
-		"jsonlint": "1.5.1",
+		"jsonlint": "1.6.0",
 		"panopticon": "0.1.1",
 		"js-yaml": "2.0.4",
 		"config": "0.4.21",
