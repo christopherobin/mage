@@ -7,7 +7,7 @@ clientHost:
         protocol: http
         file: ./server.sock
 
-# You will need to add a host and port o expose on.
+# You will need to add a host and port to expose on.
 # expose:
-# 	host: sanbox.me.node.wizcorp.jp
+# 	host: sandbox.me.node.wizcorp.jp
 # 	port: 80
