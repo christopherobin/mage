@@ -10,15 +10,14 @@ var Mocha = require('mocha');
 
 var contents;
 
-try {
-	contents = fs.readdirSync('./lib');
-	contents.concat(fs.readdirSync('./lib/modules'));
-} catch (e) {
-	console.log(e.stack || e.message);
-	return process.exit(1);
+function listInPath(route) {
+	return fs.readdirSync(route).map(function (partialPath) {
+		return path.join(route, partialPath);
+	}).sort();
 }
 
-contents.sort();
+contents = listInPath('./lib');
+contents = contents.concat(listInPath('./lib/modules'));
 
 // Filter out hidden stuff and non-directories, then sort lexigraphically.
 var contentPath = contents.reduce(function (stack, item) {
@@ -27,35 +26,20 @@ var contentPath = contents.reduce(function (stack, item) {
 		return stack;
 	}
 
-	// Ignore this directory.
-	if (item === 'testEngine') {
-		return stack;
-	}
-
-	// Resolve an absolute path.
-	var resolvedPath = path.join(path.resolve('./lib'), item);
-
 	// Ignore things that aren't directories.
-	if (!fs.statSync(resolvedPath).isDirectory()) {
+	if (!fs.statSync(item).isDirectory()) {
 		return stack;
 	}
 
 	// Check for test files and subdirectories.
-	var testDir = path.join(resolvedPath, 'test');
-	var testFile = path.join(resolvedPath, 'test.js');
+	var testDir = path.join(item, 'test');
+	var testFile = path.join(item, 'test.js');
 
-	// If there is a test directory.
+	// If there is a test directory, then we add all the valid files in the directory to the stack.
 	if (fs.existsSync(testDir)) {
-
-		// If there is an index file, then this is a module and the directory is added to the stack.
-		if (fs.existsSync(path.join(testDir, 'index.js'))) {
-			return stack.concat(testDir);
-		}
-
-		// If there is no index file, then we add all the files in the directory to the stack.
-		return stack.concat(fs.readdirSync(testDir).map(function (file) {
-			return path.join(testDir, file);
-		}));
+		return stack.concat(fs.readdirSync(testDir).reduce(function (stack, file) {
+			return path.extname(file) === '.js' ? stack.concat(path.join(testDir, file)) : stack;
+		}, []));
 	}
 
 	// If there is a test file, just add the file to the stack.
@@ -66,7 +50,7 @@ var contentPath = contents.reduce(function (stack, item) {
 	return stack;
 }, []);
 
-//console.log('stack:', contentPath);
+console.log('stack:', contentPath);
 
 var mocha = new Mocha();
 mocha.reporter('spec');
