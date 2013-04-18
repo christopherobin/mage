@@ -50,8 +50,6 @@ var contentPath = contents.reduce(function (stack, item) {
 	return stack;
 }, []);
 
-console.log('stack:', contentPath);
-
 var mocha = new Mocha();
 mocha.reporter('spec');
 
