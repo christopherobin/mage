@@ -93,14 +93,6 @@ them under the bot app. For a working example please talk with the mage team.
 
 
 ```javascript
-// ....
-
-function exposeGameUserCommands(app) {
-	// Your app.commandCenter.expose game specific user commands
-}
-
-// ....
-
 function setupBot(cb) {
 	logger.info('Setting up BOT interface');
 
@@ -108,24 +100,19 @@ function setupBot(cb) {
 	require('./bot.js');
 
 	// Create bot API
-	mage.bot.createAPI(function (botApp) {
-		// Expose game user commands under botApp
-		exposeGameUserCommands(botApp);
-
-		cb();
-	});
+	cb();
 }
 
 // ....
 
-mage.setup(configFiles, function () {
+mage.setup(function () {
 	async.series([
 		...
 		setupBot,
 		...
 	], function (error) {
 		if (error) {
-			mage.fatalError(error);
+			return mage.fatalError(error);
 		}
 	});
 });
@@ -143,6 +130,7 @@ Here we will need to add two sections to the config. apps.bot & module.bot
 {
 	"apps": {
 		"bot": {
+			"access": "user",
 			"delivery": {
 				"serverCache": false,
 				"useManifest": false,
