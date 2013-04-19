@@ -1,5 +1,5 @@
 /**
- * The test engine module.
+ * The test engine module. The exit status is the number of test failures.
  */
 
 var Mocha = require('mocha');
@@ -22,7 +22,6 @@ function globComplete() {
 		return;
 	}
 
-	// The exit status is the number of test failures.
 	mocha.run(process.exit);
 }
 
