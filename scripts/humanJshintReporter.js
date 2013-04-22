@@ -10,6 +10,7 @@
  * jshint someFile.js --config /path/to/config.cfg --reporter /path/to/jshintReporter.js
  *
  * Mark Stanley Everitt, 2013
+ * send pull requests to: https://gist.github.com/qubyte/5430269
  * licence: MIT
  */
 
@@ -64,6 +65,7 @@ exports.reporter = function (data) {
 
 	var splitUp = splitByFile(data);
 	var fileNames = Object.keys(splitUp).sort();
+	var numFiles = fileNames.length;
 
 	fileNames.forEach(function (fileName) {
 		console.log('Errors in file:'.blue.bold, fileName);
@@ -94,7 +96,7 @@ exports.reporter = function (data) {
 		}
 	});
 
-	console.log((data.length + ' errors found in ' + fileNames.length + ' files:').red.bold);
+	console.log((data.length + ' errors found in ' + numFiles + ' file' + (numFiles === 1 ? ':' : 's:')).red.bold);
 
 	fileNames.forEach(function (fileName) {
 		console.log('  ' + fileName);

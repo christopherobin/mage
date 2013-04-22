@@ -9,7 +9,8 @@
 path=`pwd`
 cd `git rev-parse --show-toplevel`
 
-staged=`git diff --name-only --cached |grep -e '\.js$'`
+staged=`git diff --name-only --cached | grep -e '\.js$'`
+
 if [[ -z "$staged" ]]
 then
 	echo No staged JavaScript files to lint.
