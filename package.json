@@ -32,14 +32,17 @@
 		"jsonlint": "1.6.0",
 		"panopticon": "0.1.1",
 		"js-yaml": "2.0.4",
-		"config": "0.4.21",
+		"config": "0.4.23",
 		"component-builder": "*",
 		"semver": "*"
 	},
 	"main": "lib/mage",
 	"devDependencies": {
 		"jshint": "1.1.x",
-		"nodeunit": "0.7.4"
+		"mocha": "1.9.x"
+	},
+	"scripts": {
+		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec"
 	},
 	"repository": {
 		"type": "git",
