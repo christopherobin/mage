@@ -17,7 +17,7 @@ then
 	exit 0
 fi
 
-./node_modules/.bin/jshint $files --config ./scripts/jshint.cfg
+./node_modules/.bin/jshint $files --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js
 exitCode=$?
 
 cd "$path"
