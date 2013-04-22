@@ -10,9 +10,9 @@
 There is a new, simple rights management system in MAGE based on *access levels*. There are exactly
 three access levels in place:
 
-* anonymous
-* user
-* admin
+1. anonymous
+2. user
+3. admin
 
 From now on, all user commands are internally marked with an access level. That means that only
 users who are running a session that gives them the right access level will be able to execute it.
@@ -97,7 +97,8 @@ can register pages on it, etc. You have access to the apps from the moment your 
 mage.setup(function (error, appsMap) {
 	// appsMap is a key/value map that contains:
 	// { gamename: WebAppInstance, tool: WebAppInstance }
-});`
+});
+```
 
 The `readyToStart` event that fires on the `mage` instance also carries this key/value map as its
 only argument. Alternatively, apps can be accessed through the following APIs:
