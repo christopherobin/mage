@@ -1,0 +1,34 @@
+.mage-page {
+    background: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#loginContainer {
+	width: 50%;
+	margin: auto;
+}
+
+#loginContainer .logo {
+	font-size: 28px;
+	font-weight: bold;
+	margin: auto;
+	width: 50%;
+	margin-bottom: 20px;
+	text-align: center;
+    background: url('mui://img/mage_logo_white_font');
+}
+
+#loginContainer form {
+	position: relative;
+	width: 300px;
+	margin: auto;
+}
+
+#loginContainer form .loginLabel {
+	display: inline-block;
+	width: 60px;
+}
