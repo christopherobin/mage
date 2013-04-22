@@ -9,7 +9,7 @@
 path=`pwd`
 cd `git rev-parse --show-toplevel`
 
-staged=`git diff --name-only --cached | grep -e '\.js$'`
+staged=`git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\.js$'`
 
 if [[ -z "$staged" ]]
 then
