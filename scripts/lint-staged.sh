@@ -16,30 +16,9 @@ then
 	exit 0
 fi
 
-exitCode=0
-let success=0
-let failures=0
-
-for file in $staged
-do
-	# ignore non-existing files (caused by renames or removal)
-	if [[ -e $file ]]
-	then
-		./node_modules/.bin/jshint $file --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js
-		if [[ $? != 0 ]]
-		then
-			exitCode=1
-			let failures=$failures+1
-		else
-			let success=$success+1
-		fi
-	fi
-done
-
-echo "LINT failures: $failures"
-echo "LINT successes: $success"
+./node_modules/.bin/jshint $staged --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js
+exitCode=$?
 
 cd "$path"
 
 exit $exitCode
-
