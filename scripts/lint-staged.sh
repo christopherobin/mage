@@ -25,7 +25,7 @@ do
 	# ignore non-existing files (caused by renames or removal)
 	if [[ -e $file ]]
 	then
-		./node_modules/.bin/jshint $file --config ./scripts/jshint.cfg
+		./node_modules/.bin/jshint $file --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js
 		if [[ $? != 0 ]]
 		then
 			exitCode=1
