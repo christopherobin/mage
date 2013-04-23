@@ -34,7 +34,8 @@
 		"js-yaml": "2.0.4",
 		"config": "0.4.23",
 		"component-builder": "git+https://github.com/Wizcorp/builder.js.git#master",
-		"semver": "*"
+		"semver": "*",
+		"mime": "1.2.9"
 	},
 	"main": "lib/mage",
 	"devDependencies": {
