@@ -3,6 +3,28 @@
 ## v__NEXT__
 
 
+### Asset serving in MAGE
+
+That's right, MAGE can now serve your assets! This is not battle tested and we do not promote the
+usage of this feature in production, but it makes your development cycle a bit easier.
+
+To enable this, simply leave out the base URL configuration from your config file at:
+```json
+{
+	"module": {
+		"assets": {
+			"baseUrl": {
+				"webview": "http://this.one/gets/to/stay"
+			}
+		}
+	}
+}
+```
+
+MAGE will automatically fall back to built-in asset hosting for asset contexts that do not have a
+configured base URL.
+
+
 ### User command system overhaul
 
 #### Access levels
