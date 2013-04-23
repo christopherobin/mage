@@ -2,7 +2,6 @@
 
 ## v__NEXT__
 
-
 ### Asset serving in MAGE
 
 That's right, MAGE can now serve your assets! This is not battle tested and we do not promote the
@@ -178,10 +177,61 @@ stored after an event had already been emitted to the client and the communicati
 disconnected.
 
 
+### ClientHost configuration
+
+The "expose" config entry for "clientHost" is now encouraged to be a full URL string. Even a partial
+path is allowed if you're behind a proxy that demands it.
+
+This means that both of these are valid:
+```json
+{
+	"server": {
+		"clientHost": {
+			"protocol": "http",
+			"transports": {
+				"longpolling": { "heartbeat": 60 }
+			},
+			"bind": { "file": "./server.sock" },
+			"expose": { "host": "mygame.myname.node.wizcorp.jp", "port": 1234 }
+		}
+	}
+}
+```
+
+```json
+{
+	"server": {
+		"clientHost": {
+			"protocol": "http",
+			"transports": {
+				"longpolling": { "heartbeat": 60 }
+			},
+			"bind": { "file": "./server.sock" },
+			"expose": "http://mygame.myname.node.wizcorp.jp:1234"
+		}
+	}
+}
+```
+
+### Archivist
+
+#### Cleanup
+
+Vaults are now more cleanly closed on MAGE shutdown.
+
+#### FileVault
+
+Meta information is now stored in separate `.filevault` files alongside the files that contain the
+actual data that you store.
+
+
 ### Other small improvements
 
 Changed the generated usercommands to use new Function so that developers can see what parameters
 are available for the usercommand.
+
+The component-builder package got bumped to the latest version + a patch by Micky that solves an
+annoying bug (but which has not yet been merged or released).
 
 
 ## v0.12.2
