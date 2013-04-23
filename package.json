@@ -33,7 +33,7 @@
 		"panopticon": "0.1.1",
 		"js-yaml": "2.0.4",
 		"config": "0.4.23",
-		"component-builder": "*",
+		"component-builder": "~0.7.0",
 		"semver": "*"
 	},
 	"main": "lib/mage",
