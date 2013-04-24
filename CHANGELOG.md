@@ -1,6 +1,6 @@
 # Changelog
 
-## v__NEXT__
+## v0.13.0
 
 ### Asset serving in MAGE
 
