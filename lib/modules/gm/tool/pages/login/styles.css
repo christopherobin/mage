@@ -1,5 +1,6 @@
 .mage-page {
     background: transparent;
+    color: inherit;
     position: absolute;
     top: 0;
     left: 0;
@@ -7,31 +8,18 @@
     bottom: 0;
 }
 
-#loginContainer {
-}
-
-#loginContainer .logo {
-	margin: 100px auto 20px auto;
-	text-align: center;
-    background: url('mui://img/mage_logo_white_font');
-    width: 200px;
-    height: 200px;
-    background-size: 100% 100%;
-}
-
-#loginContainer form {
-}
-
-#loginContainer form div {
+/*
+form div {
     width: 260px;
     margin: 0 auto 15px auto;
 }
 
-#loginContainer form label {
+form label {
     display: block;
 }
 
-#loginContainer form input {
+form input {
     width: 260px;
     font-size: 15px;
 }
+*/
