@@ -8,27 +8,30 @@
 }
 
 #loginContainer {
-	width: 50%;
-	margin: auto;
 }
 
 #loginContainer .logo {
-	font-size: 28px;
-	font-weight: bold;
-	margin: auto;
-	width: 50%;
-	margin-bottom: 20px;
+	margin: 100px auto 20px auto;
 	text-align: center;
     background: url('mui://img/mage_logo_white_font');
+    width: 200px;
+    height: 200px;
+    background-size: 100% 100%;
 }
 
 #loginContainer form {
-	position: relative;
-	width: 300px;
-	margin: auto;
 }
 
-#loginContainer form .loginLabel {
-	display: inline-block;
-	width: 60px;
+#loginContainer form div {
+    width: 260px;
+    margin: 0 auto 15px auto;
+}
+
+#loginContainer form label {
+    display: block;
+}
+
+#loginContainer form input {
+    width: 260px;
+    font-size: 15px;
 }
