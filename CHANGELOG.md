@@ -3,6 +3,30 @@
 ## v__NEXT__
 
 
+## v0.13.0
+
+### Asset serving in MAGE
+
+That's right, MAGE can now serve your assets! This is not battle tested and we do not promote the
+usage of this feature in production, but it makes your development cycle a bit easier.
+
+To enable this, simply leave out the base URL configuration from your config file at:
+```json
+{
+	"module": {
+		"assets": {
+			"baseUrl": {
+				"webview": "http://this.one/gets/to/stay"
+			}
+		}
+	}
+}
+```
+
+MAGE will automatically fall back to built-in asset hosting for asset contexts that do not have a
+configured base URL.
+
+
 ### User command system overhaul
 
 #### Access levels
@@ -156,10 +180,61 @@ stored after an event had already been emitted to the client and the communicati
 disconnected.
 
 
+### ClientHost configuration
+
+The "expose" config entry for "clientHost" is now encouraged to be a full URL string. Even a partial
+path is allowed if you're behind a proxy that demands it.
+
+This means that both of these are valid:
+```json
+{
+	"server": {
+		"clientHost": {
+			"protocol": "http",
+			"transports": {
+				"longpolling": { "heartbeat": 60 }
+			},
+			"bind": { "file": "./server.sock" },
+			"expose": { "host": "mygame.myname.node.wizcorp.jp", "port": 1234 }
+		}
+	}
+}
+```
+
+```json
+{
+	"server": {
+		"clientHost": {
+			"protocol": "http",
+			"transports": {
+				"longpolling": { "heartbeat": 60 }
+			},
+			"bind": { "file": "./server.sock" },
+			"expose": "http://mygame.myname.node.wizcorp.jp:1234"
+		}
+	}
+}
+```
+
+### Archivist
+
+#### Cleanup
+
+Vaults are now more cleanly closed on MAGE shutdown.
+
+#### FileVault
+
+Meta information is now stored in separate `.filevault` files alongside the files that contain the
+actual data that you store.
+
+
 ### Other small improvements
 
 Changed the generated usercommands to use new Function so that developers can see what parameters
 are available for the usercommand.
+
+The component-builder package got bumped to the latest version + a patch by Micky that solves an
+annoying bug [see: pull request](https://github.com/component/builder.js/pull/81).
 
 
 ## v0.12.2

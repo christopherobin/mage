@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.12.2",
+	"version": "0.13.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -33,8 +33,9 @@
 		"panopticon": "0.1.1",
 		"js-yaml": "2.0.4",
 		"config": "0.4.23",
-		"component-builder": "*",
-		"semver": "*"
+		"component-builder": "git+https://github.com/Wizcorp/builder.js.git#master",
+		"semver": "*",
+		"mime": "1.2.9"
 	},
 	"main": "lib/mage",
 	"devDependencies": {
