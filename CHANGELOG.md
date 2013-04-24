@@ -1,5 +1,239 @@
 # Changelog
 
+## v0.13.0
+
+### Asset serving in MAGE
+
+That's right, MAGE can now serve your assets! This is not battle tested and we do not promote the
+usage of this feature in production, but it makes your development cycle a bit easier.
+
+To enable this, simply leave out the base URL configuration from your config file at:
+```json
+{
+	"module": {
+		"assets": {
+			"baseUrl": {
+				"webview": "http://this.one/gets/to/stay"
+			}
+		}
+	}
+}
+```
+
+MAGE will automatically fall back to built-in asset hosting for asset contexts that do not have a
+configured base URL.
+
+
+### User command system overhaul
+
+#### Access levels
+
+There is a new, simple rights management system in MAGE based on *access levels*. There are exactly
+three access levels in place:
+
+1. anonymous
+2. user
+3. admin
+
+From now on, all user commands are internally marked with an access level. That means that only
+users who are running a session that gives them the right access level will be able to execute it.
+Marking a user command with access level "anonymous" means that anyone may execute it. At the
+other extreme, marking a user command as "admin" means that only administrators may execute it.
+
+You can mark a user command with an access level, inside the user command code by writing:
+
+```javascript
+exports.access = 'user';
+```
+
+Failing to do so, will mark the user command as "admin", which means nobody but administrators will
+be able to execute it (secure by default).
+
+When people do not yet have a session, they are considered "anonymous" and can only execute user
+commands marked as *access level "anonymous"*. Some typical examples here are: time-sync, login.
+At the time of session registration, an access level should be set by passing the right meta object
+into the session API. For example:
+
+```javascript
+// access may be: "anonymous", "user" or "admin"
+
+mage.session.register(state, actorId, language, { access: 'user' }, function (error, session) {
+});
+```
+
+Make sure your game executes that logic correctly.
+
+
+#### Code removal
+
+Because of the new access level system, you no longer have to configure your command centers. That
+means you get to **remove** a lot of code, namely:
+
+1. all calls like `myApp = new mage.core.app.web.WebApp('gamename', { languages: ['en'], densities: [1], screens: [[1, 1]] });`
+2. all calls like `myApp.commandCenter.expose(...);`
+
+The WebApp instantiation is now done automatically, and is driven by your configuration (note
+especially `access`, `disabled` and `clientConfigs`, which are new):
+
+```json
+{
+	"apps": {
+		"gamename": {
+			"responseCache": 1200,
+			"access": "user",
+			"disabled": false,
+			"delivery": {
+				"clientConfigs": {
+					"languages": ["en"],
+					"densities": [1],
+					"screens": [[1, 1]]
+				},
+				"serverCache": false,
+				"useManifest": false,
+				"compress": true,
+				"postprocessors": {
+					"css": "less",
+					"js": []
+				}
+			}
+		}
+	}
+}
+```
+
+The `access` property for your application describes the access level up to which user commands
+should be exposed. The checks needed to ensure security do not depend on this setting.
+
+By setting `disabled` to true, you can prevent the app from being created. By default, every app
+mentioned under `apps` in your configuration will be enabled.
+
+The `clientConfigs` object is no different from what you used to feed into the `WebApp` constructor.
+The structure you see in the example above is also the default, so you may leave it out completely.
+
+Because you no longer create the WebApp instance yourself, you need another way to access it, so you
+can register pages on it, etc. You have access to the apps from the moment your callback from
+`mage.setup()` runs. That callback is now given two arguments:
+
+```javascript
+mage.setup(function (error, appsMap) {
+	// appsMap is a key/value map that contains:
+	// { gamename: WebAppInstance, tool: WebAppInstance }
+});
+```
+
+The `readyToStart` event that fires on the `mage` instance also carries this key/value map as its
+only argument. Alternatively, apps can be accessed through the following APIs:
+
+```javascript
+var myApp = mage.core.app.get('gamename');
+var myArrayOfApps = mage.core.app.getAppList();
+var myMapOfApps = mage.core.app.getAppMap();
+```
+
+#### Migration
+
+To update your user commands to be set to "user" access level, save this script in a file inside
+your `lib/modules` folder and run it from there. This will add the following code to all your user
+commands that do not have "import" in their name (since those should be "admin" level):
+
+```javascript
+exports.access = 'user';
+```
+
+Please adjust this script according to your needs of course.
+
+```bash
+#!/usr/bin/env bash
+
+function insertBeforeFirstExports () {
+  file=$1;
+  payload=$2;
+
+  line=$(grep -n export ${file} | head -n1 | cut -d':' -f1);
+
+  grep "${payload}" "${file}" > /dev/null && return 0;
+
+  sed -i "${line}i ${payload}\n" ${file};
+}
+
+for file in $(ls */usercommands/*.js | grep -v import); do
+  insertBeforeFirstExports ${file} "exports.access = 'user';";
+done
+```
+
+
+### Configuration
+
+The new configuration loader is here! Read all about it
+[here](./lib/config/README.md). There are some big changes in how configuration is loaded, so you
+*will* need to read this. The resulting object is essentially the same though, so conversion should
+be simple to do.
+
+
+### MMRP
+
+Fixed a bug with msgServer that caused events to not be emitted on the client when an event was
+stored after an event had already been emitted to the client and the communication channel
+disconnected.
+
+
+### ClientHost configuration
+
+The "expose" config entry for "clientHost" is now encouraged to be a full URL string. Even a partial
+path is allowed if you're behind a proxy that demands it.
+
+This means that both of these are valid:
+```json
+{
+	"server": {
+		"clientHost": {
+			"protocol": "http",
+			"transports": {
+				"longpolling": { "heartbeat": 60 }
+			},
+			"bind": { "file": "./server.sock" },
+			"expose": { "host": "mygame.myname.node.wizcorp.jp", "port": 1234 }
+		}
+	}
+}
+```
+
+```json
+{
+	"server": {
+		"clientHost": {
+			"protocol": "http",
+			"transports": {
+				"longpolling": { "heartbeat": 60 }
+			},
+			"bind": { "file": "./server.sock" },
+			"expose": "http://mygame.myname.node.wizcorp.jp:1234"
+		}
+	}
+}
+```
+
+### Archivist
+
+#### Cleanup
+
+Vaults are now more cleanly closed on MAGE shutdown.
+
+#### FileVault
+
+Meta information is now stored in separate `.filevault` files alongside the files that contain the
+actual data that you store.
+
+
+### Other small improvements
+
+Changed the generated usercommands to use new Function so that developers can see what parameters
+are available for the usercommand.
+
+The component-builder package got bumped to the latest version + a patch by Micky that solves an
+annoying bug [see: pull request](https://github.com/component/builder.js/pull/81).
+
+
 ## v0.12.2
 
 Fixed a bug that prevented master and worker processes from finding each other in MMRP.

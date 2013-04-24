@@ -1,0 +1,14 @@
+{
+  "name": "session",
+  "description": "Session, for MAGE.",
+  "version": "0.0.1",
+  "dependencies": {
+  	"component/emitter": "*"
+  },
+  "local": [ "msgServer" ],
+  "paths": [ "node_modules", "lib" ],
+  "scripts": [
+    "client.js"
+  ],
+  "main": "client.js"
+}

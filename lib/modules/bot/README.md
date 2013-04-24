@@ -55,8 +55,13 @@ var paths = {
 	www: __dirname + '/../www'
 };
 
+var app = mage.core.app.get('bot');
+
+mage.bot.createPhantomJsLoader(app);
+
 // List your different bots here
-bot.addTestPage('<BOT NAME>', paths.www + '/botPages/<BOT NAME>');
+app.addIndexPage('<BOT NAME>', paths.www + '/botPages/<BOT NAME>', { route: '<BOT NAME>' });
+app.addIndexPage('<BOT NAME>', paths.www + '/botPages/<BOT NAME>', { route: '<BOT NAME>' });
 
 bot.register('createBotPlayer', function (state, args, cb) {
 	// ....
@@ -78,10 +83,13 @@ bot.register('updateBotPlayer', function (state, args, cb) {
 
 bot.register('confirmBotPlayer', function (state, args, cb) {
 	// Identify if player is bot
-	// i.e. var isBot = props.get('isBot'); if (isBot !== true) { return error; }
+	if (isBot(args.actorId)) {
+		cb();
+	} else {
+		state.error(null, 'Actor is not a bot', cb);
+	}
 });
 ```
-
 
 
 ### lib/index.js
@@ -93,14 +101,6 @@ them under the bot app. For a working example please talk with the mage team.
 
 
 ```javascript
-// ....
-
-function exposeGameUserCommands(app) {
-	// Your app.commandCenter.expose game specific user commands
-}
-
-// ....
-
 function setupBot(cb) {
 	logger.info('Setting up BOT interface');
 
@@ -108,24 +108,19 @@ function setupBot(cb) {
 	require('./bot.js');
 
 	// Create bot API
-	mage.bot.createAPI(function (botApp) {
-		// Expose game user commands under botApp
-		exposeGameUserCommands(botApp);
-
-		cb();
-	});
+	cb();
 }
 
 // ....
 
-mage.setup(configFiles, function () {
+mage.setup(function () {
 	async.series([
 		...
 		setupBot,
 		...
 	], function (error) {
 		if (error) {
-			mage.fatalError(error);
+			return mage.fatalError(error);
 		}
 	});
 });
@@ -143,6 +138,7 @@ Here we will need to add two sections to the config. apps.bot & module.bot
 {
 	"apps": {
 		"bot": {
+			"access": "user",
 			"delivery": {
 				"serverCache": false,
 				"useManifest": false,
