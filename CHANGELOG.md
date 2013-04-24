@@ -231,7 +231,7 @@ Changed the generated usercommands to use new Function so that developers can se
 are available for the usercommand.
 
 The component-builder package got bumped to the latest version + a patch by Micky that solves an
-annoying bug (but which has not yet been merged or released).
+annoying bug [see: pull request](https://github.com/component/builder.js/pull/81).
 
 
 ## v0.12.2
