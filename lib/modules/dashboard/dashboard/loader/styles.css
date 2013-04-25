@@ -18,9 +18,12 @@ body {
     color: #000;
     position: absolute;
     left: 200px;
-    padding: 15px 30px;
+    right: 0;
     min-height: 100%;
+    padding: 15px 30px;
 }
+
+/* headings */
 
 h1 {
     color: rgb(66, 103, 156);
@@ -32,9 +35,13 @@ h2 {
     font-size: 15px;
 }
 
+/* links */
+
 a {
     color: rgb(66, 103, 156);
 }
+
+/* buttons */
 
 button {
     border: 1px solid #CFCFCF;
@@ -70,9 +77,16 @@ code, samp {
     white-space: pre-wrap;
 }
 
+/* tables */
+
 table {
     border-spacing: 0;
     border-collapse: collapse;
+}
+
+table caption {
+    text-align: left;
+    margin-bottom: 3px;
 }
 
 table th {
@@ -89,10 +103,19 @@ table td {
     padding: 3px 8px;
 }
 
+/* section dividers */
+
+section {
+    margin-bottom: 20px;
+}
+
+/* dialogs */
+
 section.dialog {
     border: 1px solid #999;
     background: #fff;
     padding: 12px;
+    margin: 0;
 }
 
 section.dialog h1 {
