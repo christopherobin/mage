@@ -1,0 +1,25 @@
+.mage-page {
+    background: transparent;
+    color: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/*
+form div {
+    width: 260px;
+    margin: 0 auto 15px auto;
+}
+
+form label {
+    display: block;
+}
+
+form input {
+    width: 260px;
+    font-size: 15px;
+}
+*/

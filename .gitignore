@@ -2,4 +2,6 @@
 *.swp
 *.session
 .idea
+.DS_Store
+._.DS_Store
 runtime.json
