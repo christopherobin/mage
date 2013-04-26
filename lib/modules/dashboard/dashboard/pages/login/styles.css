@@ -6,6 +6,22 @@
     left: 0;
     right: 0;
     bottom: 0;
+    text-align: center;
+}
+
+.logo {
+    margin: 100px auto 20px auto;
+    width: 200px;
+    height: 200px;
+    transition: opacity 1s;
+    -webkit-transition: opacity 1s;
+    opacity: 0;
+}
+
+#anonymousLogin {
+    transition: opacity 1s;
+    -webkit-transition: opacity 1s;
+    opacity: 0;
 }
 
 /*
