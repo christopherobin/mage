@@ -23,6 +23,20 @@ body {
     padding: 15px 30px;
 }
 
+/* logos */
+
+.logo {
+    background-size: contain;
+}
+
+.logo.white_font {
+    background-image: url('mui://img/mage_logo_white_font');
+}
+
+.logo.black_font {
+    background-image: url('mui://img/mage_logo_black_font');
+}
+
 /* headings */
 
 h1 {
@@ -44,20 +58,22 @@ a {
 /* buttons */
 
 button {
-    border: 1px solid #CFCFCF;
+    border: 1px solid #cfcfcf;
 /*
     border-radius: 1px;
     background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #E0E0E0), color-stop(1, #F2F2F2));
 */
-    background: #EEE;
+    background: #eee;
     display: inline-block;
     line-height: 20px;
     padding: 5px 20px;
+    color: #333;
 }
 
 button:hover {
 /* background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #F0F0F0), color-stop(1, #FFFFFF)); */
-    background: #FFF;
+    background: #fff;
+    color: rgb(239,67,39);
 }
 
 /*
