@@ -144,3 +144,28 @@ section.dialog h1 {
     font-weight: normal;
     color: #000;
 }
+
+.regular-checkbox {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+/*    display: none;*/
+vertical-align: bottom;
+    background-color: #cccccc;
+    border: 1px solid rgb(43,43,43);
+    padding: 5px;
+    border-radius: 0;
+    display: inline-block;
+    position: relative;
+}
+
+.regular-checkbox:hover {
+    background-color: #ffffff;
+    border: 1px solid rgb(43,43,43);
+    /*color: #99a1a7;*/
+}
+ 
+.regular-checkbox:checked {
+    background-color: rgb(232,77,37);
+    border: 1px solid rgb(43,43,43);
+}
