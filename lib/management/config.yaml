@@ -1,0 +1,3 @@
+# Where to put the management server.
+protocol: http
+file: ./stats.sock
