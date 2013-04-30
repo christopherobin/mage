@@ -1,0 +1,146 @@
+* { -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-text-size-adjust: none; -webkit-user-drag: none; }
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: #393939;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 15px;
+}
+
+.mage-page {
+    background: #fff;
+    color: #000;
+    position: absolute;
+    left: 200px;
+    right: 0;
+    min-height: 100%;
+    padding: 15px 30px;
+}
+
+/* logos */
+
+.logo {
+    background-size: contain;
+}
+
+.logo.white_font {
+    background-image: url('mui://img/mage_logo_white_font');
+}
+
+.logo.black_font {
+    background-image: url('mui://img/mage_logo_black_font');
+}
+
+/* headings */
+
+h1 {
+    color: rgb(66, 103, 156);
+    font-size: 20px;
+}
+
+h2 {
+    color: rgb(66, 103, 156);
+    font-size: 15px;
+}
+
+/* links */
+
+a {
+    color: rgb(66, 103, 156);
+}
+
+/* buttons */
+
+button {
+    border: 1px solid #cfcfcf;
+/*
+    border-radius: 1px;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #E0E0E0), color-stop(1, #F2F2F2));
+*/
+    background: #eee;
+    display: inline-block;
+    line-height: 20px;
+    padding: 5px 20px;
+    color: #333;
+}
+
+button:hover {
+/* background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #F0F0F0), color-stop(1, #FFFFFF)); */
+    background: #fff;
+    color: rgb(239,67,39);
+}
+
+/*
+button.pressed {
+    box-shadow: inset 1px 1px 2px 0px rgba(100,100,100,0.5);
+}
+*/
+
+code, samp {
+    display: block;
+    background: #393939;
+    color: #fff;
+    padding: 12px;
+    border: 1px solid #000;
+    font-family: 'Lucida Console', Monaco, monospace;
+    font-size: 11px;
+    white-space: pre-wrap;
+}
+
+/* tables */
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table caption {
+    text-align: left;
+    margin-bottom: 3px;
+}
+
+table th {
+    background: #eee;
+    border: 1px solid #999;
+    text-align: center;
+    font-weight: normal;
+    padding: 3px 8px;
+}
+
+table td {
+    background: #fff;
+    border: 1px solid #999;
+    padding: 3px 8px;
+}
+
+/* section dividers */
+
+section {
+    margin-bottom: 20px;
+}
+
+/* dialogs */
+
+section.dialog {
+    border: 1px solid #999;
+    background: #fff;
+    padding: 12px;
+    margin: 0;
+}
+
+section.dialog h1 {
+    display: block;
+    margin: -12px -12px 12px -12px;
+    padding: 10px 0;
+    background: #eee;
+    text-align: center;
+    font-size: 13px;
+    font-weight: normal;
+    color: #000;
+}
