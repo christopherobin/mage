@@ -1,2 +1,3 @@
 # Where to put the management server.
-file: ./stats.sock
+bind:
+	file: ./stats.sock
