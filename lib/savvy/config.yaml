@@ -1,0 +1,3 @@
+# Where to put the savvy server.
+bind:
+    file: ./savvy.sock
