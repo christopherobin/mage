@@ -1,0 +1,23 @@
+.json .string {
+    color: #8f8;
+}
+
+.json .number {
+    color: #faa;
+}
+
+.json .boolean {
+    color: #aaf;
+}
+
+.tome .string {
+    color: #8f8;
+}
+
+.tome .number {
+    color: #faa;
+}
+
+.tome .boolean {
+    color: #aaf;
+}
