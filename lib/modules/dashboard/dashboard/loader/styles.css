@@ -40,13 +40,21 @@ body {
 /* headings */
 
 h1 {
-    color: rgb(66, 103, 156);
+    color: #42679C;
     font-size: 20px;
+    margin: 13px 0;
 }
 
 h2 {
-    color: rgb(66, 103, 156);
+    color: #42679C;
     font-size: 15px;
+    margin: 12px 0;
+}
+
+h3 {
+    color: #42679C;
+    font-size: 13px;
+    margin: 10px 0;
 }
 
 /* links */
@@ -57,12 +65,13 @@ a {
 
 /* buttons */
 
+.controls {
+    display: block;
+    padding: 15px 0;
+}
+
 button {
     border: 1px solid #cfcfcf;
-/*
-    border-radius: 1px;
-    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #E0E0E0), color-stop(1, #F2F2F2));
-*/
     background: #eee;
     display: inline-block;
     line-height: 20px;
@@ -71,16 +80,39 @@ button {
 }
 
 button:hover {
-/* background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #F0F0F0), color-stop(1, #FFFFFF)); */
     background: #fff;
-    color: rgb(239,67,39);
+    color: #ef4327;
 }
 
-/*
-button.pressed {
-    box-shadow: inset 1px 1px 2px 0px rgba(100,100,100,0.5);
+input[type="radio"] {
+    display: none;
 }
-*/
+
+input[type="radio"] + label {
+    display: inline-block;
+    margin: 0 2px 2px 0;
+    padding: 2px 4px;
+    border: 1px solid #cfcfcf;
+    color: #000;
+    background: #eee;
+    font-size: 11px;
+}
+
+input[type="radio"] + label:hover {
+    background: #fff;
+    border-color: #ef4327;
+    color: #ef4327;
+}
+
+input[type="radio"]:checked + label {
+    background: #ef4327;
+    color: #fff;
+    border-color: #ef4327;
+}
+
+input[type="radio"]:checked + label:before {
+    content: '✓ ';
+}
 
 code, samp {
     display: block;
@@ -103,6 +135,11 @@ table {
 table caption {
     text-align: left;
     margin-bottom: 3px;
+    white-space: nowrap;
+}
+
+table.rowselectable tbody tr:hover td {
+    background: #fee;
 }
 
 table th {
@@ -117,6 +154,10 @@ table td {
     background: #fff;
     border: 1px solid #999;
     padding: 3px 8px;
+}
+
+table tfoot {
+    font-style: italic;
 }
 
 /* section dividers */
