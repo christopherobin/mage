@@ -79,7 +79,11 @@ button {
     color: #333;
 }
 
-button:hover {
+button:disabled {
+    opacity: 0.5;
+}
+
+button:not(:disabled):hover {
     background: #fff;
     color: #ef4327;
 }
