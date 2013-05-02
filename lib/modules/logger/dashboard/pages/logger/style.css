@@ -1,0 +1,57 @@
+#logBox .date {
+    color: lime;
+}
+
+#logBox .brick {
+    background-color: white;
+}
+
+#logBox .time {
+	color: magenta;
+}
+
+#logBox .verbose {
+	color: gray;
+}
+
+#logBox .debug {
+	color: cyan;
+}
+
+#logBox .info {
+	color: blue;
+	font-weight: bold;
+}
+
+#logBox .notice {
+	color: green;
+}
+
+#logBox .warning {
+	color: yellow;
+}
+
+#logBox .error {
+	color: red;
+}
+
+#logBox .critical {
+	color: red;
+	font-weight: bold;
+}
+
+#logBox .alert {
+	color: red;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#logBox .emergency {
+	color: black;
+	background-color: red;
+	font-weight: bold;
+}
+
+#logBox .emergency.data {
+	background-color: red;
+}
