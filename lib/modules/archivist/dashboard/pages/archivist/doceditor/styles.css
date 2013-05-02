@@ -1,23 +1,29 @@
-.json .string {
-    color: #8f8;
+.json .property,
+.tome .property {
+    color: #ada;
 }
 
-.json .number {
-    color: #faa;
+.json .null,
+.tome .null {
+    color: #fff;
 }
 
-.json .boolean {
-    color: #aaf;
-}
-
+.json .string,
 .tome .string {
-    color: #8f8;
+    color: #f74;
 }
 
+.json .number,
 .tome .number {
-    color: #faa;
+    color: #6ff;
 }
 
+.json .boolean,
 .tome .boolean {
     color: #aaf;
+}
+
+.json .error,
+.tome .error {
+    font-style: italic;
 }
