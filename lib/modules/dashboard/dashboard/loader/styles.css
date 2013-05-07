@@ -88,10 +88,14 @@ button:not(:disabled):hover {
     color: #ef4327;
 }
 
+/* Radio buttons and check boxes */
+
+input[type="checkbox"],
 input[type="radio"] {
     display: none;
 }
 
+input[type="checkbox"] + label,
 input[type="radio"] + label {
     display: inline-block;
     margin: 0 2px 2px 0;
@@ -102,12 +106,14 @@ input[type="radio"] + label {
     font-size: 11px;
 }
 
+input[type="checkbox"] + label:hover,
 input[type="radio"] + label:hover {
     background: #fff;
     border-color: #ef4327;
     color: #ef4327;
 }
 
+input[type="checkbox"]:checked + label,
 input[type="radio"]:checked + label {
     background: #ef4327;
     color: #fff;
