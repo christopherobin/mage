@@ -1,3 +1,10 @@
 # Where to put the savvy server.
 bind:
     file: ./savvy.sock
+    # Expose may be a string containing an address too.
+    expose: 
+        host: localhost
+        # port: 80
+        # path: /path/to/stuff
+        # authUser: harry
+        # authPass: 123456abc
