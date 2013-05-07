@@ -1,130 +1,130 @@
-#logBox .date {
+.logBox .date {
     color: lime;
 }
 
-#logBox .time {
+.logBox .time {
 	color: magenta;
 }
 
-#logBox .time-brick {
+.logBox .time-brick {
     background-color: magenta;
 }
 
-#logBox .time-details {
+.logBox .time-details {
     color: magenta;
 }
 
-#logBox .verbose {
+.logBox .verbose {
 	color: gray;
 }
 
-#logBox .verbose-brick {
+.logBox .verbose-brick {
     background-color: gray;
 }
 
-#logBox .verbose-details {
+.logBox .verbose-details {
     color: gray;
 }
 
-#logBox .debug {
+.logBox .debug {
 	color: cyan;
 }
 
-#logBox .debug-brick {
+.logBox .debug-brick {
     background-color: cyan;
 }
 
-#logBox .debug-details {
+.logBox .debug-details {
     color: cyan;
 }
 
-#logBox .info {
+.logBox .info {
 	color: blue;
 	font-weight: bold;
 }
 
-#logBox .info-brick {
+.logBox .info-brick {
     background-color: blue;
 }
 
-#logBox .info-details {
+.logBox .info-details {
     color: blue;
     font-weight: bold;
 }
 
-#logBox .notice {
+.logBox .notice {
 	color: green;
 }
 
-#logBox .notice-brick {
+.logBox .notice-brick {
     background-color: green;
 }
 
-#logBox .notice-details {
+.logBox .notice-details {
     color: green;
 }
 
-#logBox .warning {
+.logBox .warning {
 	color: yellow;
 }
 
-#logBox .warning-brick {
+.logBox .warning-brick {
     background-color: yellow;
 }
 
-#logBox .warning-details {
+.logBox .warning-details {
     color: yellow;
 }
 
-#logBox .error {
+.logBox .error {
 	color: red;
 }
 
-#logBox .error-brick {
+.logBox .error-brick {
     background-color: red;
 }
 
-#logBox .error-details {
+.logBox .error-details {
     color: red;
 }
 
-#logBox .critical {
+.logBox .critical {
 	color: red;
 	font-weight: bold;
 }
 
-#logBox .critical-brick {
+.logBox .critical-brick {
     background-color: red;
 }
 
-#logBox .critical-details {
+.logBox .critical-details {
     color: red;
 }
 
-#logBox .alert {
+.logBox .alert {
 	color: red;
 	font-weight: bold;
 	text-decoration: underline;
 }
 
-#logBox .alert-brick {
+.logBox .alert-brick {
     background-color: red;
 }
 
-#logBox .alert-details {
+.logBox .alert-details {
     color: red;
 }
 
-#logBox .emergency {
+.logBox .emergency {
 	color: black;
 	background-color: red;
 	font-weight: bold;
 }
 
-#logBox .emergency-brick {
+.logBox .emergency-brick {
     background-color: red;
 }
 
-#logBox .emergency-details {
+.logBox .emergency-details {
     color: red;
 }
