@@ -1,0 +1,20 @@
+#cnt_asset_list {
+    height: 400px;
+    overflow-y: scroll;
+}
+
+#cnt_asset_list label {
+    display: block;
+    word-wrap: break-word;
+}
+
+#assets_search {
+    width: 100%;
+}
+
+figcaption {
+    display: inline-block;
+    background: #ff8;
+    font-family: 'Lucida Console', Monaco, monospace;
+    margin: 5px 0;
+}
