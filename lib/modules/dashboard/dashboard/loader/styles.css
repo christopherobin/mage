@@ -124,6 +124,8 @@ input[type="radio"]:checked + label:before {
     content: '✓ ';
 }
 
+/* code and syntax */
+
 code, samp {
     display: block;
     background: #393939;
@@ -134,6 +136,37 @@ code, samp {
     font-size: 11px;
     white-space: pre-wrap;
 }
+
+code .property,
+samp .property {
+    color: #ada;
+}
+
+code .null,
+samp .null {
+    color: #fff;
+}
+
+code .string,
+samp .string {
+    color: #f74;
+}
+
+code .number,
+samp .number {
+    color: #6ff;
+}
+
+code .boolean,
+samp .boolean {
+    color: #aaf;
+}
+
+code .error,
+samp .error {
+    font-style: italic;
+}
+
 
 /* tables */
 

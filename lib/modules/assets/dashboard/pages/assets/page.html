@@ -1,23 +1,49 @@
 <h1>Assets</h1>
 
-<section>
-    <form onsubmit="return false;">
-        <section class="dialog">
-            <h2>Application</h2>
-            <div id="cnt_assetmap_apps"></div>
-            <h2>Context</h2>
-            <div id="cnt_assetmap_contexts"></div>
-            <h2>Search</h2>
-            <div id="cnt_assetmap_search">
-                <input type="search" id="assets_search" placeholder="Search for asset paths or names">
-            </div>
-        </section>
-    </form>
-</section>
-
-<div id="cnt_assets" class="grid wfull">
+<div class="grid wfull">
     <div class="row">
-        <div class="c3" id="cnt_asset_list"></div>
-        <div class="c9 end" id="cnt_asset_preview"></div>
+
+        <section class="dialog c12 end">
+            <form action="" onsubmit="return false;">
+                <div class="row">
+                    <div class="c8">
+
+                        <h2>Application</h2>
+                        <div id="cnt_assetmap_apps"></div>
+
+                        <h2>Context</h2>
+                        <div id="cnt_assetmap_contexts"></div>
+
+                        <h2>Search</h2>
+                        <div id="cnt_assetmap_search">
+                            <input type="search" id="assets_search" placeholder="Search for asset paths or names">
+                        </div>
+
+                    </div>
+                    <div class="c4 end">
+
+                        <h2>Statistics</h2>
+                        <div id="cnt_asset_list_stats"></div>
+
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div id="cnt_assets" class="row">
+
+        <div class="c3">
+            <h2>Results</h2>
+            <div id="cnt_asset_list"></div>
+        </div>
+        <div class="c9 end">
+            <h2>Preview</h2>
+            <section class="dialog">
+                <h1 id="asset_preview_title"></h1>
+                <div id="cnt_asset_preview"></div>
+            </section>
+        </div>
+
     </div>
 </div>
