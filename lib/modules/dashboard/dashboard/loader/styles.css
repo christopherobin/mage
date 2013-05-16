@@ -60,7 +60,7 @@ h3 {
 /* links */
 
 a {
-    color: rgb(66, 103, 156);
+    color: #42679C;
 }
 
 /* buttons */
@@ -86,6 +86,14 @@ button:disabled {
 button:not(:disabled):hover {
     background: #fff;
     color: #ef4327;
+}
+
+button.small {
+    color: #43679B;
+    font-weight: bold;
+    background: none;
+    line-height: inherit;
+    padding: 2px 5px;
 }
 
 /* Radio buttons and check boxes */
@@ -227,6 +235,24 @@ section.dialog h1 {
     font-size: 13px;
     font-weight: normal;
     color: #000;
+}
+
+section.dialog section {
+    padding: 20px;
+    margin: 20px -12px;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    border-left: 10px solid #999;
+    border-right: 10px solid #999;
+}
+
+section.dialog section h1 {
+    text-align: center;
+    padding: 0;
+    background: none;
+    color: #42679C;
+    font-size: 13px;
+    margin: 0 0 10px 0;
 }
 
 .notification {
