@@ -35,7 +35,8 @@
 		"config": "0.4.23",
 		"component-builder": "~0.8.1",
 		"semver": "*",
-		"mime": "1.2.9"
+		"mime": "1.2.9",
+		"mkdirp": "~0.3.5"
 	},
 	"main": "lib/mage",
 	"devDependencies": {

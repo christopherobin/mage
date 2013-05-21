@@ -224,12 +224,13 @@ section.dialog {
     background: #fff;
     padding: 12px;
     margin: 0;
+    position: relative;
 }
 
 section.dialog h1 {
     display: block;
     margin: -12px -12px 12px -12px;
-    padding: 10px 0;
+    padding: 10px 4px;
     background: #eee;
     text-align: center;
     font-size: 13px;
