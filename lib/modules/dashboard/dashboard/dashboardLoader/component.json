@@ -3,7 +3,6 @@
 	"description": "The loader, for MAGE dashobard.",
 	"version": "0.0.1",
 	"local": [
-		"mage",
 		"loader",
 		"pgCore",
 		
