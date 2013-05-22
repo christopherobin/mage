@@ -1,0 +1,13 @@
+{
+	"name": "home",
+	"description": "",
+	"version": "0.0.1",
+	"local": [
+		"loader"
+	],
+	"paths": [
+	],
+	"scripts": [
+		"index.js"
+	]
+}

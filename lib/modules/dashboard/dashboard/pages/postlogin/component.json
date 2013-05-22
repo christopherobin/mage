@@ -1,0 +1,21 @@
+{
+	"name": "postlogin",
+	"description": "",
+	"version": "0.0.1",
+	"local": [
+		"mage",
+		"loader",
+		
+		"Sidebar",
+		"NotificationCenter",
+		
+		"home"
+	],
+	"paths": [
+		"../.",
+		"./ui"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
