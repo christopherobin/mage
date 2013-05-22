@@ -39,16 +39,16 @@
 }
 
 .logBox .info {
-	color: blue;
+	color: #66f;
 	font-weight: bold;
 }
 
 .logBox .info-brick {
-    background-color: blue;
+    background-color: #66f;
 }
 
 .logBox .info-details {
-    color: blue;
+    color: #66f;
     font-weight: bold;
 }
 

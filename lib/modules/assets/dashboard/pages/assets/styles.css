@@ -1,5 +1,5 @@
 #cnt_asset_list {
-    height: 400px;
+    max-height: 400px;
     overflow-y: scroll;
 }
 
@@ -8,13 +8,23 @@
     word-wrap: break-word;
 }
 
+#new_asset {
+    float: right;
+    margin-top: 9px;
+}
+
 #assets_search {
     width: 100%;
 }
 
-figcaption {
+#asset_preview_space figure {
+    margin: 0;
+}
+
+#asset_preview_space figcaption {
     display: inline-block;
     background: #ff8;
     font-family: 'Lucida Console', Monaco, monospace;
+    font-size: 11px;
     margin: 5px 0;
 }
