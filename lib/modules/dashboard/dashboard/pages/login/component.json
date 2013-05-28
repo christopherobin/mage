@@ -1,6 +1,6 @@
 {
 	"name": "login",
-	"description": "",
+	"description": "Login page for mage dashboard.",
 	"version": "0.0.1",
 	"local": [
 		"mage",

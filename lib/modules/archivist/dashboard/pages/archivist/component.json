@@ -1,6 +1,6 @@
 {
 	"name": "archivist",
-	"description": "",
+	"description": "Archivist data viewing tool.",
 	"version": "0.0.1",
 	"local": [
 		"mage",

@@ -1,6 +1,6 @@
 {
 	"name": "styleguide",
-	"description": "The loader, for MAGE dashobard.",
+	"description": "Mage dashboard style guide.",
 	"version": "0.0.1",
 	"scripts": [
 		"index.js"

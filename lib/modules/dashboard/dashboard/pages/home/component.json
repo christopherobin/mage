@@ -1,6 +1,6 @@
 {
 	"name": "home",
-	"description": "",
+	"description": "Home page for mage dashboard.",
 	"version": "0.0.1",
 	"local": [
 		"loader"

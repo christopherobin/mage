@@ -1,6 +1,6 @@
 {
 	"name": "dashboardLoader",
-	"description": "The loader, for MAGE dashobard.",
+	"description": "The loader, for MAGE dashboard.",
 	"version": "0.0.1",
 	"local": [
 		"loader",
