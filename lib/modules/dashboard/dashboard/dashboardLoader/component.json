@@ -4,12 +4,10 @@
 	"version": "0.0.1",
 	"local": [
 		"loader",
-		"pgCore",
 		
 		"login"
 	],
 	"paths": [
-		"../../../../../../../www/deps/frontend/phonegap",
 		"../pages"
 	],
 	"scripts": [
