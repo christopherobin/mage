@@ -145,6 +145,9 @@ code, samp {
     white-space: pre-wrap;
 }
 
+/* what we call "property", highlight.js calls "attribute" */
+code .attribute,
+samp .attribute,
 code .property,
 samp .property {
     color: #ada;
