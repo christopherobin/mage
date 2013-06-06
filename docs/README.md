@@ -14,21 +14,13 @@ Why MAGE?
 Features
 ---------
 
-*
-*
-*
-*
+* Event-driven
 
-Requirements
-------------
+What's next?
+--------------
 
-* Node.js version 8.x or higher
-* libavahi on Linux
-
-See also
----------
-
-* Installation
-* Walkthrough: build your first MAGE app
-* How-to guides
+* [Requirements to run on MAGE](./REQUIREMENTS.md)
+* [Installation of MAGE](./INSTALLATION)
+* [Walkthrough: build your first MAGE app](walkthrough/README.md)
+* [How-to guides](./howto/README.md)
 * API documentation
