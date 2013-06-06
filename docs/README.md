@@ -19,6 +19,7 @@ Features
 What's next?
 --------------
 
+* [Before getting started](./BEFORE.md)
 * [Requirements to run on MAGE](./REQUIREMENTS.md)
 * [Installation of MAGE](./INSTALLATION)
 * [Walkthrough: build your first MAGE app](walkthrough/README.md)
