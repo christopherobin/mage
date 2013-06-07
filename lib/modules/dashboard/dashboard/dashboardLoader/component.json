@@ -1,0 +1,17 @@
+{
+	"name": "dashboardLoader",
+	"description": "The loader, for MAGE dashboard.",
+	"version": "0.0.1",
+	"local": [
+		"loader",
+		
+		"login"
+	],
+	"paths": [
+		"../pages"
+	],
+	"scripts": [
+		"index.js"
+	],
+	"main": "index.js"
+}

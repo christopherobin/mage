@@ -1,0 +1,13 @@
+{
+	"name": "dashboard",
+	"description": "",
+	"version": "0.0.1",
+	"local": [ "session" ],
+	"dependencies": {
+		"component/emitter": "*"
+	},
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
+}

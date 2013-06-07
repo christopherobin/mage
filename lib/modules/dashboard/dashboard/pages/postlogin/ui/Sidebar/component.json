@@ -1,0 +1,14 @@
+{
+	"name": "Sidebar",
+	"description": "",
+	"version": "0.0.1",
+	"local": [
+		"mage",
+		"loader"
+	],
+	"paths": [
+	],
+	"scripts": [
+		"index.js"
+	]
+}

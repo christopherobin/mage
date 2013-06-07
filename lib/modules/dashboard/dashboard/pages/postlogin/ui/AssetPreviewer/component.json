@@ -1,0 +1,19 @@
+{
+	"name": "AssetPreviewer",
+	"description": "",
+	"version": "0.0.1",
+	"dependencies": {
+		"Wizcorp/eventemitter": "*"
+	},
+	"local": [
+		"mage",
+		"forms",
+		"format"
+	],
+	"paths": [
+		"../"
+	],
+	"scripts": [
+		"index.js"
+	]
+}

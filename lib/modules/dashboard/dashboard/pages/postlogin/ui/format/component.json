@@ -1,0 +1,12 @@
+{
+	"name": "format",
+	"description": "",
+	"version": "0.0.1",
+	"local": [
+	],
+	"paths": [
+	],
+	"scripts": [
+		"index.js"
+	]
+}

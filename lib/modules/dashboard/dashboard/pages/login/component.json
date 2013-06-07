@@ -1,0 +1,22 @@
+{
+	"name": "login",
+	"description": "Login page for mage dashboard.",
+	"version": "0.0.1",
+	"local": [
+		"mage",
+		"loader",
+		
+		"assets",
+		"session",
+		"dashboard",
+		
+		"postlogin"
+	],
+	"paths": [
+		"../../../../",
+		"../."
+	],
+	"scripts": [
+		"index.js"
+	]
+}
