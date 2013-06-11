@@ -21,7 +21,7 @@ What's next?
 
 * [Before getting started](./BEFORE.md)
 * [Requirements to run on MAGE](./REQUIREMENTS.md)
-* [Installation of MAGE](./INSTALLATION)
+* [Installation of MAGE](./INSTALLATION.md)
 * [Walkthrough: build your first MAGE app](walkthrough/README.md)
 * [How-to guides](./howto/README.md)
 * API documentation
