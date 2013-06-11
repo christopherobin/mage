@@ -1,8 +1,8 @@
 {
 	"name": "dashboard",
-	"description": "",
+	"description": "Dashboard module for tool creation and management",
 	"version": "0.0.1",
-	"local": [ "session" ],
+	"local": ["session"],
 	"dependencies": {
 		"component/emitter": "*"
 	},

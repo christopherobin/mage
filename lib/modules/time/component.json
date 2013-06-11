@@ -1,9 +1,9 @@
 {
-  "name": "time",
-  "description": "Time, for MAGE.",
-  "version": "0.0.1",
-  "scripts": [
-    "client.js"
-  ],
-  "main": "client.js"
+	"name": "time",
+	"description": "Time module for MAGE.",
+	"version": "0.0.1",
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
 }

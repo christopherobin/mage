@@ -4,12 +4,9 @@
 	"version": "0.0.1",
 	"local": [
 		"mage",
-		"loader",
-		
+
 		"Sidebar",
-		"NotificationCenter",
-		
-		"home"
+		"NotificationCenter"
 	],
 	"paths": [
 		"../.",

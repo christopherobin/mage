@@ -1,13 +1,13 @@
 {
 	"name": "archivist",
-	"description": "Archivist data viewing tool.",
+	"description": "Archivist tool",
 	"version": "0.0.1",
 	"local": [
 		"mage",
 		"loader",
-		
+
 		"archivist",
-		
+
 		"DocEditor"
 	],
 	"paths": [
@@ -16,6 +16,5 @@
 	],
 	"scripts": [
 		"index.js"
-	],
-	"main": "index.js"
+	]
 }

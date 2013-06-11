@@ -5,11 +5,11 @@
 	"local": [
 		"mage",
 		"loader",
-		
+
 		"assets",
 		"session",
 		"dashboard",
-		
+
 		"postlogin"
 	],
 	"paths": [
