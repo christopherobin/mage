@@ -6,7 +6,9 @@ Welcome to MAGE's documentation.
 What is MAGE?
 -------------
 
-The Magical Asynchronous Game Engine (or more commonly known as MAGE) is Node.js library that is meant to act as a game development framework. MAGE helps simplifying development by
+The Magical Asynchronous Game Engine (or more commonly known as MAGE) is Node.js library
+that is meant to act as a game development framework. MAGE makes both development and operations
+simpler.
 
 Why MAGE?
 ---------
