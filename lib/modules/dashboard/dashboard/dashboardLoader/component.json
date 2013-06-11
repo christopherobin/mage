@@ -15,6 +15,5 @@
 	],
 	"scripts": [
 		"index.js"
-	],
-	"main": "index.js"
+	]
 }
