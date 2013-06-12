@@ -1,0 +1,7 @@
+{
+	"name": "format",
+	"description": "String formatting helpers",
+	"scripts": [
+		"index.js"
+	]
+}

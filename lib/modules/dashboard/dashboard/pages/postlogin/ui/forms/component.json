@@ -1,0 +1,7 @@
+{
+	"name": "forms",
+	"description": "HTML Form library",
+	"scripts": [
+		"index.js"
+	]
+}

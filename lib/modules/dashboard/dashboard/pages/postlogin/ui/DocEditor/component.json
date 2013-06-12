@@ -1,0 +1,10 @@
+{
+	"name": "DocEditor",
+	"description": "Document editor",
+	"local": [
+		"mage"
+	],
+	"scripts": [
+		"index.js"
+	]
+}

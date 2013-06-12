@@ -1,0 +1,20 @@
+{
+	"name": "archivist",
+	"description": "Archivist tool",
+	"version": "0.0.1",
+	"local": [
+		"mage",
+		"loader",
+
+		"archivist",
+
+		"DocEditor"
+	],
+	"paths": [
+		"../../../",
+		"../../../../dashboard/dashboard/pages/postlogin/ui"
+	],
+	"scripts": [
+		"index.js"
+	]
+}

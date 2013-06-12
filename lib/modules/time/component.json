@@ -1,9 +1,8 @@
 {
-  "name": "time",
-  "description": "Time, for MAGE.",
-  "version": "0.0.1",
-  "scripts": [
-    "client.js"
-  ],
-  "main": "client.js"
+	"name": "time",
+	"description": "Client/Server time sync module for MAGE.",
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
 }
