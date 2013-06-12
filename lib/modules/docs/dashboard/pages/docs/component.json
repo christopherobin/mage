@@ -1,0 +1,17 @@
+{
+	"name": "docs",
+	"description": "Documentation tool page",
+	"local": [
+		"mage",
+		"loader",
+		"forms",
+		"docs"
+	],
+	"paths": [
+		"../../../../dashboard/dashboard/pages/postlogin/ui",
+		"../../../"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
