@@ -1,6 +1,6 @@
 # MAGE
 
-## Installing MAGE server for Node.js
+## Installing MAGE
 
 ### Installing your game's dependencies
 
@@ -47,5 +47,5 @@ These will be announced through the Changelog file.
 __Build version change__
 
 This should not create BC issues, but may expose new APIs and fix existing bugs.
-These will be announced through the Changelog file.
+These will be announced through the [Changelog file](./CHANGELOG.md).
 

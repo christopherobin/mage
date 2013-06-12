@@ -164,10 +164,9 @@ done
 
 ### Configuration
 
-The new configuration loader is here! Read all about it
-[here](./lib/config/README.md). There are some big changes in how configuration is loaded, so you
-*will* need to read this. The resulting object is essentially the same though, so conversion should
-be simple to do.
+The new configuration loader is here! Read all about it [here](./lib/config/README.md). There are
+some big changes in how configuration is loaded, so you *will* need to read this. The resulting
+object is essentially the same though, so conversion should be simple to do.
 
 
 ### MMRP

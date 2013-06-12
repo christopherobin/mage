@@ -1,0 +1,8 @@
+{
+	"name": "docs",
+	"description": "Documentation indexer",
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
+}

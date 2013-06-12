@@ -1,7 +1,6 @@
 {
 	"name": "logger",
 	"description": "Logger tool",
-	"version": "0.0.1",
 	"local": [
 		"mage",
 		"loader",
