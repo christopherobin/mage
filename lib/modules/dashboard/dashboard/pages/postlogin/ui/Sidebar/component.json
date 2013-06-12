@@ -1,12 +1,9 @@
 {
 	"name": "Sidebar",
-	"description": "",
-	"version": "0.0.1",
+	"description": "The UI Sidebar",
 	"local": [
 		"mage",
 		"loader"
-	],
-	"paths": [
 	],
 	"scripts": [
 		"index.js"

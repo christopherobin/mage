@@ -1,7 +1,6 @@
 {
 	"name": "styleguide",
-	"description": "Mage dashboard style guide.",
-	"version": "0.0.1",
+	"description": "MAGE dashboard style guide.",
 	"scripts": [
 		"index.js"
 	]

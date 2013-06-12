@@ -1,7 +1,6 @@
 {
 	"name": "NotificationCenter",
-	"description": "",
-	"version": "0.0.1",
+	"description": "Notification center for the dashboard",
 	"dependencies": {
 		"component/emitter": "*"
 	},

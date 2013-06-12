@@ -1,17 +1,12 @@
 {
-  "name": "mage",
-  "description": "MAGE game development platform for Node.js",
-  "version": "0.10.2",
-  "dependencies": {
-    "component/emitter": "*",
-    "component/inherit": "*"
-  },
-  "local": [
-    "msgServer"
-  ],
-  "paths": [ "lib" ],
-  "scripts": [
-    "lib/mage/client.js"
-  ],
-  "main": "lib/mage/client.js"
+	"name": "mageclient",
+	"description": "MAGE game development platform for Node.js",
+	"local": [
+		"mage",
+		"dashboardLoader"
+	],
+	"paths": [
+		"./lib",
+		"./lib/modules/dashboard/dashboard"
+	]
 }

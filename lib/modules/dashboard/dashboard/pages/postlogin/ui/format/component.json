@@ -1,11 +1,6 @@
 {
 	"name": "format",
-	"description": "",
-	"version": "0.0.1",
-	"local": [
-	],
-	"paths": [
-	],
+	"description": "String formatting helpers",
 	"scripts": [
 		"index.js"
 	]

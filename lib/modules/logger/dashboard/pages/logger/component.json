@@ -1,11 +1,11 @@
 {
 	"name": "logger",
-	"description": "",
+	"description": "Logger tool",
 	"version": "0.0.1",
 	"local": [
 		"mage",
 		"loader",
-		
+
 		"logger"
 	],
 	"paths": [

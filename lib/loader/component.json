@@ -1,7 +1,6 @@
 {
   "name": "loader",
-  "description": "The loader for MAGE.",
-  "version": "0.0.1",
+  "description": "MAGE page loader",
   "dependencies": {
     "component/emitter": "*",
     "component/inherit": "*"
