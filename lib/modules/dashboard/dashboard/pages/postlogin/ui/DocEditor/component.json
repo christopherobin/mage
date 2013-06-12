@@ -1,11 +1,8 @@
 {
 	"name": "DocEditor",
-	"description": "",
-	"version": "0.0.1",
+	"description": "Document editor",
 	"local": [
 		"mage"
-	],
-	"paths": [
 	],
 	"scripts": [
 		"index.js"

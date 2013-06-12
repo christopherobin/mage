@@ -1,7 +1,6 @@
 {
   "name": "pauser",
-  "description": "Wait for things, in MAGE.",
-  "version": "0.0.1",
+  "description": "Mutexes for the browser",
   "scripts": [
     "client.js"
   ],

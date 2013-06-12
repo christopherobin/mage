@@ -1,7 +1,6 @@
 {
 	"name": "assets",
 	"description": "Asset manager for MAGE.",
-	"version": "0.0.1",
 	"local": ["loader", "msgServer"],
 	"scripts": [
 		"client.js"

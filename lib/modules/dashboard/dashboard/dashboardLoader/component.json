@@ -1,7 +1,6 @@
 {
 	"name": "dashboardLoader",
-	"description": "The loader, for MAGE dashboard.",
-	"version": "0.0.1",
+	"description": "The loader page for MAGE dashboard.",
 	"dependencies": {
 		"Wizcorp/eventemitter": "*"
 	},

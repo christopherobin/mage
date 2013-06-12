@@ -1,7 +1,6 @@
 {
 	"name": "logger",
 	"description": "Logger module.",
-	"version": "0.0.1",
 	"local": ["msgServer"],
 	"dependencies": {
 		"component/emitter": "*"

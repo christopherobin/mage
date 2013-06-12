@@ -1,7 +1,6 @@
 {
 	"name": "mageclient",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.10.2",
 	"local": [
 		"mage",
 		"dashboardLoader"

@@ -1,7 +1,6 @@
 {
 	"name": "AssetPreviewer",
-	"description": "",
-	"version": "0.0.1",
+	"description": "Asset preview and edit library",
 	"dependencies": {
 		"Wizcorp/eventemitter": "*"
 	},

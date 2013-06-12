@@ -1,7 +1,6 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.10.2",
 	"dependencies": {
 		"component/emitter": "*",
 		"component/inherit": "*"

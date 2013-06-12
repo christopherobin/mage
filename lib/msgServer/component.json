@@ -1,7 +1,6 @@
 {
 	"name": "msgServer",
 	"description": "The I/O layer for MAGE.",
-	"version": "0.0.1",
 	"dependencies": {
 		"component/emitter": "*",
 		"component/inherit": "*"

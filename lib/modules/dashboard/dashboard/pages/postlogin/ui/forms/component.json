@@ -1,11 +1,6 @@
 {
 	"name": "forms",
-	"description": "",
-	"version": "0.0.1",
-	"local": [
-	],
-	"paths": [
-	],
+	"description": "HTML Form library",
 	"scripts": [
 		"index.js"
 	]

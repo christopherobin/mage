@@ -1,7 +1,6 @@
 {
 	"name": "postlogin",
-	"description": "Landing page after logging in to mage dashboard.",
-	"version": "0.0.1",
+	"description": "Page that holds some crucial libraries (UI) that are needed once logged in.",
 	"local": [
 		"mage",
 

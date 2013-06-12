@@ -1,7 +1,6 @@
 {
 	"name": "session",
 	"description": "Sessions for MAGE.",
-	"version": "0.0.1",
 	"dependencies": {
 		"component/emitter": "*"
 	},
