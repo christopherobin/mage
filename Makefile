@@ -11,7 +11,7 @@ clean:
 
 # target: install, Installs all Node.js dependencies.
 install:
-	./scripts/install.sh
+	npm install
 
 # target: test, Runs all tests.
 test:
@@ -19,11 +19,13 @@ test:
 
 # target: lint, Lints every JavaScript file in the project that are staged to be comitted.
 lint:
-	./scripts/lint-staged.sh
+	@echo linting staged files...
+	git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\.js$$' | xargs -I '{}' ./node_modules/.bin/jshint --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js '{}'
 
 # target: lint-all, Lints every JavaScript file in the project.
 lint-all:
-	./scripts/lint-all.sh
+	@echo linting all files...
+	./node_modules/.bin/jshint --config ./scripts/jshint.cfg  --reporter ./scripts/humanJshintReporter.js .
 
 # target: git-setup, Sets up git hooks.
 git-setup:
