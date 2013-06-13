@@ -15,14 +15,14 @@ Why MAGE?
 
 ### Because it's fast
 
-One of the key focal points of M.A.G.E. is performance. On the server side this is achieved
+One of the key focal points of MAGE. is performance. On the server side this is achieved
 by using a modern architecture on top of Node.js, which uses Google's blazing fast V8 engine.
 On the HTML5 client side, this is achieved through tactical file management, background
 downloads and caching, and heavily-optimized libraries.
 
 ### Because it scales for you
 
-M.A.G.E. allows for easy expansion of the amount of servers involved, with little
+MAGE. allows for easy expansion of the amount of servers involved, with little
 or no change the architecture of the game system. This is true for both the
 database servers and the application servers.
 

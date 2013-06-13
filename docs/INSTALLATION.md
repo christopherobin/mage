@@ -22,7 +22,7 @@ Installing/upgrading MAGE in an existing project
 
 Upgrade to a new version of MAGE is very simple. Simply update your package.json's dependency entry for MAGE. Simply change the version number or label present after the poundi (#) sign.
 
-```
+```bash
 rm -rf node_modules/mage
 npm install mage
 ```
@@ -32,7 +32,7 @@ Working with the development version
 
 You may choose, for the duration of you application development, to work on the development version of MAGE. To do so, simply run the following:
 
-```
+```bash
 rm -rf node_modules/mage
 npm install git+ssh://git@github.com:Wizcorp/mage#develop
 ```
