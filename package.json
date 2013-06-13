@@ -47,7 +47,9 @@
 	},
 	"scripts": {
 		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec",
-		"lint-all": "jshint . --config ./scripts/jshint.cfg  --reporter ./scripts/humanJshintReporter.js"
+		"lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/humanJshintReporter.js .",
+		"lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js '{}'",
+		"git-setup": "./scripts/git-setup.sh"
 	},
 	"repository": {
 		"type": "git",

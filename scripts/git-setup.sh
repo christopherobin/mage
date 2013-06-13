@@ -38,12 +38,12 @@ fi
 PRECOMMITPATH="$HOOKSPATH/pre-commit"
 MODE=775
 
-echo -n "Make command to run before commit (default: lint test): "
+echo -n "Make command to run before commit (default: lint-staged test): "
 read INP
 
 if [[ -z "$INP" ]]
 then
-	INP="lint test"
+	INP="lint-staged test"
 fi
 
 echo "Make command that will be run on commit: $INP"
