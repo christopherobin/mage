@@ -48,5 +48,5 @@ function tools_install () {
     echoOk "Package install completed sucessfully";
 }
 
-repo_install || echoError "Could not installed required remote repository";
+repo_install || echoError "Could not install required remote repository";
 tools_install || echoError "Installing required tools and libraries failed";

@@ -58,7 +58,6 @@ function tools_install () {
         zmq \
         git-core \
         git-extras \
-        git-flow \
     || return 1;
 
     echo "";
