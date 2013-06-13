@@ -12,11 +12,11 @@ tar -zxvf libbash.tar.gz > /dev/null;
 popd > /dev/null;
 
 function getAttribute() {
-    grep ${1} ${APP_DIR}/package.json | head -n1 | cut -d\" -f 4
+    node -e "process.stdout.write(require('${APP_DIR}/package.json').${1})";
 }
 
 function getMageAttribute() {
-    grep ${1} ${MAGE_DIR}/package.json | head -n1 | cut -d\" -f 4
+    node -e "process.stdout.write(require('${MAGE_DIR}/package.json').${1})";
 }
 
 #
@@ -145,13 +145,13 @@ npm init | cyan && resetStdin;
 
 echoH2 "Replacing values in installed template files";
 
-APP_NAME=$(getAttribute name);
-APP_DESCRIPTION=$(getAttribute description);
-APP_VERSION=$(getAttribute version);
-APP_AUTHOR=$(getAttribute author);
+APP_NAME=$(getAttribute "name");
+APP_DESCRIPTION=$(getAttribute "description");
+APP_VERSION=$(getAttribute "version");
+APP_AUTHOR=$(getAttribute "author");
 
-MAGE_VERSION=$(getMageAttribute version);
-MAGE_NODE_VERSION=$(getMageAttribute node);
+MAGE_VERSION=$(getMageAttribute "version");
+MAGE_NODE_VERSION=$(getMageAttribute "engines.node");
 
 #
 # Replace all the variables above in all dropped in template files
