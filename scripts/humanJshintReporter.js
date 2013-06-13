@@ -14,7 +14,7 @@
  * licence: MIT
  */
 
-require('colors');
+require('colours');
 
 /**
  * Generate a string of spaces num wide.
