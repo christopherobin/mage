@@ -56,7 +56,7 @@ echoOk(){
 }
 
 if [ "${KERNEL}" == "Linux" ]; then
-    OS=$(cat /etc/issue 2> /dev/null | head -n1 | cut -d" " -f1);
+    OS=$(lsb_release -a | head -n2 | tail -n1 | cut -d":" -f2 | cut -b 2-);
 elif [ "${KERNEL}" == "Darwin" ]; then
     OS="OSX";
 else
