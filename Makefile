@@ -11,21 +11,22 @@ clean:
 
 # target: install, Installs all Node.js dependencies.
 install:
-	./scripts/install.sh
+	npm install
 
 # target: test, Runs all tests.
 test:
 	npm test
 
-# target: lint, Lints every JavaScript file in the project that are staged to be comitted.
-lint:
-	./scripts/lint-staged.sh
+lint: lint-staged
+
+# target: lint-staged, Lints every JavaScript file in the project that are staged to be comitted.
+lint-staged:
+	npm run-script lint-staged
 
 # target: lint-all, Lints every JavaScript file in the project.
 lint-all:
-	./scripts/lint-all.sh
+	npm run-script lint-all
 
 # target: git-setup, Sets up git hooks.
 git-setup:
-	./scripts/git-setup.sh
-
+	npm run-script git-setup
