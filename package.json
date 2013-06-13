@@ -46,7 +46,8 @@
 		"mocha": "1.9.x"
 	},
 	"scripts": {
-		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec"
+		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec",
+		"postinstall": "./scripts/install.sh"
 	},
 	"repository": {
 		"type": "git",

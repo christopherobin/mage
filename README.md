@@ -1,27 +1,8 @@
 # MAGE
 
-## Installing MAGE
+## Description
 
-### Installing your game's dependencies
-
-If you have already installed your game's dependencies, you may skip this step.
-In your game project, where you should have a package.json, execute the following steps:
-
-1. `rm -rf node_modules`
-2. `npm install`
-
-### Installing MAGE
-
-The "npm install" command will have recreated a directory called "node_modules". We now have to install MAGE there.
-After cloning the MAGE repository, we'll install MAGE's dependencies, the same way we installed the game's dependencies.
-
-1. `cd node_modules`
-2. `git clone --branch develop git@github.com:Wizcorp/mage.git` or `git clone --branch develop https://github.com/Wizcorp/mage.git`
-3. `cd mage`
-4. `rm -rf node_modules`
-5. `npm install`
-
-And we're all done! You can now run your game.
+Magic Asychronous Game Engine. A Node.js server-side game framework to simplify the development of social games.
 
 ## Versions
 
@@ -49,3 +30,9 @@ __Build version change__
 This should not create BC issues, but may expose new APIs and fix existing bugs.
 These will be announced through the [Changelog file](./CHANGELOG.md).
 
+## See Also
+
+* [Documentation](./docs/README.md)
+* [Server requirements](./docs/REQUIREMENTS.md:w)
+* [Installation guide](./docs/INSTALLATION.md)
+* [API Documentation](./docs/where?)
