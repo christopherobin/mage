@@ -14,7 +14,7 @@
  * licence: MIT
  */
 
-require('colors');
+require('colours');
 
 /**
  * Generate a string of spaces num wide.
@@ -59,7 +59,6 @@ function splitByFile(data) {
 
 exports.reporter = function (data) {
 	if (data.length === 0) {
-		console.log('No errors found.'.green);
 		return;
 	}
 
