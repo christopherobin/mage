@@ -2,7 +2,7 @@
 	"name": "DocEditor",
 	"description": "Document editor",
 	"local": [
-		"mage"
+		"mage", "tomes"
 	],
 	"scripts": [
 		"index.js"
