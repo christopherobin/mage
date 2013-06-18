@@ -1,11 +1,10 @@
 {
 	"name": "docs",
-	"description": "Documentation tool page",
+	"description": "Documentation page",
 	"local": [
 		"mage",
 		"loader",
-		"forms",
-		"docs"
+		"forms"
 	],
 	"paths": [
 		"../../../../dashboard/dashboard/pages/postlogin/ui",

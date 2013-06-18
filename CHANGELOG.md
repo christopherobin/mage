@@ -1,5 +1,111 @@
 # Changelog
 
+## __NEXT__
+
+### Development mode
+
+You can now enable "development mode" in your configuration, and are encouraged to do so in your
+development environments. Using dev mode will enable certain features now (and more and more in the
+future) that only make sense while developing, and would be dangerous or useless in production.
+
+You enable development mode by adding the following configuration:
+
+```json
+{
+	"developmentMode": true
+}
+```
+
+### Dashboard
+
+MAGE now comes with a set of dashboards (tools). Currently, the only way to log in is anonymously.
+User management will appear in an upcoming release. That means that for now, tools should not be
+used on production environments. Logging in anonymously requires development mode to be enabled.
+
+There are two dashboard environments available to be exposed: "cms" and "support". CMS is aimed at
+content management (pre-production), and support is aimed at customer support channels. You can
+divide your dashboard pages into either of these two categories, or both.
+
+You can expose these dashboard apps by adding the following configuration:
+
+```json
+{
+	"apps": {
+		"cms": {
+			"responseCache": 10,
+			"access": "admin"
+		},
+		"support": {
+			"responseCache": 10,
+			"access": "admin"
+		}
+	}
+}
+```
+
+The reason for "admin" level access is that we want to expose those administration-level user
+commands to these apps. Despite that, development mode still enables anonymous login. The access
+level given to these anonymous sessions *will* be "admin", allowing you to run these user commands.
+
+The reason for a short responseCache is that generally (at least for now), these dashboards will be
+accessed on stable network connections, so we don't have to dedicate a lot of memory on mitigating
+dodgy networks.
+
+#### Archivist
+
+#### Assets
+
+#### Documentation
+
+#### Logger
+
+
+### Dependency updates
+
+* async 0.2.7 -> 0.2.9
+* zmq 2.3.0 -> 2.4.0
+* colors custom -> colours 0.6.0
+* panopticon 0.1.1 -> 0.2.0
+* js-yaml 2.0.4 -> 2.1.0
+* config 0.4.23 -> 0.4.26
+* component-builder custom -> 0.8.3
+
+### Legacy cleanup
+
+* Removed actor, player, gm and gree modules.
+* Renamed tool to dashboard.
+
+### User commands
+
+Can now receive file lists.
+
+#### Bug fixes
+
+* Access level errors were not verbose enough.
+
+### Savvy
+
+
+
+### Assets
+
+Asset digests are now cached, speeding up indexing by almost 3x on previously indexed asset maps.
+
+#### Bug fixes
+
+* Asset indexing could become so parallelized that EMFILE errors would be thrown (too many open files).
+* The client side "applyAssetMapToStylesheet" method was broken on Firefox.
+
+### Archivist
+
+Archivist client now actively expires values when their TTL runs out.
+
+#### Bug fixes
+
+* Archivist beforeDistribute hooks were unable to report an error.
+* Archivist client could throw an exception when optional values were queried for (thanks Max).
+
+
 ## v0.13.0
 
 ### Asset serving in MAGE
