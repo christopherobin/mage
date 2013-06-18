@@ -386,7 +386,6 @@ If you want to change the TTL for this cache, you can do this per application yo
 to be done through `myApp.commandCenter.responseCacheTTL = 123;`, but that no longer works. The TTL
 is now defined in seconds in your configuration as:
 ```json
-
 {
 	"apps": {
 		"mygame": {
@@ -827,7 +826,7 @@ Profiles are symbolic names that map to a set of requirements defined in the con
 
 #### Asset folder example
 
-`zombieboss/
+`mygame/
 	assets/
 		img/
 			default/  # default language and common stuff
@@ -1659,7 +1658,7 @@ Another change in configuration is that the protocol setting has been moved from
 		"longpolling": { "heartbeat": 120 }
 	},
 	"bind": { "host": "0.0.0.0", "port": 4242 },
-	"expose": { "host": "zombieboss.rk.dev.wizcorp.jp", "port": 4242 }
+	"expose": { "host": "mygame.myname.dev.wizcorp.jp", "port": 4242 }
 }
 `
 
