@@ -1,9 +1,6 @@
 {
 	"name": "home",
-	"description": "Home page for mage dashboard.",
-	"local": [
-		"loader"
-	],
+	"description": "Home page for the MAGE dashboard.",
 	"scripts": [
 		"index.js"
 	]
