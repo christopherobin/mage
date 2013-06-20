@@ -3,17 +3,14 @@ MAGE DOCS
 Layout (every entry is at least one file):
 
     Changelog
-    ReadMe
-        About MAGE
-            Introduction
-            About Wizcorp
+    ReadMe (about MAGE)
         Installation Guide
         How to use MAGE (walkthrough of what the most important and public subsystems do, with links to their API docs)
             Modules (user commands, etc)
             Session module
             The State class
             The Logger module
-            The Assets module
+            Managing your assets
             Database access through Archivist
             The web frontend
             Message server
