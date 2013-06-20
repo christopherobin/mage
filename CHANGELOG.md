@@ -16,7 +16,9 @@ You enable development mode by adding the following configuration:
 }
 ```
 
-If you want to know if an application is running in development mode, on the server side you can call:
+If you want to know if an application is running in development mode, you can call the following,
+both on the server side and on the client side:
+
 ```javascript
 mage.isDevelopmentMode();
 ```

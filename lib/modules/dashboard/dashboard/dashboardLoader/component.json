@@ -6,7 +6,6 @@
 	},
 	"local": [
 		"loader",
-
 		"login"
 	],
 	"paths": [
