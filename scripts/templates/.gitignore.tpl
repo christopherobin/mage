@@ -1,0 +1,11 @@
+.idea/
+/node_modules/
+/configs/game/custom.json
+.DS_Store
+._.DS_Store
+.swp
+server.sock
+.htpasswd
+.pidfile
+*.log
+/components/

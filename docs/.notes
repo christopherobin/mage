@@ -1,0 +1,26 @@
+MAGE DOCS
+------------------------------------------------------------------
+Layout (every entry is at least one file):
+
+    Changelog
+    ReadMe
+        About MAGE
+            Introduction
+            About Wizcorp
+        Installation Guide
+        How to use MAGE (walkthrough of what the most important and public subsystems do, with links to their API docs)
+            Modules (user commands, etc)
+            Session module
+            The State class
+            The Logger module
+            The Assets module
+            Database access through Archivist
+            The web frontend
+            Message server
+            Building a network (auto discovery, mmrp)
+            Running MAGE (daemonizer)
+        Your first MAGE app (a step by step introduction, building tinyMageApp)
+        Tools
+            Using tools
+            Building your own tools
+        API reference (links to all subsystems that have docs)
