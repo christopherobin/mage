@@ -16,6 +16,11 @@ You enable development mode by adding the following configuration:
 }
 ```
 
+If you want to know if an application is running in development mode, on the server side you can call:
+```javascript
+mage.isDevelopmentMode();
+```
+
 ### Dashboard
 
 MAGE now comes with a set of dashboards (tools). Currently, the only way to log in is anonymously.
@@ -51,14 +56,14 @@ The reason for a short responseCache is that generally (at least for now), these
 accessed on stable network connections, so we don't have to dedicate a lot of memory on mitigating
 dodgy networks.
 
-#### Archivist
+The dashboard currently provides the following:
+* Archivist (read/write access to all your vault values)
+* Asset management
+* Documentation
+* Logger
+* Dashboard style guide
 
-#### Assets
-
-#### Documentation
-
-#### Logger
-
+There is a home screen that is currently quite empty. In the future, you can expect widgets here!
 
 ### Dependency updates
 
@@ -77,34 +82,35 @@ dodgy networks.
 
 ### User commands
 
-Can now receive file lists.
-
-#### Bug fixes
-
-* Access level errors were not verbose enough.
+User commands can now receive arrays of files. Simply make a JavaScript array with DOM File or Blob
+objects and use it as an argument.
 
 ### Savvy
-
 
 
 ### Assets
 
 Asset digests are now cached, speeding up indexing by almost 3x on previously indexed asset maps.
 
-#### Bug fixes
-
-* Asset indexing could become so parallelized that EMFILE errors would be thrown (too many open files).
-* The client side "applyAssetMapToStylesheet" method was broken on Firefox.
-
 ### Archivist
 
 Archivist client now actively expires values when their TTL runs out.
 
-#### Bug fixes
+### Logger
 
+Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
+or worker.
+
+### Bug fixes
+
+* Access level errors when executing user commands were not verbose enough.
+* Asset indexing could become so parallelized that EMFILE errors would be thrown (too many open files).
+* Asset module's client side "applyAssetMapToStylesheet" method was broken on Firefox.
 * Archivist beforeDistribute hooks were unable to report an error.
 * Archivist client could throw an exception when optional values were queried for (thanks Max).
-
+* WebSocket logger was not working reliably.
+* Even when configuration for other logger writers was provided, the terminal was always being logged to.
+* User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
 
 ## v0.13.0
 
