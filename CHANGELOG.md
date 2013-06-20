@@ -108,7 +108,7 @@ or worker.
 * Asset module's client side "applyAssetMapToStylesheet" method was broken on Firefox.
 * Archivist beforeDistribute hooks were unable to report an error.
 * Archivist client could throw an exception when optional values were queried for (thanks Max).
-* WebSocket logger was not working reliably.
+* WebSocket logger was not working reliably and was leaving socket files behind.
 * Even when configuration for other logger writers was provided, the terminal was always being logged to.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
 
