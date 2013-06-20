@@ -16,13 +16,13 @@ function macport_install() {
 
     case ${OSX_VERSION} in
         "10.8")
-            wget https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.8-MountainLion.pkg -O macport.pkg;
+            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.8-MountainLion.pkg > macport.pkg;
             ;;
         "10.7")
-            wget https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.7-Lion.pkg -O macport.pkg;
+            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.7-Lion.pkg > macport.pkg;
             ;;
         "10.6")
-            wget https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.6-SnowLeopard.pkg -O macport.pkg;
+            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.6-SnowLeopard.pkg > macport.pkg;
             ;;
     esac
 
