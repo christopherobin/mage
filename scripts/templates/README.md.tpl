@@ -1,17 +1,13 @@
-%APP_NAME%
-==============
+# %APP_NAME%
 
 %APP_DESCRIPTION%
 
-Requirements
--------------
+## Requirements
 
-Installation
--------------
+## Installation
 
 ### For development
 
 ### For production
 
-See also
----------
+## See also

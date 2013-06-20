@@ -17,16 +17,7 @@
 
 		"www/pages",
 		"www/views",
-		"www/components",
-
-		"www/behaviors",
-		"www/deps",
-		"www/deps/frontend",
-		"www/deps/frontend/phonegap",
-		"www/deps/frontend/wui/core",
-		"www/deps/frontend/wui/behaviors",
-
-		"www/deps/frontend/wui/components"
+		"www/components"
 	],
 	"scripts": []
 }

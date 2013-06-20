@@ -1,5 +1,9 @@
 # Installing MAGE
 
+## Make sure all requirements are met
+
+Read more about this [here](./Requirements.md).
+
 ## Setting up a new MAGE project
 
 ```bash
@@ -18,8 +22,18 @@ This will:
 ## Installing/upgrading MAGE in an existing project
 
 Upgrade to a new version of MAGE is very simple. Simply update your package.json's dependency entry
-for MAGE. Simply change the version number or label present after the pound (#) sign.
+for MAGE. You can change the version number or label present after the pound (#) sign.
 
+Snippet from package.json:
+```json
+{
+    "dependencies": {
+        "mage": "git+ssh://git@github.com:Wizcorp/mage.git#v0.13.0"
+    }
+}
+```
+
+Installing MAGE
 ```bash
 rm -rf node_modules/mage
 npm install mage

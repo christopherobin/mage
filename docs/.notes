@@ -4,20 +4,22 @@ Layout (every entry is at least one file):
 
     Changelog
     ReadMe (about MAGE)
+		Requirements
         Installation Guide
-        How to use MAGE (walkthrough of what the most important and public subsystems do, with links to their API docs)
-            Modules (user commands, etc)
-            Session module
-            The State class
+        Your first MAGE game (a step by step introduction, building tinyMageApp)
+			Configuration
+            Modules, user commands, events and the State class
+            Session management
             The Logger module
             Managing your assets
             Database access through Archivist
             The web frontend
-            Message server
+        A MAGE network
+            Master/worker management
             Building a network (auto discovery, mmrp)
-            Running MAGE (daemonizer)
-        Your first MAGE app (a step by step introduction, building tinyMageApp)
+            Daemonizing MAGE (daemonizer)
         Tools
             Using tools
             Building your own tools
+        Recipies
         API reference (links to all subsystems that have docs)

@@ -3,9 +3,12 @@
 /configs/game/custom.json
 .DS_Store
 ._.DS_Store
+*.swp
 .swp
-server.sock
 .htpasswd
 .pidfile
 *.log
+*.sock
 /components/
+runtime.json
+npm-debug.log
