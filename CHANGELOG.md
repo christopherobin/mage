@@ -113,6 +113,8 @@ or worker.
 * WebSocket logger was not working reliably and was leaving socket files behind.
 * Even when configuration for other logger writers was provided, the terminal was always being logged to.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
+* The loader would prevent the right density from being set.
+
 
 ## v0.13.0
 
