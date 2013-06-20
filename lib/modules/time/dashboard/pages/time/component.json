@@ -1,0 +1,16 @@
+{
+	"name": "time",
+	"description": "Time dashboard",
+	"local": [
+		"mage",
+		"loader",
+
+		"time"
+	],
+	"paths": [
+		"../../../"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
