@@ -143,6 +143,22 @@ code, samp {
     font-family: 'Lucida Console', Monaco, monospace;
     font-size: 11px;
     white-space: pre-wrap;
+    position: relative;
+}
+
+code:hover:before, samp:hover:before {
+    display: inline-block;
+    white-space: nowrap;
+    position: absolute;
+    top: -18px;
+    right: 0;
+    background: #ffd;
+    color: #660;
+    content: 'Click to copy/paste';
+    padding: 2px 4px;
+    font-family: sans-serif;
+    font-size: 10px;
+    opacity: 0.8;
 }
 
 /* what we call "property", highlight.js calls "attribute" */
