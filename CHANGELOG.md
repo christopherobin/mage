@@ -1,5 +1,117 @@
 # Changelog
 
+## __NEXT__
+
+### Development mode
+
+You can now enable "development mode" in your configuration, and are encouraged to do so in your
+development environments. Using dev mode will enable certain features now (and more and more in the
+future) that only make sense while developing, and would be dangerous or useless in production.
+
+You enable development mode by adding the following configuration:
+
+```json
+{
+	"developmentMode": true
+}
+```
+
+If you want to know if an application is running in development mode, on the server side you can call:
+```javascript
+mage.isDevelopmentMode();
+```
+
+### Dashboard
+
+MAGE now comes with a set of dashboards (tools). Currently, the only way to log in is anonymously.
+User management will appear in an upcoming release. That means that for now, tools should not be
+used on production environments. Logging in anonymously requires development mode to be enabled.
+
+There are two dashboard environments available to be exposed: "cms" and "support". CMS is aimed at
+content management (pre-production), and support is aimed at customer support channels. You can
+divide your dashboard pages into either of these two categories, or both.
+
+You can expose these dashboard apps by adding the following configuration:
+
+```json
+{
+	"apps": {
+		"cms": {
+			"responseCache": 10,
+			"access": "admin"
+		},
+		"support": {
+			"responseCache": 10,
+			"access": "admin"
+		}
+	}
+}
+```
+
+The reason for "admin" level access is that we want to expose those administration-level user
+commands to these apps. Despite that, development mode still enables anonymous login. The access
+level given to these anonymous sessions *will* be "admin", allowing you to run these user commands.
+
+The reason for a short responseCache is that generally (at least for now), these dashboards will be
+accessed on stable network connections, so we don't have to dedicate a lot of memory on mitigating
+dodgy networks.
+
+The dashboard currently provides the following:
+* Archivist (read/write access to all your vault values)
+* Asset management
+* Documentation
+* Logger
+* Dashboard style guide
+
+There is a home screen that is currently quite empty. In the future, you can expect widgets here!
+
+### Dependency updates
+
+* async 0.2.7 -> 0.2.9
+* zmq 2.3.0 -> 2.4.0
+* colors custom -> colours 0.6.0
+* panopticon 0.1.1 -> 0.2.0
+* js-yaml 2.0.4 -> 2.1.0
+* config 0.4.23 -> 0.4.26
+* component-builder custom -> 0.8.3
+
+### Legacy cleanup
+
+* Removed actor, player, gm and gree modules.
+* Renamed tool to dashboard.
+
+### User commands
+
+User commands can now receive arrays of files. Simply make a JavaScript array with DOM File or Blob
+objects and use it as an argument.
+
+### Savvy
+
+
+### Assets
+
+Asset digests are now cached, speeding up indexing by almost 3x on previously indexed asset maps.
+
+### Archivist
+
+Archivist client now actively expires values when their TTL runs out.
+
+### Logger
+
+Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
+or worker.
+
+### Bug fixes
+
+* Access level errors when executing user commands were not verbose enough.
+* Asset indexing could become so parallelized that EMFILE errors would be thrown (too many open files).
+* Asset module's client side "applyAssetMapToStylesheet" method was broken on Firefox.
+* Archivist beforeDistribute hooks were unable to report an error.
+* Archivist client could throw an exception when optional values were queried for (thanks Max).
+* WebSocket logger was not working reliably and was leaving socket files behind.
+* Even when configuration for other logger writers was provided, the terminal was always being logged to.
+* User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
+
 ## v0.13.0
 
 ### Asset serving in MAGE
@@ -280,7 +392,6 @@ If you want to change the TTL for this cache, you can do this per application yo
 to be done through `myApp.commandCenter.responseCacheTTL = 123;`, but that no longer works. The TTL
 is now defined in seconds in your configuration as:
 ```json
-
 {
 	"apps": {
 		"mygame": {
@@ -721,7 +832,7 @@ Profiles are symbolic names that map to a set of requirements defined in the con
 
 #### Asset folder example
 
-`zombieboss/
+`mygame/
 	assets/
 		img/
 			default/  # default language and common stuff
@@ -1553,7 +1664,7 @@ Another change in configuration is that the protocol setting has been moved from
 		"longpolling": { "heartbeat": 120 }
 	},
 	"bind": { "host": "0.0.0.0", "port": 4242 },
-	"expose": { "host": "zombieboss.rk.dev.wizcorp.jp", "port": 4242 }
+	"expose": { "host": "mygame.myname.dev.wizcorp.jp", "port": 4242 }
 }
 `
 

@@ -1,5 +1,6 @@
 {
 	"apps": ["cms", "support"],
 	"listed": true,
-	"name": "Dashboard"
+	"name": "Home",
+	"orderId": 0
 }
