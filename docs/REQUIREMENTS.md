@@ -23,7 +23,7 @@ curl http://www.wizcorp.jp/mage/environment.sh | sh
 Install the official ZeroMQ repository.
 
 ```bash
-sudo wget "http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-${CENTOS_VERSION}/home:fengshuo:zeromq.repo" -O > /etc/yum.repos.d/zeromq.repo
+sudo curl -s "http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-${CENTOS_VERSION}/home:fengshuo:zeromq.repo" > /etc/yum.repos.d/zeromq.repo
 ```
 
 * git-all

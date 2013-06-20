@@ -16,7 +16,7 @@ function repo_install () {
     echo "------------------------------------------" | cyan;
     echo "";
 
-    sudo wget "http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-${CENTOS_VERSION}/home:fengshuo:zeromq.repo" -O > /etc/yum.repos.d/zeromq.repo || return 1;
+    sudo curl -s "http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-${CENTOS_VERSION}/home:fengshuo:zeromq.repo" > /etc/yum.repos.d/zeromq.repo || return 1;
 
     echoOk "Remote repository install completed";
 }
