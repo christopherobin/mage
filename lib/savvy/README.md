@@ -1,4 +1,4 @@
-# The Savvy server library.
+# The Savvy server library
 
 Savvy provides a server for various management interfaces. The server has a
 simple API for registering regular HTTP routes and websocket routes:
@@ -11,13 +11,13 @@ The base URL is configuration driven, and can be resolved with the `getBaseUrl`
 function. All routes sit on subpaths immediately on top of the base URL. This
 means that the `routePath` parameter taken by the other two (route registration)
 methods should contain exactly one `/`, which should be leading. This namespaces
-your request handlers. If you which to operate with subpaths, this can be
-managed by a registered `routeFunction`. The sampler library does this to allow
-subpath tunnelling into data.
+your request handlers. If you wish to operate with subpaths, this can be managed
+by a registered `routeFunction`. The sampler library does this to allow subpath
+tunnelling down into data.
 
 `addRoute` takes a route path and appends a simple HTTP handler function
-`routeFunction`. This function takes the usual `request` and `response` objects
-as parameters. For example:
+`routeFunction`. This handler function takes the usual `request` and `response`
+objects as parameters. For example:
 
 ```javascript
 mage.core.savvy.addRoute('/sampler', function (req, res) {
