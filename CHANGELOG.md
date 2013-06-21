@@ -63,6 +63,7 @@ The dashboard currently provides the following:
 * Asset management
 * Documentation
 * Logger
+* Time
 * Dashboard style guide
 
 There is a home screen that is currently quite empty, but in the future you can expect widgets here!
@@ -119,6 +120,7 @@ or worker.
 * Even when configuration for other logger writers was provided, the terminal was always being logged to.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
 * The loader would prevent the right density from being set.
+* Querying for a componentized page without clientConfig would crash the HTTP request handler.
 
 
 ## v0.13.0
