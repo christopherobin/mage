@@ -65,7 +65,7 @@ The dashboard currently provides the following:
 * Logger
 * Dashboard style guide
 
-There is a home screen that is currently quite empty. In the future, you can expect widgets here!
+There is a home screen that is currently quite empty, but in the future you can expect widgets here!
 
 ### Dependency updates
 
