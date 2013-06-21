@@ -16,7 +16,9 @@ You enable development mode by adding the following configuration:
 }
 ```
 
-If you want to know if an application is running in development mode, on the server side you can call:
+If you want to know if an application is running in development mode, you can call the following,
+both on the server side and on the client side:
+
 ```javascript
 mage.isDevelopmentMode();
 ```
@@ -111,6 +113,8 @@ or worker.
 * WebSocket logger was not working reliably and was leaving socket files behind.
 * Even when configuration for other logger writers was provided, the terminal was always being logged to.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
+* The loader would prevent the right density from being set.
+
 
 ## v0.13.0
 
