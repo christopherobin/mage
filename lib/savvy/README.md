@@ -5,7 +5,7 @@ simple API for registering regular HTTP routes and websocket routes:
 
 * `getBaseUrl()`
 * `addRoute(routePath, routeFunction)`
-* `addWebsocketRoute(routePath)`
+* `addWebSocketRoute(routePath)`
 
 The base URL is configuration driven, and can be resolved with the `getBaseUrl`
 function. All routes sit on subpaths immediately on top of the base URL. This
@@ -25,7 +25,7 @@ mage.core.savvy.addRoute('/sampler', function (req, res) {
 });
 ```
 
-`addWebsocketRoute` creates a websocket server route for you, and gives it back
+`addWebSocketRoute` creates a websocket server route for you, and gives it back
 as the return value of the function. For example, from the websocket logger:
 
 ```javascript
@@ -36,5 +36,5 @@ server.on('connection', function (conn) {
 });
 ```
 
-Refer to the [ws documentation](https://github.com/einaros/ws) for the api of
+Refer to the [ws documentation](https://github.com/einaros/ws) for the APIs of
 the server and connection objects.
