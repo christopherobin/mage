@@ -19,7 +19,7 @@ subpath tunnelling into data.
 `routeFunction`. This function takes the usual `request` and `response` objects
 as parameters. For example:
 
-```
+```javascript
 mage.core.savvy.addRoute('/sampler', function (req, res) {
     // Sampler uses subroutes, which may be obtained from req.
 });
