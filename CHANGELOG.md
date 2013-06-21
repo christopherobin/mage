@@ -89,6 +89,10 @@ objects and use it as an argument.
 
 ### Savvy
 
+Savvy superceeds the sampler server. It provides a server on the master to host such things as the
+sampler and the logger. This is ideal for feeding data to the management webtools. Savvy provides
+some APIs for registering routes, both on HTTP and websocket. See the
+[readme](/lib/savvy/README.md) for more information.
 
 ### Assets
 
