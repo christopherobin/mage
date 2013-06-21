@@ -1,5 +1,7 @@
 # The Savvy server library
 
+## API
+
 Savvy provides a server for various management interfaces. The server has a
 simple API for registering regular HTTP routes and websocket routes:
 
@@ -38,3 +40,27 @@ server.on('connection', function (conn) {
 
 Refer to the [ws documentation](https://github.com/einaros/ws) for the APIs of
 the server and connection objects.
+
+## Configuration
+
+Savvy configuation is small. For example for local development the following
+is a reasonable template (at the top level of your configuration):
+
+```yaml
+savvy:
+    bind:
+        host: 0.0.0.0
+        port: 4321
+    expose: http://dev.wizcorp.jp:4321
+```
+
+If you want to use a socket, then replace the `host` and `port` keys:
+
+```yaml
+savvy:
+    bind:
+        file: ./savvy.sock
+    expose: http://testapp.me.node.wizcorp.jp/savvy # Depends on nginx!
+```
+
+Be warned though, until recently websockets were not supported with nginx.
