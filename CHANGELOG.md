@@ -16,7 +16,9 @@ You enable development mode by adding the following configuration:
 }
 ```
 
-If you want to know if an application is running in development mode, on the server side you can call:
+If you want to know if an application is running in development mode, you can call the following,
+both on the server side and on the client side:
+
 ```javascript
 mage.isDevelopmentMode();
 ```
@@ -61,9 +63,10 @@ The dashboard currently provides the following:
 * Asset management
 * Documentation
 * Logger
+* Time
 * Dashboard style guide
 
-There is a home screen that is currently quite empty. In the future, you can expect widgets here!
+There is a home screen that is currently quite empty, but in the future you can expect widgets here!
 
 ### Dependency updates
 
@@ -72,13 +75,21 @@ There is a home screen that is currently quite empty. In the future, you can exp
 * colors custom -> colours 0.6.0
 * panopticon 0.1.1 -> 0.2.0
 * js-yaml 2.0.4 -> 2.1.0
-* config 0.4.23 -> 0.4.26
+* config 0.4.23 -> 0.4.27
 * component-builder custom -> 0.8.3
+* memcached 0.2.2 -> 0.2.3
 
 ### Legacy cleanup
 
 * Removed actor, player, gm and gree modules.
 * Renamed tool to dashboard.
+
+### Deprecation
+
+The pauser module has been deprecated, since it really never had anything to do with MAGE. It did
+fulfill a useful purpose on the frontend, so it has been replaced by the
+[https://github.com/Wizcorp/locks](Locks component), which you are now very much encouraged to use
+instead.
 
 ### User commands
 
@@ -87,6 +98,10 @@ objects and use it as an argument.
 
 ### Savvy
 
+Savvy superceeds the sampler server. It provides a server on the master to host such things as the
+sampler and the logger. This is ideal for feeding data to the management webtools. Savvy provides
+some APIs for registering routes, both on HTTP and websocket. See the
+[readme](./lib/savvy/README.md) for more information.
 
 ### Assets
 
@@ -111,6 +126,9 @@ or worker.
 * WebSocket logger was not working reliably and was leaving socket files behind.
 * Even when configuration for other logger writers was provided, the terminal was always being logged to.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
+* The loader would prevent the right density from being set.
+* Querying for a componentized page without clientConfig would crash the HTTP request handler.
+
 
 ## v0.13.0
 
@@ -365,7 +383,7 @@ module names however you like.
 ### Bot module
 
 The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
-[/lib/modules/bot/README.md](/lib/modules/bot/README.md) that should help get you started.
+[./lib/modules/bot/README.md](./lib/modules/bot/README.md) that should help get you started.
 
 
 ### Moved User Command Response Cache into Archivist
@@ -430,7 +448,7 @@ for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed
 
 DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
 highly encouraged to use Archivist from now on, since DataSources will be removed in a future
-release. Learn more about Archivist in [/lib/archivist/README.md](/lib/archivist/README.md).
+release. Learn more about Archivist in [./lib/archivist/README.md](./lib/archivist/README.md).
 
 
 ### Daemonization
@@ -560,7 +578,7 @@ This is verbose, and not to everyone's taste, but it's more in line with how nod
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
 good use of it, you should be using its extended API. For starters, there is now a logger module,
-read about it in [/lib/modules/logger/README.md](/lib/modules/logger/README.md).
+read about it in [./lib/modules/logger/README.md](./lib/modules/logger/README.md).
 
 #### Migration
 
