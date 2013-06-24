@@ -75,7 +75,7 @@ There is a home screen that is currently quite empty, but in the future you can 
 * colors custom -> colours 0.6.0
 * panopticon 0.1.1 -> 0.2.0
 * js-yaml 2.0.4 -> 2.1.0
-* config 0.4.23 -> 0.4.26
+* config 0.4.23 -> 0.4.27
 * component-builder custom -> 0.8.3
 * memcached 0.2.2 -> 0.2.3
 
@@ -83,6 +83,13 @@ There is a home screen that is currently quite empty, but in the future you can 
 
 * Removed actor, player, gm and gree modules.
 * Renamed tool to dashboard.
+
+### Deprecation
+
+The pauser module has been deprecated, since it really never had anything to do with MAGE. It did
+fulfill a useful purpose on the frontend, so it has been replaced by the
+[https://github.com/Wizcorp/locks](Locks component), which you are now very much encouraged to use
+instead.
 
 ### User commands
 
