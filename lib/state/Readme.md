@@ -1,6 +1,8 @@
-# The state library
+# State
 
-The state library exposes a constructor that constructs objects which form an interface between and actor, a session and the datasources. Virtually any command that involves reading and modification of data should be managed by the state object.
+The state library exposes a constructor that constructs objects which form an interface between and
+actor, a session and the archivist. Virtually any command that involves reading and modification of
+data should be managed by the state object.
 
 The state constructor is exposed on `require('./state').State`.
 
