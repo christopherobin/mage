@@ -17,8 +17,6 @@ install:
 test:
 	npm test
 
-lint: lint-staged
-
 # target: lint-staged, Lints every JavaScript file in the project that are staged to be comitted.
 lint-staged:
 	npm run-script lint-staged

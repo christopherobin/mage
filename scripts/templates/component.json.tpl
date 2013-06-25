@@ -1,7 +1,6 @@
 {
 	"name": "%APP_NAME%",
 	"description": "%APP_DESCRIPTION%",
-	"version": "%APP_VERSION%",
 	"author": "%APP_AUTHOR%",
 	"local": [
 		"gameLoader"
@@ -13,11 +12,7 @@
 		"lib",
 		"node_modules",
 		"node_modules/mage/lib",
-		"node_modules/mage/node_modules",
-
-		"www/pages",
-		"www/views",
-		"www/components"
+		"node_modules/mage/node_modules"
 	],
 	"scripts": []
 }

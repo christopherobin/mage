@@ -1,10 +1,20 @@
 #
 # %APP_NAME% - default.yaml
-# ==========================
+# =========================
 #
-# This configuration includes all the options which
-# can be configured in MAGE. You can of course add
-# configuration elements depending on your application needs,
-# and you can also remove elements which have default values
-# to increase visibility
+# This file includes all the configuration that every environment has in common. Every environment
+# can have its own configuration file. If the environment specific configuration file overlaps
+# entries with this file, the environment specific one will override the values here.
 #
+
+apps:
+    game:
+        responseCache: 30
+        access: user
+        delivery:
+            serverCache: false
+            useManifest: false
+            compress: true
+            postprocessors:
+                css: []
+                js: []

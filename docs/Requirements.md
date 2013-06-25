@@ -6,16 +6,16 @@
 
 Node.js is essentially JavaScript for servers, and the MAGE platform has been built on it. There are
 some concepts you will most likely benefit from understanding before getting started on a serious
-Node.js project. Here are some resources which might help you make your first steps on Node.js:
+Node project. Here are some resources which might help you make your first steps on Node:
 
-* [Node.js API Documentation](http://nodejs.org/api/)
-* [Felix's Node.js Style Guide](http://nodeguide.com/style.html)
+* [Node API Documentation](http://nodejs.org/api/)
+* [Felix's Node Style Guide](http://nodeguide.com/style.html)
 
-We recommend using nvm (Node Version Manager) to manage your Node.js versions and environments.
+We recommend using nvm (Node Version Manager) to manage your Node versions and environments.
 
 See also:
 
-[Node.js website](http://nodejs.org/)
+[Node website](http://nodejs.org/)
 [NPM - Node Package Manager](https://npmjs.org/)
 [NVM - Node Version Manager](https://github.com/creationix/nvm)
 
@@ -33,7 +33,7 @@ See also:
 [Git website](http://git-scm.com/)
 [GitHub](http://github.com/)
 
-### ZeroMQ (aka 0MQ)
+### ZeroMQ (aka ØMQ)
 
 MAGE uses the ZeroMQ library to enable fast messaging between servers and processes. To allow MAGE
 to build against it, the ZeroMQ library must be installed beforehand.
@@ -66,14 +66,14 @@ NVM (Node Version Manager)
 curl https://raw.github.com/creationix/nvm/master/install.sh | sh
 ```
 
-The latest stable Node.js version compatible with MAGE.
+The latest stable Node version compatible with MAGE.
 
 ```bash
 nvm install 0.8
 nvm use 0.8
 ```
 
-### OSX (10.6 and up)
+### OS X (10.6 and up)
 
 Please install:
 
@@ -81,7 +81,7 @@ Please install:
 * [zeromq](http://www.zeromq.org/intro:get-the-software)
 * [git](http://git-scm.com/downloads) (MacPorts: git-core)
 
-mDNS is enabled by default on OSX.
+mDNS is enabled by default on OS X.
 
 ### CentOS (5 and up)
 
@@ -126,7 +126,7 @@ Please add the following line to `/etc/apt/sources.list`:
 deb http://backports.debian.org/debian-backports squeeze-backports main
 ```
 
-Then run ```apt-get update``` and use ```apt-get install``` to install the following:
+Then run `apt-get update` and use `apt-get install` to install the following:
 
 * git-all
 * build-essential

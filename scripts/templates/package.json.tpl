@@ -6,11 +6,7 @@
   "license": "Private",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node . start",
-    "stop": "node . stop",
-    "restart": "node . restart",
-    "reload": "node . reload"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
     "node": "%MAGE_NODE_VERSION%"
