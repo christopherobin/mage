@@ -13,4 +13,4 @@ The state library is also an event emitter, with events:
  - `'stateError'`
  - `'timeOut'`, `timeout` (in milliseconds)
 
-which are intended for the sampler library to collect data.
+These are intended for the sampler library to collect data.

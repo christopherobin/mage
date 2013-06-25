@@ -227,8 +227,8 @@ Available themes: `default`, `dark`, `light`.
 				"channels": ["<info", ">=critical", "error"],
 				"config": {
 					"jsonIndent": 2,
-					path: "./logs/",
-					mode: "0600"
+					"path": "./logs/",
+					"mode": "0600"
 				}
 			},
 
