@@ -7,9 +7,6 @@ KERNEL="$(uname)";
 #
 # We use libbash to format on screen
 #
-pushd ${MAGE_DIR}/scripts > /dev/null
-tar -zxvf libbash.tar.gz > /dev/null;
-popd > /dev/null;
 
 function getAttribute() {
     node -e "process.stdout.write(require('${APP_DIR}/package.json').${1})";
