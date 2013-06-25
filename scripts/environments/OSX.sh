@@ -7,44 +7,44 @@ if ! which xcodebuild > /dev/null; then
     echoError "You need to install XCode 4 before we can proceed."
 fi
 
-function macport_install() {
+function macports_install() {
     echo "";
     echo "---------------------" | cyan;
-    echo "Installing MacPort" | cyan;
+    echo "Installing MacPorts" | cyan;
     echo "---------------------" | cyan;
     echo "";
 
     case ${OSX_VERSION} in
         "10.8")
-            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.8-MountainLion.pkg > macport.pkg;
+            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.8-MountainLion.pkg > macports.pkg;
             ;;
         "10.7")
-            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.7-Lion.pkg > macport.pkg;
+            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.7-Lion.pkg > macports.pkg;
             ;;
         "10.6")
-            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.6-SnowLeopard.pkg > macport.pkg;
+            curl -s https://distfiles.macports.org/MacPorts/MacPorts-2.1.3-10.6-SnowLeopard.pkg > macports.pkg;
             ;;
     esac
 
-    sudo installer -pkg macport.pkg || return 1;
+    sudo installer -pkg macports.pkg || return 1;
 
-    rm macport.pkg;
+    rm macports.pkg;
 
     echo "";
-    echoOk "MacPort installed with success!";
+    echoOk "MacPorts installed with success!";
 }
 
-function macport_update() {
+function macports_update() {
     echo "";
     echo "-------------------" | cyan;
-    echo "Updating Macport" | cyan;
+    echo "Updating Macports" | cyan;
     echo "-------------------" | cyan;
     echo "";
 
     sudo port -v selfupdate;
 
     echo "";
-    echoOk "MacPort updated with success!";
+    echoOk "MacPorts updated with success!";
 }
 
 function tools_install () {
@@ -66,10 +66,10 @@ function tools_install () {
 
 if which port > /dev/null; then
     echo "";
-    echoOk "MacPort is already installed!";
+    echoOk "MacPorts is already installed!";
 else
-    macport_install || echoError "Could not install MacPort";
+    macports_install || echoError "Could not install MacPorts";
 fi
 
-macport_update || echoError "Could not selfupdate MacPort";
+macports_update || echoError "Could not selfupdate MacPorts";
 tools_install || echoError "Installing required tools and libraries failed";

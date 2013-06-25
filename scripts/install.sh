@@ -94,7 +94,6 @@ mkdir -p \
     assets \
     config \
     components \
-    db \
     docs \
     lib \
     logs \
@@ -138,9 +137,9 @@ echo "";
 npm init | cyan && resetStdin;
 
 #
-# Variables we need. If you add a new one for all your files, just basically
-# add the variable to the list below; the script further down will detect the new variable
-# and add it to the list of template var to be replaced
+# Variables for templates. If you want to add a new variable, just make sure it has a "APP_" or
+# "MAGE_" prefix and add it to the list below. The script further down will detect its presence and
+# add it to the list of template vars to be replaced.
 #
 
 echoH2 "Replacing values in installed template files";
@@ -216,8 +215,7 @@ echo "";
 echo "                                                               " | inverse | green | bold;
 node . help | indent;
 echo "";
-echoOk "Setup completed! Please open ./lib/index.js to get started";
+echoOk "Setup completed! Please open ./lib/index.js to get started.";
 echo "";
 echo "                                                               " | inverse | green | bold;
 exit 0;
-
