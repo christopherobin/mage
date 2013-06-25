@@ -119,15 +119,14 @@ however. The client can log to console, but also to the server. Please make sure
 
 ## Built-in Logging Channels
 
-The default channels have been expanded to be more granular and more meaningful;
-this should help production operation by allowing us to throw alerts properly
-(only 3-4 emergencies or alerts a minute should alert operation, but it might
-take 100's of user errors a minute to trigger the same alerting).
+The default channels have been expanded to be more granular and more meaningful; this should help
+production operation by allowing you to throw alerts properly (only 3-4 emergencies or alerts a
+minute should alert operation, but it might take 100's of user errors a minute to trigger the same
+alerting).
 
 ### emergency
 
-Internal service or external service unavailability. The app cannot boot or
-stopped unexpectedly.
+Internal service or external service unavailability. The app cannot boot or stopped unexpectedly.
 
 ### alert
 
@@ -137,25 +136,23 @@ There are major issues that affect the correct operation of the application.
 
 ### critical
 
-A user request has gone wrong; user session or data is broken or corrupted.
-The user is expected to require a restart.
+A user request has gone wrong; user session or data is broken or corrupted. The user is expected to
+require a restart.
 
 ### error
 
-A user request has errored and the user experience is expected to be negatively
-impacted.
+A user request has errored and the user experience is expected to be negatively impacted.
 
 ### warning
 
-Acceptable problems that are expected to happen and will always be dealt with
-gracefully.
+Acceptable problems that are expected to happen and will always be dealt with gracefully.
 * A user made an unusual request
 * System warning
 
 ### notice
 
-Events regarding the state of services. Server up, server down, setup
-completion, build completion, and other non-error state change within the game.
+Events regarding the state of services. Server up, server down, setup completion, build completion,
+and other non-error state change within the game.
 
 ### info
 
@@ -230,8 +227,8 @@ Available themes: `default`, `dark`, `light`.
 				"channels": ["<info", ">=critical", "error"],
 				"config": {
 					"jsonIndent": 2,
-					path: "./logs/",
-					mode: "0600"
+					"path": "./logs/",
+					"mode": "0600"
 				}
 			},
 
@@ -280,6 +277,7 @@ Available themes: `default`, `dark`, `light`.
 ### Server: Websocket
 
 ```json
+{
 	"logging": {
 		"server": {
 			"websocket": {
@@ -305,6 +303,7 @@ configuration property is optional, and should generally be left out.
 ### HTML5: Console
 
 ```json
+{
 	"logging": {
 		"html5": {
 			"console": {
@@ -319,6 +318,7 @@ configuration property is optional, and should generally be left out.
 ### HTML5: Server
 
 ```json
+{
 	"logging": {
 		"html5": {
 			"server": {

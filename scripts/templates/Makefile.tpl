@@ -16,15 +16,3 @@ install:
 # target: test, Runs all tests.
 test:
 	npm test
-
-# target: lint-staged, Lints every JavaScript file in the project that are staged to be comitted.
-lint-staged:
-	npm run-script lint-staged
-
-# target: lint-all, Lints every JavaScript file in the project.
-lint-all:
-	npm run-script lint-all
-
-# target: git-setup, Sets up git hooks.
-git-setup:
-	npm run-script git-setup

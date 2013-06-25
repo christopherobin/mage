@@ -1,0 +1,13 @@
+.idea/
+/node_modules/
+.DS_Store
+._.DS_Store
+*.swp
+.swp
+.htpasswd
+.pidfile
+*.log
+*.sock
+/components/
+runtime.json
+npm-debug.log
