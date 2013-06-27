@@ -9,8 +9,8 @@ body {
     background: #393939;
     color: #fff;
     font-family: Arial, sans-serif;
-    font-size: 13px;
-    line-height: 15px;
+    font-size: 14px;
+    line-height: 22px;
 }
 
 .mage-page {
@@ -41,26 +41,26 @@ body {
 
 h1 {
     color: #42679C;
-    font-size: 24px;
+    font-size: 32px;
     margin: 24px 0;
 }
 
 h2 {
     color: #42679C;
-    font-size: 18px;
-    margin: 18px 0;
+    font-size: 26px;
+    margin: 32px 0 18px;
 }
 
 h3 {
     color: #42679C;
-    font-size: 13px;
-    margin: 18px 0 14px 0;
+    font-size: 21px;
+    margin: 30px 0 16px;
 }
 
 h4, h5, h6 {
     color: #000;
-    font-size: 13px;
-    margin: 18px 0 14px 0;
+    font-size: 16px;
+    margin: 20px 0 14px;
 }
 
 /* links */
@@ -156,15 +156,16 @@ code:hover:before, samp:hover:before {
     display: inline-block;
     white-space: nowrap;
     position: absolute;
-    top: -18px;
-    right: 0;
-    background: #ffd;
-    color: #660;
-    content: 'Click to copy/paste';
+    top: -20px;
+    right: -10px;
+    background: #FFD;
+    color: #330;
+    content: 'Click to copy';
     padding: 2px 4px;
     font-family: sans-serif;
     font-size: 10px;
-    opacity: 0.8;
+    opacity: 0.9;
+	font-weight: bold;
 }
 
 /* what we call "property", highlight.js calls "attribute" */
