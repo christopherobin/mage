@@ -48,8 +48,8 @@
 	"scripts": {
 		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec",
 		"postinstall": "./scripts/install.js",
-		"lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/humanJshintReporter.js .",
-		"lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/humanJshintReporter.js '{}'",
+		"lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js .",
+		"lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/lib/humanJshintReporter.js '{}'",
 		"setup": "./scripts/setup.sh"
 	},
 	"repository": {
