@@ -43,5 +43,5 @@ server:
     mmrp:
         bind:
             protocol: zmq
-            host: '*'
-            port: '*'
+            host: "*"
+            port: "*"

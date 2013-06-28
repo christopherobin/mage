@@ -1,5 +1,5 @@
 /**
- * This is your Archivist topic/index configuration
+ * This is your Archivist topic/index configuration.
  * For more information, please read the Archivist documentation.
  */
 

@@ -49,7 +49,7 @@ loader.on('online', function () {
 });
 
 loader.on('offline', function () {
-	// Are we online? We may want to explain the user that we need a working internet connection.
+	// Are we online? We may want to explain to the user that we need a working internet connection.
 });
 
 loader.on('error', function () {
