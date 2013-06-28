@@ -31,8 +31,12 @@ if (process.env.NODE_ENV) {
 exports.prepare = function (cb) {
 	// ask questions to fill the replacements map
 
-	function ask(question, varName, callback) {
+	function ask(question, varName, re, callback) {
 		rl.ask(question, replacements[varName], function (answer) {
+			if (re && !answer.match(re)) {
+				return ask(question, varName, re, callback);
+			}
+
 			replacements[varName] = answer;
 			callback();
 		});
@@ -40,13 +44,13 @@ exports.prepare = function (cb) {
 
 	async.series([
 		function (callback) {
-			ask('Name your game:', 'APP_NAME', callback);
+			ask('Name your game:', 'APP_NAME', /^.{2,}/, callback);
 		},
 		function (callback) {
-			ask('Provide a short name (max 8 characters):', 'APP_SHORTNAME', callback);
+			ask('Provide a short name (2-8 characters):', 'APP_SHORTNAME', /^.{2,8}$/, callback);
 		},
 		function (callback) {
-			ask('Describe your game:', 'APP_DESCRIPTION', callback);
+			ask('Describe your game:', 'APP_DESCRIPTION', null, callback);
 		},
 		function (callback) {
 			rl.ask('Please provide a valid GitHub repository name (if there is one):', '', function (answer) {
