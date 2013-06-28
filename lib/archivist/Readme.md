@@ -432,14 +432,10 @@ closes without errors, so you should never have to call this yourself.
 ## Client API
 
 The archivist is exposed on the browser through a MAGE module called "archivist". You can use it
-like any other built-in module by running the following snippet in your game's bootstrap file:
-```javascript
-mage.useModule('archivist');
-```
+like any other built-in module:
 
-On the client side, like with any other module, please build it with:
 ```javascript
-$html5client('module.archivist');
+mage.useModules(request, 'archivist');
 ```
 
 You can now read from the vaults by calling using the APIs described in the following paragraphs.
