@@ -1,7 +1,7 @@
 {
 	"name": "logger",
 	"description": "Logger module.",
-	"local": ["msgServer"],
+	"local": ["mage"],
 	"dependencies": {
 		"component/emitter": "*"
 	},

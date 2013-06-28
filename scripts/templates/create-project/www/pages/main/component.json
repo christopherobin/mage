@@ -1,0 +1,11 @@
+{
+	"name": "main",
+	"description": "The page that runs the actual game",
+	"local": [
+		"mage",
+		"loader"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
