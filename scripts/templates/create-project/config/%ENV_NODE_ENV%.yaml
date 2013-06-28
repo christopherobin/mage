@@ -1,0 +1,50 @@
+#
+# %APP_NAME% - %ENV_NODE_ENV%.yaml
+#
+# This file includes all the configuration that is unique to the "%ENV_NODE_ENV%" environment.
+# When it overlaps with default.yaml it will override its values.
+#
+
+developmentMode: true
+
+apps:
+    cms:
+        responseCache: 10
+        access: admin
+    support:
+        responseCache: 10
+        access: admin
+
+savvy:
+    bind:
+        file: ./savvy.sock
+    expose: "%APP_SAVVY_EXPOSE%"
+
+server:
+    clientHost:
+        bind:
+            file: ./server.sock
+        expose: "%APP_CLIENTHOST_EXPOSE%"
+    cluster: false
+    mmrp:
+        serviceDiscovery:
+            name: "%ENV_USER%-%APP_SHORTNAME%"
+
+archivist:
+    vaults:
+        memory:
+            type: memory
+        file:
+            type: file
+            config:
+                path: ./filevault
+    listOrder:
+        - file
+        - memory # memory is not ultimately persistent, so we can't trust it will always contain all data
+    readOrder:
+        - memory
+        - file
+    writeOrder:
+        - client
+        - memory
+        - file

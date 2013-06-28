@@ -1,0 +1,16 @@
+{
+	"name": "logger",
+	"description": "Logger tool",
+	"local": [
+		"mage",
+		"loader",
+
+		"logger"
+	],
+	"paths": [
+		"../../../"
+	],
+	"scripts": [
+		"index.js"
+	]
+}

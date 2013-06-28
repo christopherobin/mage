@@ -1,0 +1,12 @@
+{
+	"name": "dashboard",
+	"description": "Dashboard module for tool creation and management",
+	"local": ["session"],
+	"dependencies": {
+		"component/emitter": "*"
+	},
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
+}

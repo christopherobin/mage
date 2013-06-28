@@ -1,0 +1,7 @@
+{
+	"name": "home",
+	"description": "Home page for the MAGE dashboard.",
+	"scripts": [
+		"index.js"
+	]
+}

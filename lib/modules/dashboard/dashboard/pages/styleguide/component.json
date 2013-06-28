@@ -1,0 +1,7 @@
+{
+	"name": "styleguide",
+	"description": "MAGE dashboard style guide.",
+	"scripts": [
+		"index.js"
+	]
+}
