@@ -1,0 +1,23 @@
+{
+  "name": "%APP_NAME%",
+  "description": "%APP_DESCRIPTION%",
+  "version": "%APP_VERSION%",
+  "repository": "%APP_REPO%",
+  "author": "%APP_AUTHOR%",
+  "license": "%APP_LICENSE%",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Warning: no tests implemented yet\"",
+    "start": "node . start",
+    "stop": "node . stop",
+    "restart": "node . restart",
+    "reload": "node . reload",
+    "setup": "./scripts/setup.sh"
+  },
+  "engines": {
+    "node": "%MAGE_NODE_VERSION%"
+  },
+  "dependencies": {
+    "mage": "git+ssh://git@github.com:Wizcorp/mage.git#v%MAGE_VERSION%"
+  }
+}

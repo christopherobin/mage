@@ -1,6 +1,5 @@
 #
 # %APP_NAME% - default.yaml
-# =========================
 #
 # This file includes all the configuration that every environment has in common. Every environment
 # can have its own configuration file. If the environment specific configuration file overlaps
@@ -18,3 +17,31 @@ apps:
             postprocessors:
                 css: []
                 js: []
+
+logging:
+    html5:
+        console:
+            channels:
+                - ">=debug"
+        server:
+            channels:
+                - ">=debug"
+    server:
+        terminal:
+            channels:
+                - ">=debug"
+            config:
+                theme: default
+        websocket: {}
+
+server:
+    clientHost:
+        transports:
+            longpolling:
+                heartbeat: 30
+    cluster: false
+    mmrp:
+        bind:
+            protocol: zmq
+            host: '*'
+            port: '*'

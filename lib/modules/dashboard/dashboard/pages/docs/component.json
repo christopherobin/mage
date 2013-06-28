@@ -7,8 +7,7 @@
 		"forms"
 	],
 	"paths": [
-		"../../../../dashboard/dashboard/pages/postlogin/ui",
-		"../../../"
+		"../../../../dashboard/dashboard/pages/postlogin/ui"
 	],
 	"scripts": [
 		"index.js"
