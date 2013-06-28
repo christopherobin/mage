@@ -195,9 +195,9 @@ function bootstrap(cb) {
 						exec('git', ['add', '.'], null, callback);
 					},
 					function (callback) {
-						var message = 'Automated first commit (by MAGE installer).';
-
 						pretty.info('First commit (git commit)');
+
+						var message = 'Automated first commit (by MAGE installer).';
 
 						exec('git', ['commit', '-m', message], null, callback);
 					},
@@ -220,6 +220,16 @@ function bootstrap(cb) {
 
 							exec('git', ['push', 'origin', 'develop', 'master'], null, callback);
 						});
+					},
+					function (callback) {
+						var msg = 'All done! You can now start your game in the foreground by running "node .",\n' +
+							'or see the daemonize options by running "node . help".\n\n' +
+							'Once your application is running, you can access:\n' +
+							'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game\n' +
+							'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms\n';
+
+						pretty.chromify(msg, '❖', ['magenta', 'bold'], 'yellow');
+						callback();
 					}
 				], callback);
 			});
