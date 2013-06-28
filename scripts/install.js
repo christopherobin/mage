@@ -112,7 +112,7 @@ function setup(cb) {
 
 function bootstrap(cb) {
 	/**
-	 * copies a file from "from" to "to", and replaces template vars in filenames and file content.
+	 * Copies a file from "from" to "to", and replaces template vars in filenames and file content.
 	 * @param {String} from  from-path
 	 * @param {String} to    to-path
 	 */

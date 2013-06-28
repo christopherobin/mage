@@ -70,11 +70,11 @@ to store documents. You generally won't access vaults directly. You can leave th
 You will however have to configure them, so that each vault knows where to store data.
 
 The following vault types are currently implemented:
-* [File](vaults/file/README.md)
-* [Memory](vaults/memory/README.md)
-* [MySQL](vaults/mysql/README.md)
-* [Memcached](vaults/memcached/README.md)
-* [Client](vaults/client/README.md)
+* [File](vaults/file/Readme.md)
+* [Memory](vaults/memory/Readme.md)
+* [MySQL](vaults/mysql/Readme.md)
+* [Memcached](vaults/memcached/Readme.md)
+* [Client](vaults/client/Readme.md)
 
 Please read their documentation on how to set them up.
 
