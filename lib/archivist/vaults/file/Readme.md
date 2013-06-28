@@ -17,8 +17,8 @@ The "file" vault makes this possible.
 operation | supported | implementation
 ----------|:---------:|---------------
 list      | yes       | `fs.readdir(config.path);`
-get       | yes       | `fs.readFile('myfile.filevault'); fs.readFile('myfile.json');`
-add       | yes       | `fs.writeFile('myfile.filevault'); fs.writeFile('myfile.json');`
-set       | yes       | `fs.writeFile('myfile.filevault'); fs.writeFile('myfile.json');`
+get       | yes       | `fs.readFile('myfile.filevault' and 'myfile.json');`
+add       | yes       | `fs.writeFile('myfile.filevault' and 'myfile.json');`
+set       | yes       | `fs.writeFile('myfile.filevault' and 'myfile.json');`
 touch     | yes       | `fs.readFile('myfile.filevault'); fs.writeFile('myfile.filevault');`
-del       | yes       | `fs.readFile('myfile.filevault'); fs.unlink('myfile.filevault'); fs.unlink('myfile.json');`
+del       | yes       | `fs.readFile('myfile.filevault'); fs.unlink('myfile.filevault' and 'myfile.json');`
