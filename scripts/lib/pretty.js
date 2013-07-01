@@ -7,6 +7,7 @@
  */
 
 require('colours');
+var EOL = require('os').EOL;
 
 /**
  * Pad a string on the left with `n` spaces.
@@ -31,7 +32,7 @@ var log = console.log;
  */
 
 exports.chromify = function (basic, chromeChar, innerstyle, outerstyle) {
-	var maxLength = Math.max.apply(null, basic.split('\n').map(function (subString) {
+	var maxLength = Math.max.apply(null, basic.split(EOL).map(function (subString) {
 		return subString.length;
 	}));
 
@@ -57,7 +58,7 @@ exports.chromify = function (basic, chromeChar, innerstyle, outerstyle) {
 		basic = basic[innerstyle];
 	}
 
-	log('\n' + chrome + '\n ' + basic.replace(/\n/g, '\n ') + '\n' + chrome + '\n\n');
+	log(EOL + chrome + EOL + ' ' + basic.replace(new RegExp(EOL, 'g'), EOL + ' ') + EOL + chrome + EOL + EOL);
 };
 
 
@@ -79,7 +80,7 @@ exports.h1 = function (content) {
  */
 
 exports.h2 = function (content) {
-	log(('‣ ' + content).blue.bold + '\n');
+	log(('‣ ' + content).blue.bold + EOL);
 };
 
 
@@ -90,7 +91,7 @@ exports.h2 = function (content) {
  */
 
 exports.h3 = function (content) {
-	log(('-- ' + content).blue.bold + '\n');
+	log(('-- ' + content).blue.bold + EOL);
 };
 
 
@@ -101,7 +102,7 @@ exports.h3 = function (content) {
  */
 
 exports.h4 = function (content) {
-	log(('◦◦◦ ' + content).blue.bold + '\n');
+	log(('◦◦◦ ' + content).blue.bold + EOL);
 };
 
 
@@ -112,7 +113,7 @@ exports.h4 = function (content) {
  */
 
 exports.h5 = function (content) {
-	log(('◘◘◘◘ ' + content).blue.bold + '\n');
+	log(('◘◘◘◘ ' + content).blue.bold + EOL);
 };
 
 

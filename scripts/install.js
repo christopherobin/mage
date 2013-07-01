@@ -7,6 +7,7 @@ var mkdirpSync = require('mkdirp').sync;
 var async = require('async');
 var pretty = require('./lib/pretty.js');
 var ask = require('./lib/readline.js').ask;
+var EOL = require('os').EOL;
 
 var magePath = process.cwd();
 var appPath = path.resolve(magePath, '../..');
@@ -222,13 +223,16 @@ function bootstrap(cb) {
 						});
 					},
 					function (callback) {
-						var msg = 'All done! You can now start your game in the foreground by running "node .",\n' +
-							'or see the daemonize options by running "node . help".\n\n' +
-							'Once your application is running, you can access:\n' +
-							'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game\n' +
-							'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms\n';
+						var msg = [
+							'All done! You can now start your game in the foreground by running "node .",',
+							'or see the daemonize options by running "node . help".',
+							'',
+							'Once your application is running, you can access:',
+							'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
+							'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms'
+						];
 
-						pretty.chromify(msg, '❖', ['magenta', 'bold'], 'yellow');
+						pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');
 						callback();
 					}
 				], callback);
