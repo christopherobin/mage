@@ -3,8 +3,11 @@
 	"description": "Page that holds some crucial libraries (UI) that are needed once logged in.",
 	"local": [
 		"mage",
+		"Router",
 		"Sidebar",
-		"NotificationCenter"
+		"NotificationCenter",
+		"forms",
+		"format"
 	],
 	"paths": [
 		"..",
