@@ -25,6 +25,7 @@ To upgrade to a new version of MAGE, update your package.json's dependency entry
 change the version number or label present after the pound (#) sign.
 
 Snippet from package.json:
+
 ```json
 {
 	"dependencies": {
@@ -34,6 +35,7 @@ Snippet from package.json:
 ```
 
 Installing MAGE
+
 ```bash
 rm -rf node_modules/mage
 npm install mage
