@@ -99,7 +99,7 @@ information on [how to install](./docs/Install.md).
 
 The pauser module has been deprecated, since it really never had anything to do with MAGE. It did
 fulfill a useful purpose on the frontend, so it has been replaced by the
-[https://github.com/Wizcorp/locks](Locks component), which you are now very much encouraged to use
+[Locks component](https://github.com/Wizcorp/locks), which you are now very much encouraged to use
 instead.
 
 ### User commands

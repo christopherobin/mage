@@ -70,6 +70,7 @@ to store documents. You generally won't access vaults directly. You can leave th
 You will however have to configure them, so that each vault knows where to store data.
 
 The following vault types are currently implemented:
+
 * [File](vaults/file/Readme.md)
 * [Memory](vaults/memory/Readme.md)
 * [MySQL](vaults/mysql/Readme.md)
@@ -94,6 +95,7 @@ logic that fits the vault in question.
 
 For example, the topic `weapons` with index `{ actorId: 123 }` can be translated into the following
 memcached key: `weapons/actorId:123`, or into the following MySQL structure:
+
 ```json
 { "table": "weapons", "pk": { "actorId": 123 } }
 ```
@@ -114,6 +116,7 @@ If you want to create a fresh new Tome, you must conjure it, as described in the
 [node-tomes](https://npmjs.org/package/tomes). You may also store other types of data. Tomes are
 simply supported out-of-the-box and you are encouraged to use them. You can access the `Tome` class
 by requiring it from MAGE by calling:
+
 ```javascript
 var Tome = mage.require('tomes').Tome;
 ```
@@ -150,6 +153,7 @@ fixed ID that is unique for each type of vault. Read the vault documentation ref
 *Vaults* section to see these IDs and how to configure vaults of that type.
 
 Example configuration:
+
 ```json
 {
 	"archivist": {
@@ -182,6 +186,7 @@ In your game's `lib` folder, please create a new folder called `archivist`. This
 Consider doing the whole configuration in one file: `lib/archivist/index.js`.
 
 The format is as follows:
+
 ```javascript
 exports.myTopicName = {
 	readOptions: {
@@ -199,6 +204,7 @@ provide when referring to data.
 
 The `readOptions` object may be supplied to overwrite default `options` that are used when reading
 from your archivist. The following defaults are defined, and they can be individually replaced:
+
 ```json
 {
 	"mediaTypes": ["application/x-tome", "application/octet-stream"],
