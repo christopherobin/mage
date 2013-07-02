@@ -68,6 +68,17 @@ The dashboard currently provides the following:
 
 There is a home screen that is currently quite empty, but in the future you can expect widgets here!
 
+### Documentation
+
+A start has been made to radically improve the documentation in MAGE. This is an ongoing effort, so
+you can definitely expect many incremental improvements in the near future.
+
+### MAGE installer
+
+New MAGE projects can now be started through a new installer. You can have a project up and running
+and accessible through your browser well within a minute! Read the documentation for more
+information on [how to install](./docs/Install.md).
+
 ### Dependency updates
 
 * async 0.2.7 -> 0.2.9
@@ -128,6 +139,7 @@ or worker.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
 * The loader would prevent the right density from being set.
 * Querying for a componentized page without clientConfig would crash the HTTP request handler.
+* Fixed mdns hostname assumption.
 
 
 ## v0.13.0

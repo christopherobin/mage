@@ -7,6 +7,7 @@
  */
 
 require('colours');
+var EOL = require('os').EOL;
 
 /**
  * Pad a string on the left with `n` spaces.
@@ -26,20 +27,14 @@ var log = console.log;
  *
  * @param  {String}          basic      A basic string to wrap. No whitespace padding needed.
  * @param  {String}          chromeChar A character to use for the chrome.
- * @param  {String}          special    A special character to come before basic.
- * @param  {Number}          padding    Spaces to pad from the left margin.
  * @param  {String|String[]} innerstyle A string corresponding to a style provided by the `color` package, or an array of such strings. This styles the content.
  * @param  {String|String[]} outerstyle A string corresponding to a style provided by the `color` package, or an array of such strings. This styles the chrome.
- * @return {String}                     Resultant string.
  */
 
-exports.chromify = function (basic, chromeChar, special, padding, innerstyle, outerstyle) {
-	var padded = padding ? (new Array(padding + 1)).join(' ') : '';
-	var simple = special && special.length ? special + '  ' + basic : basic;
-
-	var maxLength = Math.max.apply(null, simple.split('\n').map(function (subString) {
+exports.chromify = function (basic, chromeChar, innerstyle, outerstyle) {
+	var maxLength = Math.max.apply(null, basic.split(EOL).map(function (subString) {
 		return subString.length;
-	})) + padded.length;
+	}));
 
 	var chrome = (new Array(maxLength + 3)).join(chromeChar);
 
@@ -55,15 +50,15 @@ exports.chromify = function (basic, chromeChar, special, padding, innerstyle, ou
 
 	if (Array.isArray(innerstyle)) {
 		innerstyle.forEach(function (style) {
-			simple = simple[style];
+			basic = basic[style];
 		});
 	}
 
 	if (typeof innerstyle === 'string') {
-		simple = simple[innerstyle];
+		basic = basic[innerstyle];
 	}
 
-	return '\n' +  chrome + '\n ' + padded + simple.replace(/\n/g, '\n' + padded) + '\n' + chrome + '\n';
+	log(EOL + chrome + EOL + ' ' + basic.replace(new RegExp(EOL, 'g'), EOL + ' ') + EOL + chrome + EOL + EOL);
 };
 
 
@@ -71,11 +66,10 @@ exports.chromify = function (basic, chromeChar, special, padding, innerstyle, ou
  * H1 heading format.
  *
  * @param {String} content Content to format and log.
- * @param {String} special A special character to use as a marker before the heading text.
  */
 
-exports.h1 = function (content, special) {
-	log(exports.chromify(content, '❖', special, 0, ['bold', 'blue'], 'blue') + '\n');
+exports.h1 = function (content) {
+	exports.chromify(content, '❖', ['bold', 'blue'], 'blue');
 };
 
 
@@ -86,7 +80,7 @@ exports.h1 = function (content, special) {
  */
 
 exports.h2 = function (content) {
-	log(('‣ ' + content).blue.bold + '\n');
+	log(('‣ ' + content).blue.bold + EOL);
 };
 
 
@@ -97,7 +91,7 @@ exports.h2 = function (content) {
  */
 
 exports.h3 = function (content) {
-	log(('-- ' + content).blue.bold + '\n');
+	log(('-- ' + content).blue.bold + EOL);
 };
 
 
@@ -108,7 +102,7 @@ exports.h3 = function (content) {
  */
 
 exports.h4 = function (content) {
-	log(('◦◦◦ ' + content).blue.bold + '\n');
+	log(('◦◦◦ ' + content).blue.bold + EOL);
 };
 
 
@@ -119,7 +113,7 @@ exports.h4 = function (content) {
  */
 
 exports.h5 = function (content) {
-	log(('◘◘◘◘ ' + content).blue.bold + '\n');
+	log(('◘◘◘◘ ' + content).blue.bold + EOL);
 };
 
 

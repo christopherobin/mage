@@ -7,6 +7,7 @@ var mkdirpSync = require('mkdirp').sync;
 var async = require('async');
 var pretty = require('./lib/pretty.js');
 var ask = require('./lib/readline.js').ask;
+var EOL = require('os').EOL;
 
 var magePath = process.cwd();
 var appPath = path.resolve(magePath, '../..');
@@ -144,6 +145,7 @@ function bootstrap(cb) {
 
 	async.series([
 		function (callback) {
+			// prompt for information that the template engine needs
 			templateRules.prepare(callback);
 		},
 		function (callback) {
@@ -163,6 +165,15 @@ function bootstrap(cb) {
 			callback();
 		},
 		function (callback) {
+			// npm install other dependencies for this game
+
+			pretty.h2('Installing dependencies');
+
+			exec('npm', ['install'], null, callback);
+		},
+		function (callback) {
+			pretty.h2('Git repository');
+
 			ask('Would you like me to set up Git for this game?', 'yes', function (answer) {
 				if (answer.toLowerCase() !== 'yes') {
 					return callback();
@@ -195,9 +206,9 @@ function bootstrap(cb) {
 						exec('git', ['add', '.'], null, callback);
 					},
 					function (callback) {
-						var message = 'Automated first commit (by MAGE installer).';
-
 						pretty.info('First commit (git commit)');
+
+						var message = 'Automated first commit (by MAGE installer).';
 
 						exec('git', ['commit', '-m', message], null, callback);
 					},
@@ -220,6 +231,19 @@ function bootstrap(cb) {
 
 							exec('git', ['push', 'origin', 'develop', 'master'], null, callback);
 						});
+					},
+					function (callback) {
+						var msg = [
+							'All done! You can now start your game in the foreground by running "node .",',
+							'or see the daemonize options by running "node . help".',
+							'',
+							'Once your application is running, you can access:',
+							'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
+							'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms'
+						];
+
+						pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');
+						callback();
 					}
 				], callback);
 			});
