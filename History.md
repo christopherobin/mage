@@ -127,6 +127,13 @@ Archivist client now actively expires values when their TTL runs out.
 Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
 or worker.
 
+### Component
+
+You can now add lookup paths on the component builder by calling:
+```javascript
+mage.core.app.builders.get('component').addLookupPath('my/component/folder');
+```
+
 ### Bug fixes
 
 * Access level errors when executing user commands were not verbose enough.
