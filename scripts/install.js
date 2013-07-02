@@ -145,6 +145,7 @@ function bootstrap(cb) {
 
 	async.series([
 		function (callback) {
+			// prompt for information that the template engine needs
 			templateRules.prepare(callback);
 		},
 		function (callback) {
@@ -164,6 +165,15 @@ function bootstrap(cb) {
 			callback();
 		},
 		function (callback) {
+			// npm install other dependencies for this game
+
+			pretty.h2('Installing dependencies');
+
+			exec('npm', ['install'], null, callback);
+		},
+		function (callback) {
+			pretty.h2('Git repository');
+
 			ask('Would you like me to set up Git for this game?', 'yes', function (answer) {
 				if (answer.toLowerCase() !== 'yes') {
 					return callback();
