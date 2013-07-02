@@ -68,6 +68,17 @@ The dashboard currently provides the following:
 
 There is a home screen that is currently quite empty, but in the future you can expect widgets here!
 
+### Documentation
+
+A start has been made to radically improve the documentation in MAGE. This is an ongoing effort, so
+you can definitely expect many incremental improvements in the near future.
+
+### MAGE installer
+
+New MAGE projects can now be started through a new installer. You can have a project up and running
+and accessible through your browser well within a minute! Read the documentation for more
+information on [how to install](./docs/Install.md).
+
 ### Dependency updates
 
 * async 0.2.7 -> 0.2.9
@@ -88,7 +99,7 @@ There is a home screen that is currently quite empty, but in the future you can 
 
 The pauser module has been deprecated, since it really never had anything to do with MAGE. It did
 fulfill a useful purpose on the frontend, so it has been replaced by the
-[https://github.com/Wizcorp/locks](Locks component), which you are now very much encouraged to use
+[Locks component](https://github.com/Wizcorp/locks), which you are now very much encouraged to use
 instead.
 
 ### User commands
@@ -101,7 +112,7 @@ objects and use it as an argument.
 Savvy superceeds the sampler server. It provides a server on the master to host such things as the
 sampler and the logger. This is ideal for feeding data to the management webtools. Savvy provides
 some APIs for registering routes, both on HTTP and websocket. See the
-[readme](./lib/savvy/README.md) for more information.
+[readme](./lib/savvy/Readme.md) for more information.
 
 ### Assets
 
@@ -111,10 +122,23 @@ Asset digests are now cached, speeding up indexing by almost 3x on previously in
 
 Archivist client now actively expires values when their TTL runs out.
 
+**Breaking change:**
+
+The File Vault now uses the hash (#) to separate topic and index, instead of question mark (?).
+Also, asterisk (*) is now escaped. The reason for these changes is to achieve wider file system
+compatibility.
+
 ### Logger
 
 Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
 or worker.
+
+### Component
+
+You can now add lookup paths on the component builder by calling:
+```javascript
+mage.core.app.builders.get('component').addLookupPath('my/component/folder');
+```
 
 ### Bug fixes
 
@@ -128,6 +152,7 @@ or worker.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
 * The loader would prevent the right density from being set.
 * Querying for a componentized page without clientConfig would crash the HTTP request handler.
+* Fixed mdns hostname assumption.
 
 
 ## v0.13.0
@@ -294,7 +319,7 @@ done
 
 ### Configuration
 
-The new configuration loader is here! Read all about it [here](./lib/config/README.md). There are
+The new configuration loader is here! Read all about it [here](./lib/config/Readme.md). There are
 some big changes in how configuration is loaded, so you *will* need to read this. The resulting
 object is essentially the same though, so conversion should be simple to do.
 
@@ -383,7 +408,7 @@ module names however you like.
 ### Bot module
 
 The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
-[./lib/modules/bot/README.md](./lib/modules/bot/README.md) that should help get you started.
+[./lib/modules/bot/Readme.md](./lib/modules/bot/Readme.md) that should help get you started.
 
 
 ### Moved User Command Response Cache into Archivist
@@ -448,7 +473,7 @@ for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed
 
 DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
 highly encouraged to use Archivist from now on, since DataSources will be removed in a future
-release. Learn more about Archivist in [./lib/archivist/README.md](./lib/archivist/README.md).
+release. Learn more about Archivist in [./lib/archivist/Readme.md](./lib/archivist/Readme.md).
 
 
 ### Daemonization
@@ -578,7 +603,7 @@ This is verbose, and not to everyone's taste, but it's more in line with how nod
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
 good use of it, you should be using its extended API. For starters, there is now a logger module,
-read about it in [./lib/modules/logger/README.md](./lib/modules/logger/README.md).
+read about it in [./lib/modules/logger/Readme.md](./lib/modules/logger/Readme.md).
 
 #### Migration
 

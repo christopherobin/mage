@@ -1,0 +1,7 @@
+{
+  "name": "Router",
+  "description": "Router",
+  "scripts": [
+    "index.js"
+  ]
+}
