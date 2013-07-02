@@ -140,7 +140,7 @@ You can now add lookup paths on the component builder by calling:
 mage.core.app.builders.get('component').addLookupPath('my/component/folder');
 ```
 
-When you have a module that has no client-side implementation, but does expose user commands,
+Also, when you have a module that has no client-side implementation but does expose user commands,
 you no longer have to create a component.json file with an empty client.js file. Simply leave them
 out, and MAGE will construct an empty module with user commands on it.
 
