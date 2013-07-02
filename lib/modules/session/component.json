@@ -4,8 +4,7 @@
 	"dependencies": {
 		"component/emitter": "*"
 	},
-	"local": ["msgServer"],
-	"paths": ["node_modules", "lib"],
+	"local": ["mage"],
 	"scripts": [
 		"client.js"
 	],

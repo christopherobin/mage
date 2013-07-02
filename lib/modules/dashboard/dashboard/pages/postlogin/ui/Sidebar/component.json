@@ -3,7 +3,6 @@
 	"description": "The UI Sidebar",
 	"local": [
 		"mage",
-		"msgServer",
 		"loader"
 	],
 	"scripts": [

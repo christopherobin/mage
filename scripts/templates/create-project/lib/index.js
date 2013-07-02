@@ -12,13 +12,6 @@ mage.useModules(
 	'time'
 );
 
-// base paths
-
-var paths = {
-	www: './www',
-	assets: './assets'
-};
-
 
 function createGame(app) {
 	logger.info('Creating the game app');
@@ -27,21 +20,21 @@ function createGame(app) {
 
 	app.assetMap.setup({
 		cacheability: {
-			img: ['.', 0],
+			img: ['.', 0]
 		},
 		profiles: {}
 	});
 
-	app.assetMap.addFolder(paths.assets);
+	app.assetMap.addFolder('./assets');
 
 	// create loader page
 
-	var loaderPage = app.addIndexPage('loader', paths.www + '/pages/gameLoader');
+	var loaderPage = app.addIndexPage('loader', './www/pages/gameLoader');
 
 	// mage pages for the game
 
-	loaderPage.registerComponent('landing', paths.www + '/pages/landing', { assetMap: true });
-	loaderPage.registerComponent('main', paths.www + '/pages/main');
+	loaderPage.registerComponent('landing', './www/pages/landing', { assetMap: true });
+	loaderPage.registerComponent('main', './www/pages/main');
 
 	// start mage
 
@@ -49,6 +42,10 @@ function createGame(app) {
 }
 
 
-mage.setup(function (apps) {
-	createGame(apps.game);
+mage.setup(function (error, apps) {
+	if (error) {
+		process.exit(1);
+	} else {
+		createGame(apps.game);
+	}
 });

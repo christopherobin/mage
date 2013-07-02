@@ -6,8 +6,4 @@ clientHost:
     bind:
         protocol: http
         file: ./server.sock
-
-# You will need to add a host and port to expose on.
-# expose:
-# 	host: sandbox.me.node.wizcorp.jp
-# 	port: 80
+    expose: "http://localhost"

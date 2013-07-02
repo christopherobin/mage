@@ -7,7 +7,7 @@ Read more about this [here](./Requirements.md).
 ## Setting up a new MAGE project
 
 ```bash
-mkdir myproject && cd myproject
+mkdir -p myproject/node_modules && cd myproject
 BOOTSTRAP=true npm install git+ssh://git@github.com:Wizcorp/mage#master
 ```
 
