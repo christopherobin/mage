@@ -122,6 +122,12 @@ Asset digests are now cached, speeding up indexing by almost 3x on previously in
 
 Archivist client now actively expires values when their TTL runs out.
 
+**Breaking change:**
+
+The File Vault now uses the hash (#) to separate topic and index, instead of question mark (?).
+Also, asterisk (*) is now escaped. The reason for these changes is to achieve wider file system
+compatibility.
+
 ### Logger
 
 Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master

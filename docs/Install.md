@@ -8,7 +8,7 @@ Read more about this [here](./Requirements.md).
 
 ```bash
 mkdir -p myproject/node_modules && cd myproject
-BOOTSTRAP=true npm install git+ssh://git@github.com:Wizcorp/mage#master
+BOOTSTRAP=true npm install "git+ssh://git@github.com:Wizcorp/mage#master"
 ```
 
 This will:
@@ -25,6 +25,7 @@ To upgrade to a new version of MAGE, update your package.json's dependency entry
 change the version number or label present after the pound (#) sign.
 
 Snippet from package.json:
+
 ```json
 {
 	"dependencies": {
@@ -34,6 +35,7 @@ Snippet from package.json:
 ```
 
 Installing MAGE
+
 ```bash
 rm -rf node_modules/mage
 npm install mage
