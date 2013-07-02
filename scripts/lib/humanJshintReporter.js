@@ -1,7 +1,7 @@
 /**
  * The default JSHint output is somewhat wasteful, and very bland, making it hard for a human to
  * parse. The following does IMO a better job and colours the output for you. This requires the
- * `colors` package, available via npm. If you don't want the dependency, just remove the color
+ * `colours` package, available via npm. If you don't want the dependency, just remove the color
  * commands from strings.
  *
  * Usage: When invoking jshint from the command line, point it to this file with the --reporter

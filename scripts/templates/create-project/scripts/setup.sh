@@ -54,4 +54,3 @@ echo "make -C \"$PROJECTPATH\" $INP" >> "$PRECOMMITPATH"
 
 echo "Setting $PRECOMMITPATH to be executable ($MODE)"
 chmod $MODE "$PRECOMMITPATH"
-
