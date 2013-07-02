@@ -112,7 +112,7 @@ objects and use it as an argument.
 Savvy superceeds the sampler server. It provides a server on the master to host such things as the
 sampler and the logger. This is ideal for feeding data to the management webtools. Savvy provides
 some APIs for registering routes, both on HTTP and websocket. See the
-[readme](./lib/savvy/README.md) for more information.
+[readme](./lib/savvy/Readme.md) for more information.
 
 ### Assets
 
@@ -313,7 +313,7 @@ done
 
 ### Configuration
 
-The new configuration loader is here! Read all about it [here](./lib/config/README.md). There are
+The new configuration loader is here! Read all about it [here](./lib/config/Readme.md). There are
 some big changes in how configuration is loaded, so you *will* need to read this. The resulting
 object is essentially the same though, so conversion should be simple to do.
 
@@ -402,7 +402,7 @@ module names however you like.
 ### Bot module
 
 The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
-[./lib/modules/bot/README.md](./lib/modules/bot/README.md) that should help get you started.
+[./lib/modules/bot/Readme.md](./lib/modules/bot/Readme.md) that should help get you started.
 
 
 ### Moved User Command Response Cache into Archivist
@@ -467,7 +467,7 @@ for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed
 
 DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
 highly encouraged to use Archivist from now on, since DataSources will be removed in a future
-release. Learn more about Archivist in [./lib/archivist/README.md](./lib/archivist/README.md).
+release. Learn more about Archivist in [./lib/archivist/Readme.md](./lib/archivist/Readme.md).
 
 
 ### Daemonization
@@ -597,7 +597,7 @@ This is verbose, and not to everyone's taste, but it's more in line with how nod
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
 good use of it, you should be using its extended API. For starters, there is now a logger module,
-read about it in [./lib/modules/logger/README.md](./lib/modules/logger/README.md).
+read about it in [./lib/modules/logger/Readme.md](./lib/modules/logger/Readme.md).
 
 #### Migration
 
