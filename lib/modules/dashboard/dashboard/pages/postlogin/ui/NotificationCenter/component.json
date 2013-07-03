@@ -1,0 +1,10 @@
+{
+	"name": "NotificationCenter",
+	"description": "Notification center for the dashboard",
+	"dependencies": {
+		"component/emitter": "*"
+	},
+	"scripts": [
+		"index.js"
+	]
+}

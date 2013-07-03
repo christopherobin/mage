@@ -1,11 +1,13 @@
 {
-  "name": "archivist",
-  "description": "Data API for MAGE.",
-  "version": "0.0.1",
-  "local": [ "tomes", "rumplestiltskin", "msgServer", "time" ],
-  "paths": [ "node_modules", "lib" ],
-  "scripts": [
-    "client.js"
-  ],
-  "main": "client.js"
+	"name": "archivist",
+	"description": "Data API for MAGE.",
+	"local": [
+		"mage",
+		"tomes",
+		"rumplestiltskin"
+	],
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
 }

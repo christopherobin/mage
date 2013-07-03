@@ -1,0 +1,18 @@
+{
+	"name": "mage",
+	"description": "MAGE game development platform for Node.js",
+	"dependencies": {
+		"component/emitter": "*",
+		"component/inherit": "*"
+	},
+	"local": [
+		"msgServer"
+	],
+	"paths": [
+		"../"
+	],
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
+}

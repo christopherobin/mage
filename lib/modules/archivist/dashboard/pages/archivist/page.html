@@ -1,0 +1,44 @@
+<h1>Archivist</h1>
+
+<h2>Search</h2>
+
+<section>
+    <form id="frm_archivist_search">
+        <section class="dialog">
+            <h3>Topic</h3>
+            <div id="cnt_archivist_search_topic"></div>
+            <h3>Index</h3>
+            <div id="cnt_archivist_search_index"></div>
+        </section>
+        <div class="controls">
+            <button type="submit">Search</button>
+            <button type="reset">Clear</button>
+        </div>
+    </form>
+</section>
+
+<h2 id="archivist_docview_title">Document view</h2>
+
+<div class="grid wfull">
+    <div class="row">
+
+        <section class="c2">
+            <table id="archivist_search_results" class="rowselectable">
+                <thead></thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </section>
+
+        <section class="c10 end" id="cnt_archivist_docview">
+            <code id="archivist_docview"></code>
+            <form id="archivist_docedit_options">
+                <div>
+                    <div id="archivist_docedit_options_syntax"></div>
+                    <button id="archivist_docedit_save">Save changes</button>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>

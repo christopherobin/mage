@@ -1,0 +1,130 @@
+.logBox .date {
+    color: lime;
+}
+
+.logBox .time {
+	color: magenta;
+}
+
+.logBox .time-brick {
+    background-color: magenta;
+}
+
+.logBox .time-details {
+    color: magenta;
+}
+
+.logBox .verbose {
+	color: gray;
+}
+
+.logBox .verbose-brick {
+    background-color: gray;
+}
+
+.logBox .verbose-details {
+    color: gray;
+}
+
+.logBox .debug {
+	color: cyan;
+}
+
+.logBox .debug-brick {
+    background-color: cyan;
+}
+
+.logBox .debug-details {
+    color: cyan;
+}
+
+.logBox .info {
+	color: #66f;
+	font-weight: bold;
+}
+
+.logBox .info-brick {
+    background-color: #66f;
+}
+
+.logBox .info-details {
+    color: #66f;
+    font-weight: bold;
+}
+
+.logBox .notice {
+	color: green;
+}
+
+.logBox .notice-brick {
+    background-color: green;
+}
+
+.logBox .notice-details {
+    color: green;
+}
+
+.logBox .warning {
+	color: yellow;
+}
+
+.logBox .warning-brick {
+    background-color: yellow;
+}
+
+.logBox .warning-details {
+    color: yellow;
+}
+
+.logBox .error {
+	color: red;
+}
+
+.logBox .error-brick {
+    background-color: red;
+}
+
+.logBox .error-details {
+    color: red;
+}
+
+.logBox .critical {
+	color: red;
+	font-weight: bold;
+}
+
+.logBox .critical-brick {
+    background-color: red;
+}
+
+.logBox .critical-details {
+    color: red;
+}
+
+.logBox .alert {
+	color: red;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.logBox .alert-brick {
+    background-color: red;
+}
+
+.logBox .alert-details {
+    color: red;
+}
+
+.logBox .emergency {
+	color: black;
+	background-color: red;
+	font-weight: bold;
+}
+
+.logBox .emergency-brick {
+    background-color: red;
+}
+
+.logBox .emergency-details {
+    color: red;
+}

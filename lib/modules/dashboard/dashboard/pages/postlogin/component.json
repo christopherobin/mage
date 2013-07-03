@@ -1,0 +1,19 @@
+{
+	"name": "postlogin",
+	"description": "Page that holds some crucial libraries (UI) that are needed once logged in.",
+	"local": [
+		"mage",
+		"Router",
+		"Sidebar",
+		"NotificationCenter",
+		"forms",
+		"format"
+	],
+	"paths": [
+		"..",
+		"./ui"
+	],
+	"scripts": [
+		"index.js"
+	]
+}

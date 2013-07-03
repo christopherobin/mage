@@ -1,0 +1,14 @@
+{
+	"name": "gameLoader",
+	"description": "Game's loader page.",
+	"local": [
+		"loader",
+		"landing"
+	],
+	"paths": [
+		".."
+	],
+	"scripts": [
+		"index.js"
+	]
+}

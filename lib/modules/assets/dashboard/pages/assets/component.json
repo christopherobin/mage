@@ -1,0 +1,15 @@
+{
+	"name": "assets",
+	"local": [
+		"mage",
+		"AssetPreviewer",
+		"forms",
+		"format"
+	],
+	"paths": [
+		"../../../../dashboard/dashboard/pages/postlogin/ui"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
