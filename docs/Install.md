@@ -7,11 +7,17 @@ Read more about this [here](./Requirements.md).
 ## Setting up a new MAGE project
 
 ```bash
-mkdir -p myproject/node_modules && cd myproject
+mkdir -p myproject/node_modules && cd "$_/.."
 BOOTSTRAP=true npm install "git+ssh://git@github.com:Wizcorp/mage#master"
 ```
 
-This will:
+Replace `myproject` with the name you want to give to your game.
+
+Some **special environments** have an improved flow, which can be enabled by replacing the
+`BOOTSTRAP` value `true` with the name of a supported environment. For example,
+`BOOTSTRAP=wizcorp-dev` for the Wizcorp development environment.
+
+Running the above, will:
 
 * Install the latest version of MAGE.
 * Install MAGE's dependencies.

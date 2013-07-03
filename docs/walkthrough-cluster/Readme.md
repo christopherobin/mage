@@ -2,6 +2,6 @@
 
 ## Work-in-progress
 
-Master/worker management
-Building a network (auto discovery, mmrp)
-Daemonizing MAGE (daemonizer)
+* Master/worker management
+* Building a network (auto discovery, mmrp)
+* Daemonizing MAGE (daemonizer)

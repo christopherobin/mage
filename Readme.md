@@ -9,4 +9,4 @@
 * [Taking your MAGE game to production](./docs/production/Readme.md)
 * [Recipies for common challenges](./docs/recipies/Readme.md)
 * [API documentation](./docs/api/Readme.md)
-* [Version history](./History.md)
+* [Release history](./History.md)
