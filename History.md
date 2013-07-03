@@ -133,6 +133,13 @@ The File Vault now uses the hash (#) to separate topic and index, instead of que
 Also, asterisk (*) is now escaped. The reason for these changes is to achieve wider file system
 compatibility.
 
+Use this one-liner in any folder with file vault content to rename your files automatically:
+
+```bash
+IFS=$'\n'; for file in $(ls ./); do mv "${file}" "$(echo $file | sed 's/?/#/')"; done
+```
+
+
 ### Logger
 
 Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
