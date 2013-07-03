@@ -11,6 +11,8 @@ var magePackage = require(pathJoin(magePath, 'package.json'));
 
 var replacements = {
 	APP_NAME: pathBasename(appPath),
+	APP_PATH: appPath,
+	APP_PATHNAME: pathBasename(appPath),
 	APP_DESCRIPTION: '',
 	APP_VERSION: '0.0.1',
 	APP_AUTHOR: 'Wizcorp',
