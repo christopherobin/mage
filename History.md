@@ -84,11 +84,15 @@ information on [how to install](./docs/Install.md).
 * async 0.2.7 -> 0.2.9
 * zmq 2.3.0 -> 2.4.0
 * colors custom -> colours 0.6.0
+* tomes 0.0.14 -> 0.0.15
 * panopticon 0.1.1 -> 0.2.0
 * js-yaml 2.0.4 -> 2.1.0
 * config 0.4.23 -> 0.4.27
 * component-builder custom -> 0.8.3
 * memcached 0.2.2 -> 0.2.3
+* ws 0.4.25 -> 0.4.27
+* mocha 1.9.x -> 1.12.0
+* jshint 1.1.x -> 2.1.3
 
 ### Legacy cleanup
 
@@ -136,6 +140,7 @@ or worker.
 ### Component
 
 You can now add lookup paths on the component builder by calling:
+
 ```javascript
 mage.core.app.builders.get('component').addLookupPath('my/component/folder');
 ```
@@ -148,15 +153,16 @@ out, and MAGE will construct an empty module with user commands on it.
 
 * Access level errors when executing user commands were not verbose enough.
 * Asset indexing could become so parallelized that EMFILE errors would be thrown (too many open files).
-* Asset module's client side "applyAssetMapToStylesheet" method was broken on Firefox.
+* Asset module's client side `applyAssetMapToStylesheet` method was broken on Firefox.
 * Archivist beforeDistribute hooks were unable to report an error.
-* Archivist client could throw an exception when optional values were queried for (thanks Max).
+* Archivist client could throw an exception when optional values were queried for. (Thanks Max!)
 * WebSocket logger was not working reliably and was leaving socket files behind.
 * Even when configuration for other logger writers was provided, the terminal was always being logged to.
 * User command execution time was showing seconds with a "msec" unit. Now these are real milliseconds.
 * The loader would prevent the right density from being set.
 * Querying for a componentized page without clientConfig would crash the HTTP request handler.
-* Fixed mdns hostname assumption.
+* Fixed mdns hostname assumption. (Thanks Almir!)
+* Fixed a few bugs in msgServer that could cause weird heartbeat timings. (Thanks Almir!)
 
 
 ## v0.13.0
@@ -167,6 +173,7 @@ That's right, MAGE can now serve your assets! This is not battle tested and we d
 usage of this feature in production, but it makes your development cycle a bit easier.
 
 To enable this, simply leave out the base URL configuration from your config file at:
+
 ```json
 {
 	"module": {
