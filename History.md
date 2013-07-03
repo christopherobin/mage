@@ -1,4 +1,4 @@
-# Changelog
+# Release history
 
 ## __NEXT__
 
@@ -59,6 +59,7 @@ accessed on stable network connections, so we don't have to dedicate a lot of me
 dodgy networks.
 
 The dashboard currently provides the following:
+
 * Archivist (read/write access to all your vault values)
 * Asset management
 * Documentation
@@ -348,6 +349,7 @@ The "expose" config entry for "clientHost" is now encouraged to be a full URL st
 path is allowed if you're behind a proxy that demands it.
 
 This means that both of these are valid:
+
 ```json
 {
 	"server": {
@@ -445,6 +447,7 @@ exports.ucResponseData = {
 If you want to change the TTL for this cache, you can do this per application you expose. This used
 to be done through `myApp.commandCenter.responseCacheTTL = 123;`, but that no longer works. The TTL
 is now defined in seconds in your configuration as:
+
 ```json
 {
 	"apps": {
@@ -470,11 +473,13 @@ This also means that the module you require is no longer called `mithril`, but i
 Here are some handy scripts to help you fix up your code:
 
 To replace selected instances (MAC OS X):
+
 ```bash
 for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i '' "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
 ```
 
 To replace selected instances (Linux Flavour):
+
 ```bash
 for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
 ```
@@ -575,6 +580,7 @@ can instead listen for the `'readyToStart'` event on `mage`.
 #### Method 1
 
 You already use this method.
+
 ```javascript
 var configFiles = ['./configs/custom.json'];
 
@@ -592,6 +598,7 @@ mage.setup(configFiles, start);
 #### Method 2
 
 If you like, you can do the following instead.
+
 ```javascript
 var configFiles = ['./configs/custom.json'];
 
