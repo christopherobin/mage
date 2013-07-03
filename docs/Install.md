@@ -2,20 +2,17 @@
 
 ## Make sure all requirements are met
 
-Read more about this [here](./Requirements.md).
+Read more about [requirements](./Requirements.md).
 
 ## Setting up a new MAGE project
 
+Running the following steps is the easiest way to bootstrap a new project. Do this **from
+inside an empty folder** that is named after the game you are developing.
+
 ```bash
-mkdir -p myproject/node_modules && cd "$_/.."
+mkdir -p node_modules
 BOOTSTRAP=true npm install "git+ssh://git@github.com:Wizcorp/mage#master"
 ```
-
-Replace `myproject` with the name you want to give to your game.
-
-Some **special environments** have an improved flow, which can be enabled by replacing the
-`BOOTSTRAP` value `true` with the name of a supported environment. For example,
-`BOOTSTRAP=wizcorp-dev` for the Wizcorp development environment.
 
 Running the above, will:
 
@@ -25,7 +22,11 @@ Running the above, will:
 * Prompt for your project information.
 * Optionally, will help you set up your git repository, do your first commit and push to your remote repository.
 
-## Installing/upgrading MAGE in an existing project
+Some **special environments** have an improved flow, which can be enabled by replacing the
+`BOOTSTRAP` value `true` with the name of a supported environment. For example,
+`BOOTSTRAP=wizcorp-dev` for the Wizcorp development environment.
+
+## Upgrading MAGE in an existing project
 
 To upgrade to a new version of MAGE, update your package.json's dependency entry for MAGE. You can
 change the version number or label present after the pound (#) sign.

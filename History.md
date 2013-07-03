@@ -1,4 +1,4 @@
-# Changelog
+# Release history
 
 ## __NEXT__
 

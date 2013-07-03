@@ -231,22 +231,22 @@ function bootstrap(cb) {
 
 							exec('git', ['push', 'origin', 'develop', 'master'], null, callback);
 						});
-					},
-					function (callback) {
-						var msg = [
-							'All done! You can now start your game in the foreground by running "node .",',
-							'or see the daemonize options by running "node . help".',
-							'',
-							'Once your application is running, you can access:',
-							'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
-							'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms'
-						];
-
-						pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');
-						callback();
 					}
 				], callback);
 			});
+		},
+		function (callback) {
+			var msg = [
+				'All done! You can now start your game in the foreground by running "node .",',
+				'or see the daemonize options by running "node . help".',
+				'',
+				'Once your application is running, you can access:',
+				'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
+				'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms'
+			];
+
+			pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');
+			callback();
 		}
 	], cb);
 }
