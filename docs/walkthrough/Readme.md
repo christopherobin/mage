@@ -15,7 +15,7 @@ to get further acquainted with the platform.
 * [Configuration](./Configuration.md)
 * [The State class](./State.md)
 * [Writing modules](./Modules.md)
-* Events
+* [Events](./Events.md)
 * Session management
 * Logging
 * Managing your assets
