@@ -263,3 +263,7 @@ mage.gifting.gift;
 ## And that's it!
 
 Restart your MAGE process to see your module in action!
+
+## Next chapter
+
+[Events](./Events.md)

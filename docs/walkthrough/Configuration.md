@@ -27,3 +27,7 @@ already present.
 
 In a production environment, you should set `NODE_ENV` to `production` and provide MAGE with a
 configuration file called `config/production.yaml` or `config/production.json`.
+
+## Next chapter
+
+[The State class](./State.md)
