@@ -7,10 +7,15 @@ create better, faster code.
 Before getting started, make sure you have read the [Requirements](../Requirements.md) as well as
 MAGE's [Installation Guide](../Install.md).
 
-## Work-in-progress
+## Let's get started!
 
-* Configuration
-* Modules, user commands, events and the State class
+Now that you have installed MAGE and have it up and running, you can go through the following topics
+to get further acquainted with the platform.
+
+* [Configuration](./Configuration.md)
+* [The State class](./State.md)
+* [Writing modules](./Modules.md)
+* Events
 * Session management
 * Logging
 * Managing your assets
