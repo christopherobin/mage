@@ -1,5 +1,12 @@
 # Release history
 
+## vNEXT
+
+### Bugfixes
+
+* Errors being throw by listeners of the dashboard router were logging the wrong stack.
+
+
 ## v0.14.0 - Monorail Cat
 
 ### Development mode
