@@ -6,6 +6,7 @@
 		"Router",
 		"Sidebar",
 		"NotificationCenter",
+		"FileCrawler",
 		"forms",
 		"format"
 	],
