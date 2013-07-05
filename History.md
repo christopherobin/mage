@@ -2,6 +2,14 @@
 
 ## vNEXT
 
+### Documentation
+
+A lot of documentation has been added in the "Walkthrough: making a MAGE game" section.
+
+In the dashboard, the navigation element has been replaced with a solution that somewhat resembles
+the OSX Finder. It establishes much clearer context than what we had before.
+
+
 ### Bugfixes
 
 * Errors being throw by listeners of the dashboard router were logging the wrong stack.
