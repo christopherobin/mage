@@ -49,3 +49,7 @@ all events that you had queued up to be emitted to players.
 
 For more information on the State API and how events are emitted, please read the
 [State](../../lib/state) API documentation.
+
+## Next chapter
+
+[Writing modules](./Modules.md)
