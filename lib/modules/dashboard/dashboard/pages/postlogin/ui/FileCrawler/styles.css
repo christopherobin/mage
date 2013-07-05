@@ -1,0 +1,21 @@
+.filecrawler {
+    display: block;
+}
+
+.filecrawler .breadcrumb {
+    background: #ccc;
+    padding: 15px;
+}
+
+.filecrawler .folder,
+.filecrawler .file {
+    display: inline-block;
+}
+
+.filecrawler .folder:before {
+    content: url('mui://img/folder_icon');
+}
+
+.filecrawler .file:before {
+    content: url('mui://img/file_icon');
+}
