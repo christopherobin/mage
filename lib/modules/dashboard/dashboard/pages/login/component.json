@@ -4,12 +4,12 @@
 	"local": [
 		"mage",
 		"loader",
-
 		"assets",
 		"session",
-		"dashboard",
-
-		"postlogin"
+		"dashboard"
+	],
+	"styles": [
+		"styles.css"
 	],
 	"paths": [
 		"../../../../",

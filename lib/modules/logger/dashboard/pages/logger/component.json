@@ -4,11 +4,13 @@
 	"local": [
 		"mage",
 		"loader",
-
 		"logger"
 	],
 	"paths": [
 		"../../../"
+	],
+	"styles": [
+		"styles.css"
 	],
 	"scripts": [
 		"index.js"
