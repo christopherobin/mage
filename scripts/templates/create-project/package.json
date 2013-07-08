@@ -14,7 +14,7 @@
     "reload": "node . reload",
     "lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js .",
     "lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/lib/humanJshintReporter.js '{}'",
-    "setup": "./scripts/setup.sh"
+    "git-setup": "./scripts/setup.sh"
   },
   "engines": {
     "node": "%MAGE_NODE_VERSION%"
