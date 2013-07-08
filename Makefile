@@ -18,8 +18,8 @@ test:
 	npm test
 
 # target: lint-staged, Lints every JavaScript file in the project that are staged to be comitted.
-lint:
-	npm run-script lint
+lint-staged:
+	npm run-script lint-staged
 
 # target: lint-all, Lints every JavaScript file in the project.
 lint-all:
