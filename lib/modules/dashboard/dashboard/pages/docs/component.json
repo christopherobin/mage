@@ -2,6 +2,9 @@
 	"name": "docs",
 	"description": "Documentation page",
 	"local": ["mage"],
+	"styles": [
+		"styles.css"
+	],
 	"scripts": [
 		"index.js"
 	]

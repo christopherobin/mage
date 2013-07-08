@@ -5,11 +5,13 @@
 		"Wizcorp/eventemitter": "*"
 	},
 	"local": [
-		"loader",
-		"login"
+		"loader"
 	],
-	"paths": [
-		"../pages"
+	"styles": [
+		"github-highlight.css",
+		"github-markdown.css",
+		"gridiculous.css",
+		"styles.css"
 	],
 	"scripts": [
 		"index.js"

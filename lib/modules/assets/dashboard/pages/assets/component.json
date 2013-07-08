@@ -9,6 +9,9 @@
 	"paths": [
 		"../../../../dashboard/dashboard/pages/postlogin/ui"
 	],
+	"styles": [
+		"styles.css"
+	],
 	"scripts": [
 		"index.js"
 	]
