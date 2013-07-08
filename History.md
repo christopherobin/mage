@@ -2,17 +2,24 @@
 
 ## vNEXT
 
+### Component
+
+The component build-directive now also works for CSS. In the future, we will attempt to upgrade the
+mage-page builder to require all styles to go through component. It's therefore advisable to start
+referring to the CSS files in your components.
+
+
 ### Documentation
 
 A lot of documentation has been added in the "Walkthrough: making a MAGE game" section.
 
 In the dashboard, the navigation element has been replaced with a solution that somewhat resembles
-the OSX Finder. It establishes much clearer context than what we had before.
-
+the OS X Finder. It establishes much clearer context than what we had before.
 
 ### Bugfixes
 
 * Errors being throw by listeners of the dashboard router were logging the wrong stack.
+* The Component ignore list was not being applied correctly, potentially causing builds to contain duplicate code.
 
 
 ## v0.14.0 - Monorail Cat
