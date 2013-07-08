@@ -32,7 +32,6 @@
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
 		"js-yaml": "2.1.0",
-		"config": "0.4.27",
 		"component-builder": "~0.8.3",
 		"semver": "~1.1.4",
 		"mime": "1.2.9",
