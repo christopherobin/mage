@@ -1,13 +1,12 @@
 # Release history
 
-## vNEXT
+## v0.14.1 - Samurai Pizza Cat
 
 ### Component
 
 The component build-directive now also works for CSS. In the future, we will attempt to upgrade the
 mage-page builder to require all styles to go through component. It's therefore advisable to start
 referring to the CSS files in your components.
-
 
 ### Documentation
 
