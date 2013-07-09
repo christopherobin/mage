@@ -25,6 +25,7 @@
 		"colours": "~0.6.0",
 		"memcached": "0.2.3",
 		"memcached-transactions": "0.1.1",
+		"redis": "~0.8.4",
 		"rumplestiltskin": "0.0.5",
 		"tomes": "0.0.15",
 		"oauth": "0.9.10",
