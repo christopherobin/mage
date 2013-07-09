@@ -75,6 +75,7 @@ The following vault types are currently implemented:
 * [Memory](vaults/memory/Readme.md)
 * [MySQL](vaults/mysql/Readme.md)
 * [Memcached](vaults/memcached/Readme.md)
+* [Couchbase](vaults/couchbase/Readme.md)
 * [Client](vaults/client/Readme.md)
 
 Please read their documentation on how to set them up.
