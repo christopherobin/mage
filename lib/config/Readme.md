@@ -86,8 +86,8 @@ internal use. However, there may be cases for which configuration is automatical
 A safe getter function. The `path` should be an array of keys of increasing depth, but can
 optionally be a dot delimited string. The optional `alt` parameter is a value to use if there is
 no value found at this path. By default `undefined` will be returned if the object does not have
-this path. Unlike earlier versions of configuration, `get` is not necessary to extract
-configuration data.
+this path. Unlike earlier versions of configuration, `get` is necessary to extract configuration
+data.
 
 ### `getSource`
 
