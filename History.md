@@ -1,5 +1,23 @@
 # Release history
 
+## __NEXT__
+
+### Configuration
+
+node-config is dead, long live config! We rolled our own because we were tired of the baggage that
+came with node-config (including that annoying runtime file). This also allowed us to store some
+metadata about configuration (like where each part originated from). For the most part it has the
+same API as before, but there is one big breaking change, so please take care. Addressing
+configuration like
+
+```javascript
+mage.core.config.something.somethingElse
+```
+
+will no longer work. The use of `get` is now mandatory. This is due to the underlying storage
+structure of the configuration. Otherwise, changes are additions to the API. Take a look at the
+[updated config readme](./lib/config/Readme.md).
+
 ## v0.14.1 - Samurai Pizza Cat
 
 ### Component
