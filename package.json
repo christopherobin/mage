@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.14.1",
+	"version": "0.15.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -25,6 +25,7 @@
 		"colours": "~0.6.0",
 		"memcached": "0.2.3",
 		"memcached-transactions": "0.1.1",
+		"redis": "~0.8.4",
 		"rumplestiltskin": "0.0.5",
 		"tomes": "0.0.15",
 		"oauth": "0.9.10",
@@ -32,7 +33,6 @@
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
 		"js-yaml": "2.1.0",
-		"config": "0.4.27",
 		"component-builder": "~0.8.3",
 		"semver": "~1.1.4",
 		"mime": "1.2.9",
@@ -50,7 +50,7 @@
 		"postinstall": "./scripts/install.js",
 		"lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js .",
 		"lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/lib/humanJshintReporter.js '{}'",
-		"setup": "./scripts/setup.sh"
+		"git-setup": "./scripts/setup.sh"
 	},
 	"repository": {
 		"type": "git",

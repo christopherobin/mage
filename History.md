@@ -1,5 +1,41 @@
 # Release history
 
+## v0.15.0 - DepriCat
+
+### Removal of deprecated API
+
+* `mage.addModule` has been removed (deprecated since v0.12.0).
+* `mage.useModule` has been removed (deprecated since v0.12.0).
+* Feeding configuration into `mage.setup` is no longer supported (deprecated since v0.13.0).
+* `state.userError` has been removed (deprecated since v0.10.0).
+
+### Configuration
+
+node-config is dead, long live config! We rolled our own because we were tired of the baggage that
+came with node-config (including that annoying runtime file). This also allowed us to store some
+metadata about configuration (like where each part originated from). For the most part it has the
+same API as before, but there is one big breaking change, so please take care. Addressing
+configuration like
+
+```javascript
+mage.core.config.something.somethingElse
+```
+
+will no longer work. The use of the `get(...)` method is now mandatory. This is due to the
+underlying storage structure of the configuration. Otherwise, changes are additions to the API. Take
+a look at the [updated config readme](./lib/config/Readme.md).
+
+### Redis vault
+
+We've added a Redis vault to Archivist! For more information visit the official
+[Redis website](http://redis.io), or read the
+[Redis vault documentation](./lib/archivist/vaults/redis/Readme.md).
+
+### Bugfixes
+
+* We have fixed a number of issues with archivist client that broke diffing in the dashboard.
+
+
 ## v0.14.1 - Samurai Pizza Cat
 
 ### Component
@@ -1606,23 +1642,26 @@ since it's a full background operation (and generally quite slow).
 - Some SQL queries have been optimized to be faster.
 - a new delMessages user command.
 - the client function search() no longer requires an options object.
+
 ### Logger
 
 The logger's output performance has improved dramatically (x3), by no longer relying on the slow console object, but by
 writing directly to stdout/stderr streams.
 
 Also, the logger has been completely rewritten to be more easily configurable. The new configuration looks like this:
-`
+
+```json
 {
   "logging": {
     "theme": "default",
     "show": ["debug", "info", "error", "time"],
     "hide": ["debug"],
-    "output": "terminal"/"file",
+    "output": "terminal or file",
     "path": "/var/log/myGame"
   }
 }
-`
+```
+
 Leaving out the logging, will display all channels (debug, info, etc) without color coding. Creating config and setting the theme
 to default will enable colors from the theme "default" (currently the only theme). Providing an array of channels in the "show"
 property, will show only these channels. Alternatively, a "hide" array will show all channels, except the ones in the given array.
