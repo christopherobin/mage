@@ -1,6 +1,6 @@
 # Release history
 
-## __NEXT__
+## v0.15.0 - DepriCat
 
 ### Removal of deprecated API
 
