@@ -1,5 +1,12 @@
 # Release history
 
+## vNEXT
+
+### Bugfixes
+
+* The dashboard sidebar can now scroll vertically when there are more menu items than fit on the screen.
+
+
 ## v0.15.0 - DepriCat
 
 ### Removal of deprecated API
