@@ -2,6 +2,13 @@
 
 ## __NEXT__
 
+### Removal of deprecated API
+
+* `mage.addModule` has been removed (deprecated since v0.12.0).
+* `mage.useModule` has been removed (deprecated since v0.12.0).
+* Feeding configuration into `mage.setup` is no longer supported (deprecated since v0.13.0).
+* `state.userError` has been removed (deprecated since v0.10.0).
+
 ### Configuration
 
 node-config is dead, long live config! We rolled our own because we were tired of the baggage that
@@ -1635,23 +1642,26 @@ since it's a full background operation (and generally quite slow).
 - Some SQL queries have been optimized to be faster.
 - a new delMessages user command.
 - the client function search() no longer requires an options object.
+
 ### Logger
 
 The logger's output performance has improved dramatically (x3), by no longer relying on the slow console object, but by
 writing directly to stdout/stderr streams.
 
 Also, the logger has been completely rewritten to be more easily configurable. The new configuration looks like this:
-`
+
+```json
 {
   "logging": {
     "theme": "default",
     "show": ["debug", "info", "error", "time"],
     "hide": ["debug"],
-    "output": "terminal"/"file",
+    "output": "terminal or file",
     "path": "/var/log/myGame"
   }
 }
-`
+```
+
 Leaving out the logging, will display all channels (debug, info, etc) without color coding. Creating config and setting the theme
 to default will enable colors from the theme "default" (currently the only theme). Providing an array of channels in the "show"
 property, will show only these channels. Alternatively, a "hide" array will show all channels, except the ones in the given array.
