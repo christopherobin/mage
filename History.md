@@ -14,9 +14,9 @@ configuration like
 mage.core.config.something.somethingElse
 ```
 
-will no longer work. The use of `get` is now mandatory. This is due to the underlying storage
-structure of the configuration. Otherwise, changes are additions to the API. Take a look at the
-[updated config readme](./lib/config/Readme.md).
+will no longer work. The use of the `get(...)` method is now mandatory. This is due to the
+underlying storage structure of the configuration. Otherwise, changes are additions to the API. Take
+a look at the [updated config readme](./lib/config/Readme.md).
 
 ### Redis vault
 
