@@ -14,9 +14,20 @@ configuration like
 mage.core.config.something.somethingElse
 ```
 
-will no longer work. The use of `get` is now mandatory. This is due to the underlying storage
-structure of the configuration. Otherwise, changes are additions to the API. Take a look at the
-[updated config readme](./lib/config/Readme.md).
+will no longer work. The use of the `get(...)` method is now mandatory. This is due to the
+underlying storage structure of the configuration. Otherwise, changes are additions to the API. Take
+a look at the [updated config readme](./lib/config/Readme.md).
+
+### Redis vault
+
+We've added a Redis vault to Archivist! For more information visit the official
+[Redis website](http://redis.io), or read the
+[Redis vault documentation](./lib/archivist/vaults/redis/Readme.md).
+
+### Bugfixes
+
+* We have fixed a number of issues with archivist client that broke diffing in the dashboard.
+
 
 ## v0.14.1 - Samurai Pizza Cat
 
