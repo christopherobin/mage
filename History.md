@@ -53,7 +53,7 @@ the OS X Finder. It establishes much clearer context than what we had before.
 
 ### Bugfixes
 
-* Errors being throw by listeners of the dashboard router were logging the wrong stack.
+* Errors being thrown by listeners of the dashboard router were logging the wrong stack.
 * The Component ignore list was not being applied correctly, potentially causing builds to contain duplicate code.
 
 
