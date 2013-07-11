@@ -4,6 +4,5 @@ clientHost:
         longpolling:
             heartbeat: 120
     bind:
-        protocol: http
         file: ./server.sock
     expose: "http://localhost"
