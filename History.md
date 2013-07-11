@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.15.1 - まる君
 
 ### Config
 
