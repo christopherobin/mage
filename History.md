@@ -2,9 +2,29 @@
 
 ## vNEXT
 
+### Config
+
+#### Configuration Inspector dashboard
+
+We've added a Configuration Inspector dashboard page, which will show you exactly what your full
+configuration looks like, and how it came to be that way. It shows exactly which configuration
+entries come from which config files. This should help you debug tricky configuration issues and
+hopefully gives you clearer insight into how MAGE operates.
+
+#### YAML parsing
+
+When YAML parsing fails, we now display where and in which file that happened.
+
+### Archivist dashboard
+
+We now render the MediaType above the DocEditor, so you can tell if something is a Tome or not.
+
 ### Bugfixes
 
+* Since v0.15.0 Savvy no longer exposed its URL correctly, breaking the dashboard logger.
 * The dashboard sidebar can now scroll vertically when there are more menu items than fit on the screen.
+* Archivist dashboard: Fixed empty object rendering in Tome and JSON rendering.
+* Archivist dashboard: Fixed the not-clearing of the list results and document on topic-change.
 
 
 ## v0.15.0 - DepriCat
