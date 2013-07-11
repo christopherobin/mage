@@ -2,6 +2,9 @@
 	"name": "config-inspector",
 	"description": "Configuration inspector",
 	"local": ["mage"],
+	"dependencies": {
+		"component/escape-html": "*"
+	},
 	"scripts": [
 		"index.js"
 	]
