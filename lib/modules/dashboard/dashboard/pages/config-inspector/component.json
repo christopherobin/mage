@@ -1,0 +1,8 @@
+{
+	"name": "config-inspector",
+	"description": "Configuration inspector",
+	"local": ["mage"],
+	"scripts": [
+		"index.js"
+	]
+}

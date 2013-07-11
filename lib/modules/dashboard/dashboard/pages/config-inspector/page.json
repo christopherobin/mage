@@ -1,6 +1,6 @@
 {
 	"apps": ["cms", "support"],
 	"listed": true,
-	"name": "Style Guide",
-	"orderId": 3
+	"name": "Configuration",
+	"orderId": 2
 }
