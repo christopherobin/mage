@@ -15,7 +15,6 @@ configuration, then the game configuration wins.
 A typical module is a folder that may look like:
 
  - `missions`
-  - `clients/`
   - `usercommands/`
   - `index.js`
   - `client.js`
