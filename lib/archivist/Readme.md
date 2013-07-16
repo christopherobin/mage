@@ -88,11 +88,11 @@ and provides a simple API for reading and writing data. In MAGE, you can always 
 `state.archivist`.
 
 
-### ValueHandlers
+### Topic API
 
-ValueHandlers are an API, unique per vault, that implement how values are stored and read. A lot of
-this logic is driven around "topics" and "indexes", that these value handlers can translate into
-logic that fits the vault in question.
+Topic APIs are APIs that, uniquely per vault, implement how values are stored and read. A lot of
+this logic is driven around "topics" and "indexes", that these APIs can translate into logic that
+fits the vault in question.
 
 For example, the topic `weapons` with index `{ actorId: 123 }` can be translated into the following
 memcached key: `weapons/actorId:123`, or into the following MySQL structure:
@@ -102,7 +102,7 @@ memcached key: `weapons/actorId:123`, or into the following MySQL structure:
 ```
 
 Each vault has friendly defaults, but those can always be overridden with custom logic. For more
-information on how to do this, please read "Writing your own ValueHandlers".
+information on how to do this, please read "Writing your own Topic API".
 
 
 ### MediaTypes
@@ -194,7 +194,7 @@ exports.myTopicName = {
 	},
 	index: ['propName', 'propName'],
 	vaults: {
-		myVaultName: myValueHandlers
+		myVaultName: myTopicAPI
 	}
 };
 ```
@@ -214,8 +214,8 @@ from your archivist. The following defaults are defined, and they can be individ
 }
 ```
 
-The `myValueHandlers` object may be replaced with `true` in order to get all default behaviors for
-that vault type. Read about "Advanced usage" to see how you can set up these vault handlers with
+The `myTopicAPI` object may be replaced with `true` in order to get all default behaviors for
+that vault type. Read about "Advanced usage" to see how you can set up these topic APIs with
 custom behaviors. In order to keep your configuration maintainable, it makes a lot of sense to
 categorize your topics. Imagine for example the following configuration:
 
@@ -536,9 +536,9 @@ be requested by calling `archivist.getReadVault(vaultName)`. For more informatio
 exposed by each vault, please refer to their documentation.
 
 
-### Writing your own ValueHandlers
+### Writing your own Topic APIs
 
-Value handlers are a collection of APIs that enable a vault to get data to and from its underlying
+Topic APIs are a collection of APIs that enable a vault to get data to and from its underlying
 data store. The total set of APIs is limited, and each vault type has its own required subset. For
 more information on the specifics per vault type, please refer to their documentation.
 
@@ -603,7 +603,7 @@ function key(topic, index) {
 The shard method is similar to the key method, except it doesn't pinpoint the exact location of
 data, but a general location, in order to facilitate sharding. A good example is the Client vault,
 which needs to emit data changes to different users based on certain very specific information.
-Incidentally, this is currently the *only* ValueHandler method you *have to* implement yourself.
+Incidentally, this is currently the *only* Topic API method you *have to* implement yourself.
 
 Example (Client):
 ```javascript
@@ -631,9 +631,3 @@ function shard(value) {
 	return true;
 }
 ```
-
-
-### How to manipulate a VaultValue
-
-TODO
-
