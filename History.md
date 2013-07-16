@@ -8,7 +8,8 @@ A lot of refactoring has happened in Archivist, cleaning up large parts of the s
 codebase. In the process, a few bugs were found and fixed (see below).
 
 Documentation on the vaults has been augmented with API tables for how topics are read from and
-written to the underlying data store.
+written to the underlying data store. The term "Vault Handler" has once and for all been replaced by
+"Topic API".
 
 ### Bugfixes
 
