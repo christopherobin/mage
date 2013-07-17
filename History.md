@@ -19,6 +19,7 @@ written to the underlying data store. The term "Vault Handler" has once and for 
 * If `distribute()` was called on the client without pending changes, it would stay in `distributing` state.
 * When data was deleted or expiration times were modified by the client, the cache would sometimes not update itself accordingly.
 
+
 ## v0.15.1 - まる君
 
 ### Config
