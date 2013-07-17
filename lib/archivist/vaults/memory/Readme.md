@@ -19,9 +19,17 @@ The memory vault doesn't use any special configuration.
 
 operation | supported | implementation
 ----------|:---------:|---------------
-list      | yes       | `for (var trueName in cache) { }`
-get       | yes       | `deserialize(cache[trueName(fullIndex, topic)])`
-add       | yes       | `cache[trueName(fullIndex, topic)] = serialize(data)`
-set       | yes       | `cache[trueName(fullIndex, topic)] = serialize(data)`
-touch     | yes       | `setTimeout()`
-del       | yes       | `delete cache[trueName(fullIndex, topic)]`
+list      | ✔         | `for (var trueName in cache) { }`
+get       | ✔         | `deserialize(cache[trueName(fullIndex, topic)])`
+add       | ✔         | `cache[trueName(fullIndex, topic)] = serialize(data)`
+set       | ✔         | `cache[trueName(fullIndex, topic)] = serialize(data)`
+touch     | ✔         | `setTimeout()`
+del       | ✔         | `delete cache[trueName(fullIndex, topic)]`
+
+## Required Topic API
+
+signature                  | required | default implementation
+---------------------------|----------|-----------------------
+`createKey(topic, index)`  |          | rumplestiltskin trueName
+`serialize(value)`         |          | VaultValue to internal MemoryData object
+`deserialize(data, value)` |          | from MemoryData to VaultValue

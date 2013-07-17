@@ -16,9 +16,18 @@ The "file" vault makes this possible.
 
 operation | supported | implementation
 ----------|:---------:|---------------
-list      | yes       | `fs.readdir(config.path);`
-get       | yes       | `fs.readFile('myfile.filevault' and 'myfile.json');`
-add       | yes       | `fs.writeFile('myfile.filevault' and 'myfile.json');`
-set       | yes       | `fs.writeFile('myfile.filevault' and 'myfile.json');`
-touch     | yes       | `fs.readFile('myfile.filevault'); fs.writeFile('myfile.filevault');`
-del       | yes       | `fs.readFile('myfile.filevault'); fs.unlink('myfile.filevault' and 'myfile.json');`
+list      | ✔         | `fs.readdir(config.path);`
+get       | ✔         | `fs.readFile('myfile.filevault' and 'myfile.json');`
+add       | ✔         | `fs.writeFile('myfile.filevault' and 'myfile.json');`
+set       | ✔         | `fs.writeFile('myfile.filevault' and 'myfile.json');`
+touch     | ✔         | `fs.readFile('myfile.filevault'); fs.writeFile('myfile.filevault');`
+del       | ✔         | `fs.readFile('myfile.filevault'); fs.unlink('myfile.filevault' and 'myfile.json');`
+
+## Required Topic API
+
+signature                  | required | default implementation
+---------------------------|----------|-----------------------
+`createKey(topic, index)`  |          | `topic#prop=value&prop=value&...` (url encoded)
+`parseKey(path)`           |          | from key to `{ topic: '', index: { prop: value } }`
+`serialize(value)`         |          | { meta: { mediaType: '', expirationTime: 0, ext: '.json' }, content: Buffer }
+`deserialize(data, value)` |          | from serialized to VaultValue with mediaType and expirationTime

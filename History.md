@@ -1,5 +1,23 @@
 # Release history
 
+## vNext
+
+### Archivist
+
+A lot of refactoring has happened in Archivist, cleaning up large parts of the startup phase of the
+codebase. In the process, a few bugs were found and fixed (see below). The opportunity was also
+taken to improve performance here and there.
+
+Documentation on the vaults has been augmented with API tables for how topics are read from and
+written to the underlying data store. The term "Vault Handler" has once and for all been replaced by
+"Topic API".
+
+### Bugfixes
+
+* Doing list operations on the memory vault would return with as many callbacks as there were values (0 or more).
+* The archivist dashboard would throw (innocent) JavaScript errors if a get request failed.
+
+
 ## v0.15.1 - まる君
 
 ### Config

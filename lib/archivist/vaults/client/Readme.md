@@ -12,9 +12,17 @@ This vault type requires no configuration.
 
 operation | supported | implementation
 ----------|:---------:|---------------
-list      | no        |
-get       | no        |
-add       | yes       | `state.emitToActors('archivist:set')`
-set       | yes       | `state.emitToActors('archivist:set' or 'archivist:applyDiff')`
-touch     | yes       | `state.emitToActors('archivist:touch')`
-del       | yes       | `state.emitToActors('archivist:del')`
+list      |           |
+get       |           |
+add       | ✔         | `state.emitToActors('archivist:set')`
+set       | ✔         | `state.emitToActors('archivist:set' or 'archivist:applyDiff')`
+touch     | ✔         | `state.emitToActors('archivist:touch')`
+del       | ✔         | `state.emitToActors('archivist:del')`
+
+## Required Topic API
+
+signature                  | required | default implementation
+---------------------------|:--------:|-----------------------
+`createKey(topic, index)`  |          | `{ topic: topic, index: index }`
+`serialize(value)`         |          | `{ mediaType: '', data: '', encoding: 'uf8/base64' }`
+`shard(value)`             | ✔        |
