@@ -1,5 +1,33 @@
 # Release history
 
+## v0.15.2 - Breadcat
+
+### Archivist
+
+A lot of refactoring has happened in Archivist, cleaning up large parts of the startup phase of the
+codebase and the client change distribution and cache synchronisity. In the process, a few bugs were
+found and fixed (see below). The opportunity was also taken to improve performance here and there.
+
+Documentation on the vaults has been augmented with API tables for how topics are read from and
+written to the underlying data store. The term "Vault Handler" has once and for all been replaced by
+"Topic API".
+
+### Component
+
+Component build internals have been refactored, removing the need for a `window.mageConfig.pageName`
+variable on the browser.
+
+### Bugfixes
+
+* Server cache has been fixed. Has been broken since at least March 2013.
+* Doing list operations on the memory vault would return with as many callbacks as there were values (0 or more).
+* The archivist dashboard would throw (innocent) JavaScript errors if a get request failed.
+* If `distribute()` was called on the client without pending changes, it would stay in `distributing` state.
+* When data was deleted or expiration times were modified by the client, the cache would sometimes not update itself accordingly.
+* If no environment config could be found, the config module would die.
+* MAGE could not be properly run in a REPL environment.
+
+
 ## v0.15.1 - まる君
 
 ### Config
