@@ -12,8 +12,14 @@ Documentation on the vaults has been augmented with API tables for how topics ar
 written to the underlying data store. The term "Vault Handler" has once and for all been replaced by
 "Topic API".
 
+### Component
+
+Component build internals have been refactored, removing the need for a `window.mageConfig.pageName`
+variable on the browser.
+
 ### Bugfixes
 
+* Server cache has been fixed. Has been broken since at least March 2013.
 * Doing list operations on the memory vault would return with as many callbacks as there were values (0 or more).
 * The archivist dashboard would throw (innocent) JavaScript errors if a get request failed.
 
