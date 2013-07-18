@@ -1,6 +1,6 @@
 # Release history
 
-## v0.15.2 - Breadcat
+## v0.15.2 - Bread Cat
 
 ### Archivist
 
