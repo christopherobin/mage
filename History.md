@@ -24,6 +24,8 @@ variable on the browser.
 * The archivist dashboard would throw (innocent) JavaScript errors if a get request failed.
 * If `distribute()` was called on the client without pending changes, it would stay in `distributing` state.
 * When data was deleted or expiration times were modified by the client, the cache would sometimes not update itself accordingly.
+* If no environment config could be found, the config module would die.
+* MAGE could not be properly run in a REPL environment.
 
 
 ## v0.15.1 - まる君
