@@ -1,6 +1,6 @@
 # Release history
 
-## vNext
+## v0.15.2 - Breadcat
 
 ### Archivist
 
