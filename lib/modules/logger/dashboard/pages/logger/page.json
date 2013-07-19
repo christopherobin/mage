@@ -1,5 +1,0 @@
-{
-	"apps": ["dev", "cms", "support"],
-	"listed": true,
-	"name": "Logger"
-}
