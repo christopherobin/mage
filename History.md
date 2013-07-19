@@ -38,8 +38,6 @@ dashboard:
             listed: true
             apps:
                 - dev
-                - cms
-                - support
 ```
 
 The variables in this example are:
