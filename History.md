@@ -8,7 +8,7 @@ The two dashboards "cms" and "support" have been augmented by a third: "dev". Th
 strip down the former two to their essentials, and move all developer-only tools into the dev
 dashboard. For now, we have organized the pages as follows:
 
- page            | dev | cms | support
+page             | dev | cms | support
 -----------------|:---:|:---:|:------:
 Home             | ✔   | ✔   | ✔
 Documentation    | ✔   | ✔   | ✔
