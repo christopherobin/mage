@@ -21,6 +21,16 @@ Assets           | ✔   |     |
 Logger           | ✔   | ✔   | ✔
 Time             | ✔   |     |
 
+Enable the dev dashboard by adding the following configuration next to the already existing "cms"
+and "support" entries:
+
+```yaml
+apps:
+    dev:
+        responseCache: 10
+        access: admin
+```
+
 #### Changed dashboard configuration
 
 The dashboard page configuration has been modernized (this is a **breaking change**). Configuration
