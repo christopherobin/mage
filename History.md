@@ -1,5 +1,12 @@
 # Release history
 
+## vNext
+
+### Bugfixes
+
+* Dashboard: table cell alignment in markdown content was not being applied.
+
+
 ## v0.15.2 - Bread Cat
 
 ### Archivist
