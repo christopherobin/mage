@@ -2,6 +2,12 @@
 
 ## vNext
 
+### Sampler
+
+Sampler has been updated to expose a websocket route (called 'statistics') on savvy. This will
+allow nice graphical tools for the dashboard in the future for all the data you gather with
+panopticon/sampler.
+
 ### Dashboard
 
 #### A new dashboard: dev
