@@ -1,5 +1,5 @@
 {
-	"apps": ["cms", "support"],
+	"apps": ["dev"],
 	"listed": true,
 	"name": "Configuration",
 	"orderId": 2

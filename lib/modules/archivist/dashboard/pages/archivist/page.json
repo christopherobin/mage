@@ -1,5 +1,5 @@
 {
-	"apps": ["cms", "support"],
+	"apps": ["dev", "cms", "support"],
 	"listed": true,
 	"name": "Archivist"
 }
