@@ -1,2 +1,5 @@
 # Switch on sampling of mage internals.
 sampleMage: true
+
+# The default sample buffer length.
+bufferLength: 1000
