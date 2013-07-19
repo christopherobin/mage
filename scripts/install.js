@@ -242,7 +242,7 @@ function bootstrap(cb) {
 				'',
 				'Once your application is running, you can access:',
 				'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
-				'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/cms'
+				'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/dev'
 			];
 
 			pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');

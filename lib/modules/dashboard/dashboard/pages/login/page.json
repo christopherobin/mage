@@ -1,4 +1,4 @@
 {
-	"apps": ["cms", "support"],
+	"apps": ["dev", "cms", "support"],
 	"listed": false
 }

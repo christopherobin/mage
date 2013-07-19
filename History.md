@@ -2,6 +2,23 @@
 
 ## vNext
 
+### A new dashboard: dev
+
+The two dashboards "cms" and "support" have been augmented by a third: "dev". This allows us to
+strip down the former two to their essentials, and move all developer-only tools into the dev
+dashboard. For now, we have organized the pages as follows:
+
+page             | dev | cms | support
+-----------------|:---:|:---:|:------:
+Home             | ✔   | ✔   | ✔
+Documentation    | ✔   | ✔   | ✔
+Configuration    | ✔   |     |
+Style guide      | ✔   |     |
+Archivist        | ✔   | ✔   | ✔
+Assets           | ✔   | ✔   | ✔
+Logger           | ✔   | ✔   | ✔
+Time             | ✔   |     |
+
 ### Bugfixes
 
 * Dashboard: table cell alignment in markdown content was not being applied.
