@@ -1,0 +1,7 @@
+dashboard:
+    pages:
+        archivist:
+            name: Archivist
+            listed: true
+            apps:
+                - dev

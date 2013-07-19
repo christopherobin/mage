@@ -2,22 +2,66 @@
 
 ## vNext
 
-### A new dashboard: dev
+### Dashboard
+
+#### A new dashboard: dev
 
 The two dashboards "cms" and "support" have been augmented by a third: "dev". This allows us to
 strip down the former two to their essentials, and move all developer-only tools into the dev
 dashboard. For now, we have organized the pages as follows:
 
-page             | dev | cms | support
+Page             | dev | cms | support
 -----------------|:---:|:---:|:------:
 Home             | ✔   | ✔   | ✔
 Documentation    | ✔   | ✔   | ✔
 Configuration    | ✔   |     |
 Style guide      | ✔   |     |
-Archivist        | ✔   | ✔   | ✔
-Assets           | ✔   | ✔   | ✔
+Archivist        | ✔   |     |
+Assets           | ✔   |     |
 Logger           | ✔   | ✔   | ✔
 Time             | ✔   |     |
+
+#### Changed dashboard configuration
+
+The dashboard page configuration has been modernized (this is a **breaking change**). Configuration
+for a dashboard page used to be a file inside the page's folder called `page.json`. This has now
+been moved into the module's own configuration file `modules/mymodule/config.yaml` (or
+`config.json`, you choose).
+
+Example from the archivist module:
+
+```yaml
+dashboard:
+    pages:
+        archivist:
+            name: Archivist
+            listed: true
+            apps:
+                - dev
+```
+
+The variables in this example are:
+
+- `archivist`: the folder name where the component can be found.
+- `Archivist`: the human readable name for display in the sidebar.
+- `true`: a boolean that exposes the page in the sidebar.
+- `dev`, `cms` and `support`: the list of apps that should expose this page.
+
+For more examples, please have a look at the Configuration Inspector in the `dev` dashboard app.
+
+This also means that you can now override the MAGE built-in dashboard pages' configuration. By
+overriding the archivist dashboard's `apps` entry for example, you can change in which dashboard
+apps the Archivist page is visible. When overriding, keep in mind that this configuration example is
+a module default, which means that the actual full path is like in the following example:
+
+```yaml
+module:
+    archivist:
+        dashboard:
+            pages:
+                archivist:
+                    name: "Bob's Data Emporium"
+```
 
 ### Bugfixes
 

@@ -1,0 +1,9 @@
+dashboard:
+    pages:
+        logger:
+            name: Logger
+            listed: true
+            apps:
+                - dev
+                - cms
+                - support
