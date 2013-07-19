@@ -135,21 +135,23 @@ input[type="radio"]:checked + label {
 }
 
 input[type="radio"] + label:before {
-	content: '○ ';
+	content: '○';
 	font-size: 16px;
+    margin-right: 3px;
 }
 
 input[type="radio"]:checked + label:before {
-	content: '● ';
+	content: '●';
 }
 
 input[type="checkbox"] + label:before {
-	content: '□ ';
+	content: '□';
 	font-size: 15px;
+    margin-right: 4px;
 }
 
 input[type="checkbox"]:checked + label:before {
-	content: '■ ';
+	content: '■';
 }
 
 /* code and syntax */

@@ -45,7 +45,7 @@ The variables in this example are:
 - `archivist`: the folder name where the component can be found.
 - `Archivist`: the human readable name for display in the sidebar.
 - `true`: a boolean that exposes the page in the sidebar.
-- `dev`, `cms` and `support`: the list of apps that should expose this page.
+- `dev`: the list of apps that should expose this page.
 
 For more examples, please have a look at the Configuration Inspector in the `dev` dashboard app.
 
@@ -62,6 +62,10 @@ module:
                 archivist:
                     name: "Bob's Data Emporium"
 ```
+
+### Minor improvements
+
+* Dashboard: checkboxes and radiobuttons received a small visual makeover.
 
 ### Bugfixes
 
