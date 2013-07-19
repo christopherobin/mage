@@ -66,6 +66,7 @@ module:
 ### Bugfixes
 
 * Dashboard: table cell alignment in markdown content was not being applied.
+* New assets aimed at non-existing folders were not being saved.
 
 
 ## v0.15.2 - Bread Cat
