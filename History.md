@@ -4,9 +4,9 @@
 
 ### Sampler
 
-Sampler has been updated to expose a websocket route (called 'statistics') on savvy. This will
-allow nice graphical tools for the dashboard in the future for all the data you gather with
-panopticon/sampler.
+Sampler has been updated to expose a websocket route on savvy at the same route as the normal HTTP
+endpoint: `/savvy/sampler`. This will allow nice graphical tools for the dashboard in the future for
+all the data you gather with panopticon/sampler.
 
 ### Dashboard
 
