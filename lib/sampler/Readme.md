@@ -38,3 +38,9 @@ sampler:
         realtimeish: 1000
         bytheminute: 60000
 ```
+
+## Access
+
+The data can be accessed through the Savvy route: `/sampler`, for example by doing an `HTTP GET` to
+`http://myexposed.game.domain.com/savvy/sampler`. The same URL (with the `ws:` protocol) can be used
+to create a WebSocket data stream.
