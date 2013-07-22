@@ -1,0 +1,48 @@
+dashboard:
+    pages:
+
+        login:
+            listed: false
+            apps:
+                - dev
+                - cms
+                - support
+
+        postlogin:
+            listed: false
+            apps:
+                - dev
+                - cms
+                - support
+
+        home:
+            name: Home
+            listed: true
+            orderId: 0
+            apps:
+                - dev
+                - cms
+                - support
+
+        docs:
+            name: Documentation
+            listed: true
+            orderId: 1
+            apps:
+                - dev
+                - cms
+                - support
+
+        config-inspector:
+            name: Configuration
+            listed: true
+            orderId: 2
+            apps:
+                - dev
+
+        styleguide:
+            name: Style Guide
+            listed: true
+            orderId: 3
+            apps:
+                - dev

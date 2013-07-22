@@ -2,20 +2,119 @@
 
 ## vNext
 
+### Sampler
+
+Sampler has been updated to expose a websocket route on savvy at the same route as the normal HTTP
+endpoint: `/savvy/sampler`. This will allow nice graphical tools for the dashboard in the future for
+all the data you gather with panopticon/sampler.
+
+### Dashboard
+
+#### A new dashboard: dev
+
+The two dashboards "cms" and "support" have been augmented by a third: "dev". This allows us to
+strip down the former two to their essentials, and move all developer-only tools into the dev
+dashboard. For now, we have organized the pages as follows:
+
+Page             | dev | cms | support
+-----------------|:---:|:---:|:------:
+Home             | ✔   | ✔   | ✔
+Documentation    | ✔   | ✔   | ✔
+Configuration    | ✔   |     |
+Style guide      | ✔   |     |
+Archivist        | ✔   |     |
+Assets           | ✔   |     |
+Logger           | ✔   | ✔   | ✔
+Time             | ✔   |     |
+
+Enable the dev dashboard by adding the following configuration next to the already existing "cms"
+and "support" entries:
+
+```yaml
+apps:
+    dev:
+        responseCache: 10
+        access: admin
+```
+
+#### Changed dashboard configuration
+
+The dashboard page configuration has been modernized (this is a **breaking change**). Configuration
+for a dashboard page used to be a file inside the page's folder called `page.json`. This has now
+been moved into the module's own configuration file `modules/mymodule/config.yaml` (or
+`config.json`, you choose).
+
+Example from the archivist module:
+
+```yaml
+dashboard:
+    pages:
+        archivist:
+            name: Archivist
+            listed: true
+            apps:
+                - dev
+```
+
+The variables in this example are:
+
+- `archivist`: the folder name where the component can be found.
+- `Archivist`: the human readable name for display in the sidebar.
+- `true`: a boolean that exposes the page in the sidebar.
+- `dev`: the list of apps that should expose this page.
+
+For more examples, please have a look at the Configuration Inspector in the `dev` dashboard app.
+
+This also means that you can now override the MAGE built-in dashboard pages' configuration. By
+overriding the archivist dashboard's `apps` entry for example, you can change in which dashboard
+apps the Archivist page is visible. When overriding, keep in mind that this configuration example is
+a module default, which means that the actual full path is like in the following example:
+
+```yaml
+module:
+    archivist:
+        dashboard:
+            pages:
+                archivist:
+                    name: "Bob's Data Emporium"
+```
+
+### Minor improvements
+
+* Dashboard: checkboxes and radiobuttons received a small visual makeover.
+
+### Bugfixes
+
+* Dashboard: table cell alignment in markdown content was not being applied.
+* New assets aimed at non-existing folders were not being saved.
+
+
+## v0.15.2 - Bread Cat
+
 ### Archivist
 
 A lot of refactoring has happened in Archivist, cleaning up large parts of the startup phase of the
-codebase. In the process, a few bugs were found and fixed (see below). The opportunity was also
-taken to improve performance here and there.
+codebase and the client change distribution and cache synchronisity. In the process, a few bugs were
+found and fixed (see below). The opportunity was also taken to improve performance here and there.
 
 Documentation on the vaults has been augmented with API tables for how topics are read from and
 written to the underlying data store. The term "Vault Handler" has once and for all been replaced by
 "Topic API".
 
+### Component
+
+Component build internals have been refactored, removing the need for a `window.mageConfig.pageName`
+variable on the browser.
+
 ### Bugfixes
 
+* Server cache has been fixed. Has been broken since at least March 2013.
 * Doing list operations on the memory vault would return with as many callbacks as there were values (0 or more).
 * The archivist dashboard would throw (innocent) JavaScript errors if a get request failed.
+* If `distribute()` was called on the client without pending changes, it would stay in `distributing` state.
+* When data was deleted or expiration times were modified by the client, the cache would sometimes not update itself accordingly.
+* If no environment config could be found, the config module would die.
+* MAGE could not be properly run in a REPL environment.
 
 
 ## v0.15.1 - まる君

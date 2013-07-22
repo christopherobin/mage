@@ -76,7 +76,6 @@ internal use. However, there may be cases for which configuration is automatical
  - `getSource(path)`
  - `getMatryoshka()`
  - `loadModuleConfig(moduleName, absolutePathToConfigFile);`
- - `setModuleDefault(moduleName, configObject);`
  - `setDefaults(absolutePathToConfigFile);`
  - `initialize(mageLogger)`
 
@@ -103,12 +102,6 @@ This may be useful for tools or for debugging.
 This is used by Mage only. This function is used when Mage is setting up a module, and is
 responsible for loading the default configuration file, if one exists. Just place a file called
 `config.<json, yaml, js>` and Mage will pick it up.
-
-### `setModuleDefault`
-
-Used to define the default configuration of a game module. This should be avoided in favour of the
-module default configuration file. This mechanism is used when Mage loads module default
-configuration files.
 
 ### `setDefaults`
 
