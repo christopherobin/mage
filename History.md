@@ -1,5 +1,13 @@
 # Release history
 
+## vNext
+
+### Couchbase vault
+
+Archivist has been enriched with support for Couchbase through `libcouchbase`. Read the
+[Couchbase vault documentation](./lib/archivist/vaults/couchbase/Readme.md) for more information.
+
+
 ## v0.16.0 - Dashboard Cat
 
 ### Dashboard
