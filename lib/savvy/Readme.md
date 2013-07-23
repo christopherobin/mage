@@ -7,7 +7,7 @@ simple API for registering regular HTTP routes and websocket routes:
 
 * `getBaseUrl()`
 * `addRoute(routePath, routeFunction)`
-* `addWebSocketRoute(routePath)`
+* `addWebSocketRoute(routePath, routeFunction)`
 
 The base URL is configuration driven, and can be resolved with the `getBaseUrl`
 function. All routes sit on subpaths immediately on top of the base URL. This
@@ -17,9 +17,8 @@ your request handlers. If you wish to operate with subpaths, this can be managed
 by a registered `routeFunction`. The sampler library does this to allow subpath
 tunnelling down into data.
 
-`addRoute` takes a route path and appends a simple HTTP handler function
-`routeFunction`. This handler function takes the usual `request` and `response`
-objects as parameters. For example:
+`addRoute` takes a route path and a handler function `routeFunction` which takes
+the usual `request` and `response` objects as parameters. For example:
 
 ```javascript
 mage.core.savvy.addRoute('/sampler', function (req, res) {
@@ -27,19 +26,27 @@ mage.core.savvy.addRoute('/sampler', function (req, res) {
 });
 ```
 
-`addWebSocketRoute` creates a websocket server route for you, and gives it back
-as the return value of the function. For example, from the websocket logger:
+`addWebSocketRoute` takes a route path and a handler function `routeFunction`,
+which takes a WebSocket client connection object as its only parameter.
+For example, from the websocket logger:
 
 ```javascript
-var server = mage.core.savvy.addWebSocketRoute('/logger');
+mage.core.savvy.addWebSocketRoute('/logger', function (conn) {
+	conn.once('close', function () {
+		// cleanup
+	});
 
-server.on('connection', function (conn) {
-    // Do stuff with the connection object.
+	conn.on('message', function (message) {
+		// logic
+	});
 });
 ```
 
-Refer to the [ws documentation](https://github.com/einaros/ws) for the APIs of
-the server and connection objects.
+Refer to the [ws documentation](https://github.com/einaros/ws) for more
+information on the connection objects.
+
+The same route may be registered for a WebSocket handler **and** an HTTP
+handler. The right handler will be selected based on the incoming request.
 
 ## Configuration
 
@@ -51,16 +58,16 @@ savvy:
     bind:
         host: 0.0.0.0
         port: 4321
-    expose: http://dev.wizcorp.jp:4321
+    expose: http://mydomain:4321
 ```
 
-If you want to use a socket, then replace the `host` and `port` keys:
+If you want to use a unix socket, then replace the `host` and `port` keys:
 
 ```yaml
 savvy:
     bind:
         file: ./savvy.sock
-    expose: http://testapp.me.node.wizcorp.jp/savvy # Depends on nginx!
+    expose: http://mydomain/savvy # unix socket bindings depend on proxies like Nginx
 ```
 
-Be warned though, until recently websockets were not supported with nginx.
+Be warned though, until recently websockets were not supported with Nginx.

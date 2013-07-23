@@ -1,5 +1,199 @@
 # Release history
 
+## v0.16.0 - Dashboard Cat
+
+### Dashboard
+
+#### A new dashboard: dev
+
+The two dashboards "cms" and "support" have been augmented by a third: "dev". This allows us to
+strip down the former two to their essentials, and move all developer-only tools into the dev
+dashboard. For now, we have organized the pages as follows:
+
+Page             | dev | cms | support
+-----------------|:---:|:---:|:------:
+Home             | ✔   | ✔   | ✔
+Documentation    | ✔   | ✔   | ✔
+Configuration    | ✔   |     |
+Style guide      | ✔   |     |
+Archivist        | ✔   |     |
+Assets           | ✔   |     |
+Logger           | ✔   | ✔   | ✔
+Time             | ✔   |     |
+
+Enable the dev dashboard by adding the following configuration next to the already existing "cms"
+and "support" entries:
+
+```yaml
+apps:
+    dev:
+        responseCache: 10
+        access: admin
+```
+
+#### Changed dashboard configuration
+
+The dashboard page configuration has been modernized (this is a **breaking change**). Configuration
+for a dashboard page used to be a file inside the page's folder called `page.json`. This has now
+been moved into the module's own configuration file `modules/mymodule/config.yaml` (or
+`config.json`, you choose).
+
+Example from the archivist module:
+
+```yaml
+dashboard:
+    pages:
+        archivist:
+            name: Archivist
+            listed: true
+            apps:
+                - dev
+```
+
+The variables in this example are:
+
+- `archivist`: the folder name where the component can be found.
+- `Archivist`: the human readable name for display in the sidebar.
+- `true`: a boolean that exposes the page in the sidebar.
+- `dev`: the list of apps that should expose this page.
+
+For more examples, please have a look at the Configuration Inspector in the `dev` dashboard app.
+
+This also means that you can now override the MAGE built-in dashboard pages' configuration. By
+overriding the archivist dashboard's `apps` entry for example, you can change in which dashboard
+apps the Archivist page is visible. When overriding, keep in mind that this configuration example is
+a module default, which means that the actual full path is like in the following example:
+
+```yaml
+module:
+    archivist:
+        dashboard:
+            pages:
+                archivist:
+                    name: "Bob's Data Emporium"
+```
+
+### Manta vault
+
+Archivist has been enriched with support for [Manta](http://www.joyent.com/products/manta). Read the
+[Manta vault documentation](./lib/archivist/vaults/manta/Readme.md) for more information.
+
+### Logger simulators
+
+The logger has received a new API: `myLogger.simulator(name);`. This will return a fake 3rd party
+logger, so other libraries that were hard-wired to a particular library can interface with them.
+Currently, we only implemented a simulator for [Bunyan](https://npmjs.org/package/bunyan), because
+`node-manta` depended on it. If you ever have to deal with a library that needs a Bunyan logger,
+simply feed it the return value of `myLogger.simulator('bunyan');`.
+
+### Sampler
+
+Sampler has been updated to expose a Savvy websocket route at the same route as the normal HTTP
+endpoint: `/savvy/sampler`. This will allow nice graphical tools for the dashboard in the future for
+all the data you gather with panopticon/sampler.
+
+### Minor improvements
+
+* Dashboard: checkboxes and radiobuttons received a small visual makeover.
+* component-builder: bumped to v0.9.0.
+
+### Bugfixes
+
+* Dashboard: table cell alignment in markdown content was not being applied.
+* New assets aimed at non-existing folders were not being saved.
+
+
+## v0.15.2 - Bread Cat
+
+### Archivist
+
+A lot of refactoring has happened in Archivist, cleaning up large parts of the startup phase of the
+codebase and the client change distribution and cache synchronisity. In the process, a few bugs were
+found and fixed (see below). The opportunity was also taken to improve performance here and there.
+
+Documentation on the vaults has been augmented with API tables for how topics are read from and
+written to the underlying data store. The term "Vault Handler" has once and for all been replaced by
+"Topic API".
+
+### Component
+
+Component build internals have been refactored, removing the need for a `window.mageConfig.pageName`
+variable on the browser.
+
+### Bugfixes
+
+* Server cache has been fixed. Has been broken since at least March 2013.
+* Doing list operations on the memory vault would return with as many callbacks as there were values (0 or more).
+* The archivist dashboard would throw (innocent) JavaScript errors if a get request failed.
+* If `distribute()` was called on the client without pending changes, it would stay in `distributing` state.
+* When data was deleted or expiration times were modified by the client, the cache would sometimes not update itself accordingly.
+* If no environment config could be found, the config module would die.
+* MAGE could not be properly run in a REPL environment.
+
+
+## v0.15.1 - まる君
+
+### Config
+
+#### Configuration Inspector dashboard
+
+We've added a Configuration Inspector dashboard page, which will show you exactly what your full
+configuration looks like, and how it came to be that way. It shows exactly which configuration
+entries come from which config files. This should help you debug tricky configuration issues and
+hopefully gives you clearer insight into how MAGE operates.
+
+#### YAML parsing
+
+When YAML parsing fails, we now display where and in which file that happened.
+
+### Archivist dashboard
+
+We now render the MediaType above the DocEditor, so you can tell if something is a Tome or not.
+
+### Bugfixes
+
+* Since v0.15.0 Savvy no longer exposed its URL correctly, breaking the dashboard logger.
+* The dashboard sidebar can now scroll vertically when there are more menu items than fit on the screen.
+* Archivist dashboard: Fixed empty object rendering in Tome and JSON rendering.
+* Archivist dashboard: Fixed the not-clearing of the list results and document on topic-change.
+
+
+## v0.15.0 - DepriCat
+
+### Removal of deprecated API
+
+* `mage.addModule` has been removed (deprecated since v0.12.0).
+* `mage.useModule` has been removed (deprecated since v0.12.0).
+* Feeding configuration into `mage.setup` is no longer supported (deprecated since v0.13.0).
+* `state.userError` has been removed (deprecated since v0.10.0).
+
+### Configuration
+
+node-config is dead, long live config! We rolled our own because we were tired of the baggage that
+came with node-config (including that annoying runtime file). This also allowed us to store some
+metadata about configuration (like where each part originated from). For the most part it has the
+same API as before, but there is one big breaking change, so please take care. Addressing
+configuration like
+
+```javascript
+mage.core.config.something.somethingElse
+```
+
+will no longer work. The use of the `get(...)` method is now mandatory. This is due to the
+underlying storage structure of the configuration. Otherwise, changes are additions to the API. Take
+a look at the [updated config readme](./lib/config/Readme.md).
+
+### Redis vault
+
+We've added a Redis vault to Archivist! For more information visit the official
+[Redis website](http://redis.io), or read the
+[Redis vault documentation](./lib/archivist/vaults/redis/Readme.md).
+
+### Bugfixes
+
+* We have fixed a number of issues with archivist client that broke diffing in the dashboard.
+
+
 ## v0.14.1 - Samurai Pizza Cat
 
 ### Component
@@ -17,7 +211,7 @@ the OS X Finder. It establishes much clearer context than what we had before.
 
 ### Bugfixes
 
-* Errors being throw by listeners of the dashboard router were logging the wrong stack.
+* Errors being thrown by listeners of the dashboard router were logging the wrong stack.
 * The Component ignore list was not being applied correctly, potentially causing builds to contain duplicate code.
 
 
@@ -893,35 +1087,40 @@ Profiles are symbolic names that map to a set of requirements defined in the con
 
 #### Configuration example
 
-`modules: {
-	assets: {
-		// These can also be passed in the object accepted by AssetMap's constructor,
-		// Also, if you want different configs for different asset maps while still having
-		// all the config here, you can name your asset maps and put all these in
-		// modules.assets.maps.<name>.<baseUrl|uriProtocol|cacheability|profiles>
-		baseUrl: {
-			img: 'http://somewhe.re/img'
-		},
-		cacheability: {
-			img: [
-				// Maps regexes to cacheability. Order defines precedence.
-				["^ui/boss/", 50],
-				["^ui/", 0]
-			]
-		},
-		profiles: {
-			retina: {
-				// Each value here is optional
-				density: 2,        // match if client's density >= 2
-				screen: [320, 480] // match if client's screen >= 320x480
+```json
+{
+	"modules": {
+		"assets": {
+			// These can also be passed in the object accepted by AssetMap's constructor,
+			// Also, if you want different configs for different asset maps while still having
+			// all the config here, you can name your asset maps and put all these in
+			// modules.assets.maps.<name>.<baseUrl|uriProtocol|cacheability|profiles>
+			"baseUrl": {
+				"img": 'http://somewhe.re/img'
+			},
+			"cacheability": {
+				"img": [
+					// Maps regexes to cacheability. Order defines precedence.
+					["^ui/boss/", 50],
+					["^ui/", 0]
+				]
+			},
+			"profiles": {
+				"retina": {
+					// Each value here is optional
+					"density": 2,        // match if client's density >= 2
+					"screen": [320, 480] // match if client's screen >= 320x480
+				}
 			}
 		}
 	}
-}`
+}
+```
 
 #### Asset folder example
 
-`mygame/
+```
+mygame/
 	assets/
 		img/
 			default/  # default language and common stuff
@@ -934,7 +1133,7 @@ Profiles are symbolic names that map to a set of requirements defined in the con
 			ja/ # Japanese localized stuff
 				ui/
 					button1.png
-`
+```
 
 #### WebApp creation
 
@@ -942,7 +1141,9 @@ You must tell your webapp what client configurations to support, so that it can
 pre-build mithril pages for all the different clients. This is done by passing
 `languages`, `densities` and `screens` to the constructor like this:
 
-`var app = new WebApp('game', { languages: ['en', 'ja', 'fr' ], densities: [1, 1.5, 2], screens: [[320, 480]] });`
+```javascript
+var app = new WebApp('game', { languages: ['en', 'ja', 'fr' ], densities: [1, 1.5, 2], screens: [[320, 480]] });
+```
 
 When omitted, `languages` defaults to `['en']`, `densities` defaults to `[1]` and
 `screens` defaults to `[[1, 1]]` (it's a minimum requirement that will match all
@@ -951,22 +1152,25 @@ density in the generated loader code.
 
 #### AssetMap creation
 
-`var assets = new mithril.assets.AssetMap();
+```javascript
+var assets = new mithril.assets.AssetMap();
 assets.addFolder('assets');
-...
+// etc
 app.addPage(...., { assetMap: true });
-... start your game
-`
+// start your game
+```
 
 #### Page assets (popups etc)
 
 You can register popups using `AssetMap.prototype.addPage(context, descriptor, path, version, cacheability)`
 like this:
 
-`['popup1', 'popup2', ...].forEach(function (id) {
+```javascript
+['popup1', 'popup2', '...'].forEach(function (id) {
 	assets.addPage('popup', id, '/' + id, 1, 3);
 	app.addIndexPage(id, 'www/pages/' + id, { route: id });
-});`
+});
+```
 
 `version` is optional and defaults to 1. `cacheability` is optional too and defaults
 to the default cacheability.
@@ -984,17 +1188,19 @@ The Mithril page loader has been augmented with a "maintenance" event. This even
 responds with a 5xx HTTP status code during page retrieval. The contents and content-type will be emitted
 with the event, so that customized messages can be displayed during a game's downtime. For example:
 
-`
+```javascript
 mithril.loader.on('maintenance', function (msg, mimetype) {
 	// msg: the content of the response
 	// mimetype: the content-type header of msg
 });
-`
+```
 
 ### GREE
 
 We made the gree configuration environment aware. That means you can put the following in your base.json config:
-`
+
+```json
+{
 	"module": {
 		"gree": {
 			"environments": {
@@ -1017,15 +1223,20 @@ We made the gree configuration environment aware. That means you can put the fol
 			}
 		}
 	}
-`
+}
+```
+
 And in your environment's config file add:
-`
+
+```json
+{
 	"module": {
 		"gree": {
 			"env": "sandbox" or "production"
 		}
 	}
-`
+}
+```
 
 #### Also:
 
@@ -1135,11 +1346,13 @@ errors will now definitely end up in your callbacks!
 A new feature is queueing! That means that you can safely queue up user commands (on a per-case basis) while others are being executed.
 This is useful in cases where you really cannot anticipate if another command is already running or not. An example:
 
-`mithril.io.queue(function () {
+```javascript
+mithril.io.queue(function () {
 	mithril.quest.doQuest(function (error) {
 		// etc
 	});
-});`
+});
+```
 
 This will instantly execute your function, but any user commands that get called will be queued up until they can be executed. If
 they can be executed immediately however, they will be, so there are no needless delays. The reason why there is a special API for
@@ -1160,7 +1373,8 @@ Some added candy:
 
 #### Event flow for error handling
 
-`mithril.io.on('io.error.network', function () {
+```javascript
+mithril.io.on('io.error.network', function () {
 	overlay.writeStatus('Please make sure you are connected.');
 
 	window.setTimeout(function () { mithril.io.resend(); }, 5000);
@@ -1175,7 +1389,7 @@ mithril.io.once('io.error.auth', function () {
 	window.alert('Your game session expired, reloading...');
 	window.location.reload();
 });
-`
+```
 
 ### Introducing Memcache (config required!)
 
@@ -1258,11 +1472,14 @@ A module called "pauser" has been added. For those familiar with multi threaded 
 with the added benefit that you can wait for any amount of locks at once. What this means is that you can create a context (a lock) by
 calling for example: `mithril.pauser.start('quest');`. When you have pieces of code that may execute fine, but need to be put on hold
 if the "quest" context is active (for example, updating an XP value on screen when XP changes), you can write:
-`mithril.actor.on('xp.set', function (value) {
-  mithril.pauser.wait('quest', function () {
-    xpLabel.innerText = value;
-  });
-});`
+
+```javascript
+mithril.actor.on('xp.set', function (value) {
+	mithril.pauser.wait('quest', function () {
+		xpLabel.innerText = value;
+	});
+});
+```
 
 If there is no quest active, the pauser will immediately call the given function that updates your XP label. But if the quest is
 active, it will wait until `mithril.pauser.end('quest');` is called.
@@ -1313,14 +1530,16 @@ An example:
 This flow contains 3 states: idle, growing and ready. Growing is time based, the others do not change over time but require user input.
 TimedState allows you to implement this in a very simple way. When creating a TimedState, you call the following:
 
-`var farm = mithril.core.datatypes.createValue('TimedState', {
+```javascript
+var farm = mithril.core.datatypes.createValue('TimedState', {
 	states: {
 		idle: null,
 		growing: [60 * 60, 'ready'],
 		ready: null
 	},
 	stored: { state: 'idle' }
-});`
+});
+```
 
 This creates a farm value that is idle, until `farm.setState('growing');` is called. After 3600 seconds, the state reported by
 `farm.getCurrentState()` will automatically switch to ready. After harvesting, you would be expected to call `farm.setState('idle');`.
@@ -1510,11 +1729,11 @@ sequential only.
 The system is fully backwards compatible, because it comes preconfigured with one phase: "main", which has a maxCacheability of
 Infinity and parallel value of 2. You can change this phase or add a new phase by calling:
 
-`
+```javascript
 var phaseName = 'main'; // or your own name of choice to create a new phase
 
 myAssetHandler.setup(phaseName, { maxCacheability: 0, parallel: 5 });
-`
+```
 
 The typical use case is tag critical assets as cacheability 0, meaning "must have". Once these are downloaded, the next phase
 could do background downloads with a parallelism of 1 (sequential downloads) in order to decrease the effect on the connection.
@@ -1541,9 +1760,21 @@ A small BC break is that player.getLanguages() no longer exists, but nobody (exc
 
 ### Tool changes
 
-Gm rights changed from an array to an object.
-Example: {"actor":{"viewable":false},"giraffe":{"viewable":true},"game":{"viewable":true}}
+Gm rights changed from an array to an object. Example:
 
+```json
+{
+	"actor": {
+		"viewable": false
+	},
+	"giraffe": {
+		"viewable": true
+	},
+	"game": {
+		"viewable": true
+	}
+}
+```
 
 ## v0.6.3
 
@@ -1561,11 +1792,11 @@ type net.Socket, as described here: http://nodejs.org/docs/latest/api/net.html#n
 The function's return value will be evaluated and if falsy, the connection is not accepted. This applies to both the command center
 and the page serving. A typical example:
 
-`
+```javascript
 myApp.firewall = function (conn) {
 	return myAllowedIpAddresses.indexOf(conn.remoteAddress) !== -1;
 };
-`
+```
 
 
 ## v0.6.1, v0.6.2
@@ -1606,23 +1837,26 @@ since it's a full background operation (and generally quite slow).
 - Some SQL queries have been optimized to be faster.
 - a new delMessages user command.
 - the client function search() no longer requires an options object.
+
 ### Logger
 
 The logger's output performance has improved dramatically (x3), by no longer relying on the slow console object, but by
 writing directly to stdout/stderr streams.
 
 Also, the logger has been completely rewritten to be more easily configurable. The new configuration looks like this:
-`
+
+```json
 {
   "logging": {
     "theme": "default",
     "show": ["debug", "info", "error", "time"],
     "hide": ["debug"],
-    "output": "terminal"/"file",
+    "output": "terminal or file",
     "path": "/var/log/myGame"
   }
 }
-`
+```
+
 Leaving out the logging, will display all channels (debug, info, etc) without color coding. Creating config and setting the theme
 to default will enable colors from the theme "default" (currently the only theme). Providing an array of channels in the "show"
 property, will show only these channels. Alternatively, a "hide" array will show all channels, except the ones in the given array.
@@ -1688,11 +1922,14 @@ The APIs obj.getFullCollection and obj.getFullCollectionByType have now received
 - getFullCollection(state, collectionId, options, cb)
 
 Options may be an object containing LivePropertyMap options, like:
-{
+
+```javascript
+var options = {
 	properties: {
 		loadAll: true
 	}
-}
+};
+```
 
 BC break in msg module:
 The MySQL schema has changed a little bit. Please refer to db/changes.sql. The API is unchanged.
@@ -1746,16 +1983,18 @@ will reconnect. This mechanism is used to keep the server clean from zombie conn
 Another change in configuration is that the protocol setting has been moved from the "expose" structure, into the main
 "clientHost" configuration. An example for the full configuration:
 
-`
-"clientHost": {
-	"protocol": "http",
-	"transports": {
-		"longpolling": { "heartbeat": 120 }
-	},
-	"bind": { "host": "0.0.0.0", "port": 4242 },
-	"expose": { "host": "mygame.myname.dev.wizcorp.jp", "port": 4242 }
+```json
+{
+	"clientHost": {
+		"protocol": "http",
+		"transports": {
+			"longpolling": { "heartbeat": 120 }
+		},
+		"bind": { "host": "0.0.0.0", "port": 4242 },
+		"expose": { "host": "mygame.myname.dev.wizcorp.jp", "port": 4242 }
+	}
 }
-`
+```
 
 ## v0.4.0
 
@@ -1871,20 +2110,28 @@ This does mean the API/build-process for writing modules has changed a little.
 
 On the server, we now have to add one line of code per user command:
 
-`exports.params = ['each', 'parameter', 'name'];`
+```javascript
+exports.params = ['each', 'parameter', 'name'];
+```
 
 Which is now also reflected in the execute function:
 
-`exports.execute = function (state, each, parameter, name, cb) { ... }`
+```javascript
+exports.execute = function (state, each, parameter, name, cb) { ... };
+```
 
 On the client, this:
 
-`var mod = {}
-window.mithril.registerModule('myModule', mod);`
+```javascript
+var mod = {}
+window.mithril.registerModule('myModule', mod);
+```
 
 Has changed into:
 
-`var mod = mithril.registerModule($html5client('module.myModule.construct'));`
+```javascript
+var mod = mithril.registerModule($html5client('module.myModule.construct'));
+```
 
 The module will now automatically have a function wrapper for each exposes user command.
 
@@ -1904,14 +2151,17 @@ you'll want to call mithril.setup.
 
 The loader's setup parameters have changed. It no longer requires the baseUrl, language and appName parameters, so you have to remove them.
 Only the pages array remains.
-`window.mithril.loader.setup(pages);`
+
+```javascript
+window.mithril.loader.setup(pages);
+```
 
 
 ## v0.3.1
 
 Asset maps are now on a per-application basis.
 
-`
+```javascript
 // creating an asset map:
 
 var assets = mithril.assets.createAssetMap();
@@ -1926,7 +2176,7 @@ assets.regHtml  = assets.regFile.bind(assets, 'html');
 // adding the asset map to an app's page:
 
 myApp.addPage('myPage', '../../www/pages/myPage', { assetMap: assets });
-`
+```
 
 ## v0.3.0
 
@@ -1988,7 +2238,7 @@ Game developers are excpeted to register these themselves.
 
 #### Adding an extension and associated parser
 
-`
+```javascript
 mithril.core.app.contexts.get('css').addFileExtensions(['less'], function (filePath, data, cb) {
 	var path = require('path');
 
@@ -2013,11 +2263,11 @@ mithril.core.app.contexts.get('css').addFileExtensions(['less'], function (fileP
 		cb(error);
 	}
 });
-`
+```
 
 ### Adding a post processor
 
-`
+```javascript
 mithril.core.app.contexts.get('js').addPostProcessor('minify', function (data, cb) {
 	mithril.core.logger.debug('Minifying JS contents through "uglify".');
 
@@ -2035,11 +2285,11 @@ mithril.core.app.contexts.get('js').addPostProcessor('minify', function (data, c
 		cb(error);
 	}
 });
-`
+```
 
 ### Setting up pages
 
-`
+```javascript
 var WebApp = mithril.core.app.web.WebApp;
 
 var gameApp = new WebApp('game', { languages: ['EN'] });
@@ -2049,31 +2299,34 @@ gameApp.addPage('main', '../../www/pages/main');
 
 var manifest = gameApp.createManifest();
 manifest.add('mui://img/ui/spinner');
-`
+```
 
 ### Configuration options
 
 The "mithrilui" entry has to be completely removed. Renamed the "app" entry to "apps", and make it similar to the following:
 
-`
-"apps": {
-	"game": {
-		"name": "My awesome game",
-		"url": {
-			"public": "http://myawesomegame.com"
-		},
-		"delivery": {
-			"serverCache": true,
-			"useManifest": false,
-			"compress": true,
-			"postprocessors": {
-				"css": "minify",
-				"js": "minify"
+```json
+{
+	"apps": {
+		"game": {
+			"name": "My awesome game",
+			"url": {
+				"public": "http://myawesomegame.com"
+			},
+			"delivery": {
+				"serverCache": true,
+				"useManifest": false,
+				"compress": true,
+				"postprocessors": {
+					"css": "minify",
+					"js": "minify"
+				}
 			}
 		}
 	}
 }
-`
+```
+
 Some notes:
 
 * If you set up a manifest, but do not set useManifest to true, it will not be exposed to the HTTP server.

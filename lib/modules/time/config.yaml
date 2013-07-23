@@ -1,0 +1,7 @@
+dashboard:
+    pages:
+        time:
+            name: Time
+            listed: true
+            apps:
+                - dev

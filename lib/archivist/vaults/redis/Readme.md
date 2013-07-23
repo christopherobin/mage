@@ -25,9 +25,17 @@ preserve mediaType awareness).
 
 operation | supported | implementation
 ----------|:---------:|---------------
-list      | no        |
-get       | yes       | `redis.get()`
-add       | yes       | `redis.set('NX')`
-set       | yes       | `redis.set()`
-touch     | yes       | `redis.expire()`
-del       | yes       | `redis.del()`
+list      |           |
+get       | ✔         | `redis.get()`
+add       | ✔         | `redis.set('NX')`
+set       | ✔         | `redis.set()`
+touch     | ✔         | `redis.expire()`
+del       | ✔         | `redis.del()`
+
+## Required Topic API
+
+signature                  | required | default implementation
+---------------------------|----------|-----------------------
+`createKey(topic, index)`  |          | "topic/indexProp:indexValue/indexProp:indexValue/..." (index is sorted)
+`serialize(value)`         |          | a header containing mediaType followed by a `Buffer` of the data
+`deserialize(data, value)` |          | parses data from the default `serialize` function

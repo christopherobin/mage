@@ -15,7 +15,6 @@ configuration, then the game configuration wins.
 A typical module is a folder that may look like:
 
  - `missions`
-  - `clients/`
   - `usercommands/`
   - `index.js`
   - `client.js`
@@ -73,31 +72,42 @@ internal use. However, there may be cases for which configuration is automatical
 
 `mage.core.config` exposes the following methods:
 
- - `setDefaults(defaults);`
- - `setModuleDefault(moduleName, defaultObject);`
- - `get(modulePath, [alt]);`
- - `loadModuleConfig(moduleName, modulePath);`
+ - `get(path, [alt]);`
+ - `getSource(path)`
+ - `getMatryoshka()`
+ - `loadModuleConfig(moduleName, absolutePathToConfigFile);`
+ - `setDefaults(absolutePathToConfigFile);`
+ - `initialize(mageLogger)`
+
+### `get`
+
+A safe getter function. The `path` should be an array of keys of increasing depth, but can
+optionally be a dot delimited string. The optional `alt` parameter is a value to use if there is
+no value found at this path. By default `undefined` will be returned if the object does not have
+this path. Unlike earlier versions of configuration, `get` is necessary to extract configuration
+data.
+
+### `getSource`
+
+This uses a path array (or string) just like `get`, but returns information about the source of the
+configuration.
+
+### `getMatryoshka`
+
+This returns a *copy* of the underlying data structure that contains your aggregated configuration.
+This may be useful for tools or for debugging.
+
+### `loadModuleConfig`
+
+This is used by Mage only. This function is used when Mage is setting up a module, and is
+responsible for loading the default configuration file, if one exists. Just place a file called
+`config.<json, yaml, js>` and Mage will pick it up.
 
 ### `setDefaults`
 
 Merges an object into an existing configuration, without overriding existing content. This is
 intended for Mage internal use and should not be used in games.
 
-### `setModuleDefault`
+### `initialize`
 
-Used to define the default configuration of a game module. This should be avoided in favour of the
-module default configuration file. This mechanism is used when Mage loads module default
-configuration files.
-
-### `get`
-
-A safe getter function, so you don't have to check the existence of keys or wrap a try-catch
-around your code. The `modulePath` should be an array of keys of increasing depth. The optional
-`alt` parameter is a value to use if there is no value found at this path. By default `undefined`
-will be returned if the object does not have this path. It should not be necessary to use this
-function in most cases if you have module defaults.
-
-### `loadModuleConfig`
-
-This should be used by Mage only. This function is used when Mage is setting up a module, and is
-responsible for loading the default configuration file, if one exists.
+This is used by Mage to trigger a load of configuration files. It may only be called once.

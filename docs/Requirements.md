@@ -15,9 +15,9 @@ We recommend using nvm (Node Version Manager) to manage your Node versions and e
 
 See also:
 
-[Node website](http://nodejs.org/)
-[NPM - Node Package Manager](https://npmjs.org/)
-[NVM - Node Version Manager](https://github.com/creationix/nvm)
+* [Node website](http://nodejs.org/)
+* [NPM - Node Package Manager](https://npmjs.org/)
+* [NVM - Node Version Manager](https://github.com/creationix/nvm)
 
 ### Git and GitHub
 
@@ -30,8 +30,8 @@ the necessary steps to install MAGE. But before you go there, please make sure t
 
 See also:
 
-[Git website](http://git-scm.com/)
-[GitHub](http://github.com/)
+* [Git website](http://git-scm.com/)
+* [GitHub](http://github.com/)
 
 ### ZeroMQ (aka ØMQ)
 
@@ -40,7 +40,7 @@ to build against it, the ZeroMQ library must be installed beforehand.
 
 See also:
 
-[ZeroMQ website](http://www.zeromq.org/)
+* [ZeroMQ website](http://www.zeromq.org/)
 
 ### Multicast DNS (aka mDNS, Bonjour, Zero-configuration networking)
 

@@ -78,6 +78,11 @@ Add a queryable key/value pair to the log entry.
 
 Add many key/value pairs to the queryable data of this log entry.
 
+### logger.simulator(name)
+
+This will return a shim for any of the supported 3rd party logger libraries. This can be useful when
+interfacing with 3rd party modules that have a strong dependency on these loggers.
+
 
 ## Examples
 
