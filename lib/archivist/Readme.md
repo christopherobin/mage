@@ -76,6 +76,7 @@ The following vault types are currently implemented:
 * [Redis](vaults/redis/Readme.md)
 * [MySQL](vaults/mysql/Readme.md)
 * [Memcached](vaults/memcached/Readme.md)
+* [Manta](vaults/manta/Readme.md)
 * [Client](vaults/client/Readme.md)
 
 Please read their documentation on how to set them up.

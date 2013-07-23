@@ -2,12 +2,6 @@
 
 ## vNext
 
-### Sampler
-
-Sampler has been updated to expose a websocket route on savvy at the same route as the normal HTTP
-endpoint: `/savvy/sampler`. This will allow nice graphical tools for the dashboard in the future for
-all the data you gather with panopticon/sampler.
-
 ### Dashboard
 
 #### A new dashboard: dev
@@ -78,6 +72,17 @@ module:
                 archivist:
                     name: "Bob's Data Emporium"
 ```
+
+### Manta vault
+
+Archivist has been enriched with support for [Manta](http://www.joyent.com/products/manta). Read the
+[Manta vault documentation](./lib/archivist/vaults/manta/Readme.md) for more information.
+
+### Sampler
+
+Sampler has been updated to expose a Savvy websocket route at the same route as the normal HTTP
+endpoint: `/savvy/sampler`. This will allow nice graphical tools for the dashboard in the future for
+all the data you gather with panopticon/sampler.
 
 ### Minor improvements
 
