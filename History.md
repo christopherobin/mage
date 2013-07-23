@@ -78,6 +78,14 @@ module:
 Archivist has been enriched with support for [Manta](http://www.joyent.com/products/manta). Read the
 [Manta vault documentation](./lib/archivist/vaults/manta/Readme.md) for more information.
 
+### Logger simulators
+
+The logger has received a new API: `myLogger.simulator(name);`. This will return a fake 3rd party
+logger, so other libraries that were hard-wired to a particular library can interface with them.
+Currently, we only implemented a simulator for [Bunyan](https://npmjs.org/package/bunyan), because
+`node-manta` depended on it. If you ever have to deal with a library that needs a Bunyan logger,
+simply feed it the return value of `myLogger.simulator('bunyan');`.
+
 ### Sampler
 
 Sampler has been updated to expose a Savvy websocket route at the same route as the normal HTTP
