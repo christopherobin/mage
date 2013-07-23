@@ -1,0 +1,7 @@
+dashboard:
+    pages:
+        assets:
+            name: Assets
+            listed: true
+            apps:
+                - dev

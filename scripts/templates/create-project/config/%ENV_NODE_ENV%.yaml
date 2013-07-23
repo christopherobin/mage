@@ -8,6 +8,9 @@
 developmentMode: true
 
 apps:
+    dev:
+        responseCache: 10
+        access: admin
     cms:
         responseCache: 10
         access: admin

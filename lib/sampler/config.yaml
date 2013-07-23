@@ -1,7 +1,5 @@
-# Where to put the stats server.
-bind:
-    protocol: http
-    file: ./stats.sock
-
 # Switch on sampling of mage internals.
 sampleMage: true
+
+# The default sample buffer length. Up to this many aggregates results will be kept in memory.
+bufferLength: 1000

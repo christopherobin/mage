@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.15.2",
+	"version": "0.16.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -26,6 +26,8 @@
 		"memcached": "0.2.3",
 		"memcached-transactions": "0.1.1",
 		"redis": "~0.8.4",
+		"manta": "1.0.1",
+		"memorystream": "0.2.0",
 		"rumplestiltskin": "0.0.5",
 		"tomes": "0.0.15",
 		"oauth": "0.9.10",
@@ -33,7 +35,7 @@
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
 		"js-yaml": "2.1.0",
-		"component-builder": "~0.8.3",
+		"component-builder": "~0.9.0",
 		"semver": "~1.1.4",
 		"mime": "1.2.9",
 		"mkdirp": "~0.3.5",

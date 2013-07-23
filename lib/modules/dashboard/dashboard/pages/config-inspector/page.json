@@ -1,6 +1,0 @@
-{
-	"apps": ["cms", "support"],
-	"listed": true,
-	"name": "Configuration",
-	"orderId": 2
-}

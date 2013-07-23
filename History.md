@@ -1,5 +1,108 @@
 # Release history
 
+## v0.16.0 - Dashboard Cat
+
+### Dashboard
+
+#### A new dashboard: dev
+
+The two dashboards "cms" and "support" have been augmented by a third: "dev". This allows us to
+strip down the former two to their essentials, and move all developer-only tools into the dev
+dashboard. For now, we have organized the pages as follows:
+
+Page             | dev | cms | support
+-----------------|:---:|:---:|:------:
+Home             | ✔   | ✔   | ✔
+Documentation    | ✔   | ✔   | ✔
+Configuration    | ✔   |     |
+Style guide      | ✔   |     |
+Archivist        | ✔   |     |
+Assets           | ✔   |     |
+Logger           | ✔   | ✔   | ✔
+Time             | ✔   |     |
+
+Enable the dev dashboard by adding the following configuration next to the already existing "cms"
+and "support" entries:
+
+```yaml
+apps:
+    dev:
+        responseCache: 10
+        access: admin
+```
+
+#### Changed dashboard configuration
+
+The dashboard page configuration has been modernized (this is a **breaking change**). Configuration
+for a dashboard page used to be a file inside the page's folder called `page.json`. This has now
+been moved into the module's own configuration file `modules/mymodule/config.yaml` (or
+`config.json`, you choose).
+
+Example from the archivist module:
+
+```yaml
+dashboard:
+    pages:
+        archivist:
+            name: Archivist
+            listed: true
+            apps:
+                - dev
+```
+
+The variables in this example are:
+
+- `archivist`: the folder name where the component can be found.
+- `Archivist`: the human readable name for display in the sidebar.
+- `true`: a boolean that exposes the page in the sidebar.
+- `dev`: the list of apps that should expose this page.
+
+For more examples, please have a look at the Configuration Inspector in the `dev` dashboard app.
+
+This also means that you can now override the MAGE built-in dashboard pages' configuration. By
+overriding the archivist dashboard's `apps` entry for example, you can change in which dashboard
+apps the Archivist page is visible. When overriding, keep in mind that this configuration example is
+a module default, which means that the actual full path is like in the following example:
+
+```yaml
+module:
+    archivist:
+        dashboard:
+            pages:
+                archivist:
+                    name: "Bob's Data Emporium"
+```
+
+### Manta vault
+
+Archivist has been enriched with support for [Manta](http://www.joyent.com/products/manta). Read the
+[Manta vault documentation](./lib/archivist/vaults/manta/Readme.md) for more information.
+
+### Logger simulators
+
+The logger has received a new API: `myLogger.simulator(name);`. This will return a fake 3rd party
+logger, so other libraries that were hard-wired to a particular library can interface with them.
+Currently, we only implemented a simulator for [Bunyan](https://npmjs.org/package/bunyan), because
+`node-manta` depended on it. If you ever have to deal with a library that needs a Bunyan logger,
+simply feed it the return value of `myLogger.simulator('bunyan');`.
+
+### Sampler
+
+Sampler has been updated to expose a Savvy websocket route at the same route as the normal HTTP
+endpoint: `/savvy/sampler`. This will allow nice graphical tools for the dashboard in the future for
+all the data you gather with panopticon/sampler.
+
+### Minor improvements
+
+* Dashboard: checkboxes and radiobuttons received a small visual makeover.
+* component-builder: bumped to v0.9.0.
+
+### Bugfixes
+
+* Dashboard: table cell alignment in markdown content was not being applied.
+* New assets aimed at non-existing folders were not being saved.
+
+
 ## v0.15.2 - Bread Cat
 
 ### Archivist
