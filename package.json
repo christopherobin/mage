@@ -26,7 +26,6 @@
 		"memcached": "0.2.3",
 		"memcached-transactions": "0.1.1",
 		"redis": "~0.8.4",
-		"couchbase": "0.0.12",
 		"manta": "1.0.1",
 		"memorystream": "0.2.0",
 		"rumplestiltskin": "0.0.5",
@@ -43,11 +42,14 @@
 		"marked": "~0.2.9",
 		"highlight.js": "~7.3.0"
 	},
-	"main": "lib/mage",
+	"optionalDependencies": {
+		"couchbase": "0.0.12"
+	},
 	"devDependencies": {
 		"jshint": "~2.1.3",
 		"mocha": "~1.12.0"
 	},
+	"main": "lib/mage",
 	"scripts": {
 		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec",
 		"postinstall": "./scripts/install.js",
