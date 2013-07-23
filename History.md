@@ -95,6 +95,7 @@ all the data you gather with panopticon/sampler.
 ### Minor improvements
 
 * Dashboard: checkboxes and radiobuttons received a small visual makeover.
+* component-builder: bumped to v0.9.0.
 
 ### Bugfixes
 
