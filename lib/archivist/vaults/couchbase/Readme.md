@@ -16,6 +16,7 @@ sharding by creating hashes on strings that your `shard` function may provide.
 ```
 
 The `options` object may be empty, but may contain any of the following:
+
 ```json
 {
 	"debug": false,
@@ -38,3 +39,11 @@ add       | yes       | `couchbase.add()`
 set       | yes       | `couchbase.set()`
 touch     | yes       | `couchbase.touch()`
 del       | yes       | `couchbase.remove()`
+
+## Required Topic API
+
+signature                  | required | default implementation
+---------------------------|----------|-----------------------
+`createKey(topic, index)`  |          | "topic/indexProp:indexValue/indexProp:indexValue/..." (index is sorted)
+`serialize(value)`         |          | forced to `live` encoding, node-couchbase will serialize and flag type
+`deserialize(data, value)` |          | received in `live` encoding
