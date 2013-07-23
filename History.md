@@ -1,6 +1,6 @@
 # Release history
 
-## vNext
+## v0.16.0 - Dashboard Cat
 
 ### Dashboard
 
