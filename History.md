@@ -9,9 +9,11 @@ Archivist has been enriched with support for Couchbase through `libcouchbase`. R
 
 ### Logger dashboard
 
-The logger dashboard has been refactored and now also displays "m"(aster)/"w"(orker) indicators. In
-addition to that it also shows when a connection to the server was interrupted, caused for example
-by a Node.js restart.
+* Major refactoring in both code and styles.
+* Muting and unmuting a channel now has an effect on the backlog as well.
+* The backlog has been increased in length from 40 to max 500 entries.
+* The "m"(aster)/"w"(orker) indicators from the terminal are now also displayed.
+* A hard break is rendered when a connection to the server is interrupted, caused for example by a Node.js restart.
 
 
 ## v0.16.0 - Dashboard Cat
