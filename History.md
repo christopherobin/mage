@@ -1,5 +1,21 @@
 # Release history
 
+## v0.16.1 - Couch Cat
+
+### Couchbase vault
+
+Archivist has been enriched with support for Couchbase through `libcouchbase`. Read the
+[Couchbase vault documentation](./lib/archivist/vaults/couchbase/Readme.md) for more information.
+
+### Logger dashboard
+
+* Major refactoring in both code and styles.
+* Muting and unmuting a channel now has an effect on the backlog as well.
+* The backlog has been increased in length from 40 to max 500 entries.
+* The "m"(aster)/"w"(orker) indicators from the terminal are now also displayed.
+* A hard break is rendered when a connection to the server is interrupted, caused for example by a Node.js restart.
+
+
 ## v0.16.0 - Dashboard Cat
 
 ### Dashboard

@@ -24,5 +24,5 @@ del       | ✔         | `state.emitToActors('archivist:del')`
 signature                  | required | default implementation
 ---------------------------|:--------:|-----------------------
 `createKey(topic, index)`  |          | `{ topic: topic, index: index }`
-`serialize(value)`         |          | `{ mediaType: '', data: '', encoding: 'uf8/base64' }`
+`serialize(value)`         |          | `{ mediaType: '', data: '', encoding: 'utf8/base64' }`
 `shard(value)`             | ✔        |
