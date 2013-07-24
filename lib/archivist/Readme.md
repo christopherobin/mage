@@ -532,10 +532,15 @@ Calls into the server archivist's list method. The arguments are identical.
 
 ### Direct access to a vault's native API
 
-If you want to access vault directly, you can ask the archivist for the instance. If you want to
-write data, you can call `archivist.getWriteVault(vaultName)`. A vault you want to read from can
-be requested by calling `archivist.getReadVault(vaultName)`. For more information on the APIs
-exposed by each vault, please refer to their documentation.
+If you want to access vault directly, you can ask the archivist for the instance. Often a vault will
+expose its underlying library on a `.client` property. Depending if you want to list, read or write
+data, you can call:
+
+* `archivist.getListVault(vaultName);`
+* `archivist.getReadVault(vaultName);`
+* `archivist.getWriteVault(vaultName);`
+
+For more information on the APIs exposed by each vault, please refer to their documentation.
 
 
 ### Writing your own Topic APIs
