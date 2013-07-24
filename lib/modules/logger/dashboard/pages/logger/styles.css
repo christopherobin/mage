@@ -1,67 +1,67 @@
 .logBox .details {
-    border-left-width: 7px;
-    border-left-style: solid;
-    padding-left: 5px;
-    white-space: pre;
+	border-left-width: 7px;
+	border-left-style: solid;
+	padding-left: 5px;
+	white-space: pre;
 }
 
 .logBox .date {
-    color: lime;
-    border-color: lime;
+	color: lime;
+	border-color: lime;
 }
 
 .logBox .time {
 	color: magenta;
-    border-color: magenta;
+	border-color: magenta;
 }
 
 .logBox .verbose {
-    color: gray;
-    border-color: gray;
+	color: gray;
+	border-color: gray;
 }
 
 .logBox .debug {
 	color: cyan;
-    border-color: cyan;
+	border-color: cyan;
 }
 
 .logBox .info {
 	color: #66f;
-    border-color: #66f;
+	border-color: #66f;
 	font-weight: bold;
 }
 
 .logBox .notice {
 	color: green;
-    border-color: green;
+	border-color: green;
 }
 
 .logBox .warning {
 	color: yellow;
-    border-color: yellow;
+	border-color: yellow;
 }
 
 .logBox .error {
 	color: red;
-    border-color: red;
+	border-color: red;
 }
 
 .logBox .critical {
 	color: red;
-    border-color: red;
+	border-color: red;
 	font-weight: bold;
 }
 
 .logBox .alert {
 	color: red;
-    border-color: red;
+	border-color: red;
 	font-weight: bold;
 	text-decoration: underline;
 }
 
 .logBox .emergency {
 	color: black;
-    border-color: black;
+	border-color: black;
 	background-color: red;
 	font-weight: bold;
 }
