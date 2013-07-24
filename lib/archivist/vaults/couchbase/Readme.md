@@ -33,12 +33,12 @@ Keep in mind that `user` and `password` are not required for normal query operat
 
 operation | supported | implementation
 ----------|:---------:|---------------
-list      | no        |
-get       | yes       | `couchbase.get()`
-add       | yes       | `couchbase.add()`
-set       | yes       | `couchbase.set()`
-touch     | yes       | `couchbase.touch()`
-del       | yes       | `couchbase.remove()`
+list      |           |
+get       | ✔         | `couchbase.get()`
+add       | ✔         | `couchbase.add()`
+set       | ✔         | `couchbase.set()`
+touch     | ✔         | `couchbase.touch()`
+del       | ✔         | `couchbase.remove()`
 
 ## Required Topic API
 
