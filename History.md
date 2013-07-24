@@ -1,5 +1,12 @@
 # Release history
 
+## vNext
+
+### Bugfixes
+
+* Reintroduced archivist.getReadVault, getWriteVault and added getListVault (missing since v0.15.2).
+
+
 ## v0.16.1 - Couch Cat
 
 ### Couchbase vault
