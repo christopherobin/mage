@@ -7,6 +7,12 @@
 Archivist has been enriched with support for Couchbase through `libcouchbase`. Read the
 [Couchbase vault documentation](./lib/archivist/vaults/couchbase/Readme.md) for more information.
 
+### Logger dashboard
+
+The logger dashboard has been refactored and now also displays "m"(aster)/"w"(orker) indicators. In
+addition to that it also shows when a connection to the server was interrupted, caused for example
+by a Node.js restart.
+
 
 ## v0.16.0 - Dashboard Cat
 
