@@ -377,6 +377,12 @@ Use this one-liner in any folder with file vault content to rename your files au
 IFS=$'\n'; for file in $(ls ./); do mv "${file}" "$(echo $file | sed 's/?/#/')"; done
 ```
 
+This proved to fail on some machines, so here is an gawk replacement which also runs a git mv for you:
+
+```bash
+ls ./ | gawk '{newName=gensub(/?/,"#","",$0); system("git mv \""$0"\" \""newName"\"")}'
+```
+
 
 ### Logger
 
