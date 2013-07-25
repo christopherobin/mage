@@ -27,7 +27,7 @@ mage.mymodule.uploadFile(file, cb);
 
 var obj = {
 	name: 'Bob',
-	files: myForm.myFileInput.files
+	file: myForm.myFileInput.files[0]
 };
 
 mage.msgServer.transformEmbeddedUploads(obj);
