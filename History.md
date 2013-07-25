@@ -2,6 +2,51 @@
 
 ## vNext
 
+### File uploads (breaking change)
+
+File uploads through msgServer have been reimplemented. This is visible in three major changes:
+
+- You can upload a FileList object directly (`myForm.myFileInput.files`).
+- You can give a `File`, `Blob` or `FileList` regardless of its nesting inside of an object in a user command parameter.
+- To upload, you need to wrap your file(s) in a special `Upload` container through one of two APIs.
+
+#### API
+
+```javascript
+// Transform a single file value into an Upload object.
+
+var file = mage.msgServer.transformUpload(myForm.myFileInput.files[0]);
+
+mage.mymodule.uploadFile(file, cb);
+
+
+// Transform all client properties (at any nested level) that are files into Upload object.
+
+var obj = {
+	name: 'Bob',
+	files: myForm.myFileInput.files
+};
+
+mage.msgServer.transformEmbeddedUploads(obj);
+
+mage.mymodule.uploadFile(objs, cb);
+```
+
+### Asset module (breaking change)
+
+The `changeAsset` API has been updated to benefit from the changes in the file upload API. It's now
+a cleaner, easier to understand API, because files are no longer being juggled around. Of course the
+asset dashboard also reflects this change.
+
+### Logger
+
+The MAGE logger can now log instances of Node.js's built-in http.IncomingMessage class. That means
+that you can serve HTTP requests into the logger's `data(req)` method, and it will yield a friendly
+summary of the request, rather than a deep JSON serialization of the entire (rather big) object.
+
+Because of this change, the Bunyan simulator that was introduced in v0.16.0 no longer suppresses the
+rather verbose "trace" channel.
+
 ### Bugfixes
 
 * Reintroduced archivist.getReadVault, getWriteVault and added getListVault (missing since v0.15.2).
