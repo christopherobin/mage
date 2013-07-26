@@ -53,6 +53,7 @@ rather verbose "trace" channel.
 ### Bugfixes
 
 * Reintroduced archivist.getReadVault, getWriteVault and added getListVault (missing since v0.15.2).
+* The Asset Previewer did not enforce cache eviction, making Chrome's aggressive caching painfully visisble (Thanks Micky for the fix).
 
 
 ## v0.16.1 - Couch Cat
