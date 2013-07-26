@@ -50,10 +50,15 @@ summary of the request, rather than a deep JSON serialization of the entire (rat
 Because of this change, the Bunyan simulator that was introduced in v0.16.0 no longer suppresses the
 rather verbose "trace" channel.
 
+### Minor improvements
+
+* The Asset Previewer did not enforce cache eviction, making Chrome's aggressive caching painfully visisble (Thanks Micky for the fix).
+* Calling `mage.useModules(require, 'already-loaded-module');` on the client no longer aborts the operation, nor will it log an error.
+
 ### Bugfixes
 
 * Reintroduced archivist.getReadVault, getWriteVault and added getListVault (missing since v0.15.2).
-* The Asset Previewer did not enforce cache eviction, making Chrome's aggressive caching painfully visisble (Thanks Micky for the fix).
+* Fixed handling of calling `mage.useModules(require, 'non-existing-module');` on the client.
 
 
 ## v0.16.1 - Couch Cat
