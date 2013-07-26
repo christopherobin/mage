@@ -1,6 +1,6 @@
 # Release history
 
-## vNext
+## v0.17.0 - Five years of Wizcorp celebration release
 
 ### File uploads (breaking change)
 
