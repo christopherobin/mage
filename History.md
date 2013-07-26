@@ -10,8 +10,8 @@ File uploads through msgServer have been reimplemented. This is visible in three
 - You can give a `File`, `Blob` or `FileList` regardless of its nesting inside of an object in a user command parameter.
 - To upload, you need to wrap your file(s) in a special `Upload` container through one of two APIs.
 
-Because of these changes, calling a user command that doesn't upload has gotten a free performance
-boost, since no effort has to be made to find File or Blob objects inside the given parameters.
+> Because of these changes, calling a user command that doesn't upload has gotten a free performance
+> boost, since no effort has to be made to find File or Blob objects inside the given parameters.
 
 #### API
 
