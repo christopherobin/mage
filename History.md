@@ -1,5 +1,66 @@
 # Release history
 
+## v0.17.0 - Five years of Wizcorp celebration release
+
+### File uploads (breaking change)
+
+File uploads through msgServer have been reimplemented. This is visible in three major changes:
+
+- You can upload a FileList object directly (`myForm.myFileInput.files`).
+- You can give a `File`, `Blob` or `FileList` regardless of its nesting inside of an object in a user command parameter.
+- To upload, you need to wrap your file(s) in a special `Upload` container through one of two APIs.
+
+> Because of these changes, calling a user command that doesn't upload has gotten a free performance
+> boost, since no effort has to be made to find File or Blob objects inside the given parameters.
+
+#### API
+
+```javascript
+// Transform a single file value into an Upload object.
+
+var file = mage.msgServer.transformUpload(myForm.myFileInput.files[0]);
+
+mage.mymodule.uploadFile(file, cb);
+
+
+// Transform all client properties (at any nested level) that are files into Upload object.
+
+var obj = {
+	name: 'Bob',
+	file: myForm.myFileInput.files[0]
+};
+
+mage.msgServer.transformEmbeddedUploads(obj);
+
+mage.mymodule.uploadFile(objs, cb);
+```
+
+### Asset module (breaking change)
+
+The `changeAsset` API has been updated to benefit from the changes in the file upload API. It's now
+a cleaner, easier to understand API, because files are no longer being juggled around. Of course the
+asset dashboard also reflects this change.
+
+### Logger
+
+The MAGE logger can now log instances of Node.js's built-in http.IncomingMessage class. That means
+that you can serve HTTP requests into the logger's `data(req)` method, and it will yield a friendly
+summary of the request, rather than a deep JSON serialization of the entire (rather big) object.
+
+Because of this change, the Bunyan simulator that was introduced in v0.16.0 no longer suppresses the
+rather verbose "trace" channel.
+
+### Minor improvements
+
+* The Asset Previewer did not enforce cache eviction, making Chrome's aggressive caching painfully visisble (Thanks Micky for the fix).
+* Calling `mage.useModules(require, 'already-loaded-module');` on the client no longer aborts the operation, nor will it log an error.
+
+### Bugfixes
+
+* Reintroduced archivist.getReadVault, getWriteVault and added getListVault (missing since v0.15.2).
+* Fixed handling of calling `mage.useModules(require, 'non-existing-module');` on the client.
+
+
 ## v0.16.1 - Couch Cat
 
 ### Couchbase vault
@@ -368,6 +429,12 @@ Use this one-liner in any folder with file vault content to rename your files au
 
 ```bash
 IFS=$'\n'; for file in $(ls ./); do mv "${file}" "$(echo $file | sed 's/?/#/')"; done
+```
+
+This proved to fail on some machines, so here is an gawk replacement which also runs a git mv for you:
+
+```bash
+ls ./ | gawk '{newName=gensub(/?/,"#","",$0); system("git mv \""$0"\" \""newName"\"")}'
 ```
 
 
