@@ -8,6 +8,7 @@
 * Plato code complexity reporting has been integrated (`make complexity`)
 * Istanbul test coverage reporting has been integrated (`make coverage`)
 * Automatically running `make setup` inside the game folder has been removed post-install.
+* The Stream_HttpLongPolling and Stream_HttpShortPolling classes have lost their Stream_ prefixes (lint is happy again).
 
 
 ## v0.17.0 - Five years of Wizcorp celebration release
