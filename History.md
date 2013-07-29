@@ -4,6 +4,7 @@
 
 ### Minor improvements
 
+* Deserializations in Archivist now catch exceptions gracefully.
 * Plato code complexity reporting has been integrated (`make complexity`)
 * Istanbul test coverage reporting has been integrated (`make coverage`)
 * Automatically running `make setup` inside the game folder has been removed post-install.
