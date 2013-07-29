@@ -1,5 +1,13 @@
 # Release history
 
+## vNEXT
+
+### Minor improvements
+
+* Plato code complexity reporting has been integrated (`make complexity`)
+* Istanbul test coverage reporting has been integrated (`make coverage`)
+
+
 ## v0.17.0 - Five years of Wizcorp celebration release
 
 ### File uploads (breaking change)
