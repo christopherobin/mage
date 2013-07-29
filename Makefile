@@ -1,7 +1,5 @@
 BIN = ./node_modules/.bin
 
-.NOTPARALLEL: coverage
-
 # target: help, Display callable targets.
 help:
 	egrep "^# target:" [Mm]akefile
@@ -14,9 +12,9 @@ setup: git-setup
 clean-npm:
 	npm cache clean
 
-# target: clean, Cleans all caches and reports
+# target: clean, Cleans all caches and reports.
 .PHONY: clean
-clean: clean-npm clean-coverage
+clean: clean-npm clean-coverage clean-complexity
 
 # target: install, Installs all Node.js dependencies.
 install:
@@ -41,7 +39,7 @@ lint-staged:
 test:
 	$(BIN)/mocha -R spec --recursive $(shell find lib -type d -name test)
 
-# target: coverage, Creates a test coverage report in html-report and in terminal.
+# target: coverage, Creates a test coverage report in "./html-report" and in terminal.
 
 .PHONY: clean-coverage
 clean-coverage:
@@ -55,3 +53,13 @@ lib-cov: clean-coverage
 coverage: lib-cov
 	$(BIN)/mocha -R mocha-istanbul --recursive $(shell find lib-cov -type d -name test)
 	@echo Open html-report/index.html in your browser
+
+.PHONY: clean-complexity
+clean-complexity:
+	rm -rf plato-report
+
+# target: complexity, Creates a Plato code complexity report in "./plato-report".
+.PHONY: complexity
+complexity:
+	$(BIN)/plato -r -d plato-report -l ./scripts/jshint.cfg ./lib
+	@echo Open plato-report/index.html in your browser
