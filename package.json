@@ -47,15 +47,18 @@
 	},
 	"devDependencies": {
 		"jshint": "~2.1.3",
-		"mocha": "~1.12.0"
+		"mocha": "~1.12.0",
+		"istanbul": "~0.1.42",
+		"mocha-istanbul": "~0.2.0",
+		"plato": "~0.6.1"
 	},
 	"main": "lib/mage",
 	"scripts": {
-		"test": "mocha ./lib/*/test ./lib/modules/*/test --reporter spec",
+		"test": "make test",
 		"postinstall": "./scripts/install.js",
-		"lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js .",
-		"lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/lib/humanJshintReporter.js '{}'",
-		"git-setup": "./scripts/setup.sh"
+		"lint-all": "make lint-all",
+		"lint-staged": "make lint-staged",
+		"git-setup": "make git-setup"
 	},
 	"repository": {
 		"type": "git",

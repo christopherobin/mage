@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+var isBootstrap = !!process.env.BOOTSTRAP;
+
+if (!isBootstrap) {
+	process.exit(0);
+}
+
 var path = require('path');
 var fs = require('fs');
 var spawn = require('child_process').spawn;
@@ -79,29 +85,11 @@ function exec(cmd, args, cwd, cb) {
 
 }
 
-var isBootstrap = !!process.env.BOOTSTRAP;
-if (isBootstrap && fs.existsSync(appPackagePath)) {
+if (fs.existsSync(appPackagePath)) {
 	// bootstrapping with an already existing package.json file?
 
 	pretty.warning('Cannot bootstrap an application if a package.json file is already in place.');
 	process.exit(1);
-}
-
-
-/**
- * function that sets up git hooks, etc
- * @param {Function} cb
- */
-
-function setup(cb) {
-	var hasMakefile = fs.existsSync(path.join(appPath, 'Makefile'));
-
-	if (!hasMakefile) {
-		pretty.warning('No Makefile found, cannot run setup');
-		return cb();
-	}
-
-	exec('make', ['setup'], null, cb);
 }
 
 
@@ -253,17 +241,8 @@ function bootstrap(cb) {
 
 // start
 
-if (isBootstrap) {
-	pretty.h2('Bootstrapping MAGE v' + magePackage.version + ' application.');
+pretty.h2('Bootstrapping MAGE v' + magePackage.version + ' application.');
 
-	bootstrap(function (error) {
-		process.exit(error ? 1 : 0);
-	});
-} else {
-	pretty.h2('Updating your application with MAGE v' + magePackage.version + '.');
-
-	setup(function (error) {
-		process.exit(error ? 1 : 0);
-	});
-}
-
+bootstrap(function (error) {
+	process.exit(error ? 1 : 0);
+});

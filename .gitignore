@@ -1,4 +1,7 @@
 /node_modules
+/plato-report
+/html-report
+/lib-cov
 *.swp
 *.session
 .idea
