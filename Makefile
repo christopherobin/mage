@@ -27,7 +27,7 @@ git-setup:
 # target: lint-all, Lints every JavaScript file in the project.
 .PHONY: lint-all
 lint-all:
-	$(BIN)/jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js .
+	$(BIN)/jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js lib
 
 # target: lint-staged, Lints every JavaScript file in the project that is staged to be comitted.
 .PHONY: lint-staged
