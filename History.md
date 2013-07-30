@@ -9,9 +9,10 @@
 * Istanbul test coverage reporting has been integrated (`make coverage`).
 * The template for new projects integrates Mocha, Istanbul and Plato.
 * Automatically running `make setup` inside the game folder has been removed post-install.
-* The Stream_HttpLongPolling and Stream_HttpShortPolling classes have lost their Stream_ prefixes (lint is happy again).
+* The `Stream_HttpLongPolling` and `Stream_HttpShortPolling` classes have lost their `Stream_` prefixes (lint is happy again).
 * Update JSHint to 2.1.7 (be aware: this changes the config format for predefined globals).
 * Made the schedulerServer's registerTask user command access level "anonymous".
+* The Command Center has been slightly refactored to make it more maintainable.
 
 ### Bugfix
 
