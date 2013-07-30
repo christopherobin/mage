@@ -7,14 +7,14 @@
   "license": "%APP_LICENSE%",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Warning: no tests implemented yet\"",
     "start": "node . start",
     "stop": "node . stop",
     "restart": "node . restart",
     "reload": "node . reload",
-    "lint-all": "jshint --config ./scripts/jshint.cfg  --reporter ./scripts/lib/humanJshintReporter.js .",
-    "lint-staged": "git diff --raw --name-only --cached --diff-filter=ACMR | grep -e '\\.js$' | xargs -I '{}' jshint --config ./scripts/jshint.cfg --reporter ./scripts/lib/humanJshintReporter.js '{}'",
-    "git-setup": "./scripts/setup.sh"
+    "test": "make test",
+    "lint-all": "make lint-all",
+    "lint-staged": "make lint-staged",
+    "git-setup": "make git-setup"
   },
   "engines": {
     "node": "%MAGE_NODE_VERSION%"
@@ -24,6 +24,10 @@
     "colours": "~0.6.0"
   },
   "devDependencies": {
-    "jshint": "~2.1.3"
+    "jshint": "~2.1.3",
+    "mocha": "~1.12.0",
+    "istanbul": "~0.1.42",
+    "mocha-istanbul": "~0.2.0",
+    "plato": "~0.6.1"
   }
 }
