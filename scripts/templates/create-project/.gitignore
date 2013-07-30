@@ -1,5 +1,8 @@
-.idea/
-/node_modules/
+.idea
+/node_modules
+/components
+/html-report
+/plato-report
 .DS_Store
 ._.DS_Store
 *.swp
@@ -8,6 +11,5 @@
 .pidfile
 *.log
 *.sock
-/components/
 runtime.json
 npm-debug.log
