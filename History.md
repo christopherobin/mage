@@ -8,7 +8,7 @@
 
 ### Bugfix
 
-* When creating a new project through the installer, it would not set up `.gitignore`. More info: [npm issue 2958](https://github.com/isaacs/npm/issues/2958).
+* When creating a new project through the installer, it would not set up `.gitignore` (more info: [npm issue 2958](https://github.com/isaacs/npm/issues/2958)).
 
 
 ## v0.17.1 - Cabbage Cat
