@@ -5,6 +5,7 @@
 ### Minor improvements
 
 * All dependencies in MAGE and the create-project template are now fixed to exact versions, allowing for better version management and more predictable environments.
+* Added an empty `components` folder to the create-project template.
 
 ### Bugfix
 
