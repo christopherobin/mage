@@ -110,9 +110,17 @@ function bootstrap(cb) {
 		var mode = fs.statSync(from).mode;
 		var src = fs.readFileSync(from, 'utf8');
 
-		var re = /%([A-Z]+_[0-9A-Z\_]+)%/g;
+		var re = /%([0-9A-Z\_]+)%/g;
 
 		function replacer(_, match) {
+			// We support the %PERIOD% variable to allow .gitignore to be created. The reason:
+			// npm "kindly" ignores .gitignore files, so we have to use this workaround.
+			// More info: https://github.com/isaacs/npm/issues/2958
+
+			if (match === 'PERIOD') {
+				return '.';
+			}
+
 			return templateRules.replace(match);
 		}
 
