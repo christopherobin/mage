@@ -1,2 +1,5 @@
 components/**
 node_modules/**
+html-report/**
+plato-report/**
+lib-cov/**

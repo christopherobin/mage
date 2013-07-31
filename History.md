@@ -1,5 +1,24 @@
 # Release history
 
+## v0.17.1 - Cabbage Cat
+
+### Minor improvements
+
+* Deserializations in Archivist now catch exceptions gracefully.
+* Plato code complexity reporting has been integrated (`make complexity`).
+* Istanbul test coverage reporting has been integrated (`make coverage`).
+* The template for new projects integrates Mocha, Istanbul and Plato.
+* Automatically running `make setup` inside the game folder has been removed post-install.
+* The `Stream_HttpLongPolling` and `Stream_HttpShortPolling` classes have lost their `Stream_` prefixes (lint is happy again).
+* Update JSHint to 2.1.7 (be aware: this changes the config format for predefined globals).
+* Made the schedulerServer's registerTask user command access level "anonymous".
+* The Command Center has been slightly refactored to make it more maintainable.
+
+### Bugfix
+
+* The creation of apps assumed that there would always be an assetMap and break if there wasn't one.
+
+
 ## v0.17.0 - Five years of Wizcorp celebration release
 
 ### File uploads (breaking change)

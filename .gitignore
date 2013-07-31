@@ -1,8 +1,15 @@
 /node_modules
+/plato-report
+/html-report
+/lib-cov
+.swp
 *.swp
 *.session
 .idea
 .DS_Store
 ._.DS_Store
-runtime.json
+.htpasswd
+.pidfile
+*.log
+*.sock
 npm-debug.log
