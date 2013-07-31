@@ -21,11 +21,11 @@
 		"loggly": "0.3.11",
 		"ws": "0.4.27",
 		"graylog2": "0.0.2",
-		"colours": "~0.6.0",
+		"colours": "0.6.0-2",
 		"mysql": "2.0.0-alpha7",
 		"memcached": "0.2.3",
 		"memcached-transactions": "0.1.1",
-		"redis": "~0.8.4",
+		"redis": "0.8.4",
 		"manta": "1.0.1",
 		"memorystream": "0.2.0",
 		"rumplestiltskin": "0.0.5",
@@ -35,22 +35,22 @@
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
 		"js-yaml": "2.1.0",
-		"component-builder": "~0.9.0",
-		"semver": "~1.1.4",
-		"mime": "1.2.9",
-		"mkdirp": "~0.3.5",
-		"marked": "~0.2.9",
-		"highlight.js": "~7.3.0"
+		"component-builder": "0.9.0",
+		"semver": "1.1.4",
+		"mime": "1.2.10",
+		"mkdirp": "0.3.5",
+		"marked": "0.2.9",
+		"highlight.js": "7.3.0"
 	},
 	"optionalDependencies": {
 		"couchbase": "0.0.12"
 	},
 	"devDependencies": {
-		"jshint": "~2.1.7",
-		"mocha": "~1.12.0",
-		"istanbul": "~0.1.42",
-		"mocha-istanbul": "~0.2.0",
-		"plato": "~0.6.1"
+		"jshint": "2.1.7",
+		"mocha": "1.12.0",
+		"istanbul": "0.1.43",
+		"mocha-istanbul": "0.2.0",
+		"plato": "0.6.1"
 	},
 	"main": "lib/mage",
 	"scripts": {
