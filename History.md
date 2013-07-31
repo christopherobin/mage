@@ -1,5 +1,17 @@
 # Release history
 
+## vNEXT
+
+### Minor improvements
+
+* All dependencies in MAGE and the create-project template are now fixed to exact versions, allowing for better version management and more predictable environments.
+* Added an empty `components` folder to the create-project template.
+
+### Bugfix
+
+* When creating a new project through the installer, it would not set up `.gitignore` (more info: [npm issue 2958](https://github.com/isaacs/npm/issues/2958)).
+
+
 ## v0.17.1 - Cabbage Cat
 
 ### Minor improvements

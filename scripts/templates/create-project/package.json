@@ -21,13 +21,13 @@
   },
   "dependencies": {
     "mage": "git+ssh://git@github.com:Wizcorp/mage.git#v%MAGE_VERSION%",
-    "colours": "~0.6.0"
+    "colours": "0.6.0-2"
   },
   "devDependencies": {
-    "jshint": "~2.1.7",
-    "mocha": "~1.12.0",
-    "istanbul": "~0.1.42",
-    "mocha-istanbul": "~0.2.0",
-    "plato": "~0.6.1"
+    "jshint": "2.1.7",
+    "mocha": "1.12.0",
+    "istanbul": "0.1.43",
+    "mocha-istanbul": "0.2.0",
+    "plato": "0.6.1"
   }
 }
