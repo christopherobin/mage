@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.17.1 - Cabbage Cat
 
 ### Minor improvements
 
