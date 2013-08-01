@@ -19,5 +19,5 @@ traversing the folders in which these subsystems live.
 ## Modules
 
 * [Bot](../../lib/modules/bot)
-* [Scheduler](../../lib/modules/scheduler)
+* [Cron Client](../../lib/modules/cronClient)
 * [Sessions](../../lib/modules/session)
