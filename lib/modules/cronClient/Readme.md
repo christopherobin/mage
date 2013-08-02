@@ -75,4 +75,4 @@ module:
 |---------------|-------------------------------------------------------------------------|
 | clientAppId   | The App ID that you have given your game in the `apps` configuration.   |
 | serverAppId   | The App ID of the Shokoti server.                                       |
-| serverBaseURL | The `expose` configuration entry for the Shokoti server's `clientHost`. |
+| serverBaseUrl | The `expose` configuration entry for the Shokoti server's `clientHost`. |
