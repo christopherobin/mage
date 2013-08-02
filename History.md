@@ -1,17 +1,32 @@
 # Release history
 
+## v0.17.2 - Spider Cat
+
+### Minor improvements
+
+* All dependencies in MAGE and the create-project template are now fixed to exact versions, allowing for better version management and more predictable environments.
+* Added an empty `components` folder to the create-project template.
+* Changed log channel from verbose to notice on SIGINT and SIGTERM on the master process.
+* JSHint 2.1.7 -> 2.1.8
+
+### Bugfixes
+
+* When creating a new project through the installer, it would not set up `.gitignore` (more info: [npm issue 2958](https://github.com/isaacs/npm/issues/2958)).
+* On iOS prior to version 6, the non-existence of `window.ErrorEvent` would cause an exception in the logger module (Thanks Micky for the fix).
+
+
 ## v0.17.1 - Cabbage Cat
 
 ### Minor improvements
 
 * Deserializations in Archivist now catch exceptions gracefully.
-* Plato code complexity reporting has been integrated (`make complexity`).
-* Istanbul test coverage reporting has been integrated (`make coverage`).
+* [Plato](https://npmjs.org/package/plato) code complexity reporting has been integrated (`make complexity`).
+* [Istanbul](https://npmjs.org/package/istanbul) test coverage reporting has been integrated (`make coverage`).
 * The template for new projects integrates Mocha, Istanbul and Plato.
 * Automatically running `make setup` inside the game folder has been removed post-install.
 * The `Stream_HttpLongPolling` and `Stream_HttpShortPolling` classes have lost their `Stream_` prefixes (lint is happy again).
-* Update JSHint to 2.1.7 (be aware: this changes the config format for predefined globals).
-* Made the schedulerServer's registerTask user command access level "anonymous".
+* Updated JSHint to 2.1.7 (be aware: this changes the config format for predefined globals).
+* Made the `schedulerServer.registerTask` user command access level `anonymous`.
 * The Command Center has been slightly refactored to make it more maintainable.
 
 ### Bugfix
@@ -71,7 +86,7 @@ rather verbose "trace" channel.
 
 ### Minor improvements
 
-* The Asset Previewer did not enforce cache eviction, making Chrome's aggressive caching painfully visisble (Thanks Micky for the fix).
+* The Asset Previewer did not enforce cache eviction, making Chrome's aggressive caching painfully visible (Thanks Micky for the fix).
 * Calling `mage.useModules(require, 'already-loaded-module');` on the client no longer aborts the operation, nor will it log an error.
 
 ### Bugfixes
