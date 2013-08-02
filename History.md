@@ -1,5 +1,18 @@
 # Release history
 
+## vNEXT
+
+### A new Shokoti and Cron Client module
+
+This release marks a new generation of Shokoti, the MAGE task scheduler. The legacy system has been
+given a facelift, with a simpler API, vastly reduced codebase and removing the use of deprecated
+APIs.
+
+MAGE's companion app [Shokoti](https://github.com/Wizcorp/shokoti) has been updated, and it now uses
+a module called Cron Server. Your game can use the Cron Client module to schedule tasks. Read all
+about it in the [Cron Client documentation](./lib/modules/cronClient/Readme.md)!
+
+
 ## v0.17.2 - Spider Cat
 
 ### Minor improvements
