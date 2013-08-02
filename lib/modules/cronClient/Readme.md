@@ -56,3 +56,23 @@ mage.cronClient.setJob('weeklyRanking', '5 0 * * mon', function (state, cb) {
 Crontab schedules can be a bit tricky, but they are very powerful. The Cron Server uses the
 [cron](https://npmjs.org/package/cron) module, which accepts [unix crontab](http://crontab.org)
 syntax.
+
+
+## Configuration
+
+To use Cron Client, please call `mage.useModules('cronClient');` and provide the following
+configuration:
+
+```yaml
+module:
+    cronClient:
+        clientAppId: game
+        serverAppId: shokoti
+        serverBaseURL: "http://shokoti.example.com"
+```
+
+| entry         | description                                                             |
+|---------------|-------------------------------------------------------------------------|
+| clientAppId   | The App ID that you have given your game in the `apps` configuration.   |
+| serverAppId   | The App ID of the Shokoti server.                                       |
+| serverBaseURL | The `expose` configuration entry for the Shokoti server's `clientHost`. |
