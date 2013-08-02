@@ -1,3 +1,0 @@
-# The livePropertyMap library
-
-Deprecated.

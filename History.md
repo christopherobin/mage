@@ -12,6 +12,18 @@ MAGE's companion app [Shokoti](https://github.com/Wizcorp/shokoti) has been upda
 a module called Cron Server. Your game can use the Cron Client module to schedule tasks. Read all
 about it in the [Cron Client documentation](./lib/modules/cronClient/Readme.md)!
 
+### Removed tons of deprecated features
+
+The following subsystems have been removed:
+
+* The `PropertyMap` and `LivePropertyMap` classes.
+* The `TimedNumber` and `TimedValue` classes.
+* The `DataSources` class and its MySQL and Membase engines.
+* Old-style browser modules and the `$html5client` build target (please use component).
+* dependency: `node-memcached-transactions`.
+
+> Note: This cleanup effort has removed about **8000 lines of code**.
+
 ### Minor improvements
 
 * The error given when MMRP has not been configured has been made a bit clearer.
