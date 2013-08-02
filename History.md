@@ -12,6 +12,10 @@ MAGE's companion app [Shokoti](https://github.com/Wizcorp/shokoti) has been upda
 a module called Cron Server. Your game can use the Cron Client module to schedule tasks. Read all
 about it in the [Cron Client documentation](./lib/modules/cronClient/Readme.md)!
 
+### Minor improvements
+
+* The error given when MMRP has not been configured has been made a bit clearer.
+
 
 ## v0.17.2 - Spider Cat
 
