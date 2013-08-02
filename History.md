@@ -1,15 +1,18 @@
 # Release history
 
-## vNEXT
+## v0.17.2 - Spider Cat
 
 ### Minor improvements
 
 * All dependencies in MAGE and the create-project template are now fixed to exact versions, allowing for better version management and more predictable environments.
 * Added an empty `components` folder to the create-project template.
+* Changed log channel from verbose to notice on SIGINT and SIGTERM on the master process.
+* JSHint 2.1.7 -> 2.1.8
 
-### Bugfix
+### Bugfixes
 
 * When creating a new project through the installer, it would not set up `.gitignore` (more info: [npm issue 2958](https://github.com/isaacs/npm/issues/2958)).
+* On iOS prior to version 6, the non-existence of `window.ErrorEvent` would cause an exception in the logger module (Thanks Micky for the fix).
 
 
 ## v0.17.1 - Cabbage Cat
