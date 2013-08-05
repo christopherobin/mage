@@ -52,14 +52,16 @@ exist:
 ```sql
 CREATE TABLE people (
   personId INT UNSIGNED NOT NULL,
-  value SMALLTEXT NOT NULL,
+  value TEXT NOT NULL,
   mediaType VARCHAR(255) NOT NULL,
   PRIMARY KEY(personId)
 ) ENGINE=InnoDB;
 ```
 
 > Please note that you should probably change column types, as this is really just an example.
-> Also keep in mind character sets (utf8_bin is usually a good choice) and data type ranges.
+> Also keep in mind character sets (utf8_bin is usually a good choice) and data type ranges. For
+> more information on data types, please refer to the
+> [MySQL documentation](http://dev.mysql.com/doc/refman/5.5/en/data-types.html).
 
 If you want to change how this information is stored, by adding columns, etc, you can overload the
 serializer method to do so. For example, consider the following example if you want to add a
