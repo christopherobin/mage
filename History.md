@@ -20,6 +20,7 @@ The following subsystems have been removed:
 * The `TimedNumber` and `TimedValue` classes.
 * The `DataSources` class and its MySQL and Membase engines.
 * Old-style browser modules and the `$html5client` build target (please use component).
+* The tiny and pretty useless `mage.core.deprecator` library.
 * dependency: `node-memcached-transactions`.
 
 > Note: This cleanup effort has removed about **8000 lines of code**.
