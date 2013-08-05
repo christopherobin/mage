@@ -28,6 +28,7 @@ The following subsystems have been removed:
 ### Minor improvements
 
 * The error given when MMRP has not been configured has been made a bit clearer.
+* Documentation for the MySQL vault has been augmented to describe how to set up tables.
 
 
 ## v0.17.2 - Spider Cat
