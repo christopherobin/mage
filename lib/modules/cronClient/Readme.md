@@ -68,7 +68,7 @@ module:
     cronClient:
         clientAppId: game
         serverAppId: shokoti
-        serverBaseURL: "http://shokoti.example.com"
+        serverBaseUrl: "http://shokoti.example.com"
 ```
 
 | entry         | description                                                             |
