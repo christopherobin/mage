@@ -1,0 +1,11 @@
+{
+	"name": "bot",
+	"description": "Bot for MAGE.",
+	"dependencies": {
+		"timoxley/next-tick": "*"
+	},
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
+}
