@@ -49,7 +49,7 @@ exports.prepare = function (cb) {
 			ask('Name your game:', 'APP_NAME', /^.{2,}/, callback);
 		},
 		function (callback) {
-			ask('Provide a short name (2-8 characters):', 'APP_SHORTNAME', /^.{2,8}$/, callback);
+			ask('Provide a short name (2-5 characters):', 'APP_SHORTNAME', /^.{2,5}$/, callback);
 		},
 		function (callback) {
 			ask('Describe your game:', 'APP_DESCRIPTION', null, callback);

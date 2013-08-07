@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.18.0 - Serious Cat
 
 ### A new Shokoti and Cron Client module
 
@@ -12,10 +12,21 @@ MAGE's companion app [Shokoti](https://github.com/Wizcorp/shokoti) has been upda
 a module called Cron Server. Your game can use the Cron Client module to schedule tasks. Read all
 about it in the [Cron Client documentation](./lib/modules/cronClient/Readme.md)!
 
+This update **removes** the `scheduler` and `schedulerServer` modules from MAGE.
+
+### Bugfixes
+
+* The MySQL vault's `set()` function was unable to overwrite existing values.
+* Fixed behavior when dealing with multiple vaults that change encodings around. The old behavior could kill diffs.
+
 ### Minor improvements
 
 * The error given when MMRP has not been configured has been made a bit clearer.
 * Documentation for the MySQL vault has been augmented to describe how to set up tables.
+* Changed the app's shortname requirement to 2-5 characters on install, to be more compliant with mdns.
+* Changed logger channel for config file inclusions from `info` to `debug`.
+* Upgraded [node-memcached](https://github.com/3rd-Eden/node-memcached/blob/master/CHANGELOG.md) from v0.2.3 to v0.2.4.
+* Upgraded [jshint](https://npmjs.org/package/jshint) from v2.1.8 to v2.1.9.
 
 
 ## v0.17.2 - Spider Cat
