@@ -23,9 +23,10 @@ This update **removes** the `scheduler` and `schedulerServer` modules from MAGE.
 
 * The error given when MMRP has not been configured has been made a bit clearer.
 * Documentation for the MySQL vault has been augmented to describe how to set up tables.
+* Changed the app's shortname requirement to 2-5 characters on install, to be more compliant with mdns.
+* Changed logger channel for config file inclusions from `info` to `debug`.
 * Upgraded [node-memcached](https://github.com/3rd-Eden/node-memcached/blob/master/CHANGELOG.md) from v0.2.3 to v0.2.4.
 * Upgraded [jshint](https://npmjs.org/package/jshint) from v2.1.8 to v2.1.9.
-* Changed logger channel for config file inclusions from `info` to `debug`.
 
 
 ## v0.17.2 - Spider Cat
