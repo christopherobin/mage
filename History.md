@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.18.0 - Serious Cat
 
 ### A new Shokoti and Cron Client module
 
