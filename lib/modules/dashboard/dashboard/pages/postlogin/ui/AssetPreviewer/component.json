@@ -2,15 +2,12 @@
 	"name": "AssetPreviewer",
 	"description": "Asset preview and edit library",
 	"dependencies": {
-		"Wizcorp/eventemitter": "*"
+		"component/emitter": "*"
 	},
 	"local": [
 		"mage",
 		"forms",
 		"format"
-	],
-	"paths": [
-		"../"
 	],
 	"scripts": [
 		"index.js"

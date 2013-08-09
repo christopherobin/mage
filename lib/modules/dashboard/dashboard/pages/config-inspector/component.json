@@ -5,6 +5,9 @@
 	"dependencies": {
 		"component/escape-html": "*"
 	},
+	"paths": [
+		"../../../../.."
+	],
 	"scripts": [
 		"index.js"
 	]

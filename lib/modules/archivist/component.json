@@ -6,6 +6,10 @@
 		"tomes",
 		"rumplestiltskin"
 	],
+	"paths": [
+		"../..",
+		"../../../node_modules"
+	],
 	"scripts": [
 		"client.js"
 	],

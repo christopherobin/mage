@@ -13,7 +13,8 @@
 		"component/escape-html": "*"
 	},
 	"paths": [
-		"../../../",
+		"../../../..",
+		"../../../../..",
 		"../../../../dashboard/dashboard/pages/postlogin/ui"
 	],
 	"styles": [
