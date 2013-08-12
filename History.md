@@ -6,12 +6,16 @@
 
 MAGE has been given a modern command line interface. It contains all the commands previously
 available, plus a `install-components` command (please read the **Component** section below), and a
-`--version` option. What used to be a `help` command has been changed to `--help`. Expect more
-useful commands in the future.
+`--version` option. What used to be a `help` command has been changed to `--help`.
 
-It's implemented using the [commander](https://npmjs.org/package/commander) module which offers a
-nice API, which MAGE exposes as `mage.core.cli.program`. Read the commander documentation for more
-information on how to add your own options and commands to it.
+Also, a `-v, --verbose` option has been added which overrides the configured terminal logger
+channels, and instead will simply output everything. Given that, it probably makes sense to set up
+your terminal logger to log ">=debug", and when you do need more information out of the system, to
+run your game with `-v`.
+
+The CLI has been implemented using the [commander](https://npmjs.org/package/commander) module which
+offers a nice API, which MAGE exposes as `mage.core.cli.program`. Read the commander documentation
+for more information on how to add your own options and commands to it.
 
 ### The MAGE Task
 
