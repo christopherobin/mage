@@ -4,13 +4,11 @@
 	"local": [
 		"mage",
 		"loader",
-
 		"archivist",
-
 		"DocEditor"
 	],
 	"dependencies": {
-		"component/escape-html": "*"
+		"component/escape-html": "1.0.0"
 	},
 	"paths": [
 		"../../../..",

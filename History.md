@@ -1,5 +1,75 @@
 # Release history
 
+## vNEXT
+
+### Command line options and commands
+
+MAGE has been given a modern command line interface. It contains all the commands previously
+available, plus a `install-components` command (please read the **Component** section below), and a
+`--version` option. What used to be a `help` command has been changed to `--help`. Expect more
+useful commands in the future.
+
+It's implemented using the [commander](https://npmjs.org/package/commander) module which offers a
+nice API, which MAGE exposes as `mage.core.cli.program`. Read the commander documentation for more
+information on how to add your own options and commands to it.
+
+### The MAGE Task
+
+The MAGE boot up process has always been divided into these steps:
+
+1. Selection of modules to use: `mage.useModules();`
+2. Asynchronously set up all subsytems, modules and apps: `mage.setup(cb);`
+3. Optionally pre-build all pages and open the HTTP server to serve requests: `mage.start(cb);`
+
+Step 3 in this flow has now become pluggable. That means that app-serving is simply one of
+potentially many tasks that MAGE can accomplish after having been set up. This ties in neatly with
+the new CLI system. The first example of this is the `./game install-components` command, which
+will have MAGE (rather than serving apps) install all components for the apps. MAGE can be given a
+different task by calling:
+
+```javascript
+mage.setTask(myFunction);
+```
+
+When `mage.start()` gets called, it will now run that function, and it will not start serving apps
+on the HTTP server (which will remain closed).
+
+This is how the `install-components` task is being set up:
+
+```javascript
+mage.core.cli.program
+	.command('install-components')
+	.description('Install all components used in apps and dashboards into ./components.')
+	.action(function () {
+		mage.setTask(require('./tasks/install-components'));
+	});
+```
+
+### Component
+
+The way MAGE integrates with Component has been completely rethought. Every unique build now needs
+to have its own third party components installed. These components however all share the same
+directory in which they get installed: `PROJECT_ROOT/components`. In order to facilitate ease of
+installation (since there are many builds, including, but not limited to all pages) the
+`install-components` command was created.
+
+This new philosophy around components means the following:
+
+- The only global path set up for you is `PROJECT_ROOT/components`.
+- Other paths will need to be set for each individual component in `component.json`.
+- Your project should **not** have a `PROJECT_ROOT/component.json` file, as it does not represent a single build.
+
+### Template updates
+
+The `create-project` template has been updated to reflect the new approach to component. It also
+names the main file of your project `./game` instead of `index.js`, and makes it executable. You
+should therefore no longer run `node .` or `node . start`. Now you simply run your game by typing
+`./game` or `./game start`. The advantages are:
+
+- You have a much more natural entry point into your application and CLI.
+- You no longer accidentally execute code when running `node .` in the wrong folder.
+
+
 ## v0.18.0 - Serious Cat
 
 ### A new Shokoti and Cron Client module
