@@ -2,11 +2,10 @@
 	"name": "gameLoader",
 	"description": "Game's loader page.",
 	"local": [
-		"loader",
-		"landing"
+		"loader"
 	],
 	"paths": [
-		".."
+		"../../../node_modules/mage/lib"
 	],
 	"scripts": [
 		"index.js"
