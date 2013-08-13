@@ -73,6 +73,13 @@ should therefore no longer run `node .` or `node . start`. Now you simply run yo
 - You have a much more natural entry point into your application and CLI.
 - You no longer accidentally execute code when running `node .` in the wrong folder.
 
+Some other updates:
+
+- The default (BOOTSTRAP=true) flow will now ask for base URLs for Savvy and the ClientHost.
+- The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
+- The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
+- JSHint got updated to 2.1.9.
+
 
 ## v0.18.0 - Serious Cat
 
