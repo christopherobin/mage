@@ -163,9 +163,16 @@ function bootstrap(cb) {
 		function (callback) {
 			// npm install other dependencies for this game
 
-			pretty.h2('Installing dependencies');
+			pretty.h2('Installing Node dependencies (npm install)');
 
 			exec('npm', ['install'], null, callback);
+		},
+		function (callback) {
+			// component install all dependencies for this game and its dashboards
+
+			pretty.h2('Installing Component dependencies (./game install-components)');
+
+			exec('./game', ['install-components'], null, callback);
 		},
 		function (callback) {
 			pretty.h2('Git repository');
@@ -233,8 +240,8 @@ function bootstrap(cb) {
 		},
 		function (callback) {
 			var msg = [
-				'All done! You can now start your game in the foreground by running "node .",',
-				'or see the daemonize options by running "node . help".',
+				'All done! You can now start your game in the foreground by running "./game",',
+				'or see startup options by running "./game --help".',
 				'',
 				'Once your application is running, you can access:',
 				'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
