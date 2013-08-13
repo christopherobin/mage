@@ -5,12 +5,11 @@
   "repository": "%APP_REPO%",
   "author": "%APP_AUTHOR%",
   "license": "%APP_LICENSE%",
-  "main": "index.js",
   "scripts": {
-    "start": "node . start",
-    "stop": "node . stop",
-    "restart": "node . restart",
-    "reload": "node . reload",
+    "start": "./game start",
+    "stop": "./game stop",
+    "restart": "./game restart",
+    "reload": "./game reload",
     "test": "make test",
     "lint-all": "make lint-all",
     "lint-staged": "make lint-staged",
@@ -24,7 +23,7 @@
     "colours": "0.6.0-2"
   },
   "devDependencies": {
-    "jshint": "2.1.7",
+    "jshint": "2.1.9",
     "mocha": "1.12.0",
     "istanbul": "0.1.43",
     "mocha-istanbul": "0.2.0",

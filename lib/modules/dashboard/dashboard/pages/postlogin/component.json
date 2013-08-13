@@ -11,8 +11,8 @@
 		"format"
 	],
 	"paths": [
-		"..",
-		"./ui"
+		"../../../../..",
+		"ui"
 	],
 	"scripts": [
 		"index.js"

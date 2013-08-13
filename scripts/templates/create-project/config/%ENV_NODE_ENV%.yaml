@@ -31,7 +31,7 @@ server:
     cluster: false
     mmrp:
         serviceDiscovery:
-            name: "%ENV_USER%-%APP_SHORTNAME%"
+            name: "%APP_SERVICE_NAME%"
 
 archivist:
     vaults:

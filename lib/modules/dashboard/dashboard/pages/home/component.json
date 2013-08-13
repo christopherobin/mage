@@ -2,6 +2,9 @@
 	"name": "home",
 	"description": "Home page for the MAGE dashboard.",
 	"local": ["mage"],
+	"paths": [
+		"../../../../.."
+	],
 	"scripts": [
 		"index.js"
 	]
