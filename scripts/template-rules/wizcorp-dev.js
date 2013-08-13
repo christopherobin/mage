@@ -9,8 +9,33 @@ var appPath = pathResolve(magePath, '../..');
 
 var magePackage = require(pathJoin(magePath, 'package.json'));
 
-var replacements = {
+var replacements = {};
+
+function getVar(varName, required) {
+	if (required && !replacements.hasOwnProperty(varName)) {
+		throw new Error('Found unknown template variable: ' + varName);
+	}
+
+	var value = replacements[varName] || '';
+
+	return '' + (typeof value === 'function' ? value() : value);
+}
+
+function ask(question, varName, re, cb) {
+	rl.ask(question, getVar(varName), function (answer) {
+		if (re && !answer.match(re)) {
+			return ask(question, varName, re, cb);
+		}
+
+		replacements[varName] = answer;
+
+		cb();
+	});
+}
+
+replacements = {
 	APP_NAME: pathBasename(appPath),
+	APP_SHORTNAME: '',
 	APP_PATH: appPath,
 	APP_PATHNAME: pathBasename(appPath),
 	APP_DESCRIPTION: '',
@@ -20,9 +45,12 @@ var replacements = {
 	APP_REPO: '',
 	APP_CLIENTHOST_EXPOSE: 'http://' + pathBasename(appPath) + '.' + process.env.USER + '.node.wizcorp.jp',
 	APP_SAVVY_EXPOSE: 'http://' + pathBasename(appPath) + '.' + process.env.USER + '.node.wizcorp.jp/savvy',
+	APP_SERVICE_NAME: function () {
+		return getVar('ENV_USER').substr(0, 2) + '-' + getVar('APP_SHORTNAME');
+	},
 	MAGE_VERSION: magePackage.version,
-	MAGE_NODE_VERSION: (magePackage.engines && magePackage.engines.node) ? magePackage.engines.node : '',
-	ENV_USER: process.env.USER || ''
+	MAGE_NODE_VERSION: magePackage.engines && magePackage.engines.node,
+	ENV_USER: process.env.USER
 };
 
 if (process.env.NODE_ENV) {
@@ -32,17 +60,6 @@ if (process.env.NODE_ENV) {
 
 exports.prepare = function (cb) {
 	// ask questions to fill the replacements map
-
-	function ask(question, varName, re, callback) {
-		rl.ask(question, replacements[varName], function (answer) {
-			if (re && !answer.match(re)) {
-				return ask(question, varName, re, callback);
-			}
-
-			replacements[varName] = answer;
-			callback();
-		});
-	}
 
 	async.series([
 		function (callback) {
@@ -67,9 +84,5 @@ exports.prepare = function (cb) {
 };
 
 exports.replace = function (varName) {
-	if (!replacements.hasOwnProperty(varName)) {
-		throw new Error('Found unknown template variable: ' + varName);
-	}
-
-	return replacements[varName];
+	return getVar(varName, true);
 };

@@ -121,6 +121,8 @@ function bootstrap(cb) {
 				return '.';
 			}
 
+			// out can be a string, or a function that needs to be run
+
 			return templateRules.replace(match);
 		}
 
