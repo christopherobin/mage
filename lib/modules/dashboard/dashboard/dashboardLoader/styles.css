@@ -185,7 +185,6 @@ code:hover:before, samp:hover:before {
 }
 
 /* what we call "property", highlight.js calls "attribute" */
-/*
 code .attribute,
 samp .attribute,
 code .property,
@@ -217,7 +216,6 @@ code .error,
 samp .error {
 	font-style: italic;
 }
-*/
 
 /* tables */
 
