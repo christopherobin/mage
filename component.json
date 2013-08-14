@@ -1,15 +1,12 @@
 {
-  "name": "mageclient",
-  "description": "MAGE game development platform for Node.js",
-  "local": [
-    "mage",
-    "dashboardLoader"
-  ],
-  "paths": [
-    "./lib",
-    "./lib/modules/dashboard/dashboard"
-  ],
-  "dependencies": {
-    "timoxley/next-tick": "*"
-  }
+	"name": "mageclient",
+	"description": "MAGE game development platform for Node.js",
+	"local": [
+		"mage",
+		"dashboardLoader"
+	],
+	"paths": [
+		"./lib",
+		"./lib/modules/dashboard/dashboard"
+	]
 }
