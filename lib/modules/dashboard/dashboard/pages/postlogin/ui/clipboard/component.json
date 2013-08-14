@@ -1,5 +1,5 @@
 {
-	"name": "Clipboard",
+	"name": "clipboard",
 	"description": "A module to add a copy to clipboard button to elements",
 	"local": [
 		"mage"
