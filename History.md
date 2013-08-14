@@ -79,6 +79,7 @@ Some other updates:
 - The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
 - The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
 - JSHint got updated to 2.1.9.
+- JSHint configuration was moved from `./scripts/jshint.cfg` to `./.jshintrc`.
 
 
 ## v0.18.0 - Serious Cat

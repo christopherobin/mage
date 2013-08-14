@@ -20,12 +20,12 @@ setup: git-setup
 # target: lint-all, Lints every JavaScript file in the project.
 .PHONY: lint-all
 lint-all:
-	$(BIN)/jshint --config $(SCRIPTS)/jshint.cfg --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js .
+	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js .
 
 # target: lint-staged, Lints every JavaScript file in the project that is staged to be comitted.
 .PHONY: lint-staged
 lint-staged:
-	git diff --raw --name-only --cached --diff-filter=ACMR | grep -E '\.js(on)?$$' | xargs -I '{}' $(BIN)/jshint --config $(SCRIPTS)/jshint.cfg --reporter $(SCRIPTS)/lib/humanJshintReporter.js '{}'
+	git diff --raw --name-only --cached --diff-filter=ACMR | grep -E '\.js(on)?$$' | xargs -I '{}' $(BIN)/jshint --config .jshintrc --reporter $(SCRIPTS)/lib/humanJshintReporter.js '{}'
 
 # target: test, Runs all tests.
 .PHONY: test
@@ -45,7 +45,7 @@ coverage: instrument
 # target: complexity, Creates a Plato code complexity report.
 .PHONY: complexity
 complexity:
-	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l $(SCRIPTS)/jshint.cfg $(LIB)
+	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 # target: clean, Cleans all caches and reports.
