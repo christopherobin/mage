@@ -5,6 +5,7 @@
 		"mage",
 		"Router",
 		"Sidebar",
+		"Clipboard",
 		"NotificationCenter",
 		"FileCrawler",
 		"forms",
