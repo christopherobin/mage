@@ -1,0 +1,16 @@
+{
+	"name": "Clipboard",
+	"description": "A module to add a copy to clipboard button to elements",
+	"local": [
+		"mage"
+	],
+	"paths": [
+		"../../../../.."
+	],
+	"dependencies": {
+		"component/clipboard-dom": "v0.0.4"
+	},
+	"scripts": [
+		"index.js"
+	]
+}
