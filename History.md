@@ -82,9 +82,9 @@ should therefore no longer run `node .` or `node . start`. Now you simply run yo
 To facilitate the new bot workflow, the session module client has been refactored. The
 `randomSession` user command has been replaced. It now has the following user commands:
 
-* `session.loginAnonymous` (replaces `randomSession`)
+* `session.loginAnonymous` (replaces `randomSession`, requires development mode for non-anonymous access level)
 * `session.loginAsActor` (to login unauthenticated as a specific actor, requires admin access or development mode)
-* `session.reassignSession` (to reidentify the running session as another actor)
+* `session.reassignSession` (to move a session from one actor to another, requires admin access)
 * `session.logout` (to end the running session)
 
 The dashboard's `loginAnonymous` user command has been removed in favor of the one in the session
