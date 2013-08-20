@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.19.0 - Roomba Shark Cat
 
 ### Removed tons of deprecated features
 
@@ -12,7 +12,7 @@ The following subsystems have been removed:
 * Old-style browser modules and the `$html5client` build target (please use component).
 * The tiny and pretty useless `mage.core.deprecator` library.
 * The "bot" module which was never updated to use component (it has been replaced with a recipe in our cookbook).
-* dependency: `node-memcached-transactions`.
+* Dependency: `node-memcached-transactions`.
 
 > Note: This cleanup effort has removed about **8000 lines of code**.
 
