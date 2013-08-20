@@ -1,4 +1,3 @@
 # Recipies for common challenges
 
-## Work-in-progress
-
+* [Load testing with bots](./LoadTestingWithBots.md)

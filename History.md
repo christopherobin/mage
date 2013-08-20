@@ -2,16 +2,6 @@
 
 ## vNEXT
 
-### A new Shokoti and Cron Client module
-
-This release marks a new generation of Shokoti, the MAGE task scheduler. The legacy system has been
-given a facelift, with a simpler API, vastly reduced codebase and removing the use of deprecated
-APIs.
-
-MAGE's companion app [Shokoti](https://github.com/Wizcorp/shokoti) has been updated, and it now uses
-a module called Cron Server. Your game can use the Cron Client module to schedule tasks. Read all
-about it in the [Cron Client documentation](./lib/modules/cronClient/Readme.md)!
-
 ### Removed tons of deprecated features
 
 The following subsystems have been removed:
@@ -25,10 +15,138 @@ The following subsystems have been removed:
 
 > Note: This cleanup effort has removed about **8000 lines of code**.
 
+### Command line options and commands
+
+MAGE has been given a modern command line interface. It contains all the commands previously
+available, plus:
+
+* `install-components` command (please read the **Component** section below)
+* `create-phantom` command (to create a PhantomJS loader file for your app)
+* `--version` option
+* `--help` option (used to be the `help` command)
+
+Also, a `-v, --verbose` option has been added which overrides the configured terminal logger
+channels, and instead will simply output everything. Given that, it probably makes sense to set up
+your terminal logger to log ">=debug", and when you do need more information out of the system, to
+run your game with `-v`.
+
+The CLI has been implemented using the [commander](https://npmjs.org/package/commander) module which
+offers a nice API, which MAGE exposes as `mage.core.cli.program`. Read the commander documentation
+for more information on how to add your own options and commands to it.
+
+### The MAGE Task
+
+The MAGE boot up process has always been divided into these steps:
+
+1. Selection of modules to use: `mage.useModules();`
+2. Asynchronously set up all subsytems, modules and apps: `mage.setup(cb);`
+3. Optionally pre-build all pages and open the HTTP server to serve requests: `mage.start(cb);`
+
+Step 3 in this flow has now become pluggable. That means that app-serving is simply one of
+potentially many tasks that MAGE can accomplish after having been set up. This ties in neatly with
+the new CLI system. The first example of this is the `./game install-components` command, which
+will have MAGE (rather than serving apps) install all components for the apps. MAGE can be given a
+different task by calling:
+
+```javascript
+mage.setTask(myFunction);
+```
+
+When `mage.start()` gets called, it will now run that function, and it will not start serving apps
+on the HTTP server (which will remain closed).
+
+This is how the `install-components` task is being set up:
+
+```javascript
+mage.core.cli.program
+	.command('install-components')
+	.description('Install all components used in apps and dashboards into ./components.')
+	.action(function () {
+		mage.setTask(require('./tasks/install-components'));
+	});
+```
+
+### Component
+
+The way MAGE integrates with Component has been completely rethought. Every unique build now needs
+to have its own third party components installed. These components however all share the same
+directory in which they get installed: `PROJECT_ROOT/components`. In order to facilitate ease of
+installation (since there are many builds, including, but not limited to all pages) the
+`install-components` command was created.
+
+This new philosophy around components means the following:
+
+- The only global path set up for you is `PROJECT_ROOT/components`.
+- Other paths will need to be set for each individual component in `component.json`.
+- Your project should **not** have a `PROJECT_ROOT/component.json` file, as it does not represent a single build.
+
+### Template updates
+
+The `create-project` template has been updated to reflect the new approach to component. It also
+names the main file of your project `./game` instead of `index.js`, and makes it executable. You
+should therefore no longer run `node .` or `node . start`. Now you simply run your game by typing
+`./game` or `./game start`. The advantages are:
+
+- You have a much more natural entry point into your application and CLI.
+- You no longer accidentally execute code when running `node .` in the wrong folder.
+
+### Session module
+
+To facilitate the new bot workflow, the session module client has been refactored. The
+`randomSession` user command has been replaced. It now has the following user commands:
+
+* `session.loginAnonymous` (replaces `randomSession`, requires development mode for non-anonymous access level)
+* `session.loginAsActor` (to login unauthenticated as a specific actor, requires admin access or development mode)
+* `session.reassignSession` (to move a session from one actor to another, requires admin access)
+* `session.logout` (to end the running session)
+
+The dashboard's `loginAnonymous` user command has been removed in favor of the one in the session
+module.
+
+The session module's `setSessionKey` method has been changed to the following:
+
+```javascript
+mage.session.setSessionKey(key, actorId);
+
+var currentLoggedInActorId = mage.session.getActorId();
+```
+
+### Some other updates:
+
+- The default (BOOTSTRAP=true) flow will now ask for base URLs for Savvy and the ClientHost.
+- The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
+- The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
+- JSHint got updated to 2.1.9.
+- JSHint configuration was moved from `./scripts/jshint.cfg` to `./.jshintrc`.
+
+
+## v0.18.0 - Serious Cat
+
+### A new Shokoti and Cron Client module
+
+This release marks a new generation of Shokoti, the MAGE task scheduler. The legacy system has been
+given a facelift, with a simpler API, vastly reduced codebase and removing the use of deprecated
+APIs.
+
+MAGE's companion app [Shokoti](https://github.com/Wizcorp/shokoti) has been updated, and it now uses
+a module called Cron Server. Your game can use the Cron Client module to schedule tasks. Read all
+about it in the [Cron Client documentation](./lib/modules/cronClient/Readme.md)!
+
+This update **removes** the `scheduler` and `schedulerServer` modules from MAGE.
+
+### Bugfixes
+
+* The MySQL vault's `set()` function was unable to overwrite existing values.
+* Fixed behavior when dealing with multiple vaults that change encodings around. The old behavior could kill diffs.
+
 ### Minor improvements
 
 * The error given when MMRP has not been configured has been made a bit clearer.
 * Documentation for the MySQL vault has been augmented to describe how to set up tables.
+* Changed the app's shortname requirement to 2-5 characters on install, to be more compliant with mdns.
+* Changed logger channel for config file inclusions from `info` to `debug`.
+* Upgraded [node-memcached](https://github.com/3rd-Eden/node-memcached/blob/master/CHANGELOG.md) from v0.2.3 to v0.2.4.
+* Upgraded [jshint](https://npmjs.org/package/jshint) from v2.1.8 to v2.1.9.
 
 
 ## v0.17.2 - Spider Cat

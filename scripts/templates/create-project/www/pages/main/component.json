@@ -2,8 +2,10 @@
 	"name": "main",
 	"description": "The page that runs the actual game",
 	"local": [
-		"mage",
 		"loader"
+	],
+	"paths": [
+		"../../../node_modules/mage/lib"
 	],
 	"scripts": [
 		"index.js"

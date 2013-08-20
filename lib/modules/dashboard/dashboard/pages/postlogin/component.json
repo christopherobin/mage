@@ -5,14 +5,15 @@
 		"mage",
 		"Router",
 		"Sidebar",
+		"clipboard",
 		"NotificationCenter",
 		"FileCrawler",
 		"forms",
 		"format"
 	],
 	"paths": [
-		"..",
-		"./ui"
+		"../../../../..",
+		"ui"
 	],
 	"scripts": [
 		"index.js"

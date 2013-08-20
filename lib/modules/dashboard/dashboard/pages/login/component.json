@@ -8,12 +8,12 @@
 		"session",
 		"dashboard"
 	],
+	"paths": [
+		"../../../../..",
+		"../../../../../modules"
+	],
 	"styles": [
 		"styles.css"
-	],
-	"paths": [
-		"../../../../",
-		".."
 	],
 	"scripts": [
 		"index.js"

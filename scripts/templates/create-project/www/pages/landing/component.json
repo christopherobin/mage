@@ -2,7 +2,6 @@
 	"name": "landing",
 	"description": "The welcome screen",
 	"local": [
-		"main",
 		"mage",
 		"loader",
 		"logger",
@@ -12,7 +11,8 @@
 		"session"
 	],
 	"paths": [
-		".."
+		"../../../node_modules/mage/lib",
+		"../../../node_modules/mage/lib/modules"
 	],
 	"scripts": [
 		"index.js"

@@ -3,8 +3,11 @@
 	"description": "Configuration inspector",
 	"local": ["mage"],
 	"dependencies": {
-		"component/escape-html": "*"
+		"component/escape-html": "1.0.0"
 	},
+	"paths": [
+		"../../../../.."
+	],
 	"scripts": [
 		"index.js"
 	]
