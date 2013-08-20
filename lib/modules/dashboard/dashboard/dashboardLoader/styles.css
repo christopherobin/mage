@@ -178,9 +178,7 @@ code, samp {
     background-color: white;
     color: #000;
     height: 28px;
-    box-sizing: inline-box;
     cursor: pointer;
-
 }
 
 .copyButton.hover {

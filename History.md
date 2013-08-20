@@ -125,6 +125,7 @@ var currentLoggedInActorId = mage.session.getActorId();
 
 ### Some other updates:
 
+- The horrible copy-to-clipboard button in the dashboard has been replaced with a Flash based solution.
 - The default (BOOTSTRAP=true) flow will now ask for base URLs for Savvy and the ClientHost.
 - The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
 - The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
