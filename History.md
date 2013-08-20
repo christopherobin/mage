@@ -11,6 +11,7 @@ The following subsystems have been removed:
 * The `DataSources` class and its MySQL and Membase engines.
 * Old-style browser modules and the `$html5client` build target (please use component).
 * The tiny and pretty useless `mage.core.deprecator` library.
+* The "bot" module which was never updated to use component (it has been replaced with a recipe in our cookbook).
 * dependency: `node-memcached-transactions`.
 
 > Note: This cleanup effort has removed about **8000 lines of code**.
@@ -80,7 +81,15 @@ This new philosophy around components means the following:
 - Other paths will need to be set for each individual component in `component.json`.
 - Your project should **not** have a `PROJECT_ROOT/component.json` file, as it does not represent a single build.
 
+#### Some other changes
+
 A small side note is that we removed `/mage/component.json` as it wasn't being used.
+
+When component-builder runs, it parses from the component.json an entry named files that can contain
+any arbitrary files that the component may need. Those by default are copied to a folder in an
+assets folder. Rather than having components copying stuff everywhere, we are disabling the
+functionality and generating a debug log instead to warn the developer to whether copy or symlink
+the file himself.
 
 ### Template updates
 
@@ -127,9 +136,13 @@ var currentLoggedInActorId = mage.session.getActorId();
 
 - The horrible copy-to-clipboard button in the dashboard has been replaced with a Flash based solution.
 - The default (BOOTSTRAP=true) flow will now ask for base URLs for Savvy and the ClientHost.
-- The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
+- The Service Discovery name for mDNS now truncates the username part of the string to 2 characters during bootstrap.
 - The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
 - JSHint configuration was moved from `./scripts/jshint.cfg` to `./.jshintrc`.
+
+### And mandatory bugfix
+
+- The archivist JSON display was no longer getting its styles applied correctly.
 
 
 ## v0.18.0 - Serious Cat
