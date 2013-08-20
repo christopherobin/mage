@@ -1,10 +1,13 @@
 {
 	"name": "dashboard",
 	"description": "Dashboard module for tool creation and management",
-	"local": ["session"],
 	"dependencies": {
-		"component/emitter": "*"
+		"component/emitter": "1.0.1"
 	},
+	"local": ["mage"],
+	"paths": [
+		"../.."
+	],
 	"scripts": [
 		"client.js"
 	],

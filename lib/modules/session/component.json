@@ -2,9 +2,12 @@
 	"name": "session",
 	"description": "Sessions for MAGE.",
 	"dependencies": {
-		"component/emitter": "*"
+		"component/emitter": "1.0.1"
 	},
 	"local": ["mage"],
+	"paths": [
+		"../.."
+	],
 	"scripts": [
 		"client.js"
 	],

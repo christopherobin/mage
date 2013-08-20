@@ -11,9 +11,9 @@ loader.configure(window.mageConfig);
 // Commence downloading and execution of the "landing" page.
 
 loader.once('landing.loaded', function () {
-	// Once the landing page becomes available, we should run its code by calling require() on it.
+	// Once the landing page becomes available, we can run its code by calling window.require() on it.
 
-	require('landing');
+	window.require('landing');
 });
 
 window.setTimeout(function () {

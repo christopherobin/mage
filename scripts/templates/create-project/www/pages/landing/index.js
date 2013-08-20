@@ -78,11 +78,11 @@ mage.setup(function () {
 mageLoader.once('main.loaded', function () {
 	done(5);
 
-	// Once the main page becomes available, we can run its code by calling require() on it.
+	// Once the main page becomes available, we can run its code by calling window.require() on it.
 
 	var btn = document.getElementById('navToMain');
 	btn.onclick = function () {
-		require('main');
+		window.require('main');
 	};
 
 	done(6);

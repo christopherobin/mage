@@ -4,6 +4,10 @@
 	"local": [
 		"mage", "tomes"
 	],
+	"paths": [
+		"../../../../../../../../lib",
+		"../../../../../../../../node_modules"
+	],
 	"scripts": [
 		"index.js"
 	]

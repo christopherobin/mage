@@ -168,24 +168,24 @@ code, samp {
 	position: relative;
 }
 
-code:hover:before, samp:hover:before {
-	display: inline-block;
-	white-space: nowrap;
-	position: absolute;
-	top: -20px;
-	right: -10px;
-	background: #FFD;
-	color: #330;
-	content: 'Click to copy';
-	padding: 2px 4px;
-	font-family: sans-serif;
-	font-size: 10px;
-	opacity: 0.9;
-	font-weight: bold;
+.copyButton {
+    display: inline-block;
+    position: absolute;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 3px 5px;
+    text-align: center;
+    background-color: white;
+    color: #000;
+    height: 28px;
+    cursor: pointer;
+}
+
+.copyButton.hover {
+    background: #eee;
 }
 
 /* what we call "property", highlight.js calls "attribute" */
-/*
 code .attribute,
 samp .attribute,
 code .property,
@@ -217,7 +217,6 @@ code .error,
 samp .error {
 	font-style: italic;
 }
-*/
 
 /* tables */
 

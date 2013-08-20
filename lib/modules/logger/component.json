@@ -1,10 +1,13 @@
 {
 	"name": "logger",
 	"description": "Logger module.",
-	"local": ["mage"],
 	"dependencies": {
-		"component/emitter": "*"
+		"component/emitter": "1.0.1"
 	},
+	"local": ["mage"],
+	"paths": [
+		"../.."
+	],
 	"scripts": [
 		"client.js"
 	],

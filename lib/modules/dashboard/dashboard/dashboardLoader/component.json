@@ -1,11 +1,11 @@
 {
 	"name": "dashboardLoader",
 	"description": "The loader page for MAGE dashboard.",
-	"dependencies": {
-		"Wizcorp/eventemitter": "*"
-	},
 	"local": [
 		"loader"
+	],
+	"paths": [
+		"../../../.."
 	],
 	"styles": [
 		"github-highlight.css",
