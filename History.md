@@ -2,6 +2,19 @@
 
 ## vNEXT
 
+### Removed tons of deprecated features
+
+The following subsystems have been removed:
+
+* The `PropertyMap` and `LivePropertyMap` classes.
+* The `TimedNumber` and `TimedValue` classes.
+* The `DataSources` class and its MySQL and Membase engines.
+* Old-style browser modules and the `$html5client` build target (please use component).
+* The tiny and pretty useless `mage.core.deprecator` library.
+* dependency: `node-memcached-transactions`.
+
+> Note: This cleanup effort has removed about **8000 lines of code**.
+
 ### Command line options and commands
 
 MAGE has been given a modern command line interface. It contains all the commands previously

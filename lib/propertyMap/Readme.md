@@ -1,3 +1,0 @@
-# The propertyMap library
-
-Deprecated
