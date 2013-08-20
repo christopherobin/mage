@@ -5,8 +5,12 @@
 ### Command line options and commands
 
 MAGE has been given a modern command line interface. It contains all the commands previously
-available, plus a `install-components` command (please read the **Component** section below), and a
-`--version` option. What used to be a `help` command has been changed to `--help`.
+available, plus:
+
+* `install-components` command (please read the **Component** section below)
+* `create-phantom` command (to create a PhantomJS loader file for your app)
+* `--version` option
+* `--help` option (used to be the `help` command)
 
 Also, a `-v, --verbose` option has been added which overrides the configured terminal logger
 channels, and instead will simply output everything. Given that, it probably makes sense to set up
@@ -73,7 +77,28 @@ should therefore no longer run `node .` or `node . start`. Now you simply run yo
 - You have a much more natural entry point into your application and CLI.
 - You no longer accidentally execute code when running `node .` in the wrong folder.
 
-Some other updates:
+### Session module
+
+To facilitate the new bot workflow, the session module client has been refactored. The
+`randomSession` user command has been replaced. It now has the following user commands:
+
+* `session.loginAnonymous` (replaces `randomSession`, requires development mode for non-anonymous access level)
+* `session.loginAsActor` (to login unauthenticated as a specific actor, requires admin access or development mode)
+* `session.reassignSession` (to move a session from one actor to another, requires admin access)
+* `session.logout` (to end the running session)
+
+The dashboard's `loginAnonymous` user command has been removed in favor of the one in the session
+module.
+
+The session module's `setSessionKey` method has been changed to the following:
+
+```javascript
+mage.session.setSessionKey(key, actorId);
+
+var currentLoggedInActorId = mage.session.getActorId();
+```
+
+### Some other updates:
 
 - The default (BOOTSTRAP=true) flow will now ask for base URLs for Savvy and the ClientHost.
 - The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
