@@ -80,6 +80,8 @@ This new philosophy around components means the following:
 - Other paths will need to be set for each individual component in `component.json`.
 - Your project should **not** have a `PROJECT_ROOT/component.json` file, as it does not represent a single build.
 
+A small side note is that we removed `/mage/component.json` as it wasn't being used.
+
 ### Template updates
 
 The `create-project` template has been updated to reflect the new approach to component. It also
@@ -111,12 +113,21 @@ mage.session.setSessionKey(key, actorId);
 var currentLoggedInActorId = mage.session.getActorId();
 ```
 
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| memcached  | 0.2.4  | 0.2.5  |
+| zmq        | 2.4.0  | 2.5.0  |
+| jshint     | 2.1.9  | 2.1.10 |
+| mime       | 1.2.10 | 1.2.11 |
+| ws         | 0.4.27 | 0.4.28 |
+
 ### Some other updates:
 
 - The default (BOOTSTRAP=true) flow will now ask for base URLs for Savvy and the ClientHost.
 - The Service Discovery name for mDNS now truncates the username part of the string to 2 characters.
 - The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
-- JSHint got updated to 2.1.9.
 - JSHint configuration was moved from `./scripts/jshint.cfg` to `./.jshintrc`.
 
 
