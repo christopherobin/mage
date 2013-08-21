@@ -41,11 +41,11 @@
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
 		"marked": "0.2.9",
-		"highlight.js": "7.3.0",
-		"node-zookeeper-client": "0.2.0"
+		"highlight.js": "7.3.0"
 	},
 	"optionalDependencies": {
-		"couchbase": "0.0.12"
+		"couchbase": "0.0.12",
+		"node-zookeeper-client": "0.2.0"
 	},
 	"devDependencies": {
 		"jshint": "2.1.10",
