@@ -27,9 +27,10 @@ server:
 
 ## Engines
 
- - `mdns`, announce on the local network using udp broadcasts/multicasts, useful for development purposes.
- - `zookeeper`, uses zookeeper to store the network topology, allowing usage in specific environments where servers cannot
-    be located on the same local network (Amazon and Cloud providers for example).
+ - [mdns](engines/mdns/Readme.md), announce on the local network using udp broadcasts/multicasts, useful for development
+    purposes.
+ - [zookeeper](engines/zookeeper/Readme.md), uses zookeeper to store the network topology, allowing usage in specific
+    environments where servers cannot be located on the same local network (Amazon and Cloud providers for example).
 
 ## API
 

@@ -2,6 +2,15 @@
 
 ## vNEXT
 
+### New service discovery engine
+
+A new service discovery engine is being deployed, it removes some outstanding bugs such as the 14 character limit for
+game names and removed the tight coupling it had with the `msgServer` allowing developers to uses it in other modules
+more easily.
+
+It also includes a new engine named `zookeeper` that allows service discovery even on networks incompatible with `mDNS`.
+
+For more details, please read the provided [documentation](./lib/modules/serviceDiscovery/Readme.md).
 
 ## v0.19.1 - Captain Airplane Cat
 
@@ -48,7 +57,6 @@ Will output something like this on stdout:
 ### And a mandatory bugfix
 
 * Fixed the syntax highlighting in Markdown file rendering (was broken since 0.19.0).
-
 
 ## v0.19.0 - Roomba Shark Cat
 
