@@ -20,4 +20,4 @@ in the SDK using the following command:
 The CLI will then connect and display a list of commands available, the important ones are:
 
  - `ls <path>`, show the children list for that path.
- - `get <path>`, retrieve the matadata and details for a particular node.
+ - `get <path>`, retrieve the metadata and details for a particular node.

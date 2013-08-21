@@ -17,7 +17,7 @@ included:
 
  - __Linux__: `avahi-discover` will discover the whole network, clicking on services will display the metadata at the
     bottom of the screen.
- - __OSX__: todo
- - __Windows__: todo
+ - __OSX__: [BonjourBrowser](http://www.tildesoft.com/) will do that for you.
+ - __Windows__: `Bonjour Browser for Windows` should do that for you.
 
 

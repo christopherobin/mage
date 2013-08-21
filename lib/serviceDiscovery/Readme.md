@@ -86,7 +86,7 @@ var serviceDiscovery = require('../serviceDiscovery'),
     mysql = require('some-imaginary-mysql-client-module');
 
 // create our service, let's say for mysql servers on a tcp socket
-var service =  serviceDiscovery.createService('mysql', 'tcp');
+var service = serviceDiscovery.createService('mysql', 'tcp');
 
 // when a mysql server appear on the network
 service.on('up', function (service) {
@@ -119,9 +119,9 @@ var serviceDiscovery = require('../serviceDiscovery'),
     hello = require('imaginary-hello-server');
 
 // create our service, let's say this is a hello world HTTP server
-var service =  serviceDiscovery.createService('hello', 'tcp');
+var service = serviceDiscovery.createService('hello', 'tcp');
 
-hello.listen(80, function(error) {
+hello.listen(80, function (error) {
     if (error) {
         // error stuff
         logger.emergency('Could not start hello server on port 80');
@@ -130,7 +130,7 @@ hello.listen(80, function(error) {
     }
 
     // announce our service to everyone, and also tell them that we support SPDY
-    service.announce(80, { spdySupport: true }, function(error) {
+    service.announce(80, { spdySupport: true }, function (error) {
         if (error) {
             // error stuff
             logger.emergency('No one can see us, announcing failed!');
