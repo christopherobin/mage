@@ -22,7 +22,7 @@ server:
     serviceDiscovery:
         engine: "zookeeper"
         options:
-            hosts: "192.168.1.12:2181,192.168.3.18,2181,etc..."
+            hosts: "192.168.1.12:2181,192.168.3.18:2181,etc..."
 ```
 
 ## Engines
