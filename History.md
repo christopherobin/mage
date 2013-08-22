@@ -36,8 +36,11 @@ Will output something like:
 
 ### Small improvements
 
+* Archivist client now has a `maxAge` option for get/mget operations. Read
+  [the documentation](./lib/archivist/Readme.md) for more info.
+* Savvy no longer binds on sockets when tasks other than the default "serve" task are invoked,
+  avoiding bind-collisions when running commands while a game is already running in the background.
 * The `create-phantom` command now outputs to *stdout* instead of a file.
-* Archivist client now has a `maxAge` option for get/mget operations. Read [the documentation](./lib/archivist/Readme.md) for more info.
 
 
 ## v0.19.0 - Roomba Shark Cat
