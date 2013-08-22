@@ -37,6 +37,7 @@ Will output something like:
 ### Small improvements
 
 * The `create-phantom` command now outputs to *stdout* instead of a file.
+* Archivist client now has a `maxAge` option for get/mget operations. Read [the documentation](./lib/archivist/Readme.md) for more info.
 
 
 ## v0.19.0 - Roomba Shark Cat
