@@ -490,7 +490,8 @@ without hitting the server.
 The client enables one extra read option that the server doesn't have:
 
 * maxAge: A number in seconds. If a value is available in cache, but was set longer ago than this
-  many seconds, it will not be used.
+  many seconds, it will not be used. That means that setting maxAge to `0` will always bypass the
+  cache.
 
 
 ### Setting the expiration time
