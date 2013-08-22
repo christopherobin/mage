@@ -487,6 +487,11 @@ Call into the server archivist's `get` and `mget` method. The arguments are iden
 data is already available in the client's caches, it will be returned to the callback immediately
 without hitting the server.
 
+The client enables one extra read option that the server doesn't have:
+
+* maxAge: A number in seconds. If a value is available in cache, but was set longer ago than this
+  many seconds, it will not be used.
+
 
 ### Setting the expiration time
 
