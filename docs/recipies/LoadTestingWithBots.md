@@ -104,21 +104,19 @@ an application that runs a full WebKit browser from the command line. Once you h
 installed, you can let MAGE create a JavaScript file for you, that Phantom can run and will access
 the game.
 
-You do this by running the create-phantom command from the command line, and passing it:
-
-1. The app name of your bot.
-2. The file to write the PhantomJS script to.
+You do this by running the create-phantom command from the command line, and passing it the app name
+of your bot.
 
 For example:
 
 ```sh
-./game create-phantom bot ./phantom-loader.js
+./game create-phantom bot > ./phantom-loader
 ```
 
 Now you can run that script by calling:
 
 ```sh
-phantomjs ./phantom-loader.js
+./phantom-loader
 ```
 
 This will access your bot application and start running its client.

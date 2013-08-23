@@ -1,5 +1,52 @@
 # Release history
 
+## v0.19.1 - Captain Airplane Cat
+
+### Terminal logger
+
+The terminal logger now writes everything to *stderr*. Before it used to be mixed between *stdout*
+and *stderr*. The reason for this, is so that CLI commands that output content can do this on
+*stdout*, and the user can decide to write that output to file by calling (for example)
+`./game show-config > ./fullconfig.json`. That file will not be cluttered with log entries.
+
+### Added CLI command: show-config [trail]
+
+You can now output the working configuration of the application through the `show-config` command.
+By optionally given it a trail, you can output a sub-configuration. For example:
+
+```sh
+./game show-config archivist.vaults
+```
+
+Will output something like this on stdout:
+
+```json
+{
+  "memory": {
+    "type": "memory"
+  },
+  "file": {
+    "type": "file",
+    "config": {
+      "path": "./filevault"
+    }
+  }
+}
+```
+
+### Small improvements
+
+* Archivist client now has a `maxAge` option for get/mget operations. Read
+  [the documentation](./lib/archivist/Readme.md) for more info.
+* Savvy no longer binds on sockets when tasks other than the default "serve" task are invoked,
+  avoiding bind-collisions when running commands while a game is already running in the background.
+* The `create-phantom` command now outputs to *stdout* instead of a file.
+
+### And a mandatory bugfix
+
+* Fixed the syntax highlighting in Markdown file rendering (was broken since 0.19.0).
+
+
 ## v0.19.0 - Roomba Shark Cat
 
 ### Removed tons of deprecated features
@@ -140,7 +187,7 @@ var currentLoggedInActorId = mage.session.getActorId();
 - The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
 - JSHint configuration was moved from `./scripts/jshint.cfg` to `./.jshintrc`.
 
-### And mandatory bugfix
+### And a mandatory bugfix
 
 - The archivist JSON display was no longer getting its styles applied correctly.
 

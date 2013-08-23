@@ -4,127 +4,127 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 */
 
-pre code {
+.markdown pre code {
 	display: block; padding: 0.5em;
 	color: #333;
 	background: #f8f8ff
 }
 
-pre .comment,
-pre .template_comment,
-pre .diff .header,
-pre .javadoc {
+.markdown pre .comment,
+.markdown pre .template_comment,
+.markdown pre .diff .header,
+.markdown pre .javadoc {
 	color: #998;
 	font-style: italic
 }
 
-pre .keyword,
-pre .literal,
-pre .css .rule .keyword,
-pre .winutils,
-pre .javascript .title,
-pre .nginx .title,
-pre .subst,
-pre .request,
-pre .status {
+.markdown pre .keyword,
+.markdown pre .literal,
+.markdown pre .css .rule .keyword,
+.markdown pre .winutils,
+.markdown pre .javascript .title,
+.markdown pre .nginx .title,
+.markdown pre .subst,
+.markdown pre .request,
+.markdown pre .status {
 	color: #333;
 	font-weight: bold
 }
 
-pre .number,
-pre .hexcolor,
-pre .ruby .constant {
+.markdown pre .number,
+.markdown pre .hexcolor,
+.markdown pre .ruby .constant {
 	color: #099;
 }
 
-pre .string,
-pre .tag .value,
-pre .phpdoc,
-pre .tex .formula {
+.markdown pre .string,
+.markdown pre .tag .value,
+.markdown pre .phpdoc,
+.markdown pre .tex .formula {
 	color: #d14
 }
 
-pre .title,
-pre .id,
-pre .coffeescript .params,
-pre .scss .preprocessor {
+.markdown pre .title,
+.markdown pre .id,
+.markdown pre .coffeescript .params,
+.markdown pre .scss .preprocessor {
 	color: #900;
 	font-weight: bold
 }
 
-pre .javascript .title,
-pre .lisp .title,
-pre .clojure .title,
-pre .subst {
+.markdown pre .javascript .title,
+.markdown pre .lisp .title,
+.markdown pre .clojure .title,
+.markdown pre .subst {
 	font-weight: normal
 }
 
-pre .class .title,
-pre .haskell .type,
-pre .vhdl .literal,
-pre .tex .command {
+.markdown pre .class .title,
+.markdown pre .haskell .type,
+.markdown pre .vhdl .literal,
+.markdown pre .tex .command {
 	color: #458;
 	font-weight: bold
 }
 
-pre .tag,
-pre .tag .title,
-pre .rules .property,
-pre .django .tag .keyword {
+.markdown pre .tag,
+.markdown pre .tag .title,
+.markdown pre .rules .property,
+.markdown pre .django .tag .keyword {
 	color: #000080;
 	font-weight: normal
 }
 
-pre .attribute,
-pre .variable,
-pre .lisp .body {
+.markdown pre .attribute,
+.markdown pre .variable,
+.markdown pre .lisp .body {
 	color: #000080;
 }
 
-pre .regexp {
+.markdown pre .regexp {
 	color: #009926
 }
 
-pre .class {
+.markdown pre .class {
 	color: #458;
 	font-weight: bold
 }
 
-pre .symbol,
-pre .ruby .symbol .string,
-pre .lisp .keyword,
-pre .tex .special,
-pre .prompt {
+.markdown pre .symbol,
+.markdown pre .ruby .symbol .string,
+.markdown pre .lisp .keyword,
+.markdown pre .tex .special,
+.markdown pre .prompt {
 	color: #990073
 }
 
-pre .built_in,
-pre .lisp .title,
-pre .clojure .built_in {
+.markdown pre .built_in,
+.markdown pre .lisp .title,
+.markdown pre .clojure .built_in {
 	color: #0086b3
 }
 
-pre .preprocessor,
-pre .pi,
-pre .doctype,
-pre .shebang,
-pre .cdata {
+.markdown pre .preprocessor,
+.markdown pre .pi,
+.markdown pre .doctype,
+.markdown pre .shebang,
+.markdown pre .cdata {
 	color: #999;
 	font-weight: bold
 }
 
-pre .deletion {
+.markdown pre .deletion {
 	background: #fdd
 }
 
-pre .addition {
+.markdown pre .addition {
 	background: #dfd
 }
 
-pre .diff .change {
+.markdown pre .diff .change {
 	background: #0086b3
 }
 
-pre .chunk {
+.markdown pre .chunk {
 	color: #aaa
 }
