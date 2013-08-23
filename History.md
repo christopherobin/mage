@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.19.1 - Captain Airplane Cat
 
 ### Terminal logger
 
@@ -18,7 +18,7 @@ By optionally given it a trail, you can output a sub-configuration. For example:
 ./game show-config archivist.vaults
 ```
 
-Will output something like:
+Will output something like this on stdout:
 
 ```json
 {
@@ -45,6 +45,7 @@ Will output something like:
 ### And a mandatory bugfix
 
 * Fixed the syntax highlighting in Markdown file rendering (was broken since 0.19.0).
+
 
 ## v0.19.0 - Roomba Shark Cat
 
