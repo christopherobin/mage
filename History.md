@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.19.1 - Captain Airplane Cat
 
 ### Terminal logger
