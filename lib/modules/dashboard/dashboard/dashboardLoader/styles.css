@@ -185,9 +185,8 @@ code, samp {
     background: #eee;
 }
 
-/* what we call "property", highlight.js calls "attribute" */
-code .attribute,
-samp .attribute,
+/* syntax highlighting outside of highlight.js */
+
 code .property,
 samp .property {
 	color: #ada;
