@@ -42,6 +42,9 @@ Will output something like:
   avoiding bind-collisions when running commands while a game is already running in the background.
 * The `create-phantom` command now outputs to *stdout* instead of a file.
 
+### And a mandatory bugfix
+
+* Fixed the syntax highlighting in Markdown file rendering (was broken since 0.19.0).
 
 ## v0.19.0 - Roomba Shark Cat
 
@@ -183,7 +186,7 @@ var currentLoggedInActorId = mage.session.getActorId();
 - The "main" field was dropped from the game's `package.json`, as it doesn't really apply.
 - JSHint configuration was moved from `./scripts/jshint.cfg` to `./.jshintrc`.
 
-### And mandatory bugfix
+### And a mandatory bugfix
 
 - The archivist JSON display was no longer getting its styles applied correctly.
 
