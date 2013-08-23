@@ -281,9 +281,14 @@ been cached and will be returned.
 
 The following options are available to you:
 
-* `optional`: (boolean, default: false) Indicates whether it's considered an error if data is not found in any of the vaults.
-* `mediaTypes`: (array, default: `['application/x-tome', 'application/octet-stream']`) Indicates that you only accept these media types, in the given order of priority. If data of another media type is read, a conversion attempt will be made (eg: JSON to Tome).
-* `encodings`: (array, default: `['live']`) Indicates that you only accept these encodings, in the given order of priority. If data of another encoding is read, a conversion attempt will be made (eg: JavaScript object to utf8 JSON).
+* `optional`: (boolean, default: false) Indicates whether it's considered an error if data is not
+  found in any of the vaults.
+* `mediaTypes`: (array, default: `['application/x-tome', 'application/octet-stream']`) Indicates
+  that you only accept these media types, in the given order of priority. If data of another media
+  type is read, a conversion attempt will be made (eg: JSON to Tome).
+* `encodings`: (array, default: `['live']`) Indicates that you only accept these encodings, in the
+  given order of priority. If data of another encoding is read, a conversion attempt will be made
+  (eg: JavaScript object to utf8 JSON).
 
 This options object is not required, and your callback may be passed as the third argument.
 
@@ -313,6 +318,7 @@ the result will map to the input.
 ###### multiData
 
 The result is an array where the output order matches the input order:
+
 ```json
 [
 	{ "name": "Bob" },
@@ -336,6 +342,7 @@ The result is an array where the output order matches the input order:
 ###### multiData
 
 The result is an object map where the keys match the input keys:
+
 ```json
 {
 	"a": { "name": "Bob" },
@@ -418,6 +425,7 @@ This will limit the sorted result to the indexes starting at `start` (counts fro
 `start + length`. This allows for paginating your results.
 
 Options example (sorted by id (descending), page 3 with 10 results per page):
+
 ```json
 {
 	"sort": [{ "name": "id", "direction": "desc" }],
@@ -570,6 +578,7 @@ the vault, and even return completely different/altered data (imagine prepending
 information to the real data). Finally, the returned data is used by the vault.
 
 Example:
+
 ```javascript
 function serialize(value) {
 	return value.setEncoding(['utf8', 'buffer']).data;
@@ -585,6 +594,7 @@ If encoding and/or MediaType are omitted, they will be guessed by the underlying
 acceptable when the data is returned in deserialized form by the vault.
 
 Example:
+
 ```javascript
 function deserialize(data, value) {
 	value.initWithData(null, data, null);
@@ -600,6 +610,7 @@ and `index` and turn those into something that is appropriate for the vault. Thi
 as the minimal information required to find a piece of data in a vault.
 
 Example (typical SQL):
+
 ```javascript
 function key(topic, index) {
 	return {
@@ -618,6 +629,7 @@ which needs to emit data changes to different users based on certain very specif
 Incidentally, this is currently the *only* Topic API method you *have to* implement yourself.
 
 Example (Client):
+
 ```javascript
 function shard(value) {
 	// the Client shard is one or more actor IDs
@@ -627,6 +639,7 @@ function shard(value) {
 ```
 
 Example (Client, multiple actors):
+
 ```javascript
 function shard(value) {
 	// the Client shard is one or more actor IDs
@@ -638,6 +651,7 @@ function shard(value) {
 ```
 
 Example (Client, static data for all actors):
+
 ```javascript
 function shard(value) {
 	return true;

@@ -54,7 +54,7 @@ CREATE TABLE people (
   personId INT UNSIGNED NOT NULL,
   value TEXT NOT NULL,
   mediaType VARCHAR(255) NOT NULL,
-  PRIMARY KEY(personId)
+  PRIMARY KEY (personId)
 ) ENGINE=InnoDB;
 ```
 
