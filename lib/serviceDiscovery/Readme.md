@@ -91,7 +91,7 @@ var service = serviceDiscovery.createService('mysql', 'tcp');
 // when a mysql server appear on the network
 service.on('up', function (service) {
     // connect to the mysql service we just found
-    mysql.connect(service.getIp(4), service.port, function(error) {
+    mysql.connect(service.getIp(4), service.port, function (error) {
         if (error) {
             // fatal
         }
