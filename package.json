@@ -42,7 +42,8 @@
 		"mkdirp": "0.3.5",
 		"marked": "0.2.9",
 		"highlight.js": "7.3.0",
-		"node-zookeeper-client": "0.2.0"
+		"node-zookeeper-client": "0.2.0",
+		"uuid": "1.4.1"
 	},
 	"optionalDependencies": {
 		"couchbase": "0.0.12"
