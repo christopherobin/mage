@@ -13,7 +13,7 @@ It also includes a new engine named `zookeeper` that allows service discovery ev
 For configuration, the old configuration under `server.mmrp` can be removed. When using `mdns` no configuration is
 needed, if you want to use or try `zookeeper`, please check the [documentation](./lib/serviceDiscovery/Readme.md#configuration).
 
-For more details, please read the provided [documentation](./lib/modules/serviceDiscovery/Readme.md).
+For more details, please read the provided [documentation](./lib/serviceDiscovery/Readme.md).
 
 ## v0.19.1 - Captain Airplane Cat
 
