@@ -29,9 +29,6 @@ server:
             file: ./server.sock
         expose: "%APP_CLIENTHOST_EXPOSE%"
     cluster: false
-    mmrp:
-        serviceDiscovery:
-            name: "%APP_SERVICE_NAME%"
 
 archivist:
     vaults:
