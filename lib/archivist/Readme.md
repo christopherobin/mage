@@ -284,7 +284,6 @@ The following options are available to you:
 * `optional`: (boolean, default: false) Indicates whether it's considered an error if data is not found in any of the vaults.
 * `mediaTypes`: (array, default: `['application/x-tome', 'application/octet-stream']`) Indicates that you only accept these media types, in the given order of priority. If data of another media type is read, a conversion attempt will be made (eg: JSON to Tome).
 * `encodings`: (array, default: `['live']`) Indicates that you only accept these encodings, in the given order of priority. If data of another encoding is read, a conversion attempt will be made (eg: JavaScript object to utf8 JSON).
-* `encodingOptions`: (object, default: undefined) Options to be passed to the encoders. The JavaScript object to utf8 JSON encoder for example, accepts: `{ pretty: true }`, to trigger indented JSON stringification.
 
 This options object is not required, and your callback may be passed as the third argument.
 
