@@ -7,6 +7,12 @@ all through a simple unified API, regardless of which data stores you use.
 ## Advantages
 
 
+### Schema Migration
+
+Schema Migration between versions is well supported out of the box. Please read the
+[documentation](./SchemaMigrations.md).
+
+
 ### Redundant storage
 
 You can configure multiple data stores of the same type, in order to split your data into as many
