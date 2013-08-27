@@ -39,6 +39,18 @@ signature                  | required | default implementation
 `deserialize(data, value)` |          | parses row.value and row.mediaType into Value
 
 
+## Bootstrapping a database
+
+Is supported through the `./game archivist-create` CLI command. This will create your empty
+database. Tables must be created through migration scripts.
+
+
+## Schema migrations
+
+Archivist allows for [schema migrations](../../SchemaMigrations.md), and the MySQL vault supports
+this.
+
+
 ## How to set up your MySQL tables
 
 Queries against your database are done through a combination of the generated keys and serialized
