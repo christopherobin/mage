@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### Database Schema Migrations
+
+Archivist now allows you to manage your schema migrations. This is (for now) limited to MySQL only.
+Read all about it in the [Schema Migrations documentation](./lib/archivist/SchemaMigrations.md).
+
+
 ### New service discovery engine
 
 A new service discovery engine is being deployed, it removes some outstanding bugs such as the 14 character limit for
@@ -14,6 +20,7 @@ For configuration, the old configuration `server.mmrp.serviceDiscovery` can be r
 configuration is needed, if you want to use or try `zookeeper`, please check the documentation.
 
 For more details, please read the provided [documentation](./lib/serviceDiscovery/Readme.md).
+
 
 ## v0.19.1 - Captain Airplane Cat
 
