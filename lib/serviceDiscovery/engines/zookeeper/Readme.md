@@ -4,6 +4,11 @@ Apache ZooKeeper is a project from the Apache Software Foundation that provides 
 distributed systems. It is part of the Hadoop eco-system. It uses a hierarchical tree for storing data similar to a
 file-system.
 
+## Configuration
+
+In the `server.serviceDiscovery.options` object the following options exists:
+ - __hosts__: A string that contains a list of host:port separated with commas.
+
 ## Limitations
 
 ZooKeeper is written in Java so is very heavy, moreover watchers and other niceties are far too lightweight and causes
