@@ -7,6 +7,11 @@
 Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
 run on that. This forked version is Node v0.10 compatible, and now so is MAGE!
 
+### Database Schema Migrations
+
+Archivist now allows you to manage your schema migrations. This is (for now) limited to MySQL only.
+Read all about it in the [Schema Migrations documentation](./lib/archivist/SchemaMigrations.md).
+
 ### New service discovery engine
 
 A new service discovery engine is being deployed, it removes some outstanding bugs such as the 14
