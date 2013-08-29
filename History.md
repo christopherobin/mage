@@ -2,18 +2,31 @@
 
 ## vNEXT
 
+### Node 0.10 ready
+
+Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
+run on that. This forked version is Node v0.10 compatible, and now so is MAGE!
+
 ### New service discovery engine
 
-A new service discovery engine is being deployed, it removes some outstanding bugs such as the 14 character limit for
-game names and removed the tight coupling it had with the `msgServer` allowing developers to uses it in other modules
-more easily.
+A new service discovery engine is being deployed, it removes some outstanding bugs such as the 14
+character limit for game names and removed the tight coupling it had with the `msgServer` allowing
+developers to uses it in other modules more easily. MAGE startup time should also have been improved
+noticeably.
 
-It also includes a new engine named `zookeeper` that allows service discovery even on networks incompatible with `mDNS`.
+It also includes a new engine named `zookeeper` that allows service discovery even on networks
+incompatible with `mDNS`.
 
-For configuration, the old configuration `server.mmrp.serviceDiscovery` can be removed. When using `mdns` no
-configuration is needed, if you want to use or try `zookeeper`, please check the documentation.
+For configuration, the old configuration `server.mmrp.serviceDiscovery` can be removed. When using
+`mdns` no configuration is needed, if you want to use or try `zookeeper`, please check the
+documentation.
 
 For more details, please read the provided [documentation](./lib/serviceDiscovery/Readme.md).
+
+### Minor bugfixes
+
+* Fixed the case where an unavailable URL in a markdown doc navigation would mess up browser
+  navigation.
 
 
 ## v0.19.2 - Stringy Cat
