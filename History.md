@@ -2,15 +2,15 @@
 
 ## vNEXT
 
-### Node 0.10 ready
-
-Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
-run on that. This forked version is Node v0.10 compatible, and now so is MAGE!
-
 ### Database Schema Migrations
 
 Archivist now allows you to manage your schema migrations. This is (for now) limited to MySQL only.
 Read all about it in the [Schema Migrations documentation](./lib/archivist/SchemaMigrations.md).
+
+### DynamoDB Vault
+
+Archivist has been enriched with support for DynamoDB through the `aws-sdk` module. Read the
+[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
 
 ### New service discovery engine
 
@@ -32,17 +32,25 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 
 * Fixed the case where an unavailable URL in a markdown doc navigation would mess up browser
   navigation.
+* Matryoshka (our configuration system's internal data representation) could break in a very
+  particular edge case when querying for a particular configuration trail.
+* We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
+  footprint.
 
-### DynamoDB Vault
+### Other small improvements
 
-Archivist has been enriched with support for DynamoDB through the `aws-sdk` module. Read the
-[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
+* Updated node-zmq 2.5.0 -> 2.5.1.
+* Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
+  run on that.
+* The logger system now more verbosely logs about its own state.
+
 
 ## v0.19.2 - Stringy Cat
 
 Hotfix release to ensure JSON is *always* pretty stringified. This removes the flexibility of
 encoding JSON in two modes, but nobody needed that anyway. This should make filevault writes much
 friendlier to diffing.
+
 
 ## v0.19.1 - Captain Airplane Cat
 
@@ -89,6 +97,7 @@ Will output something like this on stdout:
 ### And a mandatory bugfix
 
 * Fixed the syntax highlighting in Markdown file rendering (was broken since 0.19.0).
+
 
 ## v0.19.0 - Roomba Shark Cat
 
