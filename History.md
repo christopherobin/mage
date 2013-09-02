@@ -33,13 +33,16 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 * Fixed the case where an unavailable URL in a markdown doc navigation would mess up browser
   navigation.
 
+### DynamoDB Vault
+
+Archivist has been enriched with support for DynamoDB through the `aws-sdk` module. Read the
+[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
 
 ## v0.19.2 - Stringy Cat
 
 Hotfix release to ensure JSON is *always* pretty stringified. This removes the flexibility of
 encoding JSON in two modes, but nobody needed that anyway. This should make filevault writes much
 friendlier to diffing.
-
 
 ## v0.19.1 - Captain Airplane Cat
 
