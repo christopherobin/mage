@@ -30,12 +30,12 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 
 ### Minor bugfixes
 
+* Certain CLI tasks would misbehave when MAGE was set up to have more than 1 worker. The commands
+  could end up running in parallel.
 * Fixed the case where an unavailable URL in a markdown doc navigation would mess up browser
   navigation.
 * Matryoshka (our configuration system's internal data representation) could break in a very
   particular edge case when querying for a particular configuration trail.
-* We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
-  footprint.
 * Fixed a bug where using the file vault in cluster mode would cause a race condition when
   a worker would set a TTL on a file and that entry would be touched by another worker, not
   updating the timer in the previous worker. The result was that the file would be deleted
@@ -47,6 +47,8 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 * Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
   run on that.
 * The logger system now more verbosely logs about its own state.
+* We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
+  footprint.
 
 
 ## v0.19.2 - Stringy Cat
