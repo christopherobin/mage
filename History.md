@@ -36,6 +36,10 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
   particular edge case when querying for a particular configuration trail.
 * We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
   footprint.
+* Fixed a bug where using the file vault in cluster mode would cause a race condition when
+  a worker would set a TTL on a file and that entry would be touched by another worker, not
+  updating the timer in the previous worker. The result was that the file would be deleted
+  even though it was not expired yet.
 
 ### Other small improvements
 
