@@ -84,6 +84,7 @@ The following vault types are currently implemented:
 * [Memcached](vaults/memcached/Readme.md)
 * [Couchbase](vaults/couchbase/Readme.md)
 * [DynamoDB](vaults/dynamodb/Readme.md)
+* [Elasticsearch](vaults/elasticsearch/Readme.md)
 * [Manta](vaults/manta/Readme.md)
 * [Client](vaults/client/Readme.md)
 
