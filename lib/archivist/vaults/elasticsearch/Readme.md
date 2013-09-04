@@ -1,7 +1,7 @@
-# ElasticSearch vault
+# Elasticsearch vault
 
-ElasticSearch is a full-text search engine based on Lucene. It is powered by the [elasticsearch](https://github.com/ncb000gt/node-elasticsearch)
-module and supports sharding, either automatic (ElasticSearch will shard everything based on the key) or manual through the
+Elasticsearch is a full-text search engine based on Lucene. It is powered by the [elasticsearch](https://github.com/ncb000gt/node-elasticsearch)
+module and supports sharding, either automatic (Elasticsearch will shard everything based on the key) or manual through the
 `shard` function.
 
 
@@ -39,17 +39,17 @@ signature                      | required | default implementation
 `createTarget(topic, index)`   |          | use the topic as a type and urlencode the index as the id
 `serialize(value)`             |          | uses live encoding but throws on Buffers
 `deserialize(data, value)`     |          | parse live encoding
-`shard(value)`                 |          | auto sharding by ElasticSearch
+`shard(value)`                 |          | auto sharding by Elasticsearch
 
 ## TTL Support
 
-ElasticSearch supports automatic expiration of documents, but not updating a documents TTL (you need to repost the whole
+Elasticsearch supports automatic expiration of documents, but not updating a documents TTL (you need to repost the whole
 document) so the touch function is not available. Also, if using TTL, you will need to manually update your type's mapping
 to enable ttl as is explained here: [Ttl Field Reference](http://www.elasticsearch.org/guide/reference/mapping/ttl-field/).
 
 ## Binary data storage
 
-By default, the serialize function will fail on buffers. It is because ElasticSearch is a full-text document search engine,
+By default, the serialize function will fail on buffers. It is because Elasticsearch is a full-text document search engine,
 as such storing binary data doesn't make much sense. If you really really do need to store binary data, I recommend
 either embedding it within an object in base64 format, like:
 
@@ -67,15 +67,15 @@ var data = {
 state.archivist.set('photos', { userId: userId, pictureId: pictureId }, data);
 ```
 
-Then manually decode it when getting it back from ElasticSearch.
+Then manually decode it when getting it back from Elasticsearch.
 
-Another (more recommended) way to do that is to use ElasticSearch to only store the metadata for search purposes and
+Another (more recommended) way to do that is to use Elasticsearch to only store the metadata for search purposes and
 store the binary file itself in a more appropriate vault (such as file).
 
 ## Searching for data
 
 Archivist doesn't provide any way to search for data in a complex manner, if you need to search for data you will need
-to call the ElasticSearch client yourself, here is an example of how to find the picture stored in the example above:
+to call the Elasticsearch client yourself, here is an example of how to find the picture stored in the example above:
 
 ```javascript
 // retrieve client
@@ -99,9 +99,9 @@ esClient.search(options, query, function (err, data) {
 });
 ```
 
-For more details about the ElasticSearch client, please read this [documentation](https://github.com/ncb000gt/node-elasticsearch),
-then for the ElasticSearch query language please read the [Query](http://www.elasticsearch.org/guide/reference/api/search/query/)
-and [Query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/) documentation on the ElasticSearch website.
+For more details about the Elasticsearch client, please read this [documentation](https://github.com/ncb000gt/node-elasticsearch),
+then for the Elasticsearch query language please read the [Query](http://www.elasticsearch.org/guide/reference/api/search/query/)
+and [Query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/) documentation on the Elasticsearch website.
 
 ## Notes about manual sharding
 
