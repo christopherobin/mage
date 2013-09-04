@@ -9,8 +9,8 @@ Read all about it in the [Schema Migrations documentation](./lib/archivist/Schem
 
 ### DynamoDB Vault
 
-Archivist has been enriched with support for DynamoDB through the `aws-sdk` module. Read the
-[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
+Archivist has been enriched with support for Amazon's DynamoDB through the `aws-sdk` module. Read
+the [DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
 
 ### New service discovery engine
 
@@ -43,12 +43,19 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 
 ### Other small improvements
 
-* Updated node-zmq 2.5.0 -> 2.5.1.
 * Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
   run on that.
 * The logger system now more verbosely logs about its own state.
 * We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
   footprint.
+
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| zmq        | 2.5.0  | 2.5.1  |
+| ws         | 0.4.28 | 0.4.30 |
+| mocha      | 1.12.0 | 1.12.1 |
 
 
 ## v0.19.2 - Stringy Cat
