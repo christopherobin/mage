@@ -56,6 +56,11 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
   footprint.
 * Authentication errors can now carry a message, and for version mismatches it does. The dashboard
   uses this and offers the users to re-login.
+* We added a small function `mage.dashboard.getAppNames()` which returns an array
+  `['dev', 'support', 'cms']`, which are the dashboard apps. In the future you will be able to
+  manipulate what the app names are for the dashboard.
+* The error that is being logged when a non-optional `archivist.get()` call fails now includes the
+  topic and index.
 
 ### Dependency updates
 
