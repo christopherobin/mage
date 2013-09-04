@@ -48,17 +48,21 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 
 ### Other small improvements
 
+* The deprecated `session.setCurrentVersion` function has been removed.
 * Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
   run on that.
 * The logger system now more verbosely logs about its own state.
 * We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
   footprint.
+* Authentication errors can now carry a message, and for version mismatches it does. The dashboard
+  uses this and offers the users to re-login.
 
 ### Dependency updates
 
 | dependency | from   | to     |
 |------------|--------|--------|
 | zmq        | 2.5.0  | 2.5.1  |
+| semver     | 1.1.4  | 2.1.0  |
 | ws         | 0.4.28 | 0.4.30 |
 | mocha      | 1.12.0 | 1.12.1 |
 
