@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.20.0 - ElastiCat
 
 ### Database Schema Migrations
 
@@ -9,13 +9,16 @@ Read all about it in the [Schema Migrations documentation](./lib/archivist/Schem
 
 ### DynamoDB Vault
 
-Archivist has been enriched with support for Amazon's DynamoDB through the [aws-sdk](https://npmjs.org/package/aws-sdk)
-module. Read the [DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
+Archivist has been enriched with support for Amazon's DynamoDB through the
+[aws-sdk](https://npmjs.org/package/aws-sdk) module. Read the
+[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
 
-### ElasticSearch Vault
+### Elasticsearch Vault
 
-Archivist has been enriched with support for ElasticSearch through the [elasticsearch](https://npmjs.org/package/elasticsearch)
-module. Read the [ElasticSearch vault documentation](./lib/archivist/vaults/elasticsearch/Readme.md) for more information.
+Archivist has been enriched with support for Elasticsearch through the
+[elasticsearch](https://npmjs.org/package/elasticsearch) module. Read the
+[Elasticsearch vault documentation](./lib/archivist/vaults/elasticsearch/Readme.md) for more
+information.
 
 ### New service discovery engine
 
