@@ -59,10 +59,7 @@
 	"main": "lib/mage",
 	"scripts": {
 		"test": "make test",
-		"postinstall": "./scripts/install.js",
-		"lint-all": "make lint-all",
-		"lint-staged": "make lint-staged",
-		"git-setup": "make git-setup"
+		"postinstall": "./scripts/install.js"
 	},
 	"repository": {
 		"type": "git",

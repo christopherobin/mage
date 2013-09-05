@@ -1,5 +1,54 @@
 # Release history
 
+## vNEXT
+
+### Makefile
+
+The Makefile has been completely rewritten to better suit the needs of sys ops and developers alike.
+The following text is the help output which you can access by calling `make` without arguments.
+
+```
+Getting started:
+
+  make help              Outputs this help.
+  make install           Installs the environment (shortcut for install-deps and install-archivist).
+
+  make install-deps      Installs all NPM dependencies.
+  make install-archivist Creates databases and runs all migrations up to this version.
+
+Development:
+
+  make dev               Sets up the development environment (shortcut for dev-githooks).
+
+  make dev-githooks      Sets up git hooks.
+
+Quality:
+
+  make lint              Lints every JavaScript and JSON file in the project.
+  make test              Runs all unit tests.
+  make coverage          Creates a unit test coverage report.
+  make complexity        Creates a Plato code complexity report.
+
+  make lint path=abc     Lints the given path recursively (file or folder containing JavaScript and JSON files).
+  make lint-staged       Lints every JavaScript and JSON file in the project that is staged to be committed.
+
+Running:
+
+  make start             Starts the application daemonized.
+  make stop              Stops the daemonized application.
+  make restart           Restarts the daemonized application.
+  make reload            Recycles all workers with zero-downtime (not to be used on version changes).
+  make status            Outputs the status of the daemonized application.
+
+Cleanup:
+
+  make clean             Cleans all caches and reports.
+
+  make clean-npm         Cleans the NPM cache.
+  make clean-coverage    Removes the test coverage report and its instrumented files.
+  make clean-complexity  Removes the Plato report.
+```
+
 ## v0.20.0 - ElastiCat
 
 ### Database Schema Migrations
