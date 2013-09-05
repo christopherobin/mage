@@ -2,4 +2,4 @@
 sampleMage: true
 
 # The default sample buffer length. Up to this many aggregates results will be kept in memory.
-bufferLength: 1000
+bufferLength: 100

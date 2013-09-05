@@ -1,5 +1,81 @@
 # Release history
 
+## v0.20.0 - ElastiCat
+
+### Database Schema Migrations
+
+Archivist now allows you to manage your schema migrations. This is (for now) limited to MySQL only.
+Read all about it in the [Schema Migrations documentation](./lib/archivist/SchemaMigrations.md).
+
+### DynamoDB Vault
+
+Archivist has been enriched with support for Amazon's DynamoDB through the
+[aws-sdk](https://npmjs.org/package/aws-sdk) module. Read the
+[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
+
+### Elasticsearch Vault
+
+Archivist has been enriched with support for Elasticsearch through the
+[elasticsearch](https://npmjs.org/package/elasticsearch) module. Read the
+[Elasticsearch vault documentation](./lib/archivist/vaults/elasticsearch/Readme.md) for more
+information.
+
+### New service discovery engine
+
+A new service discovery engine is being deployed, it removes some outstanding bugs such as the 14
+character limit for game names and removed the tight coupling it had with the `msgServer` allowing
+developers to uses it in other modules more easily. MAGE startup time should also have been improved
+noticeably.
+
+It also includes a new engine named `zookeeper` that allows service discovery even on networks
+incompatible with `mDNS`.
+
+For configuration, the old configuration `server.mmrp.serviceDiscovery` can be removed. When using
+`mdns` no configuration is needed, if you want to use or try `zookeeper`, please check the
+documentation.
+
+For more details, please read the provided [documentation](./lib/serviceDiscovery/Readme.md).
+
+### Minor bugfixes
+
+* Certain CLI tasks would misbehave when MAGE was set up to have more than 1 worker. The commands
+  could end up running in parallel.
+* Fixed the case where an unavailable URL in a markdown doc navigation would mess up browser
+  navigation.
+* Matryoshka (our configuration system's internal data representation) could break in a very
+  particular edge case when querying for a particular configuration trail.
+* Fixed a bug where using the file vault in cluster mode would cause a race condition when
+  a worker would set a TTL on a file and that entry would be touched by another worker, not
+  updating the timer in the previous worker. The result was that the file would be deleted
+  even though it was not expired yet.
+
+### Other small improvements
+
+* The deprecated `session.setCurrentVersion` function has been removed.
+* Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
+  run on that.
+* The logger system now more verbosely logs about its own state.
+* We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
+  footprint.
+* Authentication errors can now carry a message, and for version mismatches it does. The dashboard
+  uses this and offers the users to re-login.
+* We added a small function `mage.dashboard.getAppNames()` which returns an array
+  `['dev', 'support', 'cms']`, which are the dashboard apps. In the future you will be able to
+  manipulate what the app names are for the dashboard.
+* The error that is being logged when a non-optional `archivist.get()` call fails now includes the
+  topic and index.
+
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| zmq        | 2.5.0  | 2.5.1  |
+| semver     | 1.1.4  | 2.1.0  |
+| ws         | 0.4.28 | 0.4.30 |
+| component  | 0.17.0 | 0.17.2 |
+| mocha      | 1.12.0 | 1.12.1 |
+
+
 ## v0.19.2 - Stringy Cat
 
 Hotfix release to ensure JSON is *always* pretty stringified. This removes the flexibility of

@@ -35,7 +35,6 @@ function ask(question, varName, re, cb) {
 
 replacements = {
 	APP_NAME: pathBasename(appPath),
-	APP_SHORTNAME: '',
 	APP_PATH: appPath,
 	APP_PATHNAME: pathBasename(appPath),
 	APP_DESCRIPTION: '',
@@ -45,9 +44,6 @@ replacements = {
 	APP_REPO: '',
 	APP_CLIENTHOST_EXPOSE: 'http://' + pathBasename(appPath) + '.' + process.env.USER + '.node.wizcorp.jp',
 	APP_SAVVY_EXPOSE: 'http://' + pathBasename(appPath) + '.' + process.env.USER + '.node.wizcorp.jp/savvy',
-	APP_SERVICE_NAME: function () {
-		return getVar('ENV_USER').substr(0, 2) + '-' + getVar('APP_SHORTNAME');
-	},
 	MAGE_VERSION: magePackage.version,
 	MAGE_NODE_VERSION: magePackage.engines && magePackage.engines.node,
 	ENV_USER: process.env.USER
@@ -64,9 +60,6 @@ exports.prepare = function (cb) {
 	async.series([
 		function (callback) {
 			ask('Name your game:', 'APP_NAME', /^.{2,}/, callback);
-		},
-		function (callback) {
-			ask('Provide a short name (2-5 characters):', 'APP_SHORTNAME', /^.{2,5}$/, callback);
 		},
 		function (callback) {
 			ask('Describe your game:', 'APP_DESCRIPTION', null, callback);
