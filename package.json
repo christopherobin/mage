@@ -35,14 +35,14 @@
 		"panopticon": "0.2.0",
 		"js-yaml": "2.1.0",
 		"component-builder": "0.9.0",
-		"component": "0.17.0",
+		"component": "0.17.2",
 		"semver": "2.1.0",
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
 		"marked": "0.2.9",
 		"highlight.js": "7.3.0",
 		"node-zookeeper-client": "0.2.0",
-		"aws-sdk": "1.5.1",
+		"aws-sdk": "1.5.2",
 		"elasticsearch": "0.3.11"
 	},
 	"optionalDependencies": {

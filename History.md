@@ -69,6 +69,7 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 | zmq        | 2.5.0  | 2.5.1  |
 | semver     | 1.1.4  | 2.1.0  |
 | ws         | 0.4.28 | 0.4.30 |
+| component  | 0.17.0 | 0.17.2 |
 | mocha      | 1.12.0 | 1.12.1 |
 
 
