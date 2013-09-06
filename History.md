@@ -54,6 +54,9 @@ apps:
       postprocessors: etc
 ```
 
+
+## v0.21.0 - Colonel Meow
+
 ### Template updates
 
 The "new application" template has been updated with the following changes:
