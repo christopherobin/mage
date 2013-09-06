@@ -76,7 +76,10 @@ define helpQuality
 	@echo
 endef
 
-.PHONY: lint lint-staged test instrument coverage complexity
+.PHONY: lint-all lint lint-staged test instrument coverage complexity
+
+# lint-all is deprecated
+lint-all: lint
 
 lint:
 ifdef path
