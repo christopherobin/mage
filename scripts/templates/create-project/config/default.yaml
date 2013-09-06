@@ -14,9 +14,6 @@ apps:
             serverCache: false
             useManifest: false
             compress: true
-            postprocessors:
-                css: []
-                js: []
 
 logging:
     html5:
