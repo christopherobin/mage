@@ -21,8 +21,8 @@ function makePreCommit(inp) {
 
 	var buffer;
 
-	buffer = '#!/bin/sh\n' + 
-		 'make -C "' + gitTop + '" ' + inp + '\n';
+	buffer = '#!/bin/sh\n' +
+		'make -C "' + gitTop + '" ' + inp + '\n';
 	fs.writeFileSync(preCommitPath, buffer);
 
 	var mode = 775;
