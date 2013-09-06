@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.20.0",
+	"version": "0.21.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -20,7 +20,7 @@
 		"epipebomb": "0.1.1",
 		"loggly": "0.3.11",
 		"ws": "0.4.30",
-		"graylog2": "0.0.2",
+		"graylog2": "0.1.0",
 		"colours": "0.6.0-2",
 		"mysql": "2.0.0-alpha7",
 		"memcached": "0.2.5",
@@ -59,10 +59,7 @@
 	"main": "lib/mage",
 	"scripts": {
 		"test": "make test",
-		"postinstall": "./scripts/install.js",
-		"lint-all": "make lint-all",
-		"lint-staged": "make lint-staged",
-		"git-setup": "make git-setup"
+		"postinstall": "./scripts/install.js"
 	},
 	"repository": {
 		"type": "git",
