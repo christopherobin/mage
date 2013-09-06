@@ -14,13 +14,14 @@ define helpStarting
 	@echo
 	@echo "  make help              Outputs this help."
 	@echo "  make install           Installs the environment (shortcut for install-deps and install-archivist)."
+	@echo "  make version           Outputs version information."
 	@echo
 	@echo "  make install-deps      Installs all NPM dependencies."
 	@echo "  make install-archivist Creates databases and runs all migrations up to this version."
 	@echo
 endef
 
-.PHONY: help install install-deps install-archivist
+.PHONY: help version install install-deps install-archivist
 
 help:
 	@echo
@@ -29,6 +30,9 @@ help:
 	$(helpQuality)
 	$(helpRunning)
 	$(helpCleanup)
+
+version:
+	node . --version
 
 install: install-deps install-archivist
 

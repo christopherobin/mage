@@ -24,6 +24,7 @@ Getting started:
 
   make help              Outputs this help.
   make install           Installs the environment (shortcut for install-deps and install-archivist).
+  make version           Outputs version information.
 
   make install-deps      Installs all NPM dependencies.
   make install-archivist Creates databases and runs all migrations up to this version.
