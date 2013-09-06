@@ -6,15 +6,12 @@
   "author": "%APP_AUTHOR%",
   "license": "%APP_LICENSE%",
   "scripts": {
-    "start": "./game start",
-    "stop": "./game stop",
-    "restart": "./game restart",
-    "reload": "./game reload",
-    "test": "make test",
-    "lint-all": "make lint-all",
-    "lint-staged": "make lint-staged",
-    "git-setup": "make git-setup"
+    "start": "make start",
+    "stop": "make stop",
+    "restart": "make restart",
+    "test": "make test"
   },
+  "main": "game",
   "engines": {
     "node": "%MAGE_NODE_VERSION%"
   },
@@ -24,7 +21,7 @@
   },
   "devDependencies": {
     "jshint": "2.1.10",
-    "mocha": "1.12.0",
+    "mocha": "1.12.1",
     "istanbul": "0.1.43",
     "mocha-istanbul": "0.2.0",
     "plato": "0.6.1"
