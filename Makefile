@@ -11,7 +11,7 @@ COMPLEXITY_REPORT = plato-report
 define helpStarting
 	@echo "Getting started:"
 	@echo
-	@echo "  make help              Outputs this help."
+	@echo "  make help              Prints this help."
 	@echo "  make install           Installs the environment (shortcut for install-deps)."
 	@echo
 	@echo "  make install-deps      Installs all NPM dependencies."

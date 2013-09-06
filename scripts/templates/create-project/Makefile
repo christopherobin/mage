@@ -12,9 +12,9 @@ TEST = ./test
 define helpStarting
 	@echo "Getting started:"
 	@echo
-	@echo "  make help              Outputs this help."
+	@echo "  make help              Prints this help."
 	@echo "  make install           Installs the environment (shortcut for install-deps and install-archivist)."
-	@echo "  make version           Outputs version information."
+	@echo "  make version           Prints version information about the game, MAGE and Node.js."
 	@echo
 	@echo "  make install-deps      Installs all NPM dependencies."
 	@echo "  make install-archivist Creates databases and runs all migrations up to this version."
@@ -123,7 +123,7 @@ define helpRunning
 	@echo "  make stop              Stops the daemonized application."
 	@echo "  make restart           Restarts the daemonized application."
 	@echo "  make reload            Recycles all workers with zero-downtime (not to be used on version changes)."
-	@echo "  make status            Outputs the status of the daemonized application."
+	@echo "  make status            Prints the status of the daemonized application."
 	@echo
 endef
 

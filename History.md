@@ -22,9 +22,9 @@ The following text is the help output which you can access by calling `make` wit
 ```
 Getting started:
 
-  make help              Outputs this help.
+  make help              Prints this help.
   make install           Installs the environment (shortcut for install-deps and install-archivist).
-  make version           Outputs version information.
+  make version           Prints version information about the game, MAGE and Node.js.
 
   make install-deps      Installs all NPM dependencies.
   make install-archivist Creates databases and runs all migrations up to this version.
@@ -51,7 +51,7 @@ Running:
   make stop              Stops the daemonized application.
   make restart           Restarts the daemonized application.
   make reload            Recycles all workers with zero-downtime (not to be used on version changes).
-  make status            Outputs the status of the daemonized application.
+  make status            Prints the status of the daemonized application.
 
 Cleanup:
 
