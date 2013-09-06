@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.21.0 - Colonel Meow
 
 ### Template updates
