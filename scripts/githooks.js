@@ -1,64 +1,54 @@
 #!/usr/bin/env node
 
-var exec = require("child_process").exec;
-var fs = require("fs");
-var readline = require("readline");
+var exec = require('child_process').exec;
+var fs = require('fs');
+var readline = require('readline');
 
 // global variables
 
-var gittop;
-var gitpath;
-var hookspath;
+var gitTop;
+var hooksPath;
 
 // functions
 
 function makePreCommit(inp) {
-	if (inp === "") {
-		inp = "lint-staged test";
-	}
+	inp = inp || 'lint-staged test';
 
-	console.log("Make command that will be run on commit: " + inp);
-	console.log("Creating pre-commit script...");
+	console.log('Make command that will be run on commit: ' + inp);
+	console.log('Creating pre-commit script...');
 
-	var precommitpath = hookspath + "/pre-commit";
+	var preCommitPath = hooksPath + '/pre-commit';
 
 	var buffer;
 
-	buffer = "#!/bin/sh\n";
-	fs.writeFileSync(precommitpath, buffer);
+	buffer = '#!/bin/sh\n' + 
+		 'make -C "' + gitTop + '" ' + inp + '\n';
+	fs.writeFileSync(preCommitPath, buffer);
 
-	buffer = "make -C \"" + gittop + "\" " + inp + "\n";
-	fs.appendFileSync(precommitpath, buffer);
-
-	console.log("Setting " + precommitpath + " to be executable (775)");
-	fs.chmodSync(precommitpath, 0775);
+	var mode = 775;
+	console.log('Setting ' + preCommitPath + ' to be executable (' + mode + ')');
+	fs.chmodSync(preCommitPath, parseInt(mode, 8));
 }
 
-function getGitHooksPath(error, stdout, stderr) {
-	if (error !== null) {
-		process.stderr.write(stderr);
-		console.log("Error: failed to detect git repository root (is this a repository?)");
+function createGitHooks() {
+
+	var gitPath = gitTop + '/.git';
+
+	console.log('Making sure ' + gitPath + ' exists...');
+
+	if (!fs.existsSync(gitPath)) {
+		console.log('Error: directory ' + gitPath + ' not found.');
 		process.exit(1);
 	}
 
-	gittop = stdout.replace(/\n$/, ""); // remove end newline
-	gitpath = gittop + "/.git";
-
-	console.log("Making sure " + gitpath + " exists...");
-
-	if (!fs.existsSync(gitpath)) {
-		console.log("Error: directory " + gitpath + " not found.");
-		process.exit(1);
-	}
-
-	console.log(gitpath + " found.");
+	console.log(gitPath + ' found.');
 
 	// ensure .git/hooks exists, if not create it
-	hookspath = gitpath + "/hooks";
+	hooksPath = gitPath + '/hooks';
 
-	if (!fs.existsSync(hookspath)) {
-		console.log("Directory " + hookspath + " not found, creating...");
-		fs.mkdirSync(hookspath);
+	if (!fs.existsSync(hooksPath)) {
+		console.log('Directory ' + hooksPath + ' not found, creating...');
+		fs.mkdirSync(hooksPath);
 	}
 
 	var rl = readline.createInterface({
@@ -66,7 +56,7 @@ function getGitHooksPath(error, stdout, stderr) {
 		output: process.stdout
 	});
 
-	rl.question("Make command to run before commit (default: lint-staged test): ", function (answer) {
+	rl.question('Make command to run before commit (default: lint-staged test): ', function (answer) {
 		makePreCommit(answer);
 		rl.close();
 	});
@@ -74,6 +64,15 @@ function getGitHooksPath(error, stdout, stderr) {
 
 // script
 
-console.log("Detecting git repository root...");
-exec("git rev-parse --show-toplevel", getGitHooksPath);
+console.log('Detecting git repository root...');
+exec('git rev-parse --show-toplevel', function (error, stdout, stderr) {
+	if (error) {
+		process.stderr.write(stderr);
+		console.log('Error: failed to detect git repository root (is this a repository?)');
+		process.exit(1);
+	} else {
+		gitTop = stdout.replace(/\n$/, ''); // remove end newline
+		createGitHooks();
+	}
+});
 
