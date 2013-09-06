@@ -71,7 +71,7 @@ exec('git rev-parse --show-toplevel', function (error, stdout, stderr) {
 		console.log('Error: failed to detect git repository root (is this a repository?)');
 		process.exit(1);
 	} else {
-		gitTop = stdout.replace(/\n$/, ''); // remove end newline
+		gitTop = stdout.trim();
 		createGitHooks();
 	}
 });
