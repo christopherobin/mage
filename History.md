@@ -62,6 +62,12 @@ Cleanup:
   make clean-complexity  Removes the Plato report.
 ```
 
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| graylog2   | 0.0.2  | 0.1.0  |
+
 
 ## v0.20.0 - ElastiCat
 
