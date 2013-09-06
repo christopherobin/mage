@@ -64,6 +64,7 @@ Cleanup:
 
 ### Minor improvements
 
+* Getting, listing and distributing on archivist now shows read-, list- and write-order in the log.
 * We've made component builder errors a tiny bit more verbose (they can be very cryptic).
 
 ### Dependency updates
