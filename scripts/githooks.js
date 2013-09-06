@@ -34,8 +34,25 @@ function makePreCommit(inp) {
 	fs.chmodSync(precommitpath, 0775);
 }
 
-function setupGITHooks()
-{
+function getGitHooksPath(error, stdout, stderr) {
+	if (error !== null) {
+		process.stderr.write(stderr);
+		console.log("Error: failed to detect git repository root (is this a repository?)");
+		process.exit(1);
+	}
+
+	gittop = stdout.replace(/\n$/, ""); // remove end newline
+	gitpath = gittop + "/.git";
+
+	console.log("Making sure " + gitpath + " exists...");
+
+	if (!fs.existsSync(gitpath)) {
+		console.log("Error: directory " + gitpath + " not found.");
+		process.exit(1);
+	}
+
+	console.log(gitpath + " found.");
+
 	// ensure .git/hooks exists, if not create it
 	hookspath = gitpath + "/hooks";
 
@@ -55,30 +72,8 @@ function setupGITHooks()
 	});
 }
 
-function getGITPath(error, stdout, stderr) {
-	if (error !== null) {
-		process.stderr.write(stderr);
-		console.log("Error: failed to detect git repository root (is this a repository?)");
-		process.exit(1);
-	}
-
-	gittop = stdout.replace(/\n$/, ""); // remove end newline
-	gitpath = gittop + "/.git";
-
-	console.log("Making sure " + gitpath + " exists...");
-
-	if (!fs.existsSync(gitpath)) {
-		console.log("Error: directory " + gitpath + " not found.");
-		process.exit(1);
-	}
-
-	console.log(gitpath + " found.");
-
-	setupGITHooks();
-}
-
 // script
 
 console.log("Detecting git repository root...");
-exec("git rev-parse --show-toplevel", getGITPath);
+exec("git rev-parse --show-toplevel", getGitHooksPath);
 
