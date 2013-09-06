@@ -2,6 +2,18 @@
 
 ## vNEXT
 
+### Template updates
+
+The "new application" template has been updated with the following changes:
+
+* A new Makefile (see below)
+* Because the Makefile is prefered over npm-scripts, package.json no longer implements `reload`,
+  `lint-all`, `lint-staged` and `git-setup`.
+* Reverted the change to package.json where the "main" field got removed (in v0.19.0), since we want
+  `node .` to function properly in continuous integration and other automation (the Makefile depends
+  on it).
+* Updated the mocha dependency from v1.12.0 to v1.12.1.
+
 ### Makefile
 
 The Makefile has been completely rewritten to better suit the needs of sys ops and developers alike.
@@ -48,6 +60,7 @@ Cleanup:
   make clean-coverage    Removes the test coverage report and its instrumented files.
   make clean-complexity  Removes the Plato report.
 ```
+
 
 ## v0.20.0 - ElastiCat
 
