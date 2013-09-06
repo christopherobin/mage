@@ -4,14 +4,9 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var readline = require('readline');
 
-// global variables
-
-var gitTop;
-var hooksPath;
-
 // functions
 
-function makePreCommit(inp) {
+function makePreCommit(inp, gitTop, hooksPath) {
 	inp = inp || 'lint-staged test';
 
 	console.log('Make command that will be run on commit: ' + inp);
@@ -30,7 +25,7 @@ function makePreCommit(inp) {
 	fs.chmodSync(preCommitPath, parseInt(mode, 8));
 }
 
-function createGitHooks() {
+function createGitHooks(gitTop) {
 
 	var gitPath = gitTop + '/.git';
 
@@ -44,7 +39,7 @@ function createGitHooks() {
 	console.log(gitPath + ' found.');
 
 	// ensure .git/hooks exists, if not create it
-	hooksPath = gitPath + '/hooks';
+	var hooksPath = gitPath + '/hooks';
 
 	if (!fs.existsSync(hooksPath)) {
 		console.log('Directory ' + hooksPath + ' not found, creating...');
@@ -57,7 +52,7 @@ function createGitHooks() {
 	});
 
 	rl.question('Make command to run before commit (default: lint-staged test): ', function (answer) {
-		makePreCommit(answer);
+		makePreCommit(answer, gitTop, hooksPath);
 		rl.close();
 	});
 }
@@ -71,8 +66,7 @@ exec('git rev-parse --show-toplevel', function (error, stdout, stderr) {
 		console.log('Error: failed to detect git repository root (is this a repository?)');
 		process.exit(1);
 	} else {
-		gitTop = stdout.trim();
-		createGitHooks();
+		createGitHooks(stdout.trim());
 	}
 });
 
