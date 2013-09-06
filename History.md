@@ -62,6 +62,10 @@ Cleanup:
   make clean-complexity  Removes the Plato report.
 ```
 
+### Minor improvements
+
+* We've made component builder errors a tiny bit more verbose (they can be very cryptic).
+
 ### Dependency updates
 
 | dependency | from   | to     |
