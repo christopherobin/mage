@@ -80,6 +80,7 @@ endef
 
 # lint-all is deprecated
 lint-all: lint
+	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'lint'."
 
 lint:
 ifdef path
