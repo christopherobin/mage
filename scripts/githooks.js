@@ -20,7 +20,7 @@ function makePreCommit(inp, gitTop, hooksPath) {
 		'make -C "' + gitTop + '" ' + inp + '\n';
 	fs.writeFileSync(preCommitPath, buffer);
 
-	var mode = 775;
+	var mode = '775';
 	console.log('Setting ' + preCommitPath + ' to be executable (' + mode + ')');
 	fs.chmodSync(preCommitPath, parseInt(mode, 8));
 }
