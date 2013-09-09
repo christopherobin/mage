@@ -75,6 +75,7 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
   in a busy state, preventing any future call and killing performance.
 * Tested and fixed the general trunk of the environment setup script (thanks Marc!).
 * Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
+* Savvy doesn't need a host anymore when listening on a port, will default to INADDR_ANY if undefined.
 
 ## v0.21.0 - Colonel Meow
 
