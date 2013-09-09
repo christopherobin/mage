@@ -76,10 +76,11 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
 * If the `NODE_ENV` environment variable is not set, MAGE would not abort appropriately.
 * Tested and fixed the general trunk of the environment setup script (thanks Marc!).
 * Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
-* Savvy doesn't need a host anymore when listening on a port, will default to INADDR_ANY if undefined.
 
 ## Minor improvements
 
+* Savvy doesn't need a host anymore when listening on a port, will default to INADDR_ANY if undefined.
+* The script that sets up git pre-commit hooks has been rewritten in JavaScript.
 * The template for new projects now sets the first version to v0.1.0 (rather than v0.0.1).
 
 

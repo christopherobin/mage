@@ -49,7 +49,7 @@ endef
 dev: dev-githooks
 
 dev-githooks:
-	$(SCRIPTS)/githooks.js
+	node $(SCRIPTS)/githooks.js
 
 
 # QUALITY
