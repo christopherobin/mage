@@ -64,13 +64,17 @@ apps:
   operations would be enough, now all configured vaults that will be used must support it. This
   moves these errors from runtime to startup.
 
+### File logger update
+
+File logger now stores both the time and date in [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)
+format (YYYY-MM-DDTHH:mm:ss.sssZ).
+
 ### Bugfixes
 
 * When using node 0.10+, calling the cron client would result in the command center client staying
   in a busy state, preventing any future call and killing performance.
 * Tested and fixed the general trunk of the environment setup script (thanks Marc!).
 * Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
-
 
 ## v0.21.0 - Colonel Meow
 
