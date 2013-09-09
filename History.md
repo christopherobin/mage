@@ -71,6 +71,7 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
 
 ### Bugfixes
 
+* The `maintenance` event was not being fired correctly in the MAGE loader.
 * When using node 0.10+, calling the cron client would result in the command center client staying
   in a busy state, preventing any future call and killing performance.
 * If the `NODE_ENV` environment variable is not set, MAGE would not abort appropriately.
