@@ -2,6 +2,58 @@
 
 ## vNEXT
 
+### Component plugins
+
+`WebApp` objects that are instantiated for each app are now EventEmitters. This allows builders to
+share information on a per-app basis. When components are built, the `build-component` event is
+emitted, which passes the `builder` object (from
+[component-builder](https://npmjs.org/package/component-builder)) and the `buildTarget` objects that
+MAGE creates for each page that gets built.
+
+Having access to the builder allows you to register plugins. For example:
+
+```sh
+npm install -s component-uglifyjs
+npm install -s component-less
+```
+
+```javascript
+mage.setup(function (error, apps) {
+	// when mage is running in development mode, we don't uglify
+
+	if (!mage.isDevelopmentMode()) {
+		var uglify = require('component-uglifyjs');
+
+		apps.game.on('build-component', function (builder, buildTarget) {
+			builder.use(uglify);
+		});
+	}
+
+	var less = require('component-less');
+
+	Object.keys(apps).forEach(function (appName) {
+		apps[appName].on('build-component', function (builder, buildTarget) {
+			builder.use(less);
+		});
+	});
+});
+```
+
+This change, which allows us to do all CSS related operations through component, also means that our
+builder will no longer brute-force scan directories for stylesheet files. Instead, the `"styles"`
+field from your `component.json` files is used. So please make sure you are using these fields
+correctly.
+
+This also means that the old post-processor system has been deprecated, and you should remove the
+"postprocessors" objects from your configuration:
+
+```yaml
+apps:
+  game:
+    delivery:
+      postprocessors: etc
+```
+
 ### Archivist
 
 * Added the ability to turn off expiration time support in file vault (see the
