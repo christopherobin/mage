@@ -76,6 +76,11 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
 * Tested and fixed the general trunk of the environment setup script (thanks Marc!).
 * Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
 
+## Minor improvements
+
+* The template for new projects now sets the first version to v0.1.0 (rather than v0.0.1).
+
+
 ## v0.21.0 - Colonel Meow
 
 ### Template updates
