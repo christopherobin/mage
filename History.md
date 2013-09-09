@@ -2,11 +2,23 @@
 
 ## vNEXT
 
-Bugfixes:
-* Tested and fixed the general trunk of the environment setup script.
-* Tested and fixed the environment setup script for Ubuntu.
-* When using node 0.10+, calling the cron client would result in the commande center client staying
-  in a busy state, preventing any future call and killing the performances.
+### Archivist
+
+* Added the ability to turn off expiration time support in file vault (see the
+  [file vault documentation](./lib/archivist/vaults/file/Readme.md) for more information).
+* The file vault now runs the expire scan on up to 20 files in parallel to speed up performance.
+* Refactored the archivist setup sequence for vastly better error reporting.
+* `archivist.assertTopicAbilities()`: where in the past, a single vault that supports the required
+  operations would be enough, now all configured vaults that will be used must support it. This
+  moves these errors from runtime to startup.
+
+### Bugfixes
+
+* When using node 0.10+, calling the cron client would result in the command center client staying
+  in a busy state, preventing any future call and killing performance.
+* Tested and fixed the general trunk of the environment setup script (thanks Marc!).
+* Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
+
 
 ## v0.21.0 - Colonel Meow
 
