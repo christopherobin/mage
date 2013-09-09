@@ -11,6 +11,11 @@
   operations would be enough, now all configured vaults that will be used must support it. This
   moves these errors from runtime to startup.
 
+### Bugfixes
+
+* When using node 0.10+, calling the cron client would result in the command center client staying
+  in a busy state, preventing any future call and killing performance.
+
 
 ## v0.21.0 - Colonel Meow
 
