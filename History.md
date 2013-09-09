@@ -2,6 +2,8 @@
 
 ## vNEXT
 
+* Tested and fixed the general trunk of the environment setup script.
+* Tested and fixed the environment setup script for Ubuntu.
 
 ## v0.21.0 - Colonel Meow
 
