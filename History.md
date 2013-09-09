@@ -2,6 +2,15 @@
 
 ## vNEXT
 
+### Archivist
+
+* Added the ability to turn off expiration time support in file vault (see the
+  [file vault documentation](./lib/archivist/vaults/file/Readme.md) for more information).
+* Refactored the archivist setup sequence for vastly better error reporting.
+* `archivist.assertTopicAbilities()`: where in the past, a single vault that supports the required
+  operations would be enough, now all configured vaults that will be used must support it. This
+  moves these errors from runtime to startup.
+
 
 ## v0.21.0 - Colonel Meow
 
