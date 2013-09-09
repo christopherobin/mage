@@ -38,7 +38,7 @@ replacements = {
 	APP_PATH: appPath,
 	APP_PATHNAME: pathBasename(appPath),
 	APP_DESCRIPTION: '',
-	APP_VERSION: '0.0.1',
+	APP_VERSION: '0.1.0',
 	APP_AUTHOR: 'Wizcorp',
 	APP_LICENSE: 'Private',
 	APP_REPO: '',
