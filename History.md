@@ -16,6 +16,8 @@
 
 * When using node 0.10+, calling the cron client would result in the command center client staying
   in a busy state, preventing any future call and killing performance.
+* Tested and fixed the general trunk of the environment setup script (thanks Marc!).
+* Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
 
 
 ## v0.21.0 - Colonel Meow
