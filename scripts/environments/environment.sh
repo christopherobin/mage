@@ -56,7 +56,7 @@ echoOk(){
 }
 
 if [ "${KERNEL}" == "Linux" ]; then
-    OS=$(lsb_release -a | head -n2 | tail -n1 | cut -d":" -f2 | cut -b 2-);
+    OS=$(lsb_release -is);
 elif [ "${KERNEL}" == "Darwin" ]; then
     OS="OSX";
 else
@@ -75,7 +75,8 @@ else
     echo "----------------------------------------------------" | cyan;
     echo "";
 
-    (curl http://www.wizcorp.jp/mage/environment-${OS}.sh 2> /dev/null | sh) || echoError "Your operating system is not supported";
+    (curl http://www.wizcorp.jp/mage/${OS}.sh -s -o ${OS}.sh) || echoError "Your operating system is not supported";
+    . ./${OS}.sh || echoError "Something went wrong while running OS-specific installation process"
 fi
 
 #
@@ -88,7 +89,7 @@ function nvm_install () {
     echo "-----------------------------------------" | cyan;
     echo "";
 
-    git clone git@github.com:creationix/nvm ~/.nvm || return 1;
+    git clone https://github.com/creationix/nvm.git ~/.nvm || return 1;
 
     if [ -f ~/.bashrc ]; then
         echo ". ~/.nvm/nvm.sh" >> ~/.bashrc;
