@@ -69,6 +69,28 @@ apps:
 File logger now stores both the time and date in [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)
 format (YYYY-MM-DDTHH:mm:ss.sssZ).
 
+### Changed vaults' setup to async
+
+From time to time, users would get weird errors when encountering a syntax error in their own module that would appear
+as a vault error or something similar. The issue is caused by some functions not being consistent on the way they return,
+either being async or sync and context being mixed up because of that. Vaults are a big culprit for this kind of stuff,
+and it is now fixed.
+
+See this link from [isaacs](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony) for more details about
+the issues that not being consistent between async and sync can cause.
+
+There is still a lot of code that doesn't respect that line of conduct, when encountering this in your own modules,
+wrapping your instant callbacks in `process.nextTick` will solve the issue most of the time. If the issue is instead in
+MAGE, then please send us the whole stack-trace so that we can fix the issue and make your debugging a healthier
+experience. When doing so please make sure to send us the whole stack-trace, see the next item for that.
+
+### Added a --stack-limit argument to the CLI
+
+By default node.js truncate stacks to 10 items, that may be good enough in most cases but sometime when using async and
+very deep levels of nested callbacks it may not be enough, in those cases you can pass `--stack-limit <n>` to your game
+command-line to change the stack limit to a deeper level. Acknowledge though that using large numbers will make your
+code slower when creating Error objects. Using 0 will disable stack trace collection.
+
 ### Bugfixes
 
 * The `maintenance` event was not being fired correctly in the MAGE loader.
@@ -80,7 +102,7 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
 
 ## Minor improvements
 
-* Savvy doesn't need a host anymore when listening on a port, will default to INADDR_ANY if
+* Savvy doesn't need a host anymore when listening on a port, will default to `INADDR_ANY` if
   undefined.
 * The script that sets up git pre-commit hooks has been rewritten in JavaScript.
 * The template for new projects now sets the first version to v0.1.0 (rather than v0.0.1).
