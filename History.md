@@ -74,7 +74,8 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
 From time to time, users would get weird errors when encountering a syntax error in their own module
 that would appear as a vault error or something similar. The issue is caused by some functions not
 being consistent on the way they return, either being async or sync and context being mixed up
-because of that. Vaults are a big culprit for this kind of stuff, and it is now fixed.
+because of that. Vaults are a big culprit for this kind of stuff, and it is now fixed for the setup
+phase.
 
 See this link from [isaacs](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony) for
 more details about the issues that not being consistent between async and sync can cause.
