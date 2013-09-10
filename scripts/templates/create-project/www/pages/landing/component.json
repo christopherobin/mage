@@ -16,5 +16,8 @@
 	],
 	"scripts": [
 		"index.js"
+	],
+	"styles": [
+		"styles.css"
 	]
 }
