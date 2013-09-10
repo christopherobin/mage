@@ -80,9 +80,12 @@ format (YYYY-MM-DDTHH:mm:ss.sssZ).
 
 ## Minor improvements
 
-* Savvy doesn't need a host anymore when listening on a port, will default to INADDR_ANY if undefined.
+* Savvy doesn't need a host anymore when listening on a port, will default to INADDR_ANY if
+  undefined.
 * The script that sets up git pre-commit hooks has been rewritten in JavaScript.
 * The template for new projects now sets the first version to v0.1.0 (rather than v0.0.1).
+* We removed `component.json` from the root directory of the "create project" template, since we
+  don't follow that model anymore.
 
 
 ## v0.21.0 - Colonel Meow
