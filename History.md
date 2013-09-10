@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.22.0 - Builder Cat
 
 ### Component plugins
 
