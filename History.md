@@ -1,5 +1,35 @@
 # Release history
 
+## v0.22.1 - Sock Cat
+
+### Socket files
+
+MAGE can create up to four `.sock` unix socket files in your game's root directory. These are used
+by:
+
+- The HTTP server
+- The Savvy HTTP server
+- The WebSocket log writer (two sock files)
+
+There were circumstances under which these files would not clean up on shutdown. These cases have
+now been resolved. The only case under which they can still not be cleaned up is on `SIGKILL` (or:
+`kill -9`), because on that signal the operating system terminates the program without giving the
+program the ability to intervene.
+
+### Daemonizer
+
+The daemonizer's behavior has been changed to be a bit more friendly:
+
+* `start` will now succeed if the app is already running.
+* `stop` will now succeed if the app is not running.
+* `restart` will no longer abort if the app is not running.
+* `restart` will no longer abort if the app was stopped, but returned an error on shutdown.
+
+### Fixes
+
+The archivist documentation that described the client API was out-of-date. This has been resolved.
+
+
 ## v0.22.0 - Builder Cat
 
 ### Component plugins
