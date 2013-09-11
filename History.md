@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.22.1 - Sock Cat
 
 ### Socket files
 
