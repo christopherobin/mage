@@ -25,6 +25,10 @@ The daemonizer's behavior has been changed to be a bit more friendly:
 * `restart` will no longer abort if the app is not running.
 * `restart` will no longer abort if the app was stopped, but returned an error on shutdown.
 
+### Fixes
+
+The archivist documentation that described the client API was out-of-date. This has been resolved.
+
 
 ## v0.22.0 - Builder Cat
 
