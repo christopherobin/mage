@@ -1,5 +1,13 @@
 # Release history
 
+## vNEXT
+
+### Minor improvements
+
+* When a config file cannot be found for an environment, the name of the environment is now logged
+  with the warning.
+
+
 ## v0.22.1 - Sock Cat
 
 ### Socket files
