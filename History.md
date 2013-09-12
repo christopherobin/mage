@@ -7,6 +7,10 @@
 * When a config file cannot be found for an environment, the name of the environment is now logged
   with the warning.
 
+### Bugfixes
+
+* A missing migrations folder for a vault could yield a nasty error.
+
 
 ## v0.22.1 - Sock Cat
 
