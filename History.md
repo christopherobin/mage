@@ -6,6 +6,7 @@
 
 * When a config file cannot be found for an environment, the name of the environment is now logged
   with the warning.
+* Vault migrations now yield clear errors when an `up` or `down` method is missing.
 
 ### Bugfixes
 
