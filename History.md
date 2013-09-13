@@ -4,6 +4,10 @@
 
 ### Minor improvements
 
+* We optimized the boot path the Message Server takes, allowing it to be accessible to other
+  systems, but not yet discovering and connecting to other hosts on MMRP. This should avoid some
+  error cases when running the `component-install` or `create-phantom` CLI commands while an app is
+  already running.
 * When a config file cannot be found for an environment, the name of the environment is now logged
   with the warning.
 * Vault migrations now yield clear errors when an `up` or `down` method is missing.
