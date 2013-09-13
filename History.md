@@ -2,6 +2,17 @@
 
 ## vNEXT
 
+### show-config
+
+The CLI command `show-config` now can take a `--origins` argument which will show for each config
+entry which configuration file it came from. Also, when printing configuration, at the top of the
+output is now a distinct list of all the files that made up this configuration. This file list is
+output on STDERR, so it does not affect the output when you run:
+
+```sh
+./game show-config archivist > ./archivist-config.json
+```
+
 ### Minor improvements
 
 * We optimized the boot path the Message Server takes, allowing it to be accessible to other
@@ -11,6 +22,8 @@
 * When a config file cannot be found for an environment, the name of the environment is now logged
   with the warning.
 * Vault migrations now yield clear errors when an `up` or `down` method is missing.
+* We have rearranged some boot-time operations to allow verbose mode to kick in earlier so it can
+  display what's going on inside the config system.
 
 ### Bugfixes
 
