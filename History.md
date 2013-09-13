@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Bugfixes
+
+* The websocket logger could under certain circumstances leave socket files behind.
+
 
 ## v0.22.2 - Puss in Boot
 
