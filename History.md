@@ -7,7 +7,7 @@
 The CLI command `show-config` now can take a `--origins` argument which will show for each config
 entry which configuration file it came from. Also, when printing configuration, at the top of the
 output is now a distinct list of all the files that made up this configuration. This file list is
-output on STDERR, so it does not affect the output when you run:
+output on `stderr`, so it does not affect the output when you run:
 
 ```sh
 ./game show-config archivist > ./archivist-config.json
