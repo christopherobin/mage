@@ -1,5 +1,36 @@
 # Release history
 
+## v0.22.2 - Puss in Boot
+
+### show-config
+
+The CLI command `show-config` now can take a `--origins` argument which will show for each config
+entry which configuration file it came from. Also, when printing configuration, at the top of the
+output is now a distinct list of all the files that made up this configuration. This file list is
+output on `stderr`, so it does not affect the output when you run:
+
+```sh
+./game show-config archivist > ./archivist-config.json
+```
+
+### Minor improvements
+
+* We optimized the boot path the Message Server takes, allowing it to be accessible to other
+  systems, but not yet discovering and connecting to other hosts on MMRP. This should avoid some
+  error cases when running the `component-install` or `create-phantom` CLI commands while an app is
+  already running.
+* When a config file cannot be found for an environment, the name of the environment is now logged
+  with the warning.
+* Vault migrations now yield clear errors when an `up` or `down` method is missing.
+* We have rearranged some boot-time operations to allow verbose mode to kick in earlier so it can
+  display what's going on inside the config system.
+
+### Bugfixes
+
+* A missing migrations folder for a vault could yield a nasty error.
+* A build failure on boot-time was not treated fatal, leaving the application running but unusable.
+
+
 ## v0.22.1 - Sock Cat
 
 ### Socket files
