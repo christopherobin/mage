@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.22.2 - Puss in Boot
 
 ### show-config
