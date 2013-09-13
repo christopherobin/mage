@@ -15,6 +15,7 @@
 ### Bugfixes
 
 * A missing migrations folder for a vault could yield a nasty error.
+* A build failure on boot-time was not treated fatal, leaving the application running but unusable.
 
 
 ## v0.22.1 - Sock Cat
