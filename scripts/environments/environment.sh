@@ -118,7 +118,7 @@ function node_latest () {
     echoOk "Node latest ${NODE_VERSION} installed successfully";
 }
 
-if type nvm > /dev/null; then
+if type nvm 2> /dev/null > /dev/null; then
     echoOk "NVM is already installed!";
 else
     nvm_install || echoError "Could not install Node Version Manager (NVM)";
