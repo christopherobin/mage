@@ -253,8 +253,7 @@ exports.execute = function (state, fromPlayerId, toPlayerId, itemType, amount, c
 			return callback(error);
 		}
 		
-		//If no error, call state.respond to pass data to the client
-
+		// If no error, call state.respond to pass data to the client
 		state.respond(data);
 		callback();
 	});
