@@ -2,6 +2,184 @@
 
 ## vNEXT
 
+### Bugfixes
+
+* The websocket logger could under certain circumstances leave socket files behind.
+
+
+## v0.22.2 - Puss in Boot
+
+### show-config
+
+The CLI command `show-config` now can take a `--origins` argument which will show for each config
+entry which configuration file it came from. Also, when printing configuration, at the top of the
+output is now a distinct list of all the files that made up this configuration. This file list is
+output on `stderr`, so it does not affect the output when you run:
+
+```sh
+./game show-config archivist > ./archivist-config.json
+```
+
+### Minor improvements
+
+* We optimized the boot path the Message Server takes, allowing it to be accessible to other
+  systems, but not yet discovering and connecting to other hosts on MMRP. This should avoid some
+  error cases when running the `component-install` or `create-phantom` CLI commands while an app is
+  already running.
+* When a config file cannot be found for an environment, the name of the environment is now logged
+  with the warning.
+* Vault migrations now yield clear errors when an `up` or `down` method is missing.
+* We have rearranged some boot-time operations to allow verbose mode to kick in earlier so it can
+  display what's going on inside the config system.
+
+### Bugfixes
+
+* A missing migrations folder for a vault could yield a nasty error.
+* A build failure on boot-time was not treated fatal, leaving the application running but unusable.
+
+
+## v0.22.1 - Sock Cat
+
+### Socket files
+
+MAGE can create up to four `.sock` unix socket files in your game's root directory. These are used
+by:
+
+- The HTTP server
+- The Savvy HTTP server
+- The WebSocket log writer (two sock files)
+
+There were circumstances under which these files would not clean up on shutdown. These cases have
+now been resolved. The only case under which they can still not be cleaned up is on `SIGKILL` (or:
+`kill -9`), because on that signal the operating system terminates the program without giving the
+program the ability to intervene.
+
+### Daemonizer
+
+The daemonizer's behavior has been changed to be a bit more friendly:
+
+* `start` will now succeed if the app is already running.
+* `stop` will now succeed if the app is not running.
+* `restart` will no longer abort if the app is not running.
+* `restart` will no longer abort if the app was stopped, but returned an error on shutdown.
+
+### Fixes
+
+The archivist documentation that described the client API was out-of-date. This has been resolved.
+
+
+## v0.22.0 - Builder Cat
+
+### Component plugins
+
+`WebApp` objects that are instantiated for each app are now EventEmitters. This allows builders to
+share information on a per-app basis. When components are built, the `build-component` event is
+emitted, which passes the `builder` object (from
+[component-builder](https://npmjs.org/package/component-builder)) and the `buildTarget` objects that
+MAGE creates for each page that gets built.
+
+Having access to the builder allows you to register plugins. For example:
+
+```sh
+npm install -s component-uglifyjs
+npm install -s component-less
+```
+
+```javascript
+mage.setup(function (error, apps) {
+	// when mage is running in development mode, we don't uglify
+
+	if (!mage.isDevelopmentMode()) {
+		var uglify = require('component-uglifyjs');
+
+		apps.game.on('build-component', function (builder, buildTarget) {
+			builder.use(uglify);
+		});
+	}
+
+	var less = require('component-less');
+
+	Object.keys(apps).forEach(function (appName) {
+		apps[appName].on('build-component', function (builder, buildTarget) {
+			builder.use(less);
+		});
+	});
+});
+```
+
+This change, which allows us to do all CSS related operations through component, also means that our
+builder will no longer brute-force scan directories for stylesheet files. Instead, the `"styles"`
+field from your `component.json` files is used. So please make sure you are using these fields
+correctly.
+
+This also means that the old post-processor system has been deprecated, and you should remove the
+"postprocessors" objects from your configuration:
+
+```yaml
+apps:
+  game:
+    delivery:
+      postprocessors: etc
+```
+
+### Archivist
+
+* Added the ability to turn off expiration time support in file vault (see the
+  [file vault documentation](./lib/archivist/vaults/file/Readme.md) for more information).
+* The file vault now runs the expire scan on up to 20 files in parallel to speed up performance.
+* Refactored the archivist setup sequence for vastly better error reporting.
+* `archivist.assertTopicAbilities()`: where in the past, a single vault that supports the required
+  operations would be enough, now all configured vaults that will be used must support it. This
+  moves these errors from runtime to startup.
+
+### File logger update
+
+File logger now stores both the time and date in [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)
+format (YYYY-MM-DDTHH:mm:ss.sssZ).
+
+### Changed vaults' setup to async
+
+From time to time, users would get weird errors when encountering a syntax error in their own module
+that would appear as a vault error or something similar. The issue is caused by some functions not
+being consistent on the way they return, either being async or sync and context being mixed up
+because of that. Vaults are a big culprit for this kind of stuff, and it is now fixed for the setup
+phase.
+
+See this link from [isaacs](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony) for
+more details about the issues that not being consistent between async and sync can cause.
+
+There is still a lot of code that doesn't respect that line of conduct. When encountering this in
+your own modules, wrapping your instant callbacks in `process.nextTick` will solve the issue most of
+the time. If the issue is instead in MAGE, then please send us the whole stack-trace so that we can
+fix the issue and make your debugging a healthier experience. When doing so please make sure to send
+us the whole stack-trace (see the next item for that).
+
+### Added a --stack-limit argument to the CLI
+
+By default Node.js truncates stacks to 10 items. That may be good enough in most cases but sometimes
+when using the `async` module and very deep levels of nested callbacks it may not be enough, in
+those cases you can pass `--stack-limit <n>` to your game's command-line to change the stack limit
+to a deeper level. Acknowledge though that using large numbers will make your code slower when
+creating Error objects. Using 0 will disable stack trace collection.
+
+### Bugfixes
+
+* The `maintenance` event was not being fired correctly in the MAGE loader.
+* When using node 0.10+, calling the cron client would result in the command center client staying
+  in a busy state, preventing any future call and killing performance.
+* If the `NODE_ENV` environment variable is not set, MAGE would not abort appropriately.
+* Tested and fixed the general trunk of the environment setup script (thanks Marc!).
+* Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
+
+## Minor improvements
+
+* Savvy doesn't need a host anymore when listening on a port, will default to `INADDR_ANY` if
+  undefined.
+* The script that sets up git pre-commit hooks has been rewritten in JavaScript.
+* The template for new projects now sets the first version to v0.1.0 (rather than v0.0.1).
+* We removed `component.json` from the root directory of the "create project" template, since we
+  don't follow that model anymore.
+
 
 ## v0.21.0 - Colonel Meow
 

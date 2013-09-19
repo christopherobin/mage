@@ -3,7 +3,7 @@
 #
 # 12 and up
 #
-UBUNTU_VERSION="$(lsb_release -r | cut -b10)";
+UBUNTU_VERSION="$(lsb_release -r | cut -b10- | cut -d"." -f1)";
 
 if test ${UBUNTU_VERSION} -lt 12; then
     echoError "Only Ubuntu 12 and up is currently supported";
@@ -16,7 +16,7 @@ function repo_install () {
     echo "------------------------------------------" | cyan;
     echo "";
 
-    sudo echo "deb http://backports.UBUNTU.org/UBUNTU-backports squeeze-backports main" >> /etc/apt/sources.list || return 1;
+    echo "deb http://backports.UBUNTU.org/UBUNTU-backports squeeze-backports main" | sudo tee -a /etc/apt/sources.list  || return 1;
     sudo apt-get update;
 
     echoOk "Remote repository install completed";

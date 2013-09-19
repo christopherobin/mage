@@ -54,7 +54,9 @@ the necessary libraries to be installed.
 If you have cURL installed on your environment, you can run the following to set up your machine.
 
 ```bash
-curl http://www.wizcorp.jp/mage/environment.sh | sh
+curl http://www.wizcorp.jp/mage/environment.sh | bash
+. ~/.nvm/nvm.sh
+nvm use 0.8
 ```
 
 Alternatively, you can manually install them by following these steps.
