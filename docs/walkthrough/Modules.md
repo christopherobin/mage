@@ -248,7 +248,16 @@ exports.params = ['fromPlayerId', 'toPlayerId', 'itemType', 'amount'];
 exports.execute = function (state, fromPlayerId, toPlayerId, itemType, amount, callback) {
 	// Simply proxy the request into the gifting module's logic.
 
-	mage.gifting.gift(state, fromPlayerId, toPlayerId, itemType, amount, callback);
+	mage.gifting.gift(state, fromPlayerId, toPlayerId, itemType, amount, function(error, data) {
+		if (error) {
+			callback(error);
+		}
+		
+		//If no error, call state.respond to pass data to the client
+		state.respond(data);
+		callback();
+	}
+	);
 };
 ```
 
