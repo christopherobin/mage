@@ -8,7 +8,7 @@ After more constructive conversations between various parties involved, we have 
 Makefile format (again). This new format should make it easier to do continuous integration tests,
 and should make it more straight forward for developers new to a project to get started.
 
-**In a nutshell**
+#### In a nutshell
 
 * `make all` now does a full installation of all dependencies and will create and migrate databases
   if possible and required.
@@ -25,16 +25,18 @@ cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./sc
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
 
-Then every developer should run:
+#### For every developer
+
+Because the make commands changed for linting staged files, the pre-commit git hook should be
+rewritten for each developer working on the project. Each developer should run:
 
 ```sh
 make dev
 ```
 
-And accept the suggested default.
+And accept the suggested default make-arguments.
 
-
-Here's the updated full `make help` output:
+#### The new `make help` output
 
 ```
 Getting started:
