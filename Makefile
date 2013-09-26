@@ -12,13 +12,13 @@ define helpStarting
 	@echo "Getting started:"
 	@echo
 	@echo "  make help              Prints this help."
-	@echo "  make install           Installs the environment (shortcut for install-deps)."
+	@echo "  make deps              Installs all dependencies (shortcut for deps-npm)."
 	@echo
-	@echo "  make install-deps      Installs all NPM dependencies."
+	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
 	@echo
 endef
 
-.PHONY: help install install-deps
+.PHONY: help deps deps-npm
 
 help:
 	@echo
@@ -27,9 +27,9 @@ help:
 	$(helpQuality)
 	$(helpCleanup)
 
-install: install-deps
+deps: deps-npm
 
-install-deps:
+deps-npm:
 	npm install
 
 
@@ -56,49 +56,66 @@ dev-githooks:
 
 define helpQuality
 	@echo "Quality:"
+	@echo "  make test              Runs all tests (shortcut for test-lint and test-unit)."
+	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
-	@echo "  make lint              Lints every JavaScript and JSON file in the project."
-	@echo "  make test              Runs all unit tests."
-	@echo "  make coverage          Creates a unit test coverage report."
-	@echo "  make complexity        Creates a Plato code complexity report."
+	@echo "  make test-lint         Lints every JavaScript and JSON file in the project."
+	@echo "  make test-unit         Runs every unit test in $(TEST)."
+	@echo "  make report-complexity Creates a Plato code complexity report."
+	@echo "  make report-coverage   Creates a unit test coverage report."
 	@echo
-	@echo "  make lint path=abc     Lints the given path recursively (file or folder containing JavaScript and JSON files)."
-	@echo "  make lint-staged       Lints every JavaScript and JSON file in the project that is staged to be committed."
+	@echo "  available variables when linting:"
+	@echo "    filter=staged        Limits linting to files that are staged to be committed."
+	@echo "    path=./some/folder   Lints the given path recursively (file or a folder containing JavaScript and JSON files)."
 	@echo
 endef
 
-.PHONY: lint-all lint lint-staged test instrument coverage complexity
+.PHONY: lint lint-all test report test-lint test-unit report-complexity report-coverage
+
+# lint is deprecated
+lint: test-lint
+	@echo ">>> Warning: The make lint target has been deprecated, please change it to 'test-lint'."
 
 # lint-all is deprecated
-lint-all: lint
-	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'lint'."
+lint-all: test-lint
+	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'test-lint'."
 
-lint:
+test: test-lint test-unit
+report: report-complexity report-coverage
+
+define lintPath
+	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
+endef
+
+test-lint:
 ifdef path
-	@echo Linting $(path)
-	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js $(path)
+	$(call lintPath,$(path))
 else
-	@echo Linting all files
-	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js .
+  ifdef filter
+    ifeq ($(filter),staged)
+	git diff --raw --name-only --cached --diff-filter=ACMR | grep -E '\.js(on)?$$' | xargs -I '{}' $(call lintPath,{})
+    else
+	$(error Unknown filter: $(filter))
+    endif
+  else
+	$(call lintPath,.)
+  endif
 endif
 
-lint-staged:
-	git diff --raw --name-only --cached --diff-filter=ACMR | grep -E '\.js(on)?$$' | xargs -I '{}' $(BIN)/jshint --config .jshintrc --reporter $(SCRIPTS)/lib/humanJshintReporter.js '{}'
-
-test:
+test-unit:
 	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
 	$(BIN)/mocha -R spec --recursive $(shell find $(LIB) -type d -name test)
+
+report-complexity:
+	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
+	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 instrument: clean-coverage
 	$(BIN)/istanbul instrument --output $(LIBCOV) --no-compact --variable global.__coverage__ $(LIB)
 
-coverage: instrument
+report-coverage: instrument
 	$(BIN)/mocha -R mocha-istanbul --recursive $(shell find $(LIBCOV) -type d -name test)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
-
-complexity:
-	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
-	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 
 # CLEANUP
