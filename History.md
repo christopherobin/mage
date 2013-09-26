@@ -2,6 +2,92 @@
 
 ## vNEXT
 
+### Makefile
+
+After more constructive conversations between various parties involved, we have decided on a new
+Makefile format (again). This new format should make it easier to do continuous integration tests,
+and should make it more straight forward for developers new to a project to get started.
+
+#### In a nutshell
+
+* `make all` now does a full installation of all dependencies and will create and migrate databases
+  if possible and required.
+* `make test` now runs the lint test and unit tests, and lint-staged has become an argument
+  `filter=staged` which can be applied on `make test` or `make test-lint`.
+* `make report` now creates the Plato and Istanbul reports.
+
+#### How to update your project
+
+Do this once and commit the changes to your project:
+
+```sh
+cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
+cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
+```
+
+#### For every developer
+
+Because the make commands changed for linting staged files, the pre-commit git hook should be
+rewritten for each developer working on the project. Each developer should run:
+
+```sh
+make dev
+```
+
+And accept the suggested default make-arguments.
+
+#### The new `make help` output
+
+```
+Getting started:
+
+  make help              Prints this help.
+  make version           Prints version information about the game, MAGE and Node.js.
+  make all               Installs all dependencies and datastores (shortcut for deps and datastores).
+
+  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules).
+  make datastores        Creates datastores and runs all migrations up to the current version.
+
+  make deps-npm          Downloads and installs all NPM dependencies.
+  make deps-component    Downloads and installs all external components.
+  make deps-submodules   Downloads updates on git submodules.
+
+Development:
+
+  make dev               Sets up the development environment (shortcut for dev-githooks).
+
+  make dev-githooks      Sets up git hooks.
+
+Quality:
+  make test              Runs all tests (shortcut for test-lint and test-unit).
+  make report            Creates all reports (shortcut for report-complexity and report-coverage).
+
+  make test-lint         Lints every JavaScript and JSON file in the project.
+  make test-unit         Runs every unit test in ./test.
+  make report-complexity Creates a Plato code complexity report.
+  make report-coverage   Creates a unit test coverage report.
+
+  available variables when linting:
+    filter=staged        Limits linting to files that are staged to be committed.
+    path=./some/folder   Lints the given path recursively (file or a folder containing JavaScript and JSON files).
+
+Running:
+
+  make start             Starts the application daemonized.
+  make stop              Stops the daemonized application.
+  make restart           Restarts the daemonized application.
+  make reload            Recycles all workers with zero-downtime (not to be used on version changes).
+  make status            Prints the status of the daemonized application.
+
+Cleanup:
+
+  make clean             Cleans all caches and reports.
+
+  make clean-npm         Cleans the NPM cache.
+  make clean-coverage    Removes the test coverage report and its instrumented files.
+  make clean-complexity  Removes the Plato report.
+```
+
 ### Bugfixes
 
 * The websocket logger could under certain circumstances leave socket files behind.

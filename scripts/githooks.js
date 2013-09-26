@@ -4,10 +4,12 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var readline = require('readline');
 
+var defaultMakeArgs = 'test filter=staged';
+
 // functions
 
 function makePreCommit(inp, gitTop, hooksPath) {
-	inp = inp || 'lint-staged test';
+	inp = inp || defaultMakeArgs;
 
 	console.log('Make command that will be run on commit: ' + inp);
 	console.log('Creating pre-commit script...');
@@ -51,7 +53,7 @@ function createGitHooks(gitTop) {
 		output: process.stdout
 	});
 
-	rl.question('Make command to run before commit (default: lint-staged test): ', function (answer) {
+	rl.question('Make command to run before commit (default: ' + defaultMakeArgs + '): ', function (answer) {
 		makePreCommit(answer, gitTop, hooksPath);
 		rl.close();
 	});
