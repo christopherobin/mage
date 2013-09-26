@@ -92,6 +92,16 @@ Cleanup:
 
 * The websocket logger could under certain circumstances leave socket files behind.
 
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| ws         | 0.4.30 | 0.4.31 |
+| jshint     | 2.1.10 | 2.1.11 |
+| mocha      | 1.12.1 | 1.13.0 |
+| istanbul   | 0.1.43 | 0.1.44 |
+| plato      | 0.6.1  | 0.6.2  |
+
 
 ## v0.22.2 - Puss in Boot
 
@@ -257,7 +267,7 @@ creating Error objects. Using 0 will disable stack trace collection.
 * Tested and fixed the general trunk of the environment setup script (thanks Marc!).
 * Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
 
-## Minor improvements
+### Minor improvements
 
 * Savvy doesn't need a host anymore when listening on a port, will default to `INADDR_ANY` if
   undefined.
