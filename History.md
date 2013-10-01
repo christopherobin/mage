@@ -90,6 +90,7 @@ Cleanup:
 
 ### Bugfixes
 
+* The `add` method of the MySQL vault was broken.
 * The websocket logger could under certain circumstances leave socket files behind.
 
 ### Dependency updates
