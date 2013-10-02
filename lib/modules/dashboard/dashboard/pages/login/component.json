@@ -4,6 +4,7 @@
 	"local": [
 		"mage",
 		"loader",
+		"logger",
 		"assets",
 		"session",
 		"dashboard"
