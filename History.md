@@ -2,16 +2,43 @@
 
 ## vNEXT
 
-### Makefile
+### Removed: serverCache
+
+The configuration entry `apps.myapp.delivery.serverCache` has been removed in favor of the already
+existing development mode. From now on, when development mode is turned on MAGE will not prebuild
+any apps. When it is turned off, MAGE will prebuild all apps.
+
+### Offline builds
+
+MAGE now allows you to generate builds for the web once. You can do this by running `make build`,
+which will generate the builds and store them in a `./build` directory in your project, which is
+automatically created. Builds are only loaded when development mode is turned off. If you have to,
+you can test your builds by running your game like this: `DEVELOPMENT_MODE=false ./game`.
+
+Because builds may get outdated if not regenerated after code changes happen, it's advisable not to
+commit them into your repository (add `/build` to your `.gitignore` file.), unless you recreate the
+build automatically using a pre-commit hook.
+
+Because the generated build is not required to lint (and most likely won't), add the `build/**` to
+your `.jshintignore` file.
+
+> **Why bother?**
+>
+> This is a useful feature for production environments. Normally, each worker in a cluster (often
+> configured to be one worker per CPU core) would generate the same build and keep this in memory. It
+> works, but can get very slow due to the hard disk access involved. Generating these builds once and
+> then reusing them solves the problem and becomes more manageable for production deployments.
+
+### Makefile updates
 
 After more constructive conversations between various parties involved, we have decided on a new
 Makefile format (again). This new format should make it easier to do continuous integration tests,
-and should make it more straight forward for developers new to a project to get started.
+and should make it more straight forward to get started, for developers who are new to a project.
 
 #### In a nutshell
 
-* `make all` now does a full installation of all dependencies and will create and migrate databases
-  if possible and required.
+* `make all` now does a full installation of all dependencies, will create and migrate databases if
+  possible and required, and will generate a build of your apps.
 * `make test` now runs the lint test and unit tests, and lint-staged has become an argument
   `filter=staged` which can be applied on `make test` or `make test-lint`.
 * `make report` now creates the Plato and Istanbul reports.
@@ -43,10 +70,11 @@ Getting started:
 
   make help              Prints this help.
   make version           Prints version information about the game, MAGE and Node.js.
-  make all               Installs all dependencies and datastores (shortcut for deps and datastores).
+  make all               Installs all dependencies and datastores (shortcut for deps, datastores and build).
 
   make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules).
   make datastores        Creates datastores and runs all migrations up to the current version.
+  make build             Creates builds for all apps that have serverCache configured.
 
   make deps-npm          Downloads and installs all NPM dependencies.
   make deps-component    Downloads and installs all external components.
@@ -83,6 +111,7 @@ Cleanup:
 
   make clean             Cleans all caches and reports.
 
+  make clean-build       Cleans all application builds.
   make clean-npm         Cleans the NPM cache.
   make clean-coverage    Removes the test coverage report and its instrumented files.
   make clean-complexity  Removes the Plato report.
@@ -93,6 +122,13 @@ Cleanup:
 * Migrations scripts can now be written for DynamoDB, please refer to the vault's [Readme.md](lib/archivist/vaults/dynamodb/Readme.md)
 for more details about those scripts and the rules around them.
 * Documentation has been updated to take in account local servers.
+
+### Minor improvements
+
+* Regular expressions now stringify neatly when passed to the logger.
+* Logging of asset serving has become a little bit more verbose.
+* Boot durations are now logged for each process.
+* Apps were also instantiated on the master process, that has been removed.
 
 ### Bugfixes
 
