@@ -93,11 +93,19 @@ Cleanup:
   make clean-complexity  Removes the Plato report.
 ```
 
+### DynamoDB
+
+* Migrations scripts can now be written for DynamoDB, please refer to the vault's [Readme.md](lib/archivist/vaults/dynamodb/Readme.md)
+for more details about those scripts and the rules around them.
+* Documentation has been updated to take in account local servers.
+
 ### Bugfixes
 
 * The `add` method of the MySQL vault was broken.
 * The websocket logger could under certain circumstances leave socket files behind.
 * The client logger was not overriding the console as advertised.
+* The DynamoDB topic APIs `deserialize` and `createKey` were broken.
+* Fixed dead links in the API doc of the DynamoDB vault.
 
 ### Dependency updates
 
