@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Logger
+
+The logger client now automatically logs uncaught exceptions. That means that if you currently have
+this set up manually, you should remove that code from your codebase.
+
 ### Makefile
 
 After more constructive conversations between various parties involved, we have decided on a new
@@ -92,6 +97,7 @@ Cleanup:
 
 * The `add` method of the MySQL vault was broken.
 * The websocket logger could under certain circumstances leave socket files behind.
+* The client logger was not overriding the console as advertised.
 
 ### Dependency updates
 
