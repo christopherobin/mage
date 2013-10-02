@@ -117,6 +117,11 @@ Cleanup:
   make clean-complexity  Removes the Plato report.
 ```
 
+### Archivist
+
+Added a method `addToCache` to archivist that allows the user to manually push data to the archivist
+cache, it should be used only in very specific cases. See the archivist documentation for more details.
+
 ### DynamoDB
 
 * Migrations scripts can now be written for DynamoDB, please refer to the vault's [Readme.md](lib/archivist/vaults/dynamodb/Readme.md)

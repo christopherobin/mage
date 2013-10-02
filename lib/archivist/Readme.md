@@ -453,6 +453,37 @@ the relevant vaults. This distribution is automatically done by the `state` obje
 closes without errors, so you should never have to call this yourself.
 
 
+### Manually adding data to the archivist memory cache
+
+```javascript
+archivist.addToCache(topic, index, data, mediaType, encoding);
+```
+
+This manually adds a value to the archivist cache based on its topic and index, so that next
+calls to `archivist.get` won't hit the database but pull the entry from memory. This can be used
+to cache a large amount of entries retrieved from the database that may be more efficient to retrieve
+in a single query instead of many `archivist.get` calls.
+
+For example:
+
+```javascript
+mysql.query('SELECT * FROM topicTable WHERE type = ?', type, function (err, rows) {
+	if (err) {
+		// error
+	}
+
+	for (var i = 0; i < rows.length; i++) {
+		var row = rows[i];
+		// cache the row
+		state.archivist.addToCache('topic', { index: row.index }, row.data,
+			row.mediaType, row.encoding);
+	}
+
+	// now run some heavy computation that uses archivist.get on that data
+	heavyComputation(cb);
+});
+```
+
 ## Client API
 
 The archivist is exposed on the browser through a MAGE module called "archivist". You can use it
