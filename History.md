@@ -125,12 +125,14 @@ Cleanup:
 ### Archivist
 
 Added a method `addToCache` to archivist that allows the user to manually push data to the archivist
-cache, it should be used only in very specific cases. See the archivist documentation for more details.
+cache, it should be used only in very specific cases. See the
+[archivist documentation](lib/archivist/Readme.md) for more details on how to use it.
 
-### DynamoDB
+#### DynamoDB
 
-* Migrations scripts can now be written for DynamoDB, please refer to the vault's [Readme.md](lib/archivist/vaults/dynamodb/Readme.md)
-for more details about those scripts and the rules around them.
+* Migration scripts can now be written for DynamoDB. Please refer to the vault's
+  [Readme.md](lib/archivist/vaults/dynamodb/Readme.md) for more details about those scripts and the
+  rules around them.
 * Documentation has been updated to take in account local servers.
 
 ### Minor improvements
