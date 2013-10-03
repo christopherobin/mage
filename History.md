@@ -2,9 +2,10 @@
 
 ## vNEXT
 
-### Minor improvements
+### Bugfixes
 
 * Removed `serverCache` configuration entry from the bootstrap template.
+* We forgot to update the default precommit command in v0.23.0 to the new Makefile test-target.
 
 
 ## v0.23.0 - Ninja Cat
