@@ -2,10 +2,16 @@
 
 ## vNEXT
 
-### Bugfixes
+### Bootstrap inconsistencies fixed
 
-* Removed `serverCache` configuration entry from the bootstrap template.
-* We forgot to update the default precommit command in v0.23.0 to the new Makefile test-target.
+We have removed the `serverCache` configuration entry from the bootstrap template.
+
+In v0.23.0 we forgot to update the default precommit command to the new Makefile test-target, so
+please run this one more time:
+
+```sh
+cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
+```
 
 
 ## v0.23.0 - Ninja Cat
