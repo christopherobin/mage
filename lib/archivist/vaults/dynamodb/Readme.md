@@ -14,6 +14,8 @@ Excerpt from Amazon:
 
 ## Configuration
 
+For production, use a config similar to this:
+
 ```yaml
 dynamodb:
     type: "dynamodb"
@@ -21,6 +23,20 @@ dynamodb:
         accessKeyId: "The access ID provided by Amazon"
         secretAccessKey: "The secret ID provided by Amazon"
         region: "A valid region, refers to the Amazon doc for that or ask your sysadmin, asia is ap-northeast-1"
+```
+
+For a development environment running it's own DynamoDB, use this:
+
+```yaml
+dynamodb:
+    type: "dynamodb"
+    config:
+        # accessKeyId and region are used to generate the database name, secret will be ignored
+        accessKeyId: "Your name is a good idea here"
+        secretAccessKey: "Any value, will be ignored"
+        region: "And here the game/project name is a good idea"
+        endoint: "hostname:port"
+        sslEnabled: false
 ```
 
 ## Supported operations
@@ -44,6 +60,24 @@ signature                      | required | default implementation
 `deserialize(data, value)`     |          | parses row.data and row.mediaType into Value
 `transformError(value, error)` |          | `if (error.code === knownError) return new Error('Comprehensive message')`
 
+
+## Schema migrations
+
+Archivist allows for [schema migrations](../../SchemaMigrations.md), and the DynamoDB vault supports
+this.
+
+When writing migration scripts, please refer to [Class: AWS.DynamoDB](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
+for more details on how to use the DynamoDB class provided in the vault itself: `vault.dynamodb`.
+For most tables you will only need to create the indexes (at least 1 Hash index, 1 optional Range
+index and up to 5 secondary indexes), all other columns are created dynamically at insert time by
+DynamoDB.
+
+See [Amazon DynamoDB Data Model](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataModel.html)
+for more details on how you should choose your Hash and Range indexes.
+
+For the mandatory `ProvisionedThroughput` map in the createTable object, values for production should
+be 100 `ReadCapacityUnits` and 20 `WriteCapacityUnits`, then please ask the game sysadmins take care
+of updating those values manually to more appropriate numbers.
 
 ## How to set up your DynamoDB tables
 

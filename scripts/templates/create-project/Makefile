@@ -14,10 +14,11 @@ define helpStarting
 	@echo
 	@echo "  make help              Prints this help."
 	@echo "  make version           Prints version information about the game, MAGE and Node.js."
-	@echo "  make all               Installs all dependencies and datastores (shortcut for deps and datastores)."
+	@echo "  make all               Installs all dependencies and datastores (shortcut for deps, datastores and build)."
 	@echo
 	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules)."
 	@echo "  make datastores        Creates datastores and runs all migrations up to the current version."
+	@echo "  make build             Creates builds for all apps."
 	@echo
 	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
 	@echo "  make deps-component    Downloads and installs all external components."
@@ -25,7 +26,7 @@ define helpStarting
 	@echo
 endef
 
-.PHONY: help version all deps deps-npm deps-component deps-submodules datastores
+.PHONY: help version all deps deps-npm deps-component deps-submodules datastores build
 
 help:
 	@echo
@@ -38,9 +39,9 @@ help:
 version:
 	node . --version
 
-all: deps datastores
+all: deps datastores build
 
-deps: deps-npm deps-component deps-submodules datastores
+deps: deps-npm deps-component deps-submodules
 
 deps-npm:
 	npm install
@@ -56,6 +57,9 @@ datastores:
 	node . archivist-create
 	@echo Migrating databases to current application version
 	node . archivist-migrate
+
+build:
+	node . build
 
 
 # DEVELOPMENT
@@ -181,15 +185,19 @@ define helpCleanup
 	@echo
 	@echo "  make clean             Cleans all builds, caches and reports."
 	@echo
+	@echo "  make clean-build       Cleans all application builds."
 	@echo "  make clean-npm         Cleans the NPM cache."
 	@echo "  make clean-coverage    Removes the test coverage report and its instrumented files."
 	@echo "  make clean-complexity  Removes the Plato report."
 	@echo
 endef
 
-.PHONY: clean clean-npm clean-coverage clean-complexity
+.PHONY: clean clean-build clean-npm clean-coverage clean-complexity
 
-clean: clean-npm clean-coverage clean-complexity
+clean: clean-build clean-npm clean-coverage clean-complexity
+
+clean-build:
+	node . build --clean
 
 clean-npm:
 	npm cache clean
