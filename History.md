@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.23.0 - Ninja Cat
 
 ### Logger
