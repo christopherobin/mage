@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Logger
+
+The logger client now automatically logs uncaught exceptions. That means that if you currently have
+this set up manually, you should remove that code from your codebase.
+
 ### Removed: serverCache
 
 The configuration entry `apps.myapp.delivery.serverCache` has been removed in favor of the already
@@ -139,6 +144,7 @@ for more details about those scripts and the rules around them.
 
 * The `add` method of the MySQL vault was broken.
 * The websocket logger could under certain circumstances leave socket files behind.
+* The client logger was not overriding the console as advertised.
 * The DynamoDB topic APIs `deserialize` and `createKey` were broken.
 * Fixed dead links in the API doc of the DynamoDB vault.
 
