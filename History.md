@@ -157,6 +157,7 @@ for more details about those scripts and the rules around them.
 | mocha      | 1.12.1 | 1.13.0 |
 | istanbul   | 0.1.43 | 0.1.44 |
 | plato      | 0.6.1  | 0.6.2  |
+| js-yaml    | 2.1.0  | 2.1.1  |
 
 
 ## v0.22.2 - Puss in Boot
