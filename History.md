@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Minor improvements
+
+* Removed `serverCache` configuration entry from the bootstrap template.
+
 
 ## v0.23.0 - Ninja Cat
 
