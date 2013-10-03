@@ -16,7 +16,7 @@
     "node": "%MAGE_NODE_VERSION%"
   },
   "dependencies": {
-    "mage": "git+ssh://git@github.com:Wizcorp/mage.git#v%MAGE_VERSION%",
+    "mage": "%MAGE_REPO%#v%MAGE_VERSION%",
     "colours": "0.6.0-2"
   },
   "devDependencies": {

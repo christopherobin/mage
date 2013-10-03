@@ -44,6 +44,7 @@ replacements = {
 	APP_REPO: '',
 	APP_CLIENTHOST_EXPOSE: 'http://' + pathBasename(appPath) + '.' + process.env.USER + '.node.wizcorp.jp',
 	APP_SAVVY_EXPOSE: 'http://' + pathBasename(appPath) + '.' + process.env.USER + '.node.wizcorp.jp/savvy',
+	MAGE_REPO: 'git+ssh://git@github.com:Wizcorp/mage.git',
 	MAGE_VERSION: magePackage.version,
 	MAGE_NODE_VERSION: magePackage.engines && magePackage.engines.node,
 	ENV_USER: process.env.USER
