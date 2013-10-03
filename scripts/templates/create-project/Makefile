@@ -50,7 +50,7 @@ deps-component:
 	node . install-components
 
 deps-submodules:
-	git submodule update --init
+	@if [ -d .git ]; then git submodule update --init; else echo "Not a git repository, skipping submodules"; fi
 
 datastores:
 	@echo Creating databases...

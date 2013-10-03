@@ -139,6 +139,7 @@ for more details about those scripts and the rules around them.
 * Logging of asset serving has become a little bit more verbose.
 * Boot durations are now logged for each process.
 * Apps were also instantiated on the master process, that has been removed.
+* The default bootstrap script now also asks for a MAGE repo URL, so 3rd party forks can also be used.
 
 ### Bugfixes
 
