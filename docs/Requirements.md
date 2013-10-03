@@ -26,12 +26,13 @@ where the MAGE repository is hosted. The [installation guide](./Install.md) will
 the necessary steps to install MAGE. But before you go there, please make sure that:
 
 * You have been given access to the MAGE repository on GitHub.
-* You are set up to use [git-over-ssh](https://help.github.com/articles/set-up-git).
+* You are set up to use [git-over-ssh](https://help.github.com/articles/generating-ssh-keys).
 
 See also:
 
 * [Git website](http://git-scm.com/)
 * [GitHub](http://github.com/)
+* [Set up git](https://help.github.com/articles/set-up-git)
 
 ### ZeroMQ (aka ØMQ)
 
@@ -54,6 +55,8 @@ If you have cURL installed on your environment, you can run the following to set
 
 ```bash
 curl http://www.wizcorp.jp/mage/environment.sh | bash
+. ~/.nvm/nvm.sh
+nvm use 0.8
 ```
 
 Alternatively, you can manually install them by following these steps.

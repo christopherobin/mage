@@ -1,5 +1,168 @@
 # Release history
 
+## v0.23.0 - Ninja Cat
+
+### Logger
+
+The logger client now automatically logs uncaught exceptions. That means that if you currently have
+this set up manually, you should remove that code from your codebase.
+
+### Removed: serverCache
+
+The configuration entry `apps.myapp.delivery.serverCache` has been removed in favor of the already
+existing development mode. From now on, when development mode is turned on MAGE will not prebuild
+any apps. When it is turned off, MAGE will prebuild all apps.
+
+### Offline builds
+
+MAGE now allows you to generate builds for the web once. You can do this by running `make build`,
+which will generate the builds and store them in a `./build` directory in your project, which is
+automatically created. Builds are only loaded when development mode is turned off. If you have to,
+you can test your builds by running your game like this: `DEVELOPMENT_MODE=false ./game`.
+
+Because builds may get outdated if not regenerated after code changes happen, it's advisable not to
+commit them into your repository (add `/build` to your `.gitignore` file.), unless you recreate the
+build automatically using a pre-commit hook.
+
+Because the generated build is not required to lint (and most likely won't), add the `build/**` to
+your `.jshintignore` file.
+
+> **Why bother?**
+>
+> This is a useful feature for production environments. Normally, each worker in a cluster (often
+> configured to be one worker per CPU core) would generate the same build and keep this in memory. It
+> works, but can get very slow due to the hard disk access involved. Generating these builds once and
+> then reusing them solves the problem and becomes more manageable for production deployments.
+
+### Makefile updates
+
+After more constructive conversations between various parties involved, we have decided on a new
+Makefile format (again). This new format should make it easier to do continuous integration tests,
+and should make it more straight forward to get started, for developers who are new to a project.
+
+#### In a nutshell
+
+* `make all` now does a full installation of all dependencies, will create and migrate databases if
+  possible and required, and will generate a build of your apps.
+* `make test` now runs the lint test and unit tests, and lint-staged has become an argument
+  `filter=staged` which can be applied on `make test` or `make test-lint`.
+* `make report` now creates the Plato and Istanbul reports.
+
+#### How to update your project
+
+Do this once and commit the changes to your project:
+
+```sh
+cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
+cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
+```
+
+#### For every developer
+
+Because the make commands changed for linting staged files, the pre-commit git hook should be
+rewritten for each developer working on the project. Each developer should run:
+
+```sh
+make dev
+```
+
+And accept the suggested default make-arguments.
+
+#### The new `make help` output
+
+```
+Getting started:
+
+  make help              Prints this help.
+  make version           Prints version information about the game, MAGE and Node.js.
+  make all               Installs all dependencies and datastores (shortcut for deps, datastores and build).
+
+  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules).
+  make datastores        Creates datastores and runs all migrations up to the current version.
+  make build             Creates builds for all apps.
+
+  make deps-npm          Downloads and installs all NPM dependencies.
+  make deps-component    Downloads and installs all external components.
+  make deps-submodules   Downloads updates on git submodules.
+
+Development:
+
+  make dev               Sets up the development environment (shortcut for dev-githooks).
+
+  make dev-githooks      Sets up git hooks.
+
+Quality:
+  make test              Runs all tests (shortcut for test-lint and test-unit).
+  make report            Creates all reports (shortcut for report-complexity and report-coverage).
+
+  make test-lint         Lints every JavaScript and JSON file in the project.
+  make test-unit         Runs every unit test in ./test.
+  make report-complexity Creates a Plato code complexity report.
+  make report-coverage   Creates a unit test coverage report.
+
+  available variables when linting:
+    filter=staged        Limits linting to files that are staged to be committed.
+    path=./some/folder   Lints the given path recursively (file or folder containing JavaScript and JSON files).
+
+Running:
+
+  make start             Starts the application daemonized.
+  make stop              Stops the daemonized application.
+  make restart           Restarts the daemonized application.
+  make reload            Recycles all workers with zero-downtime (not to be used on version changes).
+  make status            Prints the status of the daemonized application.
+
+Cleanup:
+
+  make clean             Cleans all builds, caches and reports.
+
+  make clean-build       Cleans all application builds.
+  make clean-npm         Cleans the NPM cache.
+  make clean-coverage    Removes the test coverage report and its instrumented files.
+  make clean-complexity  Removes the Plato report.
+```
+
+### Archivist
+
+Added a method `addToCache` to archivist that allows the user to manually push data to the archivist
+cache, it should be used only in very specific cases. See the
+[archivist documentation](lib/archivist/Readme.md) for more details on how to use it.
+
+#### DynamoDB
+
+* Migration scripts can now be written for DynamoDB. Please refer to the vault's
+  [Readme.md](lib/archivist/vaults/dynamodb/Readme.md) for more details about those scripts and the
+  rules around them.
+* Documentation has been updated to take in account local servers.
+
+### Minor improvements
+
+* Regular expressions now stringify neatly when passed to the logger.
+* Logging of asset serving has become a little bit more verbose.
+* Boot durations are now logged for each process.
+* Apps were also instantiated on the master process, that has been removed.
+* The default bootstrap script now also asks for a MAGE repo URL, so 3rd party forks can also be used.
+
+### Bugfixes
+
+* The `add` method of the MySQL vault was broken.
+* The websocket logger could under certain circumstances leave socket files behind.
+* The client logger was not overriding the console as advertised.
+* The DynamoDB topic APIs `deserialize` and `createKey` were broken.
+* Fixed dead links in the API doc of the DynamoDB vault.
+
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| ws         | 0.4.30 | 0.4.31 |
+| jshint     | 2.1.10 | 2.1.11 |
+| mocha      | 1.12.1 | 1.13.0 |
+| istanbul   | 0.1.43 | 0.1.44 |
+| plato      | 0.6.1  | 0.6.2  |
+| js-yaml    | 2.1.0  | 2.1.1  |
+
+
 ## v0.22.2 - Puss in Boot
 
 ### show-config
@@ -164,7 +327,7 @@ creating Error objects. Using 0 will disable stack trace collection.
 * Tested and fixed the general trunk of the environment setup script (thanks Marc!).
 * Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
 
-## Minor improvements
+### Minor improvements
 
 * Savvy doesn't need a host anymore when listening on a port, will default to `INADDR_ANY` if
   undefined.

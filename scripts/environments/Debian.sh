@@ -16,7 +16,7 @@ function repo_install () {
     echo "------------------------------------------" | cyan;
     echo "";
 
-    sudo echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list || return 1;
+    echo "deb http://backports.debian.org/debian-backports squeeze-backports main" | sudo tee -a /etc/apt/sources.list || return 1;
     sudo apt-get update;
 
     echoOk "Remote repository install completed";
@@ -41,7 +41,7 @@ function tools_install () {
         libavahi-core7 \
         libdbus-1-3 \
         libnss-mdns \
-        libzmq \
+        libzmq1 \
         libzmq-dev \
     || return 1;
 

@@ -14,14 +14,31 @@ Excerpt from Amazon:
 
 ## Configuration
 
+For production, use a config similar to this:
+
 ```yaml
 dynamodb:
     type: "dynamodb"
     config:
         accessKeyId: "The access ID provided by Amazon"
         secretAccessKey: "The secret ID provided by Amazon"
-        region: "A valid region, refers to the Amazon doc for that or ask your sysadmin, asia is ap-northeast-1"
+        region: "A valid region. Refer to the Amazon doc or ask your sysadmin. Asia is ap-northeast-1"
 ```
+
+For a development environment running it's own DynamoDB, use this:
+
+```yaml
+dynamodb:
+    type: "dynamodb"
+    config:
+        # accessKeyId and region are used to generate the database name, secret will be ignored
+        accessKeyId: "Your name is a good idea here"
+        secretAccessKey: "Any value, will be ignored"
+        region: "And here the game/project name is a good idea"
+        endoint: "hostname:port"
+        sslEnabled: false
+```
+
 
 ## Supported operations
 
@@ -45,13 +62,32 @@ signature                      | required | default implementation
 `transformError(value, error)` |          | `if (error.code === knownError) return new Error('Comprehensive message')`
 
 
+## Schema migrations
+
+Archivist allows for [schema migrations](../../SchemaMigrations.md), and the DynamoDB vault supports
+this.
+
+When writing migration scripts, please refer to
+[Class: AWS.DynamoDB](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html) for more
+details on how to use the DynamoDB class exposed by the vault as `vault.dynamodb`. For most tables
+you will only need to create the indexes (at least 1 Hash index, 1 optional Range index and up to 5
+secondary indexes), all other columns are created dynamically at insert time by DynamoDB.
+
+See [Amazon DynamoDB Data Model](http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DataModel.html)
+for more details on how you should choose your Hash and Range indexes.
+
+For the mandatory `ProvisionedThroughput` map in the createTable object, values for production
+should be 100 `ReadCapacityUnits` and 20 `WriteCapacityUnits`, then please ask the game's sysadmins
+to take care of updating those values manually to more appropriate numbers. This has a direct impact
+on the price Amazon charges for the service.
+
 ## How to set up your DynamoDB tables
 
-The default driver expects a table with a basic HashKey and optional RangeKey both set as strings, it will then store
-data serialized in 2 columns named data and mediaType.
+The default driver expects a table with a basic HashKey and optional RangeKey both set as strings,
+it will then store data serialized in 2 columns named `data` and `mediaType`.
 
-If you need to explicitly unpack your data in multiple columns, you will need to override serialize and deserialize like
-in the following example:
+If you need to explicitly unpack your data in multiple columns, you will need to override serialize
+and deserialize like in the following example:
 
 ```javascript
 exports.people.vaults.dynamodb.serialize = function (value) {
@@ -61,6 +97,7 @@ exports.people.vaults.dynamodb.serialize = function (value) {
     // store manually in each column
     item.fullName = { 'S': value.data.fullName };
     item.email = { 'S': value.data.email };
+
     // AWS requires everything to be strings, even numbers, when sent through their API
     item.age = { 'N': value.data.age.toString() };
     item.interests = { 'SS': value.data.interests };
@@ -69,6 +106,7 @@ exports.people.vaults.dynamodb.serialize = function (value) {
 };
 
 // make sure to override deserialize too!
+
 exports.people.vaules.dynamodb.deserialize = function (data, value) {
     // just read data from DynamoDB, you may need to do some type conversions manually
     value.setData(null, {
