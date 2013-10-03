@@ -179,7 +179,7 @@ status:
 define helpCleanup
 	@echo "Cleanup:"
 	@echo
-	@echo "  make clean             Cleans all caches and reports."
+	@echo "  make clean             Cleans all builds, caches and reports."
 	@echo
 	@echo "  make clean-npm         Cleans the NPM cache."
 	@echo "  make clean-coverage    Removes the test coverage report and its instrumented files."
