@@ -74,7 +74,7 @@ Getting started:
 
   make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules).
   make datastores        Creates datastores and runs all migrations up to the current version.
-  make build             Creates builds for all apps that have serverCache configured.
+  make build             Creates builds for all apps.
 
   make deps-npm          Downloads and installs all NPM dependencies.
   make deps-component    Downloads and installs all external components.
@@ -97,7 +97,7 @@ Quality:
 
   available variables when linting:
     filter=staged        Limits linting to files that are staged to be committed.
-    path=./some/folder   Lints the given path recursively (file or a folder containing JavaScript and JSON files).
+    path=./some/folder   Lints the given path recursively (file or folder containing JavaScript and JSON files).
 
 Running:
 
@@ -109,7 +109,7 @@ Running:
 
 Cleanup:
 
-  make clean             Cleans all caches and reports.
+  make clean             Cleans all builds, caches and reports.
 
   make clean-build       Cleans all application builds.
   make clean-npm         Cleans the NPM cache.
