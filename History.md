@@ -11,6 +11,7 @@ please run this one more time:
 
 ```sh
 cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
+make dev
 ```
 
 

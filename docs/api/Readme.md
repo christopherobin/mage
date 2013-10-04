@@ -18,6 +18,5 @@ traversing the folders in which these subsystems live.
 
 ## Modules
 
-* [Bot](../../lib/modules/bot)
 * [Cron Client](../../lib/modules/cronClient)
 * [Sessions](../../lib/modules/session)
