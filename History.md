@@ -14,6 +14,12 @@ cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./sc
 make dev
 ```
 
+# DynamoDB read consistency changed
+
+Before that update, reads would be eventually consistent by default, with no way to change it. Now
+the default is to have strongly consistent read with a way to set that value per topic. See the
+[vault documentation](lib/archivist/vaults/dynamodb/Readme.md) for more details.
+
 ### Minor improvements
 
 * The generated `Readme.md` file for new projects now completely describes the installation process.
