@@ -14,6 +14,10 @@ cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./sc
 make dev
 ```
 
+### Minor improvements
+
+* The generated `Readme.md` file for new projects now completely describes the installation process.
+
 
 ## v0.23.0 - Ninja Cat
 
