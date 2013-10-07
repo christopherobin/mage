@@ -17,6 +17,7 @@ make dev
 ### Minor improvements
 
 * The generated `Readme.md` file for new projects now completely describes the installation process.
+* If a user command did not expose an `execute` function, the error message was very cryptic.
 
 
 ## v0.23.0 - Ninja Cat
