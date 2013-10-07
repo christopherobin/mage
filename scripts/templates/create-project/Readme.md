@@ -24,10 +24,10 @@ met. Else, the game may not run as intended.
 
 ## Installation
 
-After having cloned this project, you must set up a configuration file for your particular NODE_ENV.
-You can do this by copying a `.yaml` file from the `config` folder to `NODE_ENV.yaml` in the same
-folder (where you replace "NODE_ENV" with the value of your NODE_ENV variable), and then editing
-your copy to suit your needs.
+Before running %APP_NAME% for the first time, you must set up a configuration file
+for your particular NODE_ENV. You can do this by copying a `.yaml` file from the `config` folder to
+`NODE_ENV.yaml` in the same folder (where you replace "NODE_ENV" with the value of your NODE_ENV
+variable), and then editing your copy to suit your needs.
 
 Once you have set up your configuration, you can install all dependencies and set up databases by
 running:
