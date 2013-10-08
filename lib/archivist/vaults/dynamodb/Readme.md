@@ -35,7 +35,7 @@ dynamodb:
         accessKeyId: "Your name is a good idea here"
         secretAccessKey: "Any value, will be ignored"
         region: "And here the game/project name is a good idea"
-        endoint: "hostname:port"
+        endpoint: "hostname:port"
         sslEnabled: false
 ```
 
