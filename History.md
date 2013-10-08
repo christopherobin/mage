@@ -2,9 +2,20 @@
 
 ## vNEXT
 
-### Bootstrap inconsistencies fixed
+### Bootstrap improvements
 
-We have removed the `serverCache` configuration entry from the bootstrap template.
+We have removed the `serverCache` configuration entry from the bootstrap template (this feature was
+removed in v0.23.0).
+
+If the bootstrapping is done with environment variable `NOQUESTIONS=true`, all defaults are applied
+without prompts. It's also checked for when running `make dev`. This is a useful feature during CI.
+
+During the bootstrap phase, `make deps` has been replaced with `make all`.
+
+The default values for the serverHost and savvy expose have become empty string, which will work
+unless `index.html` is hosted elsewhere (which is the case with PhoneGap for example).
+
+#### Bugfix from v0.23.0
 
 In v0.23.0 we forgot to update the default precommit command to the new Makefile test-target, so
 please run this one more time:
@@ -14,7 +25,7 @@ cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./sc
 make dev
 ```
 
-# DynamoDB read consistency changed
+### DynamoDB read consistency changed
 
 Before that update, reads would be eventually consistent by default, with no way to change it. Now
 the default is to have strongly consistent read with a way to set that value per topic. See the
@@ -24,6 +35,10 @@ the default is to have strongly consistent read with a way to set that value per
 
 * The generated `Readme.md` file for new projects now completely describes the installation process.
 * If a user command did not expose an `execute` function, the error message was very cryptic.
+* We have slowed down the interval with which the logger stream in the dashboard tries to reconnect
+  from 500ms to 2s.
+* Improved error logging in Savvy.
+* If no Savvy exposed URL has been configured, we default to the clientHost exposed URL + `/savvy`.
 
 
 ## v0.23.0 - Ninja Cat
