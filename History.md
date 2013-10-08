@@ -38,7 +38,7 @@ the default is to have strongly consistent read with a way to set that value per
 * We have slowed down the interval with which the logger stream in the dashboard tries to reconnect
   from 500ms to 2s.
 * Improved error logging in Savvy.
-* If no Savvy exposed URL has been configured, we default to the clientHost exposed URL + `/savvy`.
+* If no Savvy expose URL has been configured, we default to clientHost's exposed URL + `/savvy`.
 
 
 ## v0.23.0 - Ninja Cat
