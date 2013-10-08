@@ -6,6 +6,10 @@ var rl = readline.createInterface({
 });
 
 exports.ask = function (question, defaultValue, cb) {
+	if (process.env.NOQUESTIONS) {
+		return cb(defaultValue || '');
+	}
+
 	if (defaultValue) {
 		question += ' (' + defaultValue + ')';
 	}

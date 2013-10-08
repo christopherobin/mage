@@ -48,20 +48,25 @@ function createGitHooks(gitTop) {
 		fs.mkdirSync(hooksPath);
 	}
 
-	var rl = readline.createInterface({
-		input: process.stdin,
-		output: process.stdout
-	});
+	if (process.env.NOQUESTIONS) {
+		makePreCommit(null, gitTop, hooksPath);
+	} else {
+		var rl = readline.createInterface({
+			input: process.stdin,
+			output: process.stdout
+		});
 
-	rl.question('Make command to run before commit (default: ' + defaultMakeArgs + '): ', function (answer) {
-		makePreCommit(answer, gitTop, hooksPath);
-		rl.close();
-	});
+		rl.question('Make command to run before commit (default: ' + defaultMakeArgs + '): ', function (answer) {
+			makePreCommit(answer, gitTop, hooksPath);
+			rl.close();
+		});
+	}
 }
 
 // script
 
 console.log('Detecting git repository root...');
+
 exec('git rev-parse --show-toplevel', function (error, stdout, stderr) {
 	if (error) {
 		process.stderr.write(stderr);

@@ -222,7 +222,7 @@ function bootstrap(cb) {
 						});
 					},
 					function (callback) {
-						ask('Would you like to set up git hooks?', 'yes', function (answer) {
+						ask('Would you like me to set up git hooks?', 'yes', function (answer) {
 							if (answer.toLowerCase() !== 'yes') {
 								return callback();
 							}
@@ -238,9 +238,9 @@ function bootstrap(cb) {
 		function (callback) {
 			// npm install other dependencies for this game
 
-			pretty.h2('Installing dependencies (make deps)');
+			pretty.h2('Installing dependencies and making builds (make all)');
 
-			exec('make', ['deps'], null, callback);
+			exec('make', ['all'], null, callback);
 		},
 		function (callback) {
 			var msg = [
