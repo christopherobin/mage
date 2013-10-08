@@ -11,12 +11,8 @@ apps:
         responseCache: 30
         access: user
         delivery:
-            serverCache: false
             useManifest: false
             compress: true
-            postprocessors:
-                css: []
-                js: []
 
 logging:
     html5:

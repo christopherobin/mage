@@ -83,6 +83,8 @@ The following vault types are currently implemented:
 * [MySQL](vaults/mysql/Readme.md)
 * [Memcached](vaults/memcached/Readme.md)
 * [Couchbase](vaults/couchbase/Readme.md)
+* [DynamoDB](vaults/dynamodb/Readme.md)
+* [Elasticsearch](vaults/elasticsearch/Readme.md)
 * [Manta](vaults/manta/Readme.md)
 * [Client](vaults/client/Readme.md)
 
@@ -451,6 +453,37 @@ the relevant vaults. This distribution is automatically done by the `state` obje
 closes without errors, so you should never have to call this yourself.
 
 
+### Manually adding data to the archivist memory cache
+
+```javascript
+archivist.addToCache(topic, index, data, mediaType, encoding);
+```
+
+This manually adds a value to the archivist cache based on its topic and index, so that next
+calls to `archivist.get` won't hit the database but pull the entry from memory. This can be used
+to cache a large amount of entries retrieved from the database that may be more efficient to retrieve
+in a single query instead of many `archivist.get` calls.
+
+For example:
+
+```javascript
+mysql.query('SELECT * FROM topicTable WHERE type = ?', type, function (err, rows) {
+	if (err) {
+		// error
+	}
+
+	for (var i = 0; i < rows.length; i++) {
+		var row = rows[i];
+		// cache the row
+		state.archivist.addToCache('topic', { index: row.index }, row.data,
+			row.mediaType, row.encoding);
+	}
+
+	// now run some heavy computation that uses archivist.get on that data
+	heavyComputation(cb);
+});
+```
+
 ## Client API
 
 The archivist is exposed on the browser through a MAGE module called "archivist". You can use it
@@ -460,90 +493,38 @@ like any other built-in module:
 mage.useModules(request, 'archivist');
 ```
 
-You can now read from the vaults by calling using the APIs described in the following paragraphs.
-Of course it goes without saying that you should be careful not to expose user commands to games
-that can mutate data directly. You will want to limit the game's access to the `get` API. Tools
-however will benefit from the other methods.
+You can now read from and write to the vaults by calling using the APIs described below. It is
+important to understand that the Archivist client keeps a cache in memory. When you do a get or mget
+operation, and the value has already been read or set before, you will receive the version from the
+cache (see the `maxAge` option below to see how you can control this behavior).
 
-
-### Creating data
-
-```javascript
-archivist.add(topic, index, data, mediaType, encoding, expirationTime, function (error) { });
-```
-
-Calls into the server archivist's `add` method. The arguments are identical. Once the data has been
-created, it will stay in the client's caches. A `get` will immediately return with the created data.
-
-
-### Overwriting data
-
-```javascript
-archivist.set(topic, index, data, mediaType, encoding, expirationTime, function (error) { });
-```
-
-Calls into the server archivist's `set` method. The arguments are identical. Once the data has been
-written, it will stay in the client's caches. A `get` will immediately return with the new data.
-
-
-### Getting data
+The **read methods** available are identical to the server variation:
 
 ```javascript
 archivist.get(topic, index, options, function (error, data) { });
-```
-
-```javascript
 archivist.mget(queries, options, function (error, data) { });
+archivist.list(topic, partialIndex, options, function (error, indexes) { });
 ```
 
-Call into the server archivist's `get` and `mget` method. The arguments are identical. If any of the
-data is already available in the client's caches, it will be returned to the callback immediately
-without hitting the server.
-
-The client enables one extra read option that the server doesn't have:
+For `get` and `mget` the client enables one extra read option that the server doesn't have:
 
 * maxAge: A number in seconds. If a value is available in cache, but was set longer ago than this
   many seconds, it will not be used. That means that setting maxAge to `0` will always bypass the
   cache.
 
-
-### Setting the expiration time
-
-```javascript
-archivist.touch(topic, index, expirationTime, function (error) { });
-```
-
-Calls into the server archivist's touch method. The arguments are identical. If the data is
-available on the client's caches, that data's expiration time is also updated.
-
-
-### Deleting data
+These are the **data mutation** operations, again, identical to the server variation:
 
 ```javascript
-archivist.del(topic, index, function (error) { });
+archivist.add(topic, index, data, mediaType, encoding, expirationTime);
+archivist.set(topic, index, data, mediaType, encoding, expirationTime);
+archivist.touch(topic, index, expirationTime);
+archivist.del(topic, index);
+archivist.distribute(function (error) { });
 ```
 
-Calls into the server archivist's del method. The arguments are identical. If the data is
-available on the client's caches, it will be removed there too.
-
-
-### Applying a diff to data
-
-```javascript
-archivist.applyDiff(topic, index, diff, function (error) { });
-```
-
-For data types that support diff-updates (like Tomes), this will allow you to send the diff and
-expect the data to be updated on the server side.
-
-
-### Finding data
-
-```javascript
-archivist.list(topic, partialIndex, options, function (error, indexes) { });
-```
-
-Calls into the server archivist's list method. The arguments are identical.
+Unlike on the server, where `distribute()` is called by `State` objects, on the client-side, you
+have to do it yourself. Consider the user experience, and call `distribute()` when you have made a
+batch of changes and want to send them.
 
 
 ## Advanced vault usage

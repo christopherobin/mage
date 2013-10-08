@@ -5,12 +5,17 @@ The "file" vault makes this possible.
 
 ## Configuration
 
-```json
-{
-	"type": "file",
-	"config": { "path": "./filevault" }
-}
+```yaml
+type: file
+config:
+  path: ./filevault
+  disableExpiration: true  # optional (default: false)
 ```
+
+If your application does not need the file vault to support expirationTime and the `touch` command,
+you may turn it off by adding `disableExpiration: true` to your configuration. This can be useful,
+because when your filevault holds many files, file expiration tests can take multiple seconds during
+the booting of your app. Use with caution.
 
 ## Supported operations
 

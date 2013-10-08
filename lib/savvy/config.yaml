@@ -8,4 +8,4 @@ bind:
 #   path: /path/to/stuff
 #   authUser: harry
 #   authPass: 123456abc
-expose: "http://localhost"
+expose: ""

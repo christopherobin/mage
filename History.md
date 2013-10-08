@@ -2,15 +2,475 @@
 
 ## vNEXT
 
-### Node 0.10 ready
+### Bootstrap improvements
 
-Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
-run on that. This forked version is Node v0.10 compatible, and now so is MAGE!
+We have removed the `serverCache` configuration entry from the bootstrap template (this feature was
+removed in v0.23.0).
+
+If the bootstrapping is done with environment variable `NOQUESTIONS=true`, all defaults are applied
+without prompts. It's also checked for when running `make dev`. This is a useful feature during CI.
+
+During the bootstrap phase, `make deps` has been replaced with `make all`.
+
+The default values for the serverHost and savvy expose have become empty string, which will work
+unless `index.html` is hosted elsewhere (which is the case with PhoneGap for example).
+
+#### Bugfix from v0.23.0
+
+In v0.23.0 we forgot to update the default precommit command to the new Makefile test-target, so
+please run this one more time:
+
+```sh
+cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
+make dev
+```
+
+### DynamoDB read consistency changed
+
+Before that update, reads would be eventually consistent by default, with no way to change it. Now
+the default is to have strongly consistent read with a way to set that value per topic. See the
+[vault documentation](lib/archivist/vaults/dynamodb/Readme.md) for more details.
+
+### Minor improvements
+
+* The generated `Readme.md` file for new projects now completely describes the installation process.
+* If a user command did not expose an `execute` function, the error message was very cryptic.
+* We have slowed down the interval with which the logger stream in the dashboard tries to reconnect
+  from 500ms to 2s.
+* Improved error logging in Savvy.
+* If no Savvy exposed URL has been configured, we default to the clientHost exposed URL + `/savvy`.
+
+
+## v0.23.0 - Ninja Cat
+
+### Logger
+
+The logger client now automatically logs uncaught exceptions. That means that if you currently have
+this set up manually, you should remove that code from your codebase.
+
+### Removed: serverCache
+
+The configuration entry `apps.myapp.delivery.serverCache` has been removed in favor of the already
+existing development mode. From now on, when development mode is turned on MAGE will not prebuild
+any apps. When it is turned off, MAGE will prebuild all apps.
+
+### Offline builds
+
+MAGE now allows you to generate builds for the web once. You can do this by running `make build`,
+which will generate the builds and store them in a `./build` directory in your project, which is
+automatically created. Builds are only loaded when development mode is turned off. If you have to,
+you can test your builds by running your game like this: `DEVELOPMENT_MODE=false ./game`.
+
+Because builds may get outdated if not regenerated after code changes happen, it's advisable not to
+commit them into your repository (add `/build` to your `.gitignore` file.), unless you recreate the
+build automatically using a pre-commit hook.
+
+Because the generated build is not required to lint (and most likely won't), add the `build/**` to
+your `.jshintignore` file.
+
+> **Why bother?**
+>
+> This is a useful feature for production environments. Normally, each worker in a cluster (often
+> configured to be one worker per CPU core) would generate the same build and keep this in memory. It
+> works, but can get very slow due to the hard disk access involved. Generating these builds once and
+> then reusing them solves the problem and becomes more manageable for production deployments.
+
+### Makefile updates
+
+After more constructive conversations between various parties involved, we have decided on a new
+Makefile format (again). This new format should make it easier to do continuous integration tests,
+and should make it more straight forward to get started, for developers who are new to a project.
+
+#### In a nutshell
+
+* `make all` now does a full installation of all dependencies, will create and migrate databases if
+  possible and required, and will generate a build of your apps.
+* `make test` now runs the lint test and unit tests, and lint-staged has become an argument
+  `filter=staged` which can be applied on `make test` or `make test-lint`.
+* `make report` now creates the Plato and Istanbul reports.
+
+#### How to update your project
+
+Do this once and commit the changes to your project:
+
+```sh
+cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
+cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
+```
+
+#### For every developer
+
+Because the make commands changed for linting staged files, the pre-commit git hook should be
+rewritten for each developer working on the project. Each developer should run:
+
+```sh
+make dev
+```
+
+And accept the suggested default make-arguments.
+
+#### The new `make help` output
+
+```
+Getting started:
+
+  make help              Prints this help.
+  make version           Prints version information about the game, MAGE and Node.js.
+  make all               Installs all dependencies and datastores (shortcut for deps, datastores and build).
+
+  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules).
+  make datastores        Creates datastores and runs all migrations up to the current version.
+  make build             Creates builds for all apps.
+
+  make deps-npm          Downloads and installs all NPM dependencies.
+  make deps-component    Downloads and installs all external components.
+  make deps-submodules   Downloads updates on git submodules.
+
+Development:
+
+  make dev               Sets up the development environment (shortcut for dev-githooks).
+
+  make dev-githooks      Sets up git hooks.
+
+Quality:
+  make test              Runs all tests (shortcut for test-lint and test-unit).
+  make report            Creates all reports (shortcut for report-complexity and report-coverage).
+
+  make test-lint         Lints every JavaScript and JSON file in the project.
+  make test-unit         Runs every unit test in ./test.
+  make report-complexity Creates a Plato code complexity report.
+  make report-coverage   Creates a unit test coverage report.
+
+  available variables when linting:
+    filter=staged        Limits linting to files that are staged to be committed.
+    path=./some/folder   Lints the given path recursively (file or folder containing JavaScript and JSON files).
+
+Running:
+
+  make start             Starts the application daemonized.
+  make stop              Stops the daemonized application.
+  make restart           Restarts the daemonized application.
+  make reload            Recycles all workers with zero-downtime (not to be used on version changes).
+  make status            Prints the status of the daemonized application.
+
+Cleanup:
+
+  make clean             Cleans all builds, caches and reports.
+
+  make clean-build       Cleans all application builds.
+  make clean-npm         Cleans the NPM cache.
+  make clean-coverage    Removes the test coverage report and its instrumented files.
+  make clean-complexity  Removes the Plato report.
+```
+
+### Archivist
+
+Added a method `addToCache` to archivist that allows the user to manually push data to the archivist
+cache, it should be used only in very specific cases. See the
+[archivist documentation](lib/archivist/Readme.md) for more details on how to use it.
+
+#### DynamoDB
+
+* Migration scripts can now be written for DynamoDB. Please refer to the vault's
+  [Readme.md](lib/archivist/vaults/dynamodb/Readme.md) for more details about those scripts and the
+  rules around them.
+* Documentation has been updated to take in account local servers.
+
+### Minor improvements
+
+* Regular expressions now stringify neatly when passed to the logger.
+* Logging of asset serving has become a little bit more verbose.
+* Boot durations are now logged for each process.
+* Apps were also instantiated on the master process, that has been removed.
+* The default bootstrap script now also asks for a MAGE repo URL, so 3rd party forks can also be used.
+
+### Bugfixes
+
+* The `add` method of the MySQL vault was broken.
+* The websocket logger could under certain circumstances leave socket files behind.
+* The client logger was not overriding the console as advertised.
+* The DynamoDB topic APIs `deserialize` and `createKey` were broken.
+* Fixed dead links in the API doc of the DynamoDB vault.
+
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| ws         | 0.4.30 | 0.4.31 |
+| jshint     | 2.1.10 | 2.1.11 |
+| mocha      | 1.12.1 | 1.13.0 |
+| istanbul   | 0.1.43 | 0.1.44 |
+| plato      | 0.6.1  | 0.6.2  |
+| js-yaml    | 2.1.0  | 2.1.1  |
+
+
+## v0.22.2 - Puss in Boot
+
+### show-config
+
+The CLI command `show-config` now can take a `--origins` argument which will show for each config
+entry which configuration file it came from. Also, when printing configuration, at the top of the
+output is now a distinct list of all the files that made up this configuration. This file list is
+output on `stderr`, so it does not affect the output when you run:
+
+```sh
+./game show-config archivist > ./archivist-config.json
+```
+
+### Minor improvements
+
+* We optimized the boot path the Message Server takes, allowing it to be accessible to other
+  systems, but not yet discovering and connecting to other hosts on MMRP. This should avoid some
+  error cases when running the `component-install` or `create-phantom` CLI commands while an app is
+  already running.
+* When a config file cannot be found for an environment, the name of the environment is now logged
+  with the warning.
+* Vault migrations now yield clear errors when an `up` or `down` method is missing.
+* We have rearranged some boot-time operations to allow verbose mode to kick in earlier so it can
+  display what's going on inside the config system.
+
+### Bugfixes
+
+* A missing migrations folder for a vault could yield a nasty error.
+* A build failure on boot-time was not treated fatal, leaving the application running but unusable.
+
+
+## v0.22.1 - Sock Cat
+
+### Socket files
+
+MAGE can create up to four `.sock` unix socket files in your game's root directory. These are used
+by:
+
+- The HTTP server
+- The Savvy HTTP server
+- The WebSocket log writer (two sock files)
+
+There were circumstances under which these files would not clean up on shutdown. These cases have
+now been resolved. The only case under which they can still not be cleaned up is on `SIGKILL` (or:
+`kill -9`), because on that signal the operating system terminates the program without giving the
+program the ability to intervene.
+
+### Daemonizer
+
+The daemonizer's behavior has been changed to be a bit more friendly:
+
+* `start` will now succeed if the app is already running.
+* `stop` will now succeed if the app is not running.
+* `restart` will no longer abort if the app is not running.
+* `restart` will no longer abort if the app was stopped, but returned an error on shutdown.
+
+### Fixes
+
+The archivist documentation that described the client API was out-of-date. This has been resolved.
+
+
+## v0.22.0 - Builder Cat
+
+### Component plugins
+
+`WebApp` objects that are instantiated for each app are now EventEmitters. This allows builders to
+share information on a per-app basis. When components are built, the `build-component` event is
+emitted, which passes the `builder` object (from
+[component-builder](https://npmjs.org/package/component-builder)) and the `buildTarget` objects that
+MAGE creates for each page that gets built.
+
+Having access to the builder allows you to register plugins. For example:
+
+```sh
+npm install -s component-uglifyjs
+npm install -s component-less
+```
+
+```javascript
+mage.setup(function (error, apps) {
+	// when mage is running in development mode, we don't uglify
+
+	if (!mage.isDevelopmentMode()) {
+		var uglify = require('component-uglifyjs');
+
+		apps.game.on('build-component', function (builder, buildTarget) {
+			builder.use(uglify);
+		});
+	}
+
+	var less = require('component-less');
+
+	Object.keys(apps).forEach(function (appName) {
+		apps[appName].on('build-component', function (builder, buildTarget) {
+			builder.use(less);
+		});
+	});
+});
+```
+
+This change, which allows us to do all CSS related operations through component, also means that our
+builder will no longer brute-force scan directories for stylesheet files. Instead, the `"styles"`
+field from your `component.json` files is used. So please make sure you are using these fields
+correctly.
+
+This also means that the old post-processor system has been deprecated, and you should remove the
+"postprocessors" objects from your configuration:
+
+```yaml
+apps:
+  game:
+    delivery:
+      postprocessors: etc
+```
+
+### Archivist
+
+* Added the ability to turn off expiration time support in file vault (see the
+  [file vault documentation](./lib/archivist/vaults/file/Readme.md) for more information).
+* The file vault now runs the expire scan on up to 20 files in parallel to speed up performance.
+* Refactored the archivist setup sequence for vastly better error reporting.
+* `archivist.assertTopicAbilities()`: where in the past, a single vault that supports the required
+  operations would be enough, now all configured vaults that will be used must support it. This
+  moves these errors from runtime to startup.
+
+### File logger update
+
+File logger now stores both the time and date in [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)
+format (YYYY-MM-DDTHH:mm:ss.sssZ).
+
+### Changed vaults' setup to async
+
+From time to time, users would get weird errors when encountering a syntax error in their own module
+that would appear as a vault error or something similar. The issue is caused by some functions not
+being consistent on the way they return, either being async or sync and context being mixed up
+because of that. Vaults are a big culprit for this kind of stuff, and it is now fixed for the setup
+phase.
+
+See this link from [isaacs](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony) for
+more details about the issues that not being consistent between async and sync can cause.
+
+There is still a lot of code that doesn't respect that line of conduct. When encountering this in
+your own modules, wrapping your instant callbacks in `process.nextTick` will solve the issue most of
+the time. If the issue is instead in MAGE, then please send us the whole stack-trace so that we can
+fix the issue and make your debugging a healthier experience. When doing so please make sure to send
+us the whole stack-trace (see the next item for that).
+
+### Added a --stack-limit argument to the CLI
+
+By default Node.js truncates stacks to 10 items. That may be good enough in most cases but sometimes
+when using the `async` module and very deep levels of nested callbacks it may not be enough, in
+those cases you can pass `--stack-limit <n>` to your game's command-line to change the stack limit
+to a deeper level. Acknowledge though that using large numbers will make your code slower when
+creating Error objects. Using 0 will disable stack trace collection.
+
+### Bugfixes
+
+* The `maintenance` event was not being fired correctly in the MAGE loader.
+* When using node 0.10+, calling the cron client would result in the command center client staying
+  in a busy state, preventing any future call and killing performance.
+* If the `NODE_ENV` environment variable is not set, MAGE would not abort appropriately.
+* Tested and fixed the general trunk of the environment setup script (thanks Marc!).
+* Tested and fixed the environment setup script for Ubuntu (thanks Marc!).
+
+### Minor improvements
+
+* Savvy doesn't need a host anymore when listening on a port, will default to `INADDR_ANY` if
+  undefined.
+* The script that sets up git pre-commit hooks has been rewritten in JavaScript.
+* The template for new projects now sets the first version to v0.1.0 (rather than v0.0.1).
+* We removed `component.json` from the root directory of the "create project" template, since we
+  don't follow that model anymore.
+
+
+## v0.21.0 - Colonel Meow
+
+### Template updates
+
+The "new application" template has been updated with the following changes:
+
+* A new Makefile (see below)
+* Because the Makefile is prefered over npm-scripts, package.json no longer implements `reload`,
+  `lint-all`, `lint-staged` and `git-setup`.
+* Reverted the change to package.json where the "main" field got removed (in v0.19.0), since we want
+  `node .` to function properly in continuous integration and other automation (the Makefile depends
+  on it).
+* Updated the mocha dependency from v1.12.0 to v1.12.1.
+
+### Makefile
+
+The Makefile has been completely rewritten to better suit the needs of sys ops and developers alike.
+The following text is the help output which you can access by calling `make` without arguments.
+
+```
+Getting started:
+
+  make help              Prints this help.
+  make install           Installs the environment (shortcut for install-deps and install-archivist).
+  make version           Prints version information about the game, MAGE and Node.js.
+
+  make install-deps      Installs all NPM dependencies.
+  make install-archivist Creates databases and runs all migrations up to this version.
+
+Development:
+
+  make dev               Sets up the development environment (shortcut for dev-githooks).
+
+  make dev-githooks      Sets up git hooks.
+
+Quality:
+
+  make lint              Lints every JavaScript and JSON file in the project.
+  make test              Runs all unit tests.
+  make coverage          Creates a unit test coverage report.
+  make complexity        Creates a Plato code complexity report.
+
+  make lint path=abc     Lints the given path recursively (file or folder containing JavaScript and JSON files).
+  make lint-staged       Lints every JavaScript and JSON file in the project that is staged to be committed.
+
+Running:
+
+  make start             Starts the application daemonized.
+  make stop              Stops the daemonized application.
+  make restart           Restarts the daemonized application.
+  make reload            Recycles all workers with zero-downtime (not to be used on version changes).
+  make status            Prints the status of the daemonized application.
+
+Cleanup:
+
+  make clean             Cleans all caches and reports.
+
+  make clean-npm         Cleans the NPM cache.
+  make clean-coverage    Removes the test coverage report and its instrumented files.
+  make clean-complexity  Removes the Plato report.
+```
+
+### Minor improvements
+
+* Getting, listing and distributing on archivist now shows read-, list- and write-order in the log.
+* We've made component builder errors a tiny bit more verbose (they can be very cryptic).
+
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| graylog2   | 0.0.2  | 0.1.0  |
+
+
+## v0.20.0 - ElastiCat
 
 ### Database Schema Migrations
 
 Archivist now allows you to manage your schema migrations. This is (for now) limited to MySQL only.
 Read all about it in the [Schema Migrations documentation](./lib/archivist/SchemaMigrations.md).
+
+### DynamoDB Vault
+
+Archivist has been enriched with support for Amazon's DynamoDB through the
+[aws-sdk](https://npmjs.org/package/aws-sdk) module. Read the
+[DynamoDB vault documentation](./lib/archivist/vaults/dynamodb/Readme.md) for more information.
+
+### Elasticsearch Vault
+
+Archivist has been enriched with support for Elasticsearch through the
+[elasticsearch](https://npmjs.org/package/elasticsearch) module. Read the
+[Elasticsearch vault documentation](./lib/archivist/vaults/elasticsearch/Readme.md) for more
+information.
 
 ### New service discovery engine
 
@@ -30,8 +490,42 @@ For more details, please read the provided [documentation](./lib/serviceDiscover
 
 ### Minor bugfixes
 
+* Certain CLI tasks would misbehave when MAGE was set up to have more than 1 worker. The commands
+  could end up running in parallel.
 * Fixed the case where an unavailable URL in a markdown doc navigation would mess up browser
   navigation.
+* Matryoshka (our configuration system's internal data representation) could break in a very
+  particular edge case when querying for a particular configuration trail.
+* Fixed a bug where using the file vault in cluster mode would cause a race condition when
+  a worker would set a TTL on a file and that entry would be touched by another worker, not
+  updating the timer in the previous worker. The result was that the file would be deleted
+  even though it was not expired yet.
+
+### Other small improvements
+
+* The deprecated `session.setCurrentVersion` function has been removed.
+* Due to the fact that the node-mdns module is unmaintained, we have released our own fork and now
+  run on that.
+* The logger system now more verbosely logs about its own state.
+* We have reduced the sampler backlog to 100 entries (from 1000) to reduce its default memory
+  footprint.
+* Authentication errors can now carry a message, and for version mismatches it does. The dashboard
+  uses this and offers the users to re-login.
+* We added a small function `mage.dashboard.getAppNames()` which returns an array
+  `['dev', 'support', 'cms']`, which are the dashboard apps. In the future you will be able to
+  manipulate what the app names are for the dashboard.
+* The error that is being logged when a non-optional `archivist.get()` call fails now includes the
+  topic and index.
+
+### Dependency updates
+
+| dependency | from   | to     |
+|------------|--------|--------|
+| zmq        | 2.5.0  | 2.5.1  |
+| semver     | 1.1.4  | 2.1.0  |
+| ws         | 0.4.28 | 0.4.30 |
+| component  | 0.17.0 | 0.17.2 |
+| mocha      | 1.12.0 | 1.12.1 |
 
 
 ## v0.19.2 - Stringy Cat
@@ -86,6 +580,7 @@ Will output something like this on stdout:
 ### And a mandatory bugfix
 
 * Fixed the syntax highlighting in Markdown file rendering (was broken since 0.19.0).
+
 
 ## v0.19.0 - Roomba Shark Cat
 

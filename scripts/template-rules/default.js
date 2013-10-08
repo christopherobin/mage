@@ -38,12 +38,13 @@ replacements = {
 	APP_PATH: appPath,
 	APP_PATHNAME: pathBasename(appPath),
 	APP_DESCRIPTION: '',
-	APP_VERSION: '0.0.1',
+	APP_VERSION: '0.1.0',
 	APP_AUTHOR: process.env.USER,
 	APP_LICENSE: 'Private',
 	APP_REPO: '',
-	APP_CLIENTHOST_EXPOSE: 'http://localhost',
-	APP_SAVVY_EXPOSE: 'http://localhost:81',
+	APP_CLIENTHOST_EXPOSE: '',
+	APP_SAVVY_EXPOSE: '',
+	MAGE_REPO: 'git+ssh://git@github.com:Wizcorp/mage.git',
 	MAGE_VERSION: magePackage.version,
 	MAGE_NODE_VERSION: (magePackage.engines && magePackage.engines.node) ? magePackage.engines.node : '',
 	ENV_USER: process.env.USER
@@ -75,6 +76,9 @@ exports.prepare = function (cb) {
 		},
 		function (callback) {
 			ask('Please provide a valid GitHub repository URL (if there is one):', 'APP_REPO', null, callback);
+		},
+		function (callback) {
+			ask('Please provide a valid repository URL for MAGE:', 'MAGE_REPO', null, callback);
 		}
 	], cb);
 };

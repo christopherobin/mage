@@ -161,20 +161,6 @@ function bootstrap(cb) {
 			callback();
 		},
 		function (callback) {
-			// npm install other dependencies for this game
-
-			pretty.h2('Installing Node dependencies (npm install)');
-
-			exec('npm', ['install'], null, callback);
-		},
-		function (callback) {
-			// component install all dependencies for this game and its dashboards
-
-			pretty.h2('Installing Component dependencies (./game install-components)');
-
-			exec('./game', ['install-components'], null, callback);
-		},
-		function (callback) {
 			pretty.h2('Git repository');
 
 			ask('Would you like me to set up Git for this game?', 'yes', function (answer) {
@@ -234,9 +220,27 @@ function bootstrap(cb) {
 
 							exec('git', ['push', 'origin', 'develop', 'master'], null, callback);
 						});
+					},
+					function (callback) {
+						ask('Would you like me to set up git hooks?', 'yes', function (answer) {
+							if (answer.toLowerCase() !== 'yes') {
+								return callback();
+							}
+
+							pretty.info('Setting up git hooks (make dev-githooks)');
+
+							exec('make', ['dev-githooks'], null, callback);
+						});
 					}
 				], callback);
 			});
+		},
+		function (callback) {
+			// npm install other dependencies for this game
+
+			pretty.h2('Installing dependencies and making builds (make all)');
+
+			exec('make', ['all'], null, callback);
 		},
 		function (callback) {
 			var msg = [
