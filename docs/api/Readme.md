@@ -7,7 +7,6 @@ traversing the folders in which these subsystems live.
 * [Archivist](../../lib/archivist)
 * [Command Center](../../lib/commandCenter)
 * [Configuration](../../lib/config)
-* [Deprecator](../../lib/deprecator)
 * [Helpers](../../lib/helpers)
 * [Logging](../../lib/loggingService)
 * [The "mage" object](../../lib/mage)
