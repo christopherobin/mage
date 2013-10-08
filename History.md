@@ -39,6 +39,8 @@ the default is to have strongly consistent read with a way to set that value per
   from 500ms to 2s.
 * Improved error logging in Savvy.
 * If no Savvy expose URL has been configured, we default to clientHost's exposed URL + `/savvy`.
+* If the logger client failed to send an error report to the client, don't augment it with more
+  error reports which detail how sending an error report failed.
 
 
 ## v0.23.0 - Ninja Cat
