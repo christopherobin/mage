@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.23.1 - Derp Cat
 
 ### Bootstrap improvements
 
