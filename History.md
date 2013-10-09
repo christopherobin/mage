@@ -8,6 +8,9 @@ If you want your application to span multiple domains, you need to enable CORS. 
 enabled through your configuration. For more information, please read the
 [Message Server documentation](lib/msgServer).
 
+
+## v0.23.1 - Derp Cat
+
 ### Bootstrap improvements
 
 We have removed the `serverCache` configuration entry from the bootstrap template (this feature was
@@ -44,7 +47,13 @@ the default is to have strongly consistent read with a way to set that value per
 * We have slowed down the interval with which the logger stream in the dashboard tries to reconnect
   from 500ms to 2s.
 * Improved error logging in Savvy.
-* If no Savvy exposed URL has been configured, we default to the clientHost exposed URL + `/savvy`.
+* If no Savvy expose URL has been configured, we default to clientHost's exposed URL + `/savvy`.
+* If the logger client failed to send an error report to the client, don't augment it with more
+  error reports which detail how sending an error report failed.
+
+### Bugfixes
+
+* Daemonizing in node 0.10 would cause an assert error in node.js itself, it's now fixed.
 
 
 ## v0.23.0 - Ninja Cat
