@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### Support for CORS
+
+If you want your application to span multiple domains, you need to enable CORS. This can now be
+enabled through your configuration. For more information, please read the
+[Message Server documentation](lib/msgServer).
+
 
 ## v0.23.1 - Derp Cat
 

@@ -25,6 +25,9 @@ savvy:
 
 server:
     clientHost:
+# Uncomment the "cors" entry if you want to set up CORS.
+#       cors:
+#           origin: "%APP_CLIENTHOST_EXPOSE%"
         bind:
             file: ./server.sock
         expose: "%APP_CLIENTHOST_EXPOSE%"
