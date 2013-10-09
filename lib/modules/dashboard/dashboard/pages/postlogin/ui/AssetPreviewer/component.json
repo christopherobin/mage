@@ -9,6 +9,10 @@
 		"forms",
 		"format"
 	],
+	"paths": [
+		"../",
+		"../../../../../../.."
+	],
 	"scripts": [
 		"index.js"
 	]
