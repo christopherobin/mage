@@ -5,6 +5,9 @@
 		"loader",
 		"mage"
 	],
+	"paths": [
+		"../.."
+	],
 	"scripts": [
 		"client.js"
 	],

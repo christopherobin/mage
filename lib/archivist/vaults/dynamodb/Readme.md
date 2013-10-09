@@ -35,7 +35,7 @@ dynamodb:
         accessKeyId: "Your name is a good idea here"
         secretAccessKey: "Any value, will be ignored"
         region: "And here the game/project name is a good idea"
-        endoint: "hostname:port"
+        endpoint: "hostname:port"
         sslEnabled: false
 ```
 
@@ -60,6 +60,16 @@ signature                      | required | default implementation
 `serialize(value)`             |          | `{ data: { 'S': utf8FromValue }, mediaType: { 'S': value.mediaType } }`
 `deserialize(data, value)`     |          | parses row.data and row.mediaType into Value
 `transformError(value, error)` |          | `if (error.code === knownError) return new Error('Comprehensive message')`
+`consistent`                   |          | A boolean, default to true
+
+
+## Reads consistency
+
+By default reads made directly through the DynamoDB vault are eventually consistent, but for calls
+made through archivist the consistency is set to strongly consistent by default in the API.
+Strongly consistent calls are more expensive and slower than eventually consistent ones, so if you
+feel that your table doesn't need to be strongly consistent, feel free to change the "consistent"
+boolean in the topic DynamoDB API to false.
 
 
 ## Schema migrations
@@ -80,6 +90,7 @@ For the mandatory `ProvisionedThroughput` map in the createTable object, values 
 should be 100 `ReadCapacityUnits` and 20 `WriteCapacityUnits`, then please ask the game's sysadmins
 to take care of updating those values manually to more appropriate numbers. This has a direct impact
 on the price Amazon charges for the service.
+
 
 ## How to set up your DynamoDB tables
 
