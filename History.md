@@ -42,6 +42,10 @@ the default is to have strongly consistent read with a way to set that value per
 * If the logger client failed to send an error report to the client, don't augment it with more
   error reports which detail how sending an error report failed.
 
+### Bugfixes
+
+* Daemonizing in node 0.10 would cause an assert error in node.js itself, it's now fixed.
+
 
 ## v0.23.0 - Ninja Cat
 
