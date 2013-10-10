@@ -8,6 +8,12 @@ If you want your application to span multiple domains, you need to enable CORS. 
 enabled through your configuration. For more information, please read the
 [Message Server documentation](lib/msgServer).
 
+### Documentation
+
+A new document has been added: [Taking your MAGE game to production](docs/production).
+
+A number of small errors in the various parts of the documentation have been addressed.
+
 ### Makefile
 
 In our ongoing efforts to make installation, CI and deployment simpler, we have revisited the
