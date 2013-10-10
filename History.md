@@ -18,6 +18,12 @@ them if they are part of your git repository.
 We have also renamed `clean-npm` to `clean-deps` (which now includes components), and we have merged
 `clean-coverage` and `clean-complexity` into `clean-report`.
 
+Because of these changes, **please run the following command** and commit this to your repository:
+
+```sh
+cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
+```
+
 ### Minor improvements
 
 * We made the log message a bit friendlier when building a component with "files" attached.
