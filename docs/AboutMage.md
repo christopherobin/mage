@@ -29,8 +29,10 @@ content manager or a system administrator, MAGE will make your work day much nic
 ## Features
 
 * Manages your realtime connection with the server.
-* Support for multiple datastores, and allows you to manage your data storing strategy (sharding, redundancy).
+* Support for multiple datastores, and allows you to manage your data storing strategy (sharding,
+  redundancy).
 * Manages daemonization of your cluster.
-* First-class production logging: built-in support for [Graylog2](http://graylog2.com), [Loggly](http://www.loggly.com) and websocket log streaming.
-* First-class monitoring with Panopticon: built-in general statistics, and you can add custom data points with a single line of code.
+* First-class production logging with built-in support for multiple logging services.
+* First-class monitoring with Panopticon: built-in general statistics, and you can add custom data
+  points with a single line of code.
 * ... and much more!
