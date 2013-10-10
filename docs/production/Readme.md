@@ -77,13 +77,15 @@ deploy the game.
 3. Package the game (don't get burned by `.gitignore` by developers).
 4. Push the package to all production servers.
 5. Run `make datastores` on **one** server (DB installation and migration).
+6. Restart the game.
 
 ### If you push the Git repository as-is
 
 1. Push the repository to all production servers.
 2. Run `make deps` on all servers (external dependency download and installation).
-3. Run `make build` on all servers (web builds).
-4. Run `make datastores` on **one** server (DB installation and migration).
+3. Run `make datastores` on **one** server (DB installation and migration).
+4. Run `make build` on all servers (web builds).
+5. Restart the game.
 
 > If there are any other requirements for a particular game, that game **must** document these in
 > `Readme.md` in the root folder of the project.
