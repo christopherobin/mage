@@ -30,6 +30,7 @@ help:
 deps: deps-npm
 
 deps-npm:
+	mkdir -p node_modules
 	npm install
 
 
@@ -56,6 +57,7 @@ dev-githooks:
 
 define helpQuality
 	@echo "Quality:"
+	@echo
 	@echo "  make test              Runs all tests (shortcut for test-lint and test-unit)."
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
@@ -123,24 +125,21 @@ report-coverage: instrument
 define helpCleanup
 	@echo "Cleanup:"
 	@echo
-	@echo "  make clean             Cleans all caches and reports."
+	@echo "  make clean             Cleans all dependencies and reports."
 	@echo
-	@echo "  make clean-npm         Cleans the NPM cache."
-	@echo "  make clean-coverage    Removes the test coverage report and its instrumented files."
-	@echo "  make clean-complexity  Removes the Plato report."
+	@echo "  make clean-deps        Cleans node_modules."
+	@echo "  make clean-report      Removes all reports."
 	@echo
 endef
 
-.PHONY: clean clean-npm clean-coverage clean-complexity
+.PHONY: clean clean-deps clean-report
 
-clean: clean-npm clean-coverage clean-complexity
+clean: clean-deps clean-report
 
-clean-npm:
-	npm cache clean
+clean-deps:
+	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
 
-clean-coverage:
-	rm -rf $(LIBCOV)
-	rm -rf $(COVERAGE_REPORT)
-
-clean-complexity:
-	rm -rf $(COMPLEXITY_REPORT)
+clean-report:
+	rm -rf "$(LIBCOV)"
+	rm -rf "$(COVERAGE_REPORT)"
+	rm -rf "$(COMPLEXITY_REPORT)"

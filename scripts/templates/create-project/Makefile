@@ -44,6 +44,7 @@ all: deps datastores build
 deps: deps-npm deps-component deps-submodules
 
 deps-npm:
+	mkdir -p node_modules
 	npm install
 
 deps-component:
@@ -85,6 +86,7 @@ dev-githooks:
 
 define helpQuality
 	@echo "Quality:"
+	@echo
 	@echo "  make test              Runs all tests (shortcut for test-lint and test-unit)."
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
@@ -183,29 +185,26 @@ status:
 define helpCleanup
 	@echo "Cleanup:"
 	@echo
-	@echo "  make clean             Cleans all builds, caches and reports."
+	@echo "  make clean             Cleans all builds, dependencies and reports."
 	@echo
 	@echo "  make clean-build       Cleans all application builds."
-	@echo "  make clean-npm         Cleans the NPM cache."
-	@echo "  make clean-coverage    Removes the test coverage report and its instrumented files."
-	@echo "  make clean-complexity  Removes the Plato report."
+	@echo "  make clean-deps        Cleans components and node_modules."
+	@echo "  make clean-report      Removes all reports."
 	@echo
 endef
 
-.PHONY: clean clean-build clean-npm clean-coverage clean-complexity
+.PHONY: clean clean-build clean-deps clean-report
 
-clean: clean-build clean-npm clean-coverage clean-complexity
+clean: clean-build clean-deps clean-report
 
 clean-build:
 	node . build --clean
 
-clean-npm:
-	npm cache clean
+clean-deps:
+	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
+	@git ls-files components --error-unmatch > /dev/null 2>&1 && echo "Not removing components from repo" || echo "Removing components" && rm -rf components
 
-clean-coverage:
-	rm -rf $(LIBCOV)
-	rm -rf $(COVERAGE_REPORT)
-
-clean-complexity:
-	rm -rf $(COMPLEXITY_REPORT)
-
+clean-report:
+	rm -rf "$(LIBCOV)"
+	rm -rf "$(COVERAGE_REPORT)"
+	rm -rf "$(COMPLEXITY_REPORT)"
