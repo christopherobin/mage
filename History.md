@@ -33,6 +33,8 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ### Minor improvements
 
 * We made the log message a bit friendlier when building a component with "files" attached.
+* We moved service discovery configuration defaults into a file, so they actually show up when you
+  display config.
 
 
 ## v0.23.1 - Derp Cat
