@@ -8,6 +8,16 @@ If you want your application to span multiple domains, you need to enable CORS. 
 enabled through your configuration. For more information, please read the
 [Message Server documentation](lib/msgServer).
 
+### Makefile
+
+In our ongoing efforts to make installation, CI and deployment simpler, we have revisited the
+behavior of `make clean`. It used to clear the npm-cache. That is no longer the case. Now, when you
+run `make clean`, it removes your `components` and `node_modules`. However, it will *not* remove
+them if they are part of your git repository.
+
+We have also renamed `clean-npm` to `clean-deps` (which now includes components), and we have merged
+`clean-coverage` and `clean-complexity` into `clean-report`.
+
 ### Minor improvements
 
 * We made the log message a bit friendlier when building a component with "files" attached.
