@@ -18,7 +18,7 @@ define helpStarting
 	@echo
 	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules)."
 	@echo "  make datastores        Creates datastores and runs all migrations up to the current version."
-	@echo "  make build             Creates builds for all apps."
+	@echo "  make build             Creates html/css/js builds for all apps."
 	@echo
 	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
 	@echo "  make deps-component    Downloads and installs all external components."
@@ -141,7 +141,8 @@ report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
-instrument: clean-coverage
+instrument:
+	rm -rf "$(LIBCOV)"
 	$(BIN)/istanbul instrument --output $(LIBCOV) --no-compact --variable global.__coverage__ $(LIB)
 
 report-coverage: instrument
@@ -185,10 +186,10 @@ status:
 define helpCleanup
 	@echo "Cleanup:"
 	@echo
-	@echo "  make clean             Cleans all builds, dependencies and reports."
+	@echo "  make clean             Removes all builds, dependencies and reports."
 	@echo
-	@echo "  make clean-build       Cleans all application builds."
-	@echo "  make clean-deps        Cleans components and node_modules."
+	@echo "  make clean-build       Removes all application builds."
+	@echo "  make clean-deps        Removes components and node_modules."
 	@echo "  make clean-report      Removes all reports."
 	@echo
 endef
@@ -208,3 +209,4 @@ clean-report:
 	rm -rf "$(LIBCOV)"
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
+

@@ -112,7 +112,8 @@ report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
-instrument: clean-coverage
+instrument:
+	rm -rf "$(LIBCOV)"
 	$(BIN)/istanbul instrument --output $(LIBCOV) --no-compact --variable global.__coverage__ $(LIB)
 
 report-coverage: instrument
