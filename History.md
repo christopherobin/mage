@@ -8,6 +8,10 @@ If you want your application to span multiple domains, you need to enable CORS. 
 enabled through your configuration. For more information, please read the
 [Message Server documentation](lib/msgServer).
 
+### Minor improvements
+
+* We made the log message a bit friendlier when building a component with "files" attached.
+
 
 ## v0.23.1 - Derp Cat
 
