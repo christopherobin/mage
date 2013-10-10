@@ -79,6 +79,10 @@ deploy the game.
 5. Run `make datastores` on **one** server (DB installation and migration).
 6. Restart the game.
 
+> **Important**: If the setup phase of any game module requires external database access such as
+> MySQL (not advisable), and thus migrations to be applied, this model will fail. In that scenario,
+> `make build` has to be run *after* migrations have been applied by `make datastores`.
+
 ### If you push the Git repository as-is
 
 1. Push the repository to all production servers.
@@ -87,8 +91,10 @@ deploy the game.
 4. Run `make build` on all servers (web builds).
 5. Restart the game.
 
-> If there are any other requirements for a particular game, that game **must** document these in
-> `Readme.md` in the root folder of the project.
+### Other requirements
+
+If there are any other requirements for a particular game, that game **must** have these documented
+in `Readme.md` in the root folder of the project.
 
 
 ## Starting, restarting, stopping
@@ -107,12 +113,15 @@ To **restart the game**:
 make restart
 ```
 
-To have a **zero-downtime restart of all workers** (please note that the master will *not* be
-restarted, so this should only be used for micro-pushes):
+To have a **zero-downtime restart of all workers**:
 
 ```sh
 make reload
 ```
+
+> **Important**: Please note that the master will *not* be restarted, so this should only be used
+> for micro-pushes where the version did not change. If the version did change, master and worker
+> will not be able to communicate!
 
 To **stop the game**:
 
