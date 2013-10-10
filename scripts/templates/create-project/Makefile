@@ -199,13 +199,15 @@ endef
 clean: clean-build clean-deps clean-report
 
 clean-build:
-	node . build --clean
+# If the app cannot be started (eg, if clean already happened) this will fail, but it should not be fatal.
+	@if [ -d "node_modules/mage" ]; then echo "Removing builds"; node . build --clean; else echo "Cannot remove builds without MAGE installed (skipping)"; fi
 
 clean-deps:
 	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
 	@git ls-files components --error-unmatch > /dev/null 2>&1 && echo "Not removing components from repo" || echo "Removing components" && rm -rf components
 
 clean-report:
+	@echo "Removing reports"
 	rm -rf "$(LIBCOV)"
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
