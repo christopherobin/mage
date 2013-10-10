@@ -18,6 +18,10 @@ them if they are part of your git repository.
 We have also renamed `clean-npm` to `clean-deps` (which now includes components), and we have merged
 `clean-coverage` and `clean-complexity` into `clean-report`.
 
+### Minor improvements
+
+* We made the log message a bit friendlier when building a component with "files" attached.
+
 
 ## v0.23.1 - Derp Cat
 
