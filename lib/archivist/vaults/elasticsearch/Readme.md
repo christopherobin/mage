@@ -1,6 +1,6 @@
 # Elasticsearch vault
 
-Elasticsearch is a full-text search engine based on Lucene. It is powered by the [elasticsearch](https://github.com/ncb000gt/node-elasticsearch)
+Elasticsearch is a full-text search engine based on Lucene. It is powered by the [elasticsearch](https://github.com/ncb000gt/node-es)
 module and supports sharding, either automatic (Elasticsearch will shard everything based on the key) or manual through the
 `shard` function.
 
@@ -99,7 +99,7 @@ esClient.search(options, query, function (err, data) {
 });
 ```
 
-For more details about the Elasticsearch client, please read this [documentation](https://github.com/ncb000gt/node-elasticsearch),
+For more details about the Elasticsearch client, please read this [documentation](https://github.com/ncb000gt/node-es),
 then for the Elasticsearch query language please read the [Query](http://www.elasticsearch.org/guide/reference/api/search/query/)
 and [Query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/) documentation on the Elasticsearch website.
 
