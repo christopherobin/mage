@@ -38,6 +38,13 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 * For service discovery, mDNS service names longer than 63 bytes are now converted to a sha1 hash
   instead of generating an error, a warning will be displayed to the user when it is the case.
 
+### Dependency updates
+
+| dependency    | from   | to     | notes           |
+|---------------|--------|--------|-----------------|
+| node-uuid     | 1.4.0  | 1.4.1  |                 |
+| aws-sdk       | 1.5.2  | 1.8.1  |                 |
+| elasticsearch | 0.3.11 | 0.3.12 | Renamed to "es" |
 
 ## v0.23.1 - Derp Cat
 
