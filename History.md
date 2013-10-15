@@ -35,6 +35,8 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 * We made the log message a bit friendlier when building a component with "files" attached.
 * We moved service discovery configuration defaults into a file, so they actually show up when you
   display config.
+* For service discovery, mDNS service names longer than 63 bytes are now converted to a sha1 hash
+  instead of generating an error, a warning will be displayed to the user when it is the case.
 
 
 ## v0.23.1 - Derp Cat
