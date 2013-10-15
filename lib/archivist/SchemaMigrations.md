@@ -67,7 +67,7 @@ exports.up = function (vault, cb) {
                 '  mediaType VARCHAR(255) NOT NULL\n' +
                 ') ENGINE=InnoDB';
 
-        vault.connection.query(sql, null, function (error) {
+        vault.pool.query(sql, null, function (error) {
                 if (error) {
                         return cb(error);
                 }
@@ -77,7 +77,7 @@ exports.up = function (vault, cb) {
 };
 
 exports.down = function (vault, cb) {
-        vault.connection.query('DROP TABLE inventory', null, cb);
+        vault.pool.query('DROP TABLE inventory', null, cb);
 };
 ```
 
