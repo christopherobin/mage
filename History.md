@@ -32,12 +32,12 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 
 ### MySQL update and pool connections
 
-The `mysql` node module has been udpated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
+The `mysql` node module has been updated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
 vault now uses connection pools, see here for more details: [Pooling Connections](https://github.com/felixge/node-mysql#pooling-connections).
 
 The `pool` property is now available on the vault object, the `connection` property is still available
-but now link to the pool itself and is deprecated. For peoples updating, calling query directly on
-the pool property instead of connection will work the same as before.
+but now links to the pool itself and is deprecated. For people updating, calling `query()` directly
+on the pool property instead of connection will work the same as before.
 
 If you have series of queries you want to run on a single connection (for performance or transaction
  reasons) then the following code can be used:
@@ -58,15 +58,15 @@ function myAwesomeFunction(state, cb) {
 				conn.query('SELECT something FROM somewhere', function (err, rows) {
 					if (err) {
 						return callback(err);
-                    }
+					}
 
-                    // do something with those rows ...
+					// do something with those rows ...
 
-                    callback();
+					callback();
 				});
 			},
 			function (callback) {
-				conn.query('UPDATE anotherthing FROM somewhereelse', callback);
+				conn.query('UPDATE somewhereelse SET anotherthing = anothervalue', callback);
 			},
 			// maybe more ...
 		], function (err) {
