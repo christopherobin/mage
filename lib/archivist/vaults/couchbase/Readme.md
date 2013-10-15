@@ -1,7 +1,11 @@
 # Couchbase vault
 
-The node-couchbase module is supported through the built-in "couchbase" vault type. It supports
-sharding by creating hashes on strings that your `shard` function may provide.
+The [node-couchbase](https://npmjs.org/package/couchbase) module is supported through the built-in
+"couchbase" vault type. It supports sharding by creating hashes on strings that your `shard`
+function may provide.
+
+Alternatively, you can also use the [Memcached vault](../memcached/Readme.md) which is based on
+[node-memcached](https://npmjs.org/package/memcached).
 
 ## Configuration
 
