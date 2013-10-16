@@ -30,6 +30,56 @@ Because of these changes, **please run the following command** and commit this t
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
 
+### MySQL update and pool connections
+
+The `mysql` node module has been updated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
+vault now uses connection pools, see here for more details: [Pooling Connections](https://github.com/felixge/node-mysql#pooling-connections).
+
+The `pool` property is now available on the vault object, the `connection` property is still available
+but now links to the pool itself and is deprecated. For people updating, calling `query()` directly
+on the pool property instead of connection will work the same as before.
+
+If you have series of queries you want to run on a single connection (for performance or transaction
+ reasons) then the following code can be used:
+
+```javascript
+function myAwesomeFunction(state, cb) {
+	// get the vault as usual, but take the pool
+	var pool = state.archivist.getWriteVault('mysql').pool;
+
+	// ask for a connection
+	pool.getConnection(function (err, conn) {
+		if (err) {
+			return cb(err);
+		}
+
+		async.series([
+			function (callback) {
+				conn.query('SELECT something FROM somewhere', function (err, rows) {
+					if (err) {
+						return callback(err);
+					}
+
+					// do something with those rows ...
+
+					callback();
+				});
+			},
+			function (callback) {
+				conn.query('UPDATE somewhereelse SET anotherthing = anothervalue', callback);
+			},
+			// maybe more ...
+		], function (err) {
+			// we are done, release the connection asap, allows other peoples to use it
+			conn.release();
+
+			// then we are done, using the connection at this point will not work
+			cb(err);
+		});
+	});
+}
+```
+
 ### Minor improvements
 
 * We made the log message a bit friendlier when building a component with "files" attached.
@@ -40,11 +90,13 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 
 ### Dependency updates
 
-| dependency    | from   | to     | notes           |
-|---------------|--------|--------|-----------------|
-| node-uuid     | 1.4.0  | 1.4.1  |                 |
-| aws-sdk       | 1.5.2  | 1.8.1  |                 |
-| elasticsearch | 0.3.11 | 0.3.12 | Renamed to "es" |
+| dependency    | from         | to           | notes           |
+|---------------|--------------|--------------|-----------------|
+| node-uuid     | 1.4.0        | 1.4.1        |                 |
+| aws-sdk       | 1.5.2        | 1.8.1        |                 |
+| elasticsearch | 0.3.11       | 0.3.12       | Renamed to "es" |
+| mysql         | 2.0.0-alpha7 | 2.0.0-alpha9 |                 |
+
 
 ## v0.23.1 - Derp Cat
 
