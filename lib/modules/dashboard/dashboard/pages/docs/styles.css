@@ -1,3 +1,17 @@
 #docs_content {
 	margin-top: 15px;
 }
+
+#docs_content a.doc_anchor {
+    position: relative;
+    opacity: 0;
+    margin: -2px 5px 0 -20px;
+}
+
+#docs_content a.doc_anchor:hover {
+    opacity: 1;
+}
+
+#docs_content a.doc_anchor img {
+    display: inline;
+}

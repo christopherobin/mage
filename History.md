@@ -87,6 +87,8 @@ function myAwesomeFunction(state, cb) {
   display config.
 * For service discovery, mDNS service names longer than 63 bytes are now converted to a sha1 hash
   instead of generating an error, a warning will be displayed to the user when it is the case.
+* The dashboard doc browser now supports anchors, just hover to the left of a title to get a copyable
+  anchor.
 
 ### Dependency updates
 
