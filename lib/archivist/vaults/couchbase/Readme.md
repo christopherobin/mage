@@ -23,10 +23,9 @@ The `options` object may be empty, but may contain any of the following:
 
 ```json
 {
-	"debug": false,
 	"user": "Administrator",
 	"password": "password",
-	"hosts": [ "localhost:8091" ],
+	"host": [ "localhost:8091" ],
 	"bucket": "default"
 }
 ```
