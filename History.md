@@ -11,7 +11,7 @@ The following code can be added to where you setup the rest of your msgServer ev
 ```javascript
 var msgServer = mage.msgServer;
 
-msgServer.on('maintenance', function () {
+msgServer.on('io.error.maintenance', function () {
 	// Do whatever logic your game requires for maintenance mode.
 });
 ```
