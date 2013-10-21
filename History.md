@@ -2,6 +2,14 @@
 
 ## vNEXT
 
+### Command line parsing & path awareness
+
+MAGE will no longer parse command line arguments when run outside of your app directory. It will
+also not change the working directory. What this means practically is that all interactions with
+MAGE must be initiated from your app directory. Previously you could start your app from a
+directory outside of your project (ie. /home/bob/myapp/game start). This is no longer the case.
+We made this change to allow MAGE to be required while using unit test libraries like mocha.
+
 ### Support for CORS
 
 If you want your application to span multiple domains, you need to enable CORS. This can now be
