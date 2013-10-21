@@ -90,11 +90,14 @@ function myAwesomeFunction(state, cb) {
 
 ### Minor improvements
 
+* The File vault is now a bit more robust to handling failed or half-completed writes.
 * We made the log message a bit friendlier when building a component with "files" attached.
 * We moved service discovery configuration defaults into a file, so they actually show up when you
   display config.
 * For service discovery, mDNS service names longer than 63 bytes are now converted to a sha1 hash
   instead of generating an error, a warning will be displayed to the user when it is the case.
+* The dashboard doc browser now supports anchors, just hover to the left of a title to get a copyable
+  anchor, also anchors can be used for links between documents the same as in GitHub.
 
 ### Dependency updates
 
