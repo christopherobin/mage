@@ -82,6 +82,7 @@ function myAwesomeFunction(state, cb) {
 
 ### Minor improvements
 
+* The File vault is now a bit more robust to handling failed or half-completed writes.
 * We made the log message a bit friendlier when building a component with "files" attached.
 * We moved service discovery configuration defaults into a file, so they actually show up when you
   display config.
