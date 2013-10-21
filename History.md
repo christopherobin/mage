@@ -4,8 +4,17 @@
 
 ### New msgServer Error
 
-msgServer will now also throw a possible maintenence error. On the http transport, this is thrown
+msgServer will now also throw a possible maintenance error. On the http transport, this is thrown
 on a 503 status. Your game MUST take this into account or risk locking up when this error is encountered.
+The following code can be added to where you setup the rest of your msgServer event handlers:
+
+```javascript
+var msgServer = mage.msgServer;
+
+msgServer.on('maintenance', function () {
+	// Do whatever logic your game requires for maintenance mode.
+});
+```
 
 ### Support for CORS
 
