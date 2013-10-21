@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### New msgServer Error
+
+msgServer will now also throw a possible maintenence error. On the http transport, this is thrown
+on a 503 status. Your game MUST take this into account or risk locking up when this error is encountered.
+
 ### Support for CORS
 
 If you want your application to span multiple domains, you need to enable CORS. This can now be
