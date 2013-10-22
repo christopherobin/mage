@@ -44,6 +44,11 @@ Because of these changes, **please run the following command** and commit this t
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
 
+We reorder the building of dependencies for `make deps` since the build of components might depends 
+on submodules.
+The previous version could failed installing your dependencies on a fresh install of your project.
+
+
 ### MySQL update and pool connections
 
 The `mysql` node module has been updated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
