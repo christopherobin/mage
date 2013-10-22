@@ -26,7 +26,7 @@ define helpStarting
 	@echo
 endef
 
-.PHONY: help version all deps deps-npm deps-component deps-submodules datastores build
+.PHONY: help version all deps deps-npm deps-submodules deps-component datastores build
 
 help:
 	@echo
@@ -41,7 +41,7 @@ version:
 
 all: deps datastores build
 
-deps: deps-npm deps-component deps-submodules
+deps: deps-npm deps-submodules deps-component
 
 deps-npm:
 	mkdir -p node_modules
