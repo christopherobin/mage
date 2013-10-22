@@ -38,16 +38,15 @@ them if they are part of your git repository.
 We have also renamed `clean-npm` to `clean-deps` (which now includes components), and we have merged
 `clean-coverage` and `clean-complexity` into `clean-report`.
 
+We have reordered the commands that `make deps` runs to install components *after* git submodules,
+since the building of components might depend on those. The previous version could fail to install
+your dependencies on a fresh install of your project.
+
 Because of these changes, **please run the following command** and commit this to your repository:
 
 ```sh
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
-
-We reorder the building of dependencies for `make deps` since the build of components might depends 
-on submodules.
-The previous version could failed installing your dependencies on a fresh install of your project.
-
 
 ### MySQL update and pool connections
 
