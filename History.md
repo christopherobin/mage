@@ -129,8 +129,10 @@ function myAwesomeFunction(state, cb) {
 
 ### Bugfixes
 
-* Fixed an issue with archivist.set on object and prettification. This has been
-  fixed within the archivist client at a cost of slightly bloated transport size.
+* When writing data from the archivist client to the server, it would not pretty-stringify JSON and
+  tomes. This has been fixed, at the slight cost of an increased transport size. This should however
+  only affect the dashboard, since no data mutations are allowed to be made by game clients.
+
 
 ## v0.23.1 - Derp Cat
 
