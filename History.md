@@ -113,6 +113,8 @@ function myAwesomeFunction(state, cb) {
 | aws-sdk       | 1.5.2        | 1.8.1        |                 |
 | elasticsearch | 0.3.11       | 0.3.12       | Renamed to "es" |
 | mysql         | 2.0.0-alpha7 | 2.0.0-alpha9 |                 |
+| js-yaml       | 2.1.1        | 2.1.3        |                 |
+| redis         | 0.8.4        | 0.9.0        |                 |
 
 
 ## v0.23.1 - Derp Cat
