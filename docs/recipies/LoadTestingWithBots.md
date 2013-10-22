@@ -101,8 +101,8 @@ mage.player.setResources({ stamina: maxStamina }, function (error) {
 In order to do the things real users would do, we need to run real client-side game code in a
 browser. That tends to be hard to automate, but luckily there is [PhantomJS](http://phantomjs.org),
 an application that runs a full WebKit browser from the command line. Once you have PhantomJS
-installed, you can let MAGE create a JavaScript file for you, that Phantom can run and will access
-the game.
+[downloaded and installed](http://phantomjs.org/download.html), you can let MAGE create a JavaScript
+file for you, that Phantom can run and will access the game.
 
 You do this by running the create-phantom command from the command line, and passing it the app name
 of your bot.
