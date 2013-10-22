@@ -119,6 +119,7 @@ function myAwesomeFunction(state, cb) {
 
 | dependency    | from         | to           | notes           |
 |---------------|--------------|--------------|-----------------|
+| tomes         | 0.0.15       | 0.0.16       |                 |
 | node-uuid     | 1.4.0        | 1.4.1        |                 |
 | aws-sdk       | 1.5.2        | 1.8.1        |                 |
 | elasticsearch | 0.3.11       | 0.3.12       | Renamed to "es" |
