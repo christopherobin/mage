@@ -127,6 +127,10 @@ function myAwesomeFunction(state, cb) {
 | js-yaml       | 2.1.1        | 2.1.3        |                 |
 | redis         | 0.8.4        | 0.9.0        |                 |
 
+### Bugfixes
+
+* Fixed an issue with archivist.set on object and prettification. This has been
+  fixed within the archivist client at a cost of slightly bloated transport size.
 
 ## v0.23.1 - Derp Cat
 
