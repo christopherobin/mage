@@ -138,7 +138,6 @@ function myAwesomeFunction(state, cb) {
 }
 ```
 
-
 ### Minor improvements
 
 * The File vault is now a bit more robust to handling failed or half-completed writes.
