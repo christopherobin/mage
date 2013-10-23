@@ -2,6 +2,26 @@
 
 ## vNEXT
 
+### New client-side msgServer error: "maintenance"
+
+The msgServer client can now also yield a `maintenance` error during the execution of a user
+command. On the http transport, this happens when a "503 Service Unavailable" is encountered. Your
+game MUST take this into account or risk locking up when this error is encountered. The following
+code can be added to where you set up the rest of your msgServer event handlers:
+
+```javascript
+mage.msgServer.on('io.error.maintenance', function () {
+	// Do whatever logic your game requires for maintenance mode.
+    // In this case, we retry the user command and we use a long timeout, because our server is
+    // either under heavy load or under real maintenance. That means that this may take a while, and
+    // we don't want to needlessly overwhelm the servers with requests.
+
+	window.setTimeout(function () {
+		mage.msgServer.resend();
+	}, 30 * 1000);
+});
+```
+
 ### Support for CORS
 
 If you want your application to span multiple domains, you need to enable CORS. This can now be
@@ -24,27 +44,95 @@ them if they are part of your git repository.
 We have also renamed `clean-npm` to `clean-deps` (which now includes components), and we have merged
 `clean-coverage` and `clean-complexity` into `clean-report`.
 
+We have reordered the commands that `make deps` runs to install components *after* git submodules,
+since the building of components might depend on those. The previous version could fail to install
+your dependencies on a fresh install of your project.
+
 Because of these changes, **please run the following command** and commit this to your repository:
 
 ```sh
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
 
+### MySQL update and pool connections
+
+The `mysql` node module has been updated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
+vault now uses connection pools, see here for more details: [Pooling Connections](https://github.com/felixge/node-mysql#pooling-connections).
+
+The `pool` property is now available on the vault object, the `connection` property is still available
+but now links to the pool itself and is deprecated. For people updating, calling `query()` directly
+on the pool property instead of connection will work the same as before.
+
+If you have series of queries you want to run on a single connection (for performance or transaction
+ reasons) then the following code can be used:
+
+```javascript
+function myAwesomeFunction(state, cb) {
+	// get the vault as usual, but take the pool
+	var pool = state.archivist.getWriteVault('mysql').pool;
+
+	// ask for a connection
+	pool.getConnection(function (err, conn) {
+		if (err) {
+			return cb(err);
+		}
+
+		async.series([
+			function (callback) {
+				conn.query('SELECT something FROM somewhere', function (err, rows) {
+					if (err) {
+						return callback(err);
+					}
+
+					// do something with those rows ...
+
+					callback();
+				});
+			},
+			function (callback) {
+				conn.query('UPDATE somewhereelse SET anotherthing = anothervalue', callback);
+			},
+			// maybe more ...
+		], function (err) {
+			// we are done, release the connection asap, allows other peoples to use it
+			conn.release();
+
+			// then we are done, using the connection at this point will not work
+			cb(err);
+		});
+	});
+}
+```
+
 ### Minor improvements
 
+* The File vault is now a bit more robust to handling failed or half-completed writes.
 * We made the log message a bit friendlier when building a component with "files" attached.
 * We moved service discovery configuration defaults into a file, so they actually show up when you
   display config.
 * For service discovery, mDNS service names longer than 63 bytes are now converted to a sha1 hash
   instead of generating an error, a warning will be displayed to the user when it is the case.
+* The dashboard doc browser now supports anchors, just hover to the left of a title to get a copyable
+  anchor, also anchors can be used for links between documents the same as in GitHub.
 
 ### Dependency updates
 
-| dependency    | from   | to     | notes           |
-|---------------|--------|--------|-----------------|
-| node-uuid     | 1.4.0  | 1.4.1  |                 |
-| aws-sdk       | 1.5.2  | 1.8.1  |                 |
-| elasticsearch | 0.3.11 | 0.3.12 | Renamed to "es" |
+| dependency    | from         | to           | notes           |
+|---------------|--------------|--------------|-----------------|
+| tomes         | 0.0.15       | 0.0.16       |                 |
+| node-uuid     | 1.4.0        | 1.4.1        |                 |
+| aws-sdk       | 1.5.2        | 1.8.1        |                 |
+| elasticsearch | 0.3.11       | 0.3.12       | Renamed to "es" |
+| mysql         | 2.0.0-alpha7 | 2.0.0-alpha9 |                 |
+| js-yaml       | 2.1.1        | 2.1.3        |                 |
+| redis         | 0.8.4        | 0.9.0        |                 |
+
+### Bugfixes
+
+* When writing data from the archivist client to the server, it would not pretty-stringify JSON and
+  tomes. This has been fixed, at the slight cost of an increased transport size. This should however
+  only affect the dashboard, since no data mutations are allowed to be made by game clients.
+
 
 ## v0.23.1 - Derp Cat
 
