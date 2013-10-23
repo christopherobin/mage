@@ -46,7 +46,7 @@ Alternatively, we can add a separate call:
 ```javascript
 // MAGE built-in modules
 
-mage.useModules('archivist', 'assets', 'dashboard', 'logger', 'session', 'time', 'gifting');
+mage.useModules('archivist', 'assets', 'dashboard', 'logger', 'session', 'time');
 
 // Game modules
 
@@ -252,7 +252,7 @@ exports.execute = function (state, fromPlayerId, toPlayerId, itemType, amount, c
 		if (error) {
 			return callback(error);
 		}
-		
+
 		// If no error, call state.respond to pass data to the client
 		state.respond(data);
 		callback();

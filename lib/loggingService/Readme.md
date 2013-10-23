@@ -100,7 +100,14 @@ try {
 
 ```javascript
 mage.logger.debug
-	.data(questData)
+	.data({
+		playerId: 'abc',
+		questId: questId,
+		conditions: {
+			stamina: player.stamina,
+			xp: player.xp
+		}
+	})
 	.log('Trying to run quest', questId);
 ```
 
@@ -117,17 +124,15 @@ mage.logger.debug
 
 If configured, the client module will also expose all the channels, so you can log just like you do
 on the server. The API is however limited to logging a `message`. At this time, contexts, details
-and key/value data are not supported. Stack traces are automatically logged in the data part
-however. The client can log to console, but also to the server. Please make sure you expose the
-"sendReport" user command to enable that.
+and key/value data are not supported. Stack traces of Error objects are automatically logged in the
+data part however. The client can log to console, but also to the server.
 
 
 ## Built-in Logging Channels
 
-The default channels have been expanded to be more granular and more meaningful; this should help
-production operation by allowing you to throw alerts properly (only 3-4 emergencies or alerts a
-minute should alert operation, but it might take 100's of user errors a minute to trigger the same
-alerting).
+The built-in channels are designed to be granular and meaningful; this should help production
+operation by allowing you to throw alerts properly (only 3-4 emergencies or alerts a minute should
+alert operation, but it might take 100's of user errors a minute to trigger the same alerting).
 
 ### emergency
 
@@ -136,6 +141,7 @@ Internal service or external service unavailability. The app cannot boot or stop
 ### alert
 
 There are major issues that affect the correct operation of the application.
+
 * Internal service (datastore API call, etc) or external service
 * API calls throw Exception or return errors
 
@@ -151,6 +157,7 @@ A user request has errored and the user experience is expected to be negatively 
 ### warning
 
 Acceptable problems that are expected to happen and will always be dealt with gracefully.
+
 * A user made an unusual request
 * System warning
 
@@ -185,118 +192,84 @@ the server:
 * file: write to log files on disk
 * graylog: www.graylog2.com
 * loggly: www.loggly.com
-* websocket: log to on-demand incoming websocket connections
+* websocket: streams the log on a [Savvy](../savvy/Readme.md) websocket
 
 And the following are available on the client:
 
 * console: outputs to console.log/warn/error
-* server: send log entries to the server to be reported in a server-side writer
+* server: send log entries to the server to be reported in server-side writers
 
 Configuration happens in your config file in:
 
-```json
-{
-	"logging": {
-		"server": {},
-		"html5": {}
-	}
-}
+```yaml
+logging:
+    server: {}
+    html5: {}
 ```
 
 ### Server: Terminal
 
-```json
-{
-	"logging": {
-		"server": {
-			"terminal": {
-				"channels": [">=info"],
-				"config": {
-					"jsonIndent": 2,
-					"theme": "default"
-				}
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        terminal:
+            channels: [">=info"]
+            config:
+                jsonIndent: 2
+                theme: default
 ```
+
 Available themes: `default`, `dark`, `light`.
 
 ### Server: File
 
-```json
-{
-	"logging": {
-		"server": {
-			"file": {
-				"channels": ["<info", ">=critical", "error"],
-				"config": {
-					"jsonIndent": 2,
-					"path": "./logs/",
-					"mode": "0600"
-				}
-			},
-
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        file:
+            channels: ["<info", ">=critical", "error"]  # this is a horrible idea!
+            config:
+                jsonIndent: 2
+                path: "./logs/"
+                mode: "0600"    # make sure this is a string!
 ```
 
 ### Server: Graylog
 
-```json
-{
-	"logging": {
-		"server": {
-			"graylog": {
-				"channels": [">=info"],
-				"config": {
-					"servers": [
-						{ "host": "192.168.100.85", "port": 12201 },
-						{ "host": "192.168.100.86", "port": 12201 }
-					],
-					"facility": "Application identifier"
-				}
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        graylog:
+            channels: [">=info"]
+            config:
+                servers:
+                    - { host: "192.168.100.85", port: 12201 }
+                    - { host: "192.168.100.86", port: 12201 }
+                facility: Application identifier
 ```
 
 ### Server: Loggly
 
-```json
-{
-	"logging": {
-		"server": {
-			"channels": [">=info"],
-			"config": {
-				"token": "the token, see loggly indication on web interface account login",
-				"subdomain": "mysubdomain"
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        loggly:
+            channels: [">=error"]
+            config:
+                token: "the token, see loggly indication on web interface account login"
+                subdomain: mysubdomain
 ```
 
 ### Server: Websocket
 
-```json
-{
-	"logging": {
-		"server": {
-			"websocket": {
-				"config": {
-					"port": 31337
-				}
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        websocket: {}
 ```
 
-Socket files are not supported, nor are channels. The channel description is to be passed into the
-connection once it has been established.
+Please note that channels are not supported in the websocket configuration. The channel description
+array is to be passed as JSON into the connection once it has been established.
 
 ### HTML5: All writers
 
@@ -307,30 +280,24 @@ configuration property is optional, and should generally be left out.
 
 ### HTML5: Console
 
-```json
-{
-	"logging": {
-		"html5": {
-			"console": {
-				"channels": [">=verbose"],
-				"disableOverride": false
-			}
-		}
-	}
-}
+Logs to the browser's console.
+
+```yaml
+logging:
+    html5:
+        console:
+            channels: [">=verbose"]
+            disableOverride: false
 ```
 
 ### HTML5: Server
 
-```json
-{
-	"logging": {
-		"html5": {
-			"server": {
-				"channels": [">=verbose"],
-				"disableOverride": false
-			}
-		}
-	}
-}
+Sends logs from client to server.
+
+```yaml
+logging:
+    html5:
+        server:
+            channels: [">=error"]
+            disableOverride: false
 ```
