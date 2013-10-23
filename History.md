@@ -17,9 +17,9 @@ following code can be added to where you set up the rest of your msgServer event
 ```javascript
 mage.msgServer.on('io.error.maintenance', function () {
 	// Do whatever logic your game requires for maintenance mode.
-    // In this case, we retry the user command and we use a long timeout, because our server is
-    // either under heavy load or under real maintenance. That means that this may take a while, and
-    // we don't want to needlessly overwhelm the servers with requests.
+	// In this case, we retry the user command and we use a long timeout, because our server is
+	// either under heavy load or under real maintenance. That means that this may take a while, and
+	// we don't want to needlessly overwhelm the servers with requests.
 
 	window.setTimeout(function () {
 		mage.msgServer.resend();
