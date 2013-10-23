@@ -1,5 +1,13 @@
 # Release history
 
+## vNEXT
+
+### Minor improvements
+
+* When the logger sends a browser error to the server, it will now include the user agent string.
+  We also took the opportunity to make the log data structure for these cases a bit flatter.
+
+
 ## v0.23.2 - Basketball Cat
 
 ### Security advisory
