@@ -114,6 +114,8 @@ function myAwesomeFunction(state, cb) {
   instead of generating an error, a warning will be displayed to the user when it is the case.
 * The dashboard doc browser now supports anchors, just hover to the left of a title to get a copyable
   anchor, also anchors can be used for links between documents the same as in GitHub.
+* The daemonizer would error on `reload` if the app was not yet running. Now it will simply start
+  the app instead.
 
 ### Dependency updates
 
