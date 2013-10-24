@@ -19,7 +19,7 @@ something like this:
 		// By filtering by requestType, we improve performance of all commands
 		if (requestType === 'route') {
 			if (!useragent.is(req.headers['user-agent']).webkit) {
-				return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null};
+				return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null };
 			}
 		}
 	});
