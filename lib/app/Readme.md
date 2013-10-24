@@ -82,7 +82,7 @@ apps:
 * `screens` (optional) List of screen sizes to setup an asset map for
 * `useManifest` (optional) Whether or not the client html5 manifest system should be used for asset
   storage management. Warning that this feature can be the cause of multiple update issues. Check
-  "Application cache" section below.
+  `Application cache` section below.
 * `compress` (optional) Whether or not responses should be compressed.
 
 
