@@ -2,6 +2,17 @@
 
 ## vNEXT
 
+### msgServer interconnections
+
+The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
+mismatch, the master and worker would refuse to share events. This is a bit silly, as we know that
+after a `make reload` operation the version on the workers may have changed. When this happens, the
+master will keep its previous version, but allow the mismatch with its worker to happen.
+
+When master processes communicate with their peers however, the check is still strict: the
+application name and version *must* match in order for them to connect and communicate messages.
+
+
 ### Minor improvements
 
 * When the logger sends a browser error to the server, it will now include the user agent string.
