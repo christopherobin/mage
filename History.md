@@ -4,10 +4,14 @@
 
 ### Replaced WebApp firewall with request hooks
 
-The WebApp firewall function has now been replaced with a more generic request hook API. The idea is
-to register request hooks to an app which will be executed on each request. If all is fine, the
-request will proceed as per normal. However if there is a problem, the hook will return a response
-code, header and message body. This could essentially be used for any form of request checking.
+The WebApp firewall function has been deprecated and replaced with a more generic request hook API.
+The idea is to register request hooks to an app which will be executed on each request. If all is
+fine, the request will proceed as per normal. However if there is a problem, the hook will return a
+response code, header and message body. This could essentially be used for any form of request
+checking.
+
+Setting the app.firewall function will register it as a request hook and work as before, with a
+deprecation warning.
 
 To implement a device compatibility handler for webkit support you would do
 something like this:
