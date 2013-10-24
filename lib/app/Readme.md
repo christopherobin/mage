@@ -12,14 +12,14 @@ this. You can register pages on a WebApp which essentially become routes to be s
 Pages are essentially routes on a WebApp which will serve as client entry points. Pages can be added
 using a few different APIs:
 
-* setIndexPage(path, options): This function will set the root 'loader' page for the application
+* `setIndexPage(path, options)` This function will set the root 'loader' page for the application
 under 'http://your.game.com/app/appName/'
 
-* addIndexPage(name, path, options, assetOptions): This will add a loader page for a WebApp under a
+* `addIndexPage(name, path, options, assetOptions)` This will add a loader page for a WebApp under a
 given route. Essentially index pages are entry pages which have html and body tags wrapped around
 the content.
 
-* addPage(name, path, options): This will add a view page for a WebApp. These pages do not contain
+* `addPage(name, path, options)` This will add a view page for a WebApp. These pages do not contain
 html and body tags wrapped around the content. These pages also cannot be given a route. Mage will
 automatically place these pages under 'http://your.game.com/app/appName/pageName'.
 
@@ -28,7 +28,7 @@ automatically place these pages under 'http://your.game.com/app/appName/pageName
 
 TBD
 
-* registerComponent(name, path, requiredBy, options)
+* `registerComponent(name, path, requiredBy, options)` 
 
 #### Request Hooks
 
