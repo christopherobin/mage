@@ -81,5 +81,15 @@ apps:
   The asset map with the closest density lower than that of the device will be served.
 * `screens` (optional) List of screen sizes to setup an asset map for
 * `useManifest` (optional) Whether or not the client html5 manifest system should be used for asset
-  storage management. Warning that this feature can be the cause of multiple update issues.
+  storage management. Warning that this feature can be the cause of multiple update issues. Check
+  "Application cache" section below.
 * `compress` (optional) Whether or not responses should be compressed.
+
+
+#### "Application cache" or "Offline web applications"
+
+This is the browser feature we use when setting the `useManifest` configuration above. More
+infomation can be found on these at the following links:
+
+* [Mozilla application cache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache)
+* [W3 offline web applciations](http://www.w3.org/TR/2011/WD-html5-20110525/offline.html)
