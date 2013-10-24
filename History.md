@@ -2,6 +2,21 @@
 
 ## vNEXT
 
+### msgServer interconnections
+
+The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
+mismatch, the master and worker would refuse to share events. This is a bit silly, as we know that
+after a `make reload` operation the version on the workers may have changed. When this happens, the
+master will keep its previous version, but allow the mismatch with its worker to happen.
+
+When master processes communicate with their peers however, the check is still strict: the
+application name and version *must* match in order for them to connect and communicate messages.
+
+We also made it so that relays will now explicitly disconnect from relays that went down. Not doing
+this will result in ZeroMQ trying to reconnect to the missing relay indefinitely. For the longest
+time, ZeroMQ did not implement a `disconnect` function, but recently this was added and received
+support in ZeroMQ for Node.js.
+
 ### Minor improvements
 
 * When the logger sends a browser error to the server, it will now include the user agent string.
