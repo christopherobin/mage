@@ -2,19 +2,47 @@
 
 ## vNEXT
 
+### msgServer interconnections
+
+The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
+mismatch, the master and worker would refuse to share events. This is a bit silly, as we know that
+after a `make reload` operation the version on the workers may have changed. When this happens, the
+master will keep its previous version, but allow the mismatch with its worker to happen.
+
+When master processes communicate with their peers however, the check is still strict: the
+application name and version *must* match in order for them to connect and communicate messages.
+
+We also made it so that relays will now explicitly disconnect from relays that went down. Not doing
+this will result in ZeroMQ trying to reconnect to the missing relay indefinitely. For the longest
+time, ZeroMQ did not implement a `disconnect` function, but recently this was added and received
+support in ZeroMQ for Node.js.
+
+### Minor improvements
+
+* When the logger sends a browser error to the server, it will now include the user agent string.
+  We also took the opportunity to make the log data structure for these cases a bit flatter.
+
+
+## v0.23.2 - Basketball Cat
+
+### Security advisory
+
+Node.js 0.8.26 fixes a critical security bug in the HTTP server. Read more about it [on the Node.js
+website](http://blog.nodejs.org/2013/10/22/cve-2013-4450-http-server-pipeline-flood-dos/).
+
 ### New client-side msgServer error: "maintenance"
 
-The msgServer client can now also yield a `maintenance` error during the execution of a user
-command. On the http transport, this happens when a "503 Service Unavailable" is encountered. Your
-game MUST take this into account or risk locking up when this error is encountered. The following
-code can be added to where you set up the rest of your msgServer event handlers:
+The msgServer client can now also yield a `maintenance` error (thanks Tien) during the execution of
+a user command. On the http transport, this happens when a "503 Service Unavailable" is encountered.
+Your game MUST take this into account or risk locking up when this error is encountered. The
+following code can be added to where you set up the rest of your msgServer event handlers:
 
 ```javascript
 mage.msgServer.on('io.error.maintenance', function () {
 	// Do whatever logic your game requires for maintenance mode.
-    // In this case, we retry the user command and we use a long timeout, because our server is
-    // either under heavy load or under real maintenance. That means that this may take a while, and
-    // we don't want to needlessly overwhelm the servers with requests.
+	// In this case, we retry the user command and we use a long timeout, because our server is
+	// either under heavy load or under real maintenance. That means that this may take a while, and
+	// we don't want to needlessly overwhelm the servers with requests.
 
 	window.setTimeout(function () {
 		mage.msgServer.resend();
@@ -45,8 +73,8 @@ We have also renamed `clean-npm` to `clean-deps` (which now includes components)
 `clean-coverage` and `clean-complexity` into `clean-report`.
 
 We have reordered the commands that `make deps` runs to install components *after* git submodules,
-since the building of components might depend on those. The previous version could fail to install
-your dependencies on a fresh install of your project.
+(thanks Micky) since the building of components might depend on those. The previous version could
+fail to install your dependencies on a fresh install of your project.
 
 Because of these changes, **please run the following command** and commit this to your repository:
 
@@ -57,14 +85,15 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ### MySQL update and pool connections
 
 The `mysql` node module has been updated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
-vault now uses connection pools, see here for more details: [Pooling Connections](https://github.com/felixge/node-mysql#pooling-connections).
+vault now uses connection pools, see here for more details:
+[Pooling Connections](https://github.com/felixge/node-mysql#pooling-connections).
 
 The `pool` property is now available on the vault object, the `connection` property is still available
 but now links to the pool itself and is deprecated. For people updating, calling `query()` directly
 on the pool property instead of connection will work the same as before.
 
 If you have series of queries you want to run on a single connection (for performance or transaction
- reasons) then the following code can be used:
+reasons) then the following code can be used:
 
 ```javascript
 function myAwesomeFunction(state, cb) {
@@ -114,17 +143,27 @@ function myAwesomeFunction(state, cb) {
   instead of generating an error, a warning will be displayed to the user when it is the case.
 * The dashboard doc browser now supports anchors, just hover to the left of a title to get a copyable
   anchor, also anchors can be used for links between documents the same as in GitHub.
+* The daemonizer would error on `reload` if the app was not yet running. Now it will simply start
+  the app instead.
 
 ### Dependency updates
 
 | dependency    | from         | to           | notes           |
 |---------------|--------------|--------------|-----------------|
+| tomes         | 0.0.15       | 0.0.16       |                 |
 | node-uuid     | 1.4.0        | 1.4.1        |                 |
 | aws-sdk       | 1.5.2        | 1.8.1        |                 |
 | elasticsearch | 0.3.11       | 0.3.12       | Renamed to "es" |
 | mysql         | 2.0.0-alpha7 | 2.0.0-alpha9 |                 |
 | js-yaml       | 2.1.1        | 2.1.3        |                 |
 | redis         | 0.8.4        | 0.9.0        |                 |
+
+### Bugfixes
+
+* When writing data from the archivist client to the server, it would not pretty-stringify JSON and
+  tomes. This has been fixed, at the slight cost of an increased transport size. This should however
+  only affect the dashboard, since no data mutations are allowed to be made by game clients. (thanks
+  Almir)
 
 
 ## v0.23.1 - Derp Cat
