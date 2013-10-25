@@ -1,7 +1,7 @@
 # User/Password Ident Engine
 
 The `userpass` engine provides some basic user/password identification mechanism to be used with
-your game, it provides plaintext and hash based identification and allow you to store your credentials
+your game, it provides a hash based identification and allows you to store your credentials
 in any topic that match it's signature.
 
 It depends on a valid topic, default being `credentials` but can be overridden in the configuration,
