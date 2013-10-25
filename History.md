@@ -2,6 +2,60 @@
 
 ## vNEXT
 
+You can now get the name of the app from your state object with state.appName.
+
+
+### Identification module
+
+An ident module has been added to MAGE, providing anonymous (development mode only) and classic user
+and password login. Usage is fairly simple, first add some configuration based on your app to enable
+the right engine(s):
+
+```yaml
+module:
+	ident:
+		# here is your app name, usually game
+		game:
+			# like archivist, any name will do here, allows you to swap engines easily
+			main:
+				# available engine types for now are "anonymous" and "userpass"
+				type: userpass
+				config:
+					# the access level provided to the user, if not provided default to the lowest
+					access: user
+					# default topic is credentials but you can override it here, that topic expects
+					# the index to be ['username'] and contain a 'password' field in the data
+					#topic: user
+			# add another config for anonymous login
+			dev:
+				type: anonymous
+				config:
+					access: user
+```
+
+Once that config is here, for anonymous login you would just need to call:
+
+```javascript
+	// here we use the "main" engine, defined as userpass, userpass expects a username and password
+	// if you were calling the "dev" engine, you could provide an access level, see the engines
+	// documentation for more details
+	mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
+		if (err) {
+			// display some error to the user
+			return;
+		}
+
+		// login was successful, display the game
+	});
+```
+
+The dashboard is by default plugged on the anonymous engine, you can set it to use user and password
+by overriding the default configuration, engine is expected to be named `default`.
+
+For now that's it, as more engines make their way in, you will also have access to components to
+help with the heavier authentication frameworks. Read the [ident documentation](lib/modules/ident/Readme.md)
+for more details.
+
 ### Minor improvements
 
 * Added event emission `panopticonRegistered` in sampler when panopticon instances are created.

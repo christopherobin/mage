@@ -1,0 +1,5 @@
+dev:
+    default:
+        type: anonymous
+        config:
+            access: admin
