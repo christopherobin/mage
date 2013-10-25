@@ -24,6 +24,13 @@ support in ZeroMQ for Node.js.
 * The configuration files that come with the bootstrap template have been annotated with
   explanations about the meaning of each entry.
 
+### Critical MySQL bugfix
+
+The previous release (v0.23.2) introduced support for MySQL connection pools. This introduced a bug
+when trying to use `make datastores` (when a MySQL vault was configured), because the database
+creation would no longer be able to extract the database name from the configuration. This has been
+addressed.
+
 
 ## v0.23.2 - Basketball Cat
 
