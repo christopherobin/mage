@@ -16,17 +16,17 @@ developmentMode: true
 apps:
     # Dashboard for developers
     dev:
-        responseCache: 10
+        responseCache: 30
         access: admin
 
     # Dashboard for content managers
     cms:
-        responseCache: 10
+        responseCache: 30
         access: admin
 
     # Dashboard for customer support (you will probably need this in production)
     support:
-        responseCache: 10
+        responseCache: 30
         access: admin
 
 
@@ -92,7 +92,6 @@ archivist:
     # When doing "list" operations, we will attempt each mentioned vault until successful
     listOrder:
         - file
-        - memory # memory is not ultimately persistent, so we can't trust it will always contain all data
 
     # When doing "get" operations, we will attempt each mentioned vault until successful
     readOrder:
