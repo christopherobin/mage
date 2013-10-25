@@ -37,7 +37,8 @@ logging:
         # Log to the browser console
         console:
             channels:
-                - ">=debug"
+                - ">=error"
+
         # Send log messages back to the server (usually errors and up)
         server:
             channels:
@@ -45,14 +46,6 @@ logging:
 
     # Logging on the server
     server:
-        # Log to the terminal (hurts performance, not recommended in production)
-        terminal:
-            channels:
-                - ">=debug"
-            config:
-                # Themes enable colors
-                theme: default
-
         # Enable websocket logging to allow the dashboard to display what's being logged
         websocket: {}
 
