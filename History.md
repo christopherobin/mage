@@ -2,9 +2,6 @@
 
 ## vNEXT
 
-You can now get the name of the app from your state object with state.appName.
-
-
 ### Identification module
 
 An ident module has been added to MAGE, providing anonymous (development mode only) and classic user
@@ -59,6 +56,7 @@ for more details.
 ### Minor improvements
 
 * Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
+* You can now get the name of the app from your state object with `state.appName` (during user commands).
 
 
 ## v0.23.3 - TP Cat
