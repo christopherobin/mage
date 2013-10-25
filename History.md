@@ -21,6 +21,8 @@ support in ZeroMQ for Node.js.
 
 * When the logger sends a browser error to the server, it will now include the user agent string.
   We also took the opportunity to make the log data structure for these cases a bit flatter.
+* The configuration files that come with the bootstrap template have been annotated with
+  explanations about the meaning of each entry.
 
 
 ## v0.23.2 - Basketball Cat
