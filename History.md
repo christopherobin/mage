@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Minor improvements
+
+* Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
+
 
 ## v0.23.3 - TP Cat
 
