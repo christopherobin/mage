@@ -56,6 +56,9 @@ For now that's it, as more engines make their way in, you will also have access 
 help with the heavier authentication frameworks. Read the [ident documentation](lib/modules/ident/Readme.md)
 for more details.
 
+### Minor improvements
+
+* Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
 
 
 ## v0.23.3 - TP Cat
@@ -81,6 +84,13 @@ support in ZeroMQ for Node.js.
   We also took the opportunity to make the log data structure for these cases a bit flatter.
 * The configuration files that come with the bootstrap template have been annotated with
   explanations about the meaning of each entry.
+
+### Critical MySQL bugfix
+
+The previous release (v0.23.2) introduced support for MySQL connection pools. This introduced a bug
+when trying to use `make datastores` (when a MySQL vault was configured), because the database
+creation would no longer be able to extract the database name from the configuration. This has been
+addressed.
 
 
 ## v0.23.2 - Basketball Cat
