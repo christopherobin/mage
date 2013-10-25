@@ -1,13 +1,15 @@
 # User/Password Ident Engine
 
-The `userpass` engine provides some basic user/password identification mechanism to be used with
-your game, it provides a hash based identification and allows you to store your credentials
-in any topic that match it's signature.
+The `userpass` engine provides a basic username/password identification mechanism to be used with
+your game. It uses hash based identification and allows you to store your credentials in any
+archivist topic that matches its signature.
 
-It depends on a valid topic, default being `credentials` but can be overridden in the configuration,
-that supports `get` and `set` operations and whose index is `[ 'username' ]`. It will pull the
-credentials data from there and look for a value named `password`. Upon successfully identification
-the user for the first time it will then proceed to `set` a fixed `actorId` on the topic value.
+This archivist topic, default being `credentials`, can be overridden in the configuration.
+
+Requirements are that the vault you use supports `get` and `set` operations and the index is set to
+`[ 'username' ]`. It will pull the credentials data from there and look for a property named
+`password`. Upon first successful identification, the user will then receive a new `actorId` (if
+none was set yet) on the topic value.
 
 ## Configuration
 

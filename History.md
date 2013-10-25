@@ -30,28 +30,33 @@ module:
 					access: user
 ```
 
-Once that config is here, for anonymous login you would just need to call:
+Once that config has been set up, you will just need to run the following code to log in.
 
 ```javascript
-	// here we use the "main" engine, defined as userpass, userpass expects a username and password
-	// if you were calling the "dev" engine, you could provide an access level, see the engines
-	// documentation for more details
-	mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
-		if (err) {
-			// display some error to the user
-			return;
-		}
+// Here we use the "main" engine, which was defined as userpass. The "userpass" engine expects a
+// username and password. If you were calling the "dev" engine instead, you could provide an access
+// level. See the engines documentation for more details.
 
-		// login was successful, display the game
-	});
+mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
+	if (err) {
+		// display some error to the user
+		return;
+	}
+
+	// login was successful, display the game
+});
 ```
 
-The dashboard is by default plugged on the anonymous engine, you can set it to use user and password
-by overriding the default configuration, engine is expected to be named `default`.
+The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
+password by overriding the default configuration. The engine is expected to be named `default`.
 
 For now that's it, as more engines make their way in, you will also have access to components to
-help with the heavier authentication frameworks. Read the [ident documentation](lib/modules/ident/Readme.md)
-for more details.
+help with the heavier authentication frameworks. Read the
+[ident documentation](lib/modules/ident/Readme.md) for more details.
+
+**Please note**: If you are using dashboards, you *must* call `mage.useModules('ident');` in your
+server code, else you will not be able to log in.
+
 
 ### Minor improvements
 
