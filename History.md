@@ -2,6 +2,8 @@
 
 ## vNEXT
 
+You can now get the name of the app from you state object with state.appName.
+
 
 ## v0.23.3 - TP Cat
 
