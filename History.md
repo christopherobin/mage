@@ -1,5 +1,30 @@
 # Release history
 
+## v0.23.3 - TP Cat
+
+### msgServer interconnections
+
+The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
+mismatch, the master and worker would refuse to share events. This is a bit silly, as we know that
+after a `make reload` operation the version on the workers may have changed. When this happens, the
+master will keep its previous version, but allow the mismatch with its worker to happen.
+
+When master processes communicate with their peers however, the check is still strict: the
+application name and version *must* match in order for them to connect and communicate messages.
+
+We also made it so that relays will now explicitly disconnect from relays that went down. Not doing
+this will result in ZeroMQ trying to reconnect to the missing relay indefinitely. For the longest
+time, ZeroMQ did not implement a `disconnect` function, but recently this was added and received
+support in ZeroMQ for Node.js.
+
+### Minor improvements
+
+* When the logger sends a browser error to the server, it will now include the user agent string.
+  We also took the opportunity to make the log data structure for these cases a bit flatter.
+* The configuration files that come with the bootstrap template have been annotated with
+  explanations about the meaning of each entry.
+
+
 ## v0.23.2 - Basketball Cat
 
 ### Security advisory
@@ -17,9 +42,9 @@ following code can be added to where you set up the rest of your msgServer event
 ```javascript
 mage.msgServer.on('io.error.maintenance', function () {
 	// Do whatever logic your game requires for maintenance mode.
-    // In this case, we retry the user command and we use a long timeout, because our server is
-    // either under heavy load or under real maintenance. That means that this may take a while, and
-    // we don't want to needlessly overwhelm the servers with requests.
+	// In this case, we retry the user command and we use a long timeout, because our server is
+	// either under heavy load or under real maintenance. That means that this may take a while, and
+	// we don't want to needlessly overwhelm the servers with requests.
 
 	window.setTimeout(function () {
 		mage.msgServer.resend();

@@ -2,42 +2,77 @@
 # %APP_NAME% - default.yaml
 #
 # This file includes all the configuration that every environment has in common. Every environment
-# can have its own configuration file. If the environment specific configuration file overlaps
-# entries with this file, the environment specific one will override the values here.
+# (named by the NODE_ENV environment variable) can have its own configuration file. If the
+# environment specific configuration file overlaps entries with this file, the environment specific
+# one will override the values here.
 #
 
+
+# Define all apps in existence. Generally our game and dashboard apps (but we leave those to the
+# individual environments).
+
 apps:
+    # Our main app: the game
     game:
+        # Number of seconds to keep user command responses cached (to mitigate weak client connections)
         responseCache: 30
+
+        # The maximum access level for this app (user commands with a higher level are not exposed)
         access: user
+
+        # Webpage delivery options
         delivery:
+            # HTML5 Application Cache
             useManifest: false
+
+            # Gzip compression
             compress: true
 
+
+# Define how we want to log debug information, notices, warnings, errors, etc
+
 logging:
+    # Logging in the browser
     html5:
+        # Log to the browser console
         console:
             channels:
-                - ">=debug"
+                - ">=error"
+
+        # Send log messages back to the server (usually errors and up)
         server:
             channels:
-                - ">=debug"
+                - ">=error"
+
+    # Logging on the server
     server:
-        terminal:
-            channels:
-                - ">=debug"
-            config:
-                theme: default
+        # Enable websocket logging to allow the dashboard to display what's being logged
         websocket: {}
 
+
+# The server and its place in the network
+
 server:
+    # The clientHost (a fancy word for the HTTP server that serves all requests)
     clientHost:
         transports:
+            # Use long polling as an asynchronous event delivery mechanism
             longpolling:
+                # Respond a short heartbeat message on the long poller every N seconds
                 heartbeat: 30
+
+    # Set cluster to boolean true to have as many workers as this machine has cores, or a number
+    # if you want to be very precise.
     cluster: false
+
+    # MMRP is the messaging layer between node instances
     mmrp:
         bind:
+            # MMRP communicates using zeromq
             protocol: zmq
+
+            # Wildcard host binds on all interfaces
             host: "*"
+
+            # Wildcard port binds on a random available port
             port: "*"
