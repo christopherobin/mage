@@ -92,4 +92,4 @@ This is the browser feature we use when setting the `useManifest` configuration 
 infomation can be found on these at the following links:
 
 * [Mozilla application cache](https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache)
-* [W3 offline web applciations](http://www.w3.org/TR/2011/WD-html5-20110525/offline.html)
+* [W3 offline web applications](http://www.w3.org/TR/2011/WD-html5-20110525/offline.html)
