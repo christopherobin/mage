@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.23.4 - Cat'n Hook
 
 ### Replaced WebApp firewall with request hooks
