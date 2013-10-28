@@ -16,7 +16,7 @@ define helpStarting
 	@echo "  make version           Prints version information about the game, MAGE and Node.js."
 	@echo "  make all               Installs all dependencies and datastores (shortcut for deps, datastores and build)."
 	@echo
-	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules)."
+	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-submodules and deps-component)."
 	@echo "  make datastores        Creates datastores and runs all migrations up to the current version."
 	@echo "  make build             Creates html/css/js builds for all apps."
 	@echo
@@ -26,7 +26,7 @@ define helpStarting
 	@echo
 endef
 
-.PHONY: help version all deps deps-npm deps-component deps-submodules datastores build
+.PHONY: help version all deps deps-npm deps-submodules deps-component datastores build
 
 help:
 	@echo
@@ -41,7 +41,7 @@ version:
 
 all: deps datastores build
 
-deps: deps-npm deps-component deps-submodules
+deps: deps-npm deps-submodules deps-component
 
 deps-npm:
 	mkdir -p node_modules

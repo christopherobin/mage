@@ -7,7 +7,8 @@
 		"logger",
 		"assets",
 		"session",
-		"dashboard"
+		"dashboard",
+		"ident"
 	],
 	"paths": [
 		"../../../../..",
