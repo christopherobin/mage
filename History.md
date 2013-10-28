@@ -6,27 +6,28 @@
 
 The WebApp firewall function has been deprecated and replaced with a more generic request hook API.
 The idea is to register request hooks to an app which will be executed on each request. If all is
-fine, the request will proceed as per normal. However if there is a problem, the hook will return a
+fine, the request will proceed as per normal. However if there is a problem, the hook may return a
 response code, header and message body. This could essentially be used for any form of request
 checking.
 
-Setting the app.firewall function will register it as a request hook and work as before, with a
+Setting the `app.firewall` function will register it as a request hook and work as before, with a
 deprecation warning.
 
 To implement a device compatibility handler for webkit support you would do
 something like this:
 ```javascript
-	var useragent = require('useragent');
-	var game = mage.core.app.get('game');
+var useragent = require('useragent');
+var game = mage.core.app.get('game');
 
-	game.registerRequestHook(function (req, path, params, requestType) {
-		// By filtering by requestType, we improve performance of all commands
-		if (requestType === 'route') {
-			if (!useragent.is(req.headers['user-agent']).webkit) {
-				return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null };
-			}
+game.registerRequestHook(function (req, path, params, requestType) {
+	// By filtering by requestType, we improve performance of all commands
+
+	if (requestType === 'route') {
+		if (!useragent.is(req.headers['user-agent']).webkit) {
+			return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null };
 		}
-	});
+	}
+});
 ```
 
 ### Identification module
@@ -62,7 +63,7 @@ Once that config has been set up, you will just need to run the following code t
 ```javascript
 // Here we use the "main" engine, which was defined as userpass. The "userpass" engine expects a
 // username and password. If you were calling the "dev" engine instead, you could provide an access
-// level. See the engines documentation for more details.
+// level. See the engines' documentation for more details.
 
 mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
 	if (err) {
@@ -87,10 +88,13 @@ server code, else you will not be able to log in.
 ### Minor improvements
 
 * Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
-* You can now get the name of the app from your state object with `state.appName` (during user commands).
-* You can also get the current access level of the user in the state object using `state.access` (during user commands).
+* You can now get the name of the app from your state object with `state.appName` (during user
+  commands).
+* You can also get the current access level of the user in the state object using `state.access`
+  (during user commands).
 * During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
-* Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot be parsed.
+* Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot
+  be parsed.
 * Logging in the command center has been improved: better timing for batches and replaced some
   `info` logging with `debug`.
 
