@@ -32,6 +32,13 @@ config:
 	#hmac:
 	#	algorithm: sha256
 	#	key: somelongkeythatnoonewillguess
+
+	# pbkdf2 is nowaday the recommended way to store passwords
+	# the number of iterations should be adapted to your hardware, at least 10k is recommended but
+	# if the servers are good enough you can go to way up, you will need to experiment for that one
+	# (maybe we should make a tool to measure the optimal amount of iterations?)
+	#pbdkf2:
+	#	iterations: 15000
 ```
 
 ## Parameters
