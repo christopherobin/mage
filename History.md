@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.23.4 - Cat'n Hook
 
 ### Replaced WebApp firewall with request hooks
 
@@ -13,8 +13,8 @@ checking.
 Setting the `app.firewall` function will register it as a request hook and work as before, with a
 deprecation warning.
 
-To implement a device compatibility handler for webkit support you would do
-something like this:
+To implement a device compatibility handler for webkit support you would do something like this:
+
 ```javascript
 var useragent = require('useragent');
 var game = mage.core.app.get('game');
