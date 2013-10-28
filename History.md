@@ -62,6 +62,7 @@ server code, else you will not be able to log in.
 
 * Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
 * You can now get the name of the app from your state object with `state.appName` (during user commands).
+* During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
 
 
 ## v0.23.3 - TP Cat
