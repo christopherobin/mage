@@ -57,12 +57,13 @@ help with the heavier authentication frameworks. Read the
 **Please note**: If you are using dashboards, you *must* call `mage.useModules('ident');` in your
 server code, else you will not be able to log in.
 
-
 ### Minor improvements
 
 * Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
 * You can now get the name of the app from your state object with `state.appName` (during user commands).
+* During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
 * Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot be parsed.
+
 
 ## v0.23.3 - TP Cat
 
