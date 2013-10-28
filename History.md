@@ -29,10 +29,98 @@ something like this:
 	});
 ```
 
+### Identification module
+
+An ident module has been added to MAGE, providing anonymous (development mode only) and classic user
+and password login. Usage is fairly simple, first add some configuration based on your app to enable
+the right engine(s):
+
+```yaml
+module:
+	ident:
+		# here is your app name, usually game
+		game:
+			# like archivist, any name will do here, allows you to swap engines easily
+			main:
+				# available engine types for now are "anonymous" and "userpass"
+				type: userpass
+				config:
+					# the access level provided to the user, if not provided default to the lowest
+					access: user
+					# default topic is credentials but you can override it here, that topic expects
+					# the index to be ['username'] and contain a 'password' field in the data
+					#topic: user
+			# add another config for anonymous login
+			dev:
+				type: anonymous
+				config:
+					access: user
+```
+
+Once that config has been set up, you will just need to run the following code to log in.
+
+```javascript
+// Here we use the "main" engine, which was defined as userpass. The "userpass" engine expects a
+// username and password. If you were calling the "dev" engine instead, you could provide an access
+// level. See the engines documentation for more details.
+
+mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
+	if (err) {
+		// display some error to the user
+		return;
+	}
+
+	// login was successful, display the game
+});
+```
+
+The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
+password by overriding the default configuration. The engine is expected to be named `default`.
+
+For now that's it, as more engines make their way in, you will also have access to components to
+help with the heavier authentication frameworks. Read the
+[ident documentation](lib/modules/ident/Readme.md) for more details.
+
+**Please note**: If you are using dashboards, you *must* call `mage.useModules('ident');` in your
+server code, else you will not be able to log in.
+
+
+### Minor improvements
+
+* Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
+* You can now get the name of the app from your state object with `state.appName` (during user commands).
+
+
+## v0.23.3 - TP Cat
+
+### msgServer interconnections
+
+The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
+mismatch, the master and worker would refuse to share events. This is a bit silly, as we know that
+after a `make reload` operation the version on the workers may have changed. When this happens, the
+master will keep its previous version, but allow the mismatch with its worker to happen.
+
+When master processes communicate with their peers however, the check is still strict: the
+application name and version *must* match in order for them to connect and communicate messages.
+
+We also made it so that relays will now explicitly disconnect from relays that went down. Not doing
+this will result in ZeroMQ trying to reconnect to the missing relay indefinitely. For the longest
+time, ZeroMQ did not implement a `disconnect` function, but recently this was added and received
+support in ZeroMQ for Node.js.
+
 ### Minor improvements
 
 * When the logger sends a browser error to the server, it will now include the user agent string.
   We also took the opportunity to make the log data structure for these cases a bit flatter.
+* The configuration files that come with the bootstrap template have been annotated with
+  explanations about the meaning of each entry.
+
+### Critical MySQL bugfix
+
+The previous release (v0.23.2) introduced support for MySQL connection pools. This introduced a bug
+when trying to use `make datastores` (when a MySQL vault was configured), because the database
+creation would no longer be able to extract the database name from the configuration. This has been
+addressed.
 
 
 ## v0.23.2 - Basketball Cat
