@@ -63,6 +63,8 @@ server code, else you will not be able to log in.
 * You can now get the name of the app from your state object with `state.appName` (during user commands).
 * During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
 * Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot be parsed.
+* Logging in the command center has been improved: better timing for batches and replaced some
+  `info` logging with `debug`.
 
 
 ## v0.23.3 - TP Cat
