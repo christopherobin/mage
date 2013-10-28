@@ -2,6 +2,33 @@
 
 ## vNEXT
 
+### Replaced WebApp firewall with request hooks
+
+The WebApp firewall function has been deprecated and replaced with a more generic request hook API.
+The idea is to register request hooks to an app which will be executed on each request. If all is
+fine, the request will proceed as per normal. However if there is a problem, the hook will return a
+response code, header and message body. This could essentially be used for any form of request
+checking.
+
+Setting the app.firewall function will register it as a request hook and work as before, with a
+deprecation warning.
+
+To implement a device compatibility handler for webkit support you would do
+something like this:
+```javascript
+	var useragent = require('useragent');
+	var game = mage.core.app.get('game');
+
+	game.registerRequestHook(function (req, path, params, requestType) {
+		// By filtering by requestType, we improve performance of all commands
+		if (requestType === 'route') {
+			if (!useragent.is(req.headers['user-agent']).webkit) {
+				return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null };
+			}
+		}
+	});
+```
+
 ### Identification module
 
 An ident module has been added to MAGE, providing anonymous (development mode only) and classic user
