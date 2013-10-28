@@ -61,6 +61,7 @@ server code, else you will not be able to log in.
 
 * Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
 * You can now get the name of the app from your state object with `state.appName` (during user commands).
+* You can also get the current access level of the user in the state object using `state.access` (during user commands).
 * During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
 * Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot be parsed.
 * Logging in the command center has been improved: better timing for batches and replaced some
