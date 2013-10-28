@@ -52,7 +52,7 @@ Each channel name is a method on a logger. This allows you to write:
 
 ```javascript
 mage.logger.emergency('Crucial file missing');
-mage.logger.warn('Stamina too low to quest:', stamina, 'quest:', questId);
+mage.logger.warning('Stamina too low to quest:', stamina, 'quest:', questId);
 mage.logger.verbose('Reading from file:', filePath);
 ```
 
