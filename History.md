@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Minor improvements
+
+* Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
+
 
 ## v0.23.4 - Cat'n Hook
 
