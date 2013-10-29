@@ -7,6 +7,33 @@
 MAGE now officially supports calling `mage.useModules('abc')` from other modules. Dashboard now
 always calls `mage.useModules('ident')`, so **you no longer have to** (but you may).
 
+### Identification module updates
+
+* The identification module now provides a tool on the dashboard to create users for the `userpass`
+  engine.
+* The `userpass` engine now supports password salts and pbkdf2.
+* Added a `ldap` engine.
+* When using the `anonymous` engine, the dashboard will now auto-login you.
+* Updated some of the `mage.ident` server API functions to allow admin users to poll/query data
+  on different apps instead of the current one.
+
+You will need to update your configuration, everything that was under:
+
+```yaml
+module:
+	ident:
+		# your app names and config here
+```
+
+Need to become:
+
+```yaml
+module:
+	ident:
+		apps:
+			# your app names and config here
+```
+
 ### Minor improvements
 
 * Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
@@ -16,6 +43,7 @@ characters that need to be escaped, like spaces.
   tests and without this change it leaves .sock files laying around. Savvy already listens for
   process.exit, msgServer now matches that behavior and performs the same task whether it's
   mage#shutdown or process#exit.
+* The shard rights management now allow admins to access all entries if no shard function is defined.
 
 ### Bugfixes
 
