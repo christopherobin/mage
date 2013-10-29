@@ -15,6 +15,12 @@
 * The `archivist.assertTopicAbilities` function was failing to detect if the topic itself was missing
   and return a cryptic error to the user when that happened.
 
+### Dependency updates
+
+| dependency    | from         | to           |
+|---------------|--------------|--------------|
+| graylog2      | 0.1.0        | 0.1.1        |
+
 
 ## v0.23.4 - Cat'n Hook
 
