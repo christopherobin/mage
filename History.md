@@ -10,6 +10,11 @@
   process.exit, msgServer now matches that behavior and performs the same task whether it's
   mage#shutdown or process#exit.
 
+### Bugfixes
+
+* The `archivist.assertTopicAbilities` function was failing to detect if the topic itself was missing
+  and return a cryptic error to the user when that happened.
+
 
 ## v0.23.4 - Cat'n Hook
 
