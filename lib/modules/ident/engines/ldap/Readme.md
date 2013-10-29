@@ -6,7 +6,7 @@ and having a functional LDAP server.
 
 ## Configuration
 
-This is the engine configuration:
+This is the engine configuration, please ask your system administrators for the values to use:
 
 ```yaml
 config:
