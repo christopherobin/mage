@@ -2,6 +2,112 @@
 
 ## vNEXT
 
+### Minor improvements
+
+* Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
+
+
+## v0.23.4 - Cat'n Hook
+
+### Replaced WebApp firewall with request hooks
+
+The WebApp firewall function has been deprecated and replaced with a more generic request hook API.
+The idea is to register request hooks to an app which will be executed on each request. If all is
+fine, the request will proceed as per normal. However if there is a problem, the hook may return a
+response code, header and message body. This could essentially be used for any form of request
+checking.
+
+Setting the `app.firewall` function will register it as a request hook and work as before, with a
+deprecation warning.
+
+To implement a device compatibility handler for webkit support you would do something like this:
+
+```javascript
+var useragent = require('useragent');
+var game = mage.core.app.get('game');
+
+game.registerRequestHook(function (req, path, params, requestType) {
+	// By filtering by requestType, we improve performance of all commands
+
+	if (requestType === 'webapp') {
+		if (!useragent.is(req.headers['user-agent']).webkit) {
+			return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null };
+		}
+	}
+});
+```
+
+### Identification module
+
+An ident module has been added to MAGE, providing anonymous (development mode only) and classic user
+and password login. Usage is fairly simple, first add some configuration based on your app to enable
+the right engine(s):
+
+```yaml
+module:
+	ident:
+		# here is your app name, usually game
+		game:
+			# like archivist, any name will do here, allows you to swap engines easily
+			main:
+				# available engine types for now are "anonymous" and "userpass"
+				type: userpass
+				config:
+					# the access level provided to the user, if not provided default to the lowest
+					access: user
+					# default topic is credentials but you can override it here, that topic expects
+					# the index to be ['username'] and contain a 'password' field in the data
+					#topic: user
+			# add another config for anonymous login
+			dev:
+				type: anonymous
+				config:
+					access: user
+```
+
+Once that config has been set up, you will just need to run the following code to log in.
+
+```javascript
+// Here we use the "main" engine, which was defined as userpass. The "userpass" engine expects a
+// username and password. If you were calling the "dev" engine instead, you could provide an access
+// level. See the engines' documentation for more details.
+
+mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
+	if (err) {
+		// display some error to the user
+		return;
+	}
+
+	// login was successful, display the game
+});
+```
+
+The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
+password by overriding the default configuration. The engine is expected to be named `default`.
+
+For now that's it, as more engines make their way in, you will also have access to components to
+help with the heavier authentication frameworks. Read the
+[ident documentation](lib/modules/ident/Readme.md) for more details.
+
+**Please note**: If you are using dashboards, you *must* call `mage.useModules('ident');` in your
+server code, else you will not be able to log in.
+
+### Minor improvements
+
+* Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
+* You can now get the name of the app from your state object with `state.appName` (during user
+  commands).
+* You can also get the current access level of the user in the state object using `state.access`
+  (during user commands).
+* During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
+* Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot
+  be parsed.
+* Logging in the command center has been improved: better timing for batches and replaced some
+  `info` logging with `debug`.
+
+
+## v0.23.3 - TP Cat
+
 ### msgServer interconnections
 
 The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
@@ -21,6 +127,15 @@ support in ZeroMQ for Node.js.
 
 * When the logger sends a browser error to the server, it will now include the user agent string.
   We also took the opportunity to make the log data structure for these cases a bit flatter.
+* The configuration files that come with the bootstrap template have been annotated with
+  explanations about the meaning of each entry.
+
+### Critical MySQL bugfix
+
+The previous release (v0.23.2) introduced support for MySQL connection pools. This introduced a bug
+when trying to use `make datastores` (when a MySQL vault was configured), because the database
+creation would no longer be able to extract the database name from the configuration. This has been
+addressed.
 
 
 ## v0.23.2 - Basketball Cat
