@@ -5,10 +5,11 @@
 ### Minor improvements
 
 * Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
-* .sock files are cleaned up if process.exit is called. Mocha calls process.exit when doing unit
-tests and without this change it leaves .sock files laying around. Savvy already listens for
-process.exit, msgServer now matches that behavior and performs the same task whether it's
-mage#shutdown or process#exit.
+* .sock files are cleaned up if `process.exit()` is called. Mocha calls process.exit when doing unit
+  tests and without this change it leaves .sock files laying around. Savvy already listens for
+  process.exit, msgServer now matches that behavior and performs the same task whether it's
+  mage#shutdown or process#exit.
+
 
 ## v0.23.4 - Cat'n Hook
 
