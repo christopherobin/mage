@@ -3,13 +3,11 @@
 	"local": [
 		"mage",
 		"forms",
-		"ident-anonymous",
 		"ident-userpass"
 	],
 	"paths": [
 		"../../../../..",
 		"../../../../dashboard/dashboard/pages/postlogin/ui",
-		"../../../engines/anonymous/dashboard",
 		"../../../engines/userpass/dashboard"
 	],
 	"scripts": [
