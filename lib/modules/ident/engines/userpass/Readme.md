@@ -23,6 +23,9 @@ config:
 	# you can override the topic here
 	#topic: something_else_than_credentials
 
+	# enable salted passwords, better for security, don't change after you get users registered
+	#salt: true
+
 	# you can enable password hashing by setting a valid hash algo here, see:
 	# http://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
 	# for a list of algorithms
@@ -37,6 +40,7 @@ config:
 	# the number of iterations should be adapted to your hardware, at least 10k is recommended but
 	# if the servers are good enough you can go to way up, you will need to experiment for that one
 	# (maybe we should make a tool to measure the optimal amount of iterations?)
+	# this requires the salt option to be true
 	#pbdkf2:
 	#	iterations: 15000
 ```
