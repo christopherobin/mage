@@ -1,0 +1,14 @@
+{
+	"name": "ident-anonymous",
+	"local": [
+		"mage",
+		"forms"
+	],
+	"paths": [
+		"../../../../..",
+		"../../../../dashboard/dashboard/pages/postlogin/ui"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
