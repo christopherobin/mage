@@ -5,11 +5,8 @@ developer to implement authentication easily. The system allows you to reference
 and name them based on your needs. You can switch between them easily with minimal changes to your
 code.
 
-## Engines
-
-* [anonymous](engines/anonymous/Readme.md): Anonymous login, available only in development mode.
-* [userpass](engines/userpass/Readme.md): Username and password login.
-* [ldap](engines/ldap/Readme.md): LDAP login.
+The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
+password by overriding the default configuration. The engine is expected to be named `default`.
 
 ## Configuration
 
@@ -18,19 +15,26 @@ The first step to making engines available to your game is through configuration
 ```yaml
 module:
 	ident:
-		# here is your app name, usually game
-		game:
-			# like archivist, any name will do here, allows you to swap engines easily
-			dev:
-				# the type is the engine name
-				type: anonymous
-				config:
-					# you need to tell the auth module what level the user will be set to
-					access: user
+		apps:
+			# here is your app name, usually game
+			game:
+				# like archivist, any name will do here, allows you to swap engines easily
+				dev:
+					# the type is the engine type (ldap, userpass, etc...)
+					type: anonymous
+					config:
+						# you need to tell the auth module what level the user will be set to
+						access: user
 ```
 
 That's all you need for anonymous authentication. You can then proceed to implementation. See the
 individual [engines](#engines)' readme for more details on available configuration.
+
+## Engines
+
+* [anonymous](engines/anonymous/Readme.md): Anonymous login, available only in development mode.
+* [userpass](engines/userpass/Readme.md): Username and password login.
+* [ldap](engines/ldap/Readme.md): LDAP login.
 
 ## Implementation
 
