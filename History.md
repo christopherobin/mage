@@ -4,8 +4,8 @@
 
 ### Module dependency chains
 
-MAGE now officially supports calling `mage.useModules('abc')` from other modules. Dashboard now
-always calls `mage.useModules('ident')`, so **you no longer have to** (but you may).
+MAGE now officially supports calling `mage.useModules('abc')` from other modules on the server.
+Dashboard now always calls `mage.useModules('ident')`, so **you no longer have to** (but you may).
 
 ### Identification module updates
 
