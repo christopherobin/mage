@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Module dependency chains
+
+MAGE now officially supports calling `mage.useModules('abc')` from other modules. Dashboard now
+always calls `mage.useModules('ident')`, so **you no longer have to** (but you may).
+
 ### Minor improvements
 
 * Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
