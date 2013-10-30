@@ -7,6 +7,21 @@
 * Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
 * msgServer now decodes the URI when handling routes so it can deal with routes with
 characters that need to be escaped, like spaces.
+* .sock files are cleaned up if `process.exit()` is called. Mocha calls process.exit when doing unit
+  tests and without this change it leaves .sock files laying around. Savvy already listens for
+  process.exit, msgServer now matches that behavior and performs the same task whether it's
+  mage#shutdown or process#exit.
+
+### Bugfixes
+
+* The `archivist.assertTopicAbilities` function was failing to detect if the topic itself was missing
+  and return a cryptic error to the user when that happened.
+
+### Dependency updates
+
+| dependency    | from         | to           |
+|---------------|--------------|--------------|
+| graylog2      | 0.1.0        | 0.1.1        |
 
 
 ## v0.23.4 - Cat'n Hook
