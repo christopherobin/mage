@@ -9,6 +9,7 @@ code.
 
 * [anonymous](engines/anonymous/Readme.md): Anonymous login, available only in development mode.
 * [userpass](engines/userpass/Readme.md): Username and password login.
+* [ldap](engines/ldap/Readme.md): LDAP login.
 
 ## Configuration
 
