@@ -5,6 +5,8 @@
 ### Minor improvements
 
 * Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
+* msgServer now decodes the URI when handling routes so it can deal with routes that have
+characters that need to be escaped in URIs, like spaces.
 
 
 ## v0.23.4 - Cat'n Hook
