@@ -11,8 +11,9 @@ always calls `mage.useModules('ident')`, so **you no longer have to** (but you m
 
 * The identification module now provides a tool on the dashboard to create users for the `userpass`
   engine.
-* The `userpass` engine now supports password salts and pbkdf2.
+* The `userpass` engine now use salts by default and supports `pbkdf2` hashing.
 * Added a `ldap` engine.
+* If the game is not configured correctly, an error will be displayed on the dashboard.
 * When using the `anonymous` engine, the dashboard will now auto-login you.
 * Updated some of the `mage.ident` server API functions to allow admin users to poll/query data
   on different apps instead of the current one.
@@ -44,6 +45,8 @@ characters that need to be escaped, like spaces.
   process.exit, msgServer now matches that behavior and performs the same task whether it's
   mage#shutdown or process#exit.
 * The shard rights management now allow admins to access all entries if no shard function is defined.
+* The state object provides a `canAccess(level)` method that can be used for checking user rights in
+  user commands. It returns `true` if the user has at least that level of access.
 
 ### Bugfixes
 
