@@ -2,7 +2,7 @@
 
 ## vNEXT
 
-
+* disableOverride behavior now matches the documentation.
 
 ## v0.23.5 - LDAP Cat
 
