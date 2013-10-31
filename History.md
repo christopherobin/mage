@@ -4,9 +4,9 @@
 
 ### Minor improvements
 
-* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE app outside of it's
+* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of it's
 directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
-all interactions with your app should take place in the app's root directory.
+all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
 
 ## v0.23.5 - LDAP Cat
 
