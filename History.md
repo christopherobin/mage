@@ -47,6 +47,8 @@ characters that need to be escaped, like spaces.
 * The shard rights management now allow admins to access all entries if no shard function is defined.
 * The state object provides a `canAccess(level)` method that can be used for checking user rights in
   user commands. It returns `true` if the user has at least that level of access.
+* Archivist cache is now ignored whenever displaying a document in the archivist dashboard, ensuring
+  you will always see the latest version.
 
 ### Bugfixes
 
