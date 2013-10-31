@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.23.4",
+	"version": "0.23.5",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -47,7 +47,8 @@
 	},
 	"optionalDependencies": {
 		"mdns2": "2.1.1",
-		"couchbase": "0.0.12"
+		"couchbase": "0.0.12",
+		"ldapjs": "0.6.3"
 	},
 	"devDependencies": {
 		"jshint": "2.1.11",

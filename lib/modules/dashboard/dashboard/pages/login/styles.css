@@ -68,3 +68,7 @@
 #loginForm input {
     border: 1px solid #999;
 }
+
+#invalidIdentConfig {
+    opacity: 0;
+}

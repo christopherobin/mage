@@ -1,7 +1,10 @@
 {
 	"name": "ident",
 	"description": "Authentication for MAGE.",
-	"local": ["mage"],
+	"local": [
+		"mage",
+		"loader"
+	],
 	"paths": [
 		"../.."
 	],

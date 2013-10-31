@@ -1,5 +1,14 @@
-dev:
-    default:
-        type: anonymous
-        config:
-            access: admin
+apps:
+    dev:
+        default:
+            type: anonymous
+            config:
+                access: admin
+
+dashboard:
+    pages:
+        ident:
+            name: Ident
+            listed: true
+            apps:
+                - dev
