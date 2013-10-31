@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.23.5 - LDAP Cat
 
 ### Module dependency chains
 
@@ -18,7 +18,7 @@ Dashboard now always calls `mage.useModules('ident')`, so **you no longer have t
 * Updated some of the `mage.ident` server API functions to allow admin users to poll/query data
   on different apps instead of the current one.
 
-You will need to update your configuration, everything that was under:
+You **will need to update your configuration**. Everything that was under:
 
 ```yaml
 module:
@@ -26,7 +26,7 @@ module:
 		# your app names and config here
 ```
 
-Need to become:
+Needs to move under an entry called `apps`:
 
 ```yaml
 module:
@@ -39,7 +39,7 @@ module:
 
 * Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
 * msgServer now decodes the URI when handling routes so it can deal with routes with
-characters that need to be escaped, like spaces.
+  characters that need to be escaped, like spaces.
 * .sock files are cleaned up if `process.exit()` is called. Mocha calls process.exit when doing unit
   tests and without this change it leaves .sock files laying around. Savvy already listens for
   process.exit, msgServer now matches that behavior and performs the same task whether it's
