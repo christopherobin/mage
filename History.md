@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Speed up dashboard builds
+
+The component builder has been made much more efficient, allowing builds with many component pages
+(ie: dashboard) to build an order of magnitude faster.
 
 
 ## v0.23.5 - LDAP Cat
