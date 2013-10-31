@@ -1,5 +1,67 @@
 # Release history
 
+## v0.23.5 - LDAP Cat
+
+### Module dependency chains
+
+MAGE now officially supports calling `mage.useModules('abc')` from other modules on the server.
+Dashboard now always calls `mage.useModules('ident')`, so **you no longer have to** (but you may).
+
+### Identification module updates
+
+* The identification module now provides a tool on the dashboard to create users for the `userpass`
+  engine.
+* The `userpass` engine now use salts by default and supports `pbkdf2` hashing.
+* Added a `ldap` engine.
+* If the game is not configured correctly, an error will be displayed on the dashboard.
+* When using the `anonymous` engine, the dashboard will now auto-login you.
+* Updated some of the `mage.ident` server API functions to allow admin users to poll/query data
+  on different apps instead of the current one.
+
+You **will need to update your configuration**. Everything that was under:
+
+```yaml
+module:
+	ident:
+		# your app names and config here
+```
+
+Needs to move under an entry called `apps`:
+
+```yaml
+module:
+	ident:
+		apps:
+			# your app names and config here
+```
+
+### Minor improvements
+
+* Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
+* msgServer now decodes the URI when handling routes so it can deal with routes with
+  characters that need to be escaped, like spaces.
+* .sock files are cleaned up if `process.exit()` is called. Mocha calls process.exit when doing unit
+  tests and without this change it leaves .sock files laying around. Savvy already listens for
+  process.exit, msgServer now matches that behavior and performs the same task whether it's
+  mage#shutdown or process#exit.
+* The shard rights management now allow admins to access all entries if no shard function is defined.
+* The state object provides a `canAccess(level)` method that can be used for checking user rights in
+  user commands. It returns `true` if the user has at least that level of access.
+* Archivist cache is now ignored whenever displaying a document in the archivist dashboard, ensuring
+  you will always see the latest version.
+
+### Bugfixes
+
+* The `archivist.assertTopicAbilities` function was failing to detect if the topic itself was missing
+  and return a cryptic error to the user when that happened.
+
+### Dependency updates
+
+| dependency    | from         | to           |
+|---------------|--------------|--------------|
+| graylog2      | 0.1.0        | 0.1.1        |
+
+
 ## v0.23.4 - Cat'n Hook
 
 ### Replaced WebApp firewall with request hooks
