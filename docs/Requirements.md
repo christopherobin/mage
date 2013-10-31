@@ -8,8 +8,8 @@ Node.js is essentially JavaScript for servers, and the MAGE platform has been bu
 some concepts you will most likely benefit from understanding before getting started on a serious
 Node project. Here are some resources which might help you make your first steps on Node:
 
+* [The Node Beginner Book](http://www.nodebeginner.org/)
 * [Node API Documentation](http://nodejs.org/api/)
-* [Felix's Node Style Guide](http://nodeguide.com/style.html)
 
 We recommend using nvm (Node Version Manager) to manage your Node versions and environments.
 
