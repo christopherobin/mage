@@ -8,6 +8,17 @@
 directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
 all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
 
+* The disableOverride configuration option in the client logger now matches the documentation and also disables uncaught exception handling. The relevant config entries are:
+
+```yaml
+logging:
+    html5:
+        console:
+            disableOverride: true
+        server:
+            disableOverride: true
+```
+
 ### Dependency updates
 
 | dependency     | from         | to           | changes   |
