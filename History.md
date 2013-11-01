@@ -31,6 +31,7 @@ logging:
 | node-semver    | 2.1.0        | 2.2.1        | [Commit log](https://github.com/isaacs/node-semver/commits/master) |
 | jshint         | 2.1.11       | 2.3.0        | [Release notes](https://github.com/jshint/jshint/releases) |
 
+
 ## v0.23.5 - LDAP Cat
 
 ### Module dependency chains
