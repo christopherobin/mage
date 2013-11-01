@@ -3,7 +3,16 @@
 ## vNEXT
 
 ### Minor improvements
-* disableOverride behavior now matches the documentation and disables uncaught exception handling.
+* The disableOverride configuration option in the client logger now matches the documentation and also disables uncaught exception handling. The relevant config entries are:
+
+```yaml
+logging:
+    html5:
+        console:
+            disableOverride: true
+        server:
+            disableOverride: true
+```
 
 ### Dependency updates
 
