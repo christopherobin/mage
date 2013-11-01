@@ -6,6 +6,9 @@
 
 * If you configure a topic with an index that is not an array, MAGE will now quit with an error on startup.
 
+* In development mode (as the check is quite heavy), if you try to access a document using an
+  incomplete or badly named index, it will be detected and an emergency will be logged.
+
 * Removed the rethrow function from the Router in the dashboard as well as the try catch so that
 hopefully if / when you get errors you will be able to track them down easier.
 
