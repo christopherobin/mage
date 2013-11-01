@@ -2,7 +2,17 @@
 
 ## vNEXT
 
-* disableOverride behavior now matches the documentation.
+### Minor improvements
+* disableOverride behavior now matches the documentation and disables uncaught exception handling.
+
+### Dependency updates
+
+| dependency     | from         | to           | changes   |
+|----------------|--------------|--------------|-----------|
+| node-memcached | 0.2.5        | 0.2.6        | [Changelog](https://github.com/3rd-Eden/node-memcached/blob/master/CHANGELOG.md#026) |
+| highlight.js   | 7.3.0        | 7.4.0        | [Website news](http://highlightjs.org) |
+| node-semver    | 2.1.0        | 2.2.1        | [Commit log](https://github.com/isaacs/node-semver/commits/master) |
+| jshint         | 2.1.11       | 2.3.0        | [Release notes](https://github.com/jshint/jshint/releases) |
 
 ## v0.23.5 - LDAP Cat
 
