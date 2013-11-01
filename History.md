@@ -3,6 +3,11 @@
 ## vNEXT
 
 ### Minor improvements
+
+* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
+directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
+all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
+
 * The disableOverride configuration option in the client logger now matches the documentation and also disables uncaught exception handling. The relevant config entries are:
 
 ```yaml
