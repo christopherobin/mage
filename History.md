@@ -7,6 +7,35 @@
 The component builder has been made much more efficient, allowing builds with many component pages
 (ie: dashboard) to build an order of magnitude faster.
 
+### Minor improvements
+
+* Removed the rethrow function from the Router in the dashboard as well as the try catch so that
+hopefully if / when you get errors you will be able to track them down easier.
+
+* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
+directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
+all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
+
+* The disableOverride configuration option in the client logger now matches the documentation and also disables uncaught exception handling. The relevant config entries are:
+
+```yaml
+logging:
+    html5:
+        console:
+            disableOverride: true
+        server:
+            disableOverride: true
+```
+
+### Dependency updates
+
+| dependency     | from         | to           | changes   |
+|----------------|--------------|--------------|-----------|
+| node-memcached | 0.2.5        | 0.2.6        | [Changelog](https://github.com/3rd-Eden/node-memcached/blob/master/CHANGELOG.md#026) |
+| highlight.js   | 7.3.0        | 7.4.0        | [Website news](http://highlightjs.org) |
+| node-semver    | 2.1.0        | 2.2.1        | [Commit log](https://github.com/isaacs/node-semver/commits/master) |
+| jshint         | 2.1.11       | 2.3.0        | [Release notes](https://github.com/jshint/jshint/releases) |
+
 
 ## v0.23.5 - LDAP Cat
 

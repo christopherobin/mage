@@ -20,7 +20,7 @@
     "colours": "0.6.0-2"
   },
   "devDependencies": {
-    "jshint": "2.1.11",
+    "jshint": "2.3.0",
     "mocha": "1.13.0",
     "istanbul": "0.1.44",
     "mocha-istanbul": "0.2.0",
