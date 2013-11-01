@@ -4,6 +4,8 @@
 
 ### Minor improvements
 
+* If you configure a topic with an index that is not an array, MAGE will now quit with an error on startup.
+
 * Removed the rethrow function from the Router in the dashboard as well as the try catch so that
 hopefully if / when you get errors you will be able to track them down easier.
 
