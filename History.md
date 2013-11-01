@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Speed up dashboard builds
+
+The component builder has been made much more efficient, allowing builds with many component pages
+(ie: dashboard) to build an order of magnitude faster.
+
 ### Minor improvements
 
 * Removed the rethrow function from the Router in the dashboard as well as the try catch so that
