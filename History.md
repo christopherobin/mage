@@ -2,6 +2,18 @@
 
 ## vNEXT
 
+### Minor improvements
+* The disableOverride configuration option in the client logger now matches the documentation and also disables uncaught exception handling. The relevant config entries are:
+
+```yaml
+logging:
+    html5:
+        console:
+            disableOverride: true
+        server:
+            disableOverride: true
+```
+
 ### Dependency updates
 
 | dependency     | from         | to           | changes   |
@@ -10,7 +22,6 @@
 | highlight.js   | 7.3.0        | 7.4.0        | [Website news](http://highlightjs.org) |
 | node-semver    | 2.1.0        | 2.2.1        | [Commit log](https://github.com/isaacs/node-semver/commits/master) |
 | jshint         | 2.1.11       | 2.3.0        | [Release notes](https://github.com/jshint/jshint/releases) |
-
 
 ## v0.23.5 - LDAP Cat
 
