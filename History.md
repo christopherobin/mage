@@ -2,6 +2,16 @@
 
 ## vNEXT
 
+### Shutdown changes
+
+Tasks can now implement a shutdown function that will be called during mage shutdown. Great care
+should be taken so that those functions never fail as it will prevent mage's master process from
+fully shutting down. It allows mage core modules to have possible async work done before exiting.
+
+The signature of `mage.quit` was changed from `quit(graceful, exitCode)` to only `quit(exitCode)`.
+The concept of graceful shutdown has been scrapped and it is now considered that every shutdown
+should be as graceful as possible.
+
 ### Speed up dashboard builds
 
 The component builder has been made much more efficient, allowing builds with many component pages
@@ -183,16 +193,6 @@ help with the heavier authentication frameworks. Read the
 
 **Please note**: If you are using dashboards, you *must* call `mage.useModules('ident');` in your
 server code, else you will not be able to log in.
-
-### Shutdown changes
-
-Tasks can now implement a shutdown function that will be called during mage shutdown. Great care
-should be taken so that those functions never fail as it will prevent mage's master process from
-fully shutting down. It allows mage core modules to have possible async work done before exiting.
-
-The signature of `mage.quit` was changed from `quit(graceful, exitCode)` to only `quit(exitCode)`.
-The concept of graceful shutdown has been scrapped and it is now considered that every shutdown
-should be as graceful as possible.
 
 ### Minor improvements
 
