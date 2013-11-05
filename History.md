@@ -38,10 +38,25 @@ logging:
 * In development mode (as the check is quite heavy), if you try to access a document using an
   incomplete or badly named index, it will be detected and an emergency will be logged.
 
+### Client configuration
+
+When the browser requests a page through MAGE, it can send along a so called "client config". This
+contains up to three values:
+
+- language (fallback: "en")
+- screen resolution (fallback: 0x0)
+- pixel density (fallback: 1)
+
+If any of those values was not provided, the fallback value would be used. These fallback values
+have been updated to better reflect the capabilities of the application. Most importantly, the
+fallback language is no longer English, but the first configured language for the application.
+
+It is also important to note, that previously the fallback resolution was 1x1. This would create
+problems when a device would report its resolution as 0x0 (which happened). Therefore, the fallback
+resolution has been reduced to 0x0.
+
 ### Minor improvements
 
-* A client configuration with a screen of resolution 0x0 will now be treated as the minimal
-  acceptable size, where this used to be 1x1.
 * Removed the rethrow function from the Router in the dashboard as well as the try catch so that
   hopefully if / when you get errors you will be able to track them down easier.
 * Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
