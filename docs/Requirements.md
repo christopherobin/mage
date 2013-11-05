@@ -9,6 +9,7 @@ some concepts you will most likely benefit from understanding before getting sta
 Node project. Here are some resources which might help you make your first steps on Node:
 
 * [The Node Beginner Book](http://www.nodebeginner.org/)
+* [NodeSchool](http://nodeschool.io/)
 * [Node API Documentation](http://nodejs.org/api/)
 
 We recommend using nvm (Node Version Manager) to manage your Node versions and environments.
