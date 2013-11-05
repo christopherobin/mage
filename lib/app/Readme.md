@@ -28,7 +28,7 @@ automatically place these pages under 'http://your.game.com/app/appName/pageName
 
 TBD
 
-* `registerComponent(name, path, requiredBy, options)` 
+* `registerComponent(name, path, requiredBy, options)`
 
 #### Request Hooks
 
@@ -67,7 +67,7 @@ apps:
             clientConfigs:
                 languages: [ en ]
                 densities: [1]
-                screens: [[1, 1]]
+                screens: [[0, 0]]
             useManifest: false
             compress: true
 ```
@@ -79,7 +79,7 @@ apps:
 * `languages` (optional) Array of languages this app supports.
 * `densities` (optional) List of screen densities to setup an asset map for (1 being the lowest).
   The asset map with the closest density lower than that of the device will be served.
-* `screens` (optional) List of screen sizes to setup an asset map for
+* `screens` (optional) List of screen sizes to setup an asset map for.
 * `useManifest` (optional) Whether or not the client html5 manifest system should be used for asset
   storage management. Warning that this feature can be the cause of multiple update issues. Check
   `Application cache` section below.

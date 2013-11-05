@@ -19,6 +19,9 @@ The component builder has been made much more efficient, allowing builds with ma
 
 ### Minor improvements
 
+* A client configuration with a screen of resolution 0x0 will now be treated as the minimal
+  acceptable size, where this used to be 1x1.
+
 * If you configure a topic with an index that is not an array, MAGE will now quit with an error on startup.
 
 * In development mode (as the check is quite heavy), if you try to access a document using an
