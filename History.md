@@ -17,24 +17,10 @@ should be as graceful as possible.
 The component builder has been made much more efficient, allowing builds with many component pages
 (ie: dashboard) to build an order of magnitude faster.
 
-### Minor improvements
+### Client logger
 
-* A client configuration with a screen of resolution 0x0 will now be treated as the minimal
-  acceptable size, where this used to be 1x1.
-
-* If you configure a topic with an index that is not an array, MAGE will now quit with an error on startup.
-
-* In development mode (as the check is quite heavy), if you try to access a document using an
-  incomplete or badly named index, it will be detected and an emergency will be logged.
-
-* Removed the rethrow function from the Router in the dashboard as well as the try catch so that
-hopefully if / when you get errors you will be able to track them down easier.
-
-* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
-directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
-all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
-
-* The disableOverride configuration option in the client logger now matches the documentation and also disables uncaught exception handling. The relevant config entries are:
+The disableOverride configuration option in the client logger now matches the documentation and also
+disables uncaught exception handling. The relevant config entries are:
 
 ```yaml
 logging:
@@ -44,6 +30,23 @@ logging:
         server:
             disableOverride: true
 ```
+
+### Archivist improvements
+
+* If you configure a topic with an index that is not an array, MAGE will now quit with an error on
+  startup.
+* In development mode (as the check is quite heavy), if you try to access a document using an
+  incomplete or badly named index, it will be detected and an emergency will be logged.
+
+### Minor improvements
+
+* A client configuration with a screen of resolution 0x0 will now be treated as the minimal
+  acceptable size, where this used to be 1x1.
+* Removed the rethrow function from the Router in the dashboard as well as the try catch so that
+  hopefully if / when you get errors you will be able to track them down easier.
+* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
+  directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
+  all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
 
 ### Dependency updates
 
