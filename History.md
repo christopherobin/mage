@@ -2,12 +2,27 @@
 
 ## vNEXT
 
+### Shutdown changes
+
+Tasks can now implement a shutdown function that will be called during mage shutdown. Great care
+should be taken so that those functions never fail as it will prevent mage's master process from
+fully shutting down. It allows mage core modules to have possible async work done before exiting.
+
+The signature of `mage.quit` was changed from `quit(graceful, exitCode)` to only `quit(exitCode)`.
+The concept of graceful shutdown has been scrapped and it is now considered that every shutdown
+should be as graceful as possible.
+
 ### Speed up dashboard builds
 
 The component builder has been made much more efficient, allowing builds with many component pages
 (ie: dashboard) to build an order of magnitude faster.
 
 ### Minor improvements
+
+* If you configure a topic with an index that is not an array, MAGE will now quit with an error on startup.
+
+* In development mode (as the check is quite heavy), if you try to access a document using an
+  incomplete or badly named index, it will be detected and an emergency will be logged.
 
 * Removed the rethrow function from the Router in the dashboard as well as the try catch so that
 hopefully if / when you get errors you will be able to track them down easier.
