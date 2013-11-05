@@ -31,6 +31,37 @@ logging:
             disableOverride: true
 ```
 
+### Ident module
+
+Added `registerPostLoginHook` and `unregisterPostLoginHook` functions to the `ident` module to setup
+hooks after login that are called with the state and a callback, if the hook sends an error to the
+callback then the login is marked as failed and the session reset. For example if you wanted to write
+a small module to ban users:
+
+```javascript
+// in my module setup, a small hook is added to check if a user is banned and deny access
+// first parameter is the app name, an engine name can be provided as a second argument
+// to target a specific engine but is optional
+mage.ident.registerPostLoginHook('game', function (state, cb) {
+	var index = { actorId: state.actorId };
+	var options = { optional: true };
+
+	state.archivist.get('banList', index, options, function (err, data) {
+		if (err) {
+			return cb(err);
+		}
+
+		// return an error if the user is banned
+		if (data) {
+			return cb(new Error('User "' + state.session.actorId + '" is banned.'));
+		}
+
+		// all is fine, let the login function succeed (or go to the next hook in the list)
+		cb();
+	});
+});
+```
+
 ### Archivist improvements
 
 * If you configure a topic with an index that is not an array, MAGE will now quit with an error on
