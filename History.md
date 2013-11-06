@@ -31,6 +31,11 @@ var mage = require('mage');
 mage.msgServer.setCmdMode('free'); // or 'blocking'
 ```
 
+### Bugfixes
+
+* If an exception happened before mage tasks are setup, an exception would be throw by `mage.quit`
+about `this.getTask()` being `undefined`. This fixes it.
+
 
 ## v0.24.0 - Bullettime Cat
 
