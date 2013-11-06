@@ -2,7 +2,34 @@
 
 ## vNEXT
 
+### Message server client
 
+The message server client has traditionally always executed user commands on a per-batch basis. In
+cases where you need to make sure a user command gets executed even if another has already been
+sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
+we open up the door to choosing between two modes on the message server: *blocking* and *free*:
+
+#### Blocking mode
+
+This is still the default behavior, and is how the message server has always operated: one batch of
+commands at a time. This protects your application from button hammering, where one player tapping
+a "Quest" button 20 times does not trigger 20 quest executions.
+
+#### Free mode
+
+This allows user commands to *always* be executed. If a user command is currently already being
+executed, the next one will be delayed until the current one returns. In other words, it is
+automatically queueing. On the dashboard, this has been enabled by default.
+
+#### API
+
+You can change between these two modes at any time, by using:
+
+```javascript
+var mage = require('mage');
+
+mage.msgServer.setCmdMode('free'); // or 'blocking'
+```
 
 
 ## v0.24.0 - Bullettime Cat
