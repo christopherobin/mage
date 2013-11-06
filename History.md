@@ -1,5 +1,10 @@
 # Release history
 
+## vNEXT
+
+
+
+
 ## v0.24.0 - Bullettime Cat
 
 ### Shutdown changes
