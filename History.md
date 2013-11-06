@@ -96,6 +96,8 @@ resolution has been reduced to 0x0.
   directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
   all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
 * We now also log the exit code and process run time on shutdown.
+* The configuration provided in the project template now sets up a 1-worker cluster, rather than
+  running in solo-mode.
 
 ### Dependency updates
 
