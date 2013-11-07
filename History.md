@@ -45,6 +45,11 @@ The callback will be fired immediately, and your user command call will be regis
 however not be sent to the server yet. Instead it will be queued and will be sent with the next
 batch.
 
+### Bugfixes
+
+* If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
+  about `this.getTask()` being `undefined`. This fixes it.
+
 
 ## v0.24.0 - Bullettime Cat
 
