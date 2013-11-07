@@ -33,7 +33,7 @@ mage.msgServer.setCmdMode('free'); // or 'blocking'
 
 ### Component changes
 
-* The Tomes and Rumplestiltskin components required by the archivist client are now included by
+The Tomes and Rumplestiltskin components required by the archivist client are now included by
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
