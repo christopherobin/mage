@@ -31,6 +31,12 @@ var mage = require('mage');
 mage.msgServer.setCmdMode('free'); // or 'blocking'
 ```
 
+### Minor improvements
+
+* The Tomes and Rumplestiltskin components required by the archivist client is now included by
+referring to the Tomes repository. This avoids issues that arise when Tomes is included in a game's
+package.json file which causes it to not appear in MAGE's node_modules directory.
+
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
