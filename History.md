@@ -31,7 +31,7 @@ var mage = require('mage');
 mage.msgServer.setCmdMode('free'); // or 'blocking'
 ```
 
-### Minor improvements
+### Component changes
 
 * The Tomes and Rumplestiltskin components required by the archivist client are now included by
 referring to their repositories. This avoids issues that arise when a component is included in a
