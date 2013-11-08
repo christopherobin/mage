@@ -45,8 +45,10 @@ archivist.on('raidBoss', function (opName, vaultValue) {
 });
 ```
 
-Also fixed a potential issue with diff distribution that could occur if distribute was called more
-than once during a request.
+Fixed an issue with diff distribution that could occur if distribute is called more than once
+during a request.
+
+Fixed an issue with archivist component where rawList was not properly being aliased to list.
 
 ### Component changes
 
