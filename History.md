@@ -2,6 +2,20 @@
 
 ## vNEXT
 
+### Archivist
+
+We have made the tests that get applied when referring to a topic and index even stricter, by also
+doing type checks on every single value. Topics may only be strings, and the values provided in an
+index may only be strings and numbers. If these rules are broken in development mode, an early error
+is now issued.
+
+**Bugfix:**
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
 ### Message server client
 
 The message server client has traditionally always executed user commands on a per-batch basis. In
