@@ -2,15 +2,82 @@
 
 ## vNEXT
 
+### Archivist
+
+We have made the tests that get applied when referring to a topic and index even stricter, by also
+doing type checks on every single value. Topics may only be strings, and the values provided in an
+index may only be strings and numbers. If these rules are broken in development mode, an early error
+is now issued.
+
+**Bugfix:**
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
+### Message server client
+
+The message server client has traditionally always executed user commands on a per-batch basis. In
+cases where you need to make sure a user command gets executed even if another has already been
+sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
+we open up the door to choosing between two modes on the message server: *blocking* and *free*:
+
+#### Blocking mode
+
+This is still the default behavior, and is how the message server has always operated: one batch of
+commands at a time. This protects your application from button hammering, where one player tapping
+a "Quest" button 20 times does not trigger 20 quest executions.
+
+#### Free mode
+
+This allows user commands to *always* be executed. If a user command is currently already being
+executed, the next one will be delayed until the current one returns. In other words, it is
+automatically queueing. On the dashboard, this has been enabled by default.
+
+#### API
+
+You can change between these two modes at any time, by using:
+
+```javascript
+var mage = require('mage');
+
+mage.msgServer.setCmdMode('free'); // or 'blocking'
+```
+
+### Component changes
+
+The Tomes and Rumplestiltskin components required by the archivist client are now included by
+referring to their repositories. This avoids issues that arise when a component is included in a
+game's package.json file which causes it to not appear in MAGE's node_modules directory.
+
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now logs a bit better when jobs start and
+complete. You can now also configure a different endpoint for Shokoti to call back to, although by
+default it will still use your application's exposed URL.
+
+### Bugfixes
+
+* If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
+about `this.getTask()` being `undefined`. This fixes it.
+* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
+  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
+
+
+## v0.24.0 - Bullettime Cat
+
 ### Shutdown changes
 
 Tasks can now implement a shutdown function that will be called during mage shutdown. Great care
 should be taken so that those functions never fail as it will prevent mage's master process from
 fully shutting down. It allows mage core modules to have possible async work done before exiting.
 
+**Breaking change:**
+
 The signature of `mage.quit` was changed from `quit(graceful, exitCode)` to only `quit(exitCode)`.
 The concept of graceful shutdown has been scrapped and it is now considered that every shutdown
-should be as graceful as possible.
+should be as graceful as possible. If your project ever calls `mage.quit`, please update it now.
 
 ### Speed up dashboard builds
 
@@ -31,6 +98,37 @@ logging:
             disableOverride: true
 ```
 
+### Ident module
+
+Added `registerPostLoginHook` and `unregisterPostLoginHook` functions to the `ident` module to setup
+hooks after login that are called with the state and a callback, if the hook sends an error to the
+callback then the login is marked as failed and the session reset. For example if you wanted to write
+a small module to ban users:
+
+```javascript
+// in my module setup, a small hook is added to check if a user is banned and deny access
+// first parameter is the app name, an engine name can be provided as a second argument
+// to target a specific engine but is optional
+mage.ident.registerPostLoginHook('game', function (state, cb) {
+	var index = { actorId: state.actorId };
+	var options = { optional: true };
+
+	state.archivist.get('banList', index, options, function (err, data) {
+		if (err) {
+			return cb(err);
+		}
+
+		// return an error if the user is banned
+		if (data) {
+			return cb(new Error('User "' + state.session.actorId + '" is banned.'));
+		}
+
+		// all is fine, let the login function succeed (or go to the next hook in the list)
+		cb();
+	});
+});
+```
+
 ### Archivist improvements
 
 * If you configure a topic with an index that is not an array, MAGE will now quit with an error on
@@ -38,17 +136,33 @@ logging:
 * In development mode (as the check is quite heavy), if you try to access a document using an
   incomplete or badly named index, it will be detected and an emergency will be logged.
 
+### Client configuration
+
+When the browser requests a page through MAGE, it can send along a so called "client config". This
+contains up to three values:
+
+- language (fallback: "en")
+- screen resolution (fallback: 0x0)
+- pixel density (fallback: 1)
+
+If any of those values was not provided, the fallback value would be used. These fallback values
+have been updated to better reflect the capabilities of the application. Most importantly, the
+fallback language is no longer English, but the first configured language for the application.
+
+It is also important to note, that previously the fallback resolution was 1x1. This would create
+problems when a device would report its resolution as 0x0 (which happened). Therefore, the fallback
+resolution has been reduced to 0x0.
+
 ### Minor improvements
 
-* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
-  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
-* A client configuration with a screen of resolution 0x0 will now be treated as the minimal
-  acceptable size, where this used to be 1x1.
 * Removed the rethrow function from the Router in the dashboard as well as the try catch so that
   hopefully if / when you get errors you will be able to track them down easier.
 * Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
   directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
   all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
+* We now also log the exit code and process run time on shutdown.
+* The configuration provided in the project template now sets up a 1-worker cluster, rather than
+  running in solo-mode.
 
 ### Dependency updates
 

@@ -1,14 +1,15 @@
 {
 	"name": "archivist",
 	"description": "Data API for MAGE.",
+	"dependencies": {
+		"Wizcorp/node-tomes": "*",
+		"Wizcorp/node-rumplestiltskin": "*"
+	},
 	"local": [
-		"mage",
-		"tomes",
-		"rumplestiltskin"
+		"mage"
 	],
 	"paths": [
-		"../..",
-		"../../../node_modules"
+		"../.."
 	],
 	"scripts": [
 		"client.js"
