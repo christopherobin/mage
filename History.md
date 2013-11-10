@@ -2,6 +2,20 @@
 
 ## vNEXT
 
+### Archivist
+
+We have made the tests that get applied when referring to a topic and index even stricter, by also
+doing type checks on every single value. Topics may only be strings, and the values provided in an
+index may only be strings and numbers. If these rules are broken in development mode, an early error
+is now issued.
+
+**Bugfix:**
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
 ### Message server client
 
 The message server client has traditionally always executed user commands on a per-batch basis. In
@@ -37,6 +51,12 @@ The Tomes and Rumplestiltskin components required by the archivist client are no
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now logs a bit better when jobs start and
+complete. You can now also configure a different endpoint for Shokoti to call back to, although by
+default it will still use your application's exposed URL.
+
 ### Minor improvements
 
 * The client side logger will now serialize objects to parseable JSON even if they contain circular
@@ -46,6 +66,8 @@ game's package.json file which causes it to not appear in MAGE's node_modules di
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
 about `this.getTask()` being `undefined`. This fixes it.
+* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
+  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
 
 
 ## v0.24.0 - Bullettime Cat
