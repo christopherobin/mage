@@ -51,6 +51,12 @@ The Tomes and Rumplestiltskin components required by the archivist client are no
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now logs a bit better when jobs start and
+complete. You can now also configure a different endpoint for Shokoti to call back to, although by
+default it will still use your application's exposed URL.
+
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
