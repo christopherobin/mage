@@ -37,7 +37,7 @@ The Shokoti application has a module called Cron Server that is the counter part
 
 Cron Client only has a single API for you to use:
 
-### setJob(uniqueId, schedule, callback)
+### setJob(uniqueId, schedule, timezone, callback)
 
 The schedule argument is either a valid crontab syntax (optionally preceeded by a seconds-column),
 or a unix timestamp which may be in seconds or in milliseconds.
@@ -49,6 +49,9 @@ mage.cronClient.setJob('weeklyRanking', '5 0 * * mon', function (state, cb) {
 	mage.ranking.generateWeekly(state, cb);
 });
 ```
+
+The timezone argument is optional, and will be ignored when using a timestamp as schedule. When not
+specified, Shokoti will use its own configured timezone.
 
 
 ## Crontab schedule syntax
