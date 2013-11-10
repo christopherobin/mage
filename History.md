@@ -37,6 +37,11 @@ The Tomes and Rumplestiltskin components required by the archivist client are no
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
+### Minor improvements
+
+* The client side logger will now serialize objects to parseable JSON even if they contain circular
+  references.
+
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
