@@ -61,6 +61,8 @@ default it will still use your application's exposed URL.
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
 about `this.getTask()` being `undefined`. This fixes it.
+* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
+  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
 
 
 ## v0.24.0 - Bullettime Cat
