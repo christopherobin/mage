@@ -2,7 +2,7 @@
 	"name": "NotificationCenter",
 	"description": "Notification center for the dashboard",
 	"dependencies": {
-		"component/emitter": "1.0.1"
+		"component/emitter": "1.1.0"
 	},
 	"scripts": [
 		"index.js"

@@ -70,6 +70,12 @@ The Tomes and Rumplestiltskin components required by the archivist client are no
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
+
 ### Shokoti
 
 The `cronClient` module that you use to talk to Shokoti, now logs a bit better when jobs start and
