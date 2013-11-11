@@ -2,7 +2,7 @@
 	"name": "DocEditor",
 	"description": "Document editor",
 	"dependencies": {
-		"Wizcorp/node-tomes": "*"
+		"Wizcorp/node-tomes": "0.0.16"
 	},
 	"local": [
 		"mage"
