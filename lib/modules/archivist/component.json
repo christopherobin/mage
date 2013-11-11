@@ -2,8 +2,10 @@
 	"name": "archivist",
 	"description": "Data API for MAGE.",
 	"dependencies": {
-		"Wizcorp/node-tomes": "*",
-		"Wizcorp/node-rumplestiltskin": "*"
+		"component/emitter": "*",
+		"component/inherit": "*",
+		"Wizcorp/node-rumplestiltskin": "0.0.5",
+		"Wizcorp/node-tomes": "0.0.16"
 	},
 	"local": [
 		"mage"

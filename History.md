@@ -45,6 +45,25 @@ var mage = require('mage');
 mage.msgServer.setCmdMode('free'); // or 'blocking'
 ```
 
+### Archivist changes
+
+Archivist on the client is now an event emitter. After an operation is completed, archivist emits
+the topic as the event name with opName and vaultValue. This enables game developers to set up
+event listeners to handle the creation of topics on the client side. Here's an example:
+
+```javascript
+var archivist = require('archivist');
+
+archivist.on('raidBoss', function (opName, vaultValue) {
+	exports.raidBosses = vaultValue.data;
+});
+```
+
+Fixed an issue with diff distribution that could occur if distribute is called more than once
+during a request.
+
+Fixed an issue with archivist component where rawList was not properly being aliased to list.
+
 ### Component changes
 
 The Tomes and Rumplestiltskin components required by the archivist client are now included by
