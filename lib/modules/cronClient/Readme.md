@@ -4,7 +4,7 @@
 ## What's this all about?
 
 A common challenge in game development is the ability to schedule particular operations. Think for
-example of Weekly Rankings, that needs to be generated every Monday morning at 0:05 am. Easy enough,
+example of Weekly Rankings that need to be generated every Monday morning at 0:05 am. Easy enough,
 right?
 
 The simple way to write this:
@@ -67,14 +67,16 @@ configuration:
 module:
     cronClient:
         clientAppId: game
+        clientBaseUrl: "http://mygame.example.com"   # optional
         serverAppId: shokoti
         serverBaseUrl: "http://shokoti.example.com"
 ```
 
-| entry         | description                                                             |
-|---------------|-------------------------------------------------------------------------|
-| clientAppId   | The App ID that you have given your game in the `apps` configuration.   |
-| serverAppId   | The App ID of the Shokoti server.                                       |
+| entry         | description |
+|---------------|-------------|
+| clientAppId   | The App ID that you have given your game in the `apps` configuration. |
+| clientBaseUrl | Optional, by default it's the `expose` configuration entry of your server's `clientHost`. It's where Shokoti will call back to. |
+| serverAppId   | The App ID of the Shokoti server. |
 | serverBaseUrl | The `expose` configuration entry for the Shokoti server's `clientHost`. |
 
 > Note: Both `serverAppId` and `serverBaseUrl` are to be found in the configuration file belonging
