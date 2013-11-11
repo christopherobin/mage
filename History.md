@@ -60,9 +60,12 @@ default it will still use your application's exposed URL.
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
-about `this.getTask()` being `undefined`. This fixes it.
+  about `this.getTask()` being `undefined`. This fixes it.
 * When the process was killed when a user terminal disconnected, it would leave .sock files behind.
   This was due to MAGE not handling the SIGHUP signal, which has been addressed.
+* The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
+  `../mage` which by some incredible luck was working in most conditions, but not when `node_modules/mage`
+  is a symbolic link leading to failure.
 
 
 ## v0.24.0 - Bullettime Cat
