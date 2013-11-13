@@ -18,9 +18,7 @@ the topic as the event name with opName and vaultValue. This enables game develo
 event listeners to handle the creation of topics on the client side. Here's an example:
 
 ```javascript
-var archivist = require('archivist');
-
-archivist.on('raidBoss', function (opName, vaultValue) {
+mage.archivist.on('raidBoss', function (opName, vaultValue) {
 	exports.raidBosses = vaultValue.data;
 });
 ```
@@ -32,10 +30,10 @@ that if a `del` was executed without being preceeded by a `get`, a follow-up `ge
 transaction (state instance) would still hit the datastore, rather than accept that the value has
 been deleted.
 
-Fixed an issue with diff distribution that could occur if distribute is called more than once
+Fixed an issue with diff distribution that could occur if distribute was called more than once
 during a request.
 
-Fixed an issue with archivist component where rawList was not properly being aliased to list.
+Fixed an issue with archivist component where `rawList` was not properly being aliased to `list`.
 
 ### Shokoti
 
