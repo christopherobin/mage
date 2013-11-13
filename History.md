@@ -18,24 +18,26 @@ been deleted.
 
 ### Message server client
 
+#### Command modes
+
 The message server client has traditionally always executed user commands on a per-batch basis. In
 cases where you need to make sure a user command gets executed even if another has already been
 sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
 we open up the door to choosing between two modes on the message server: *blocking* and *free*:
 
-#### Blocking mode
+##### Blocking mode
 
 This is still the default behavior, and is how the message server has always operated: one batch of
 commands at a time. This protects your application from button hammering, where one player tapping
 a "Quest" button 20 times does not trigger 20 quest executions.
 
-#### Free mode
+##### Free mode
 
 This allows user commands to *always* be executed. If a user command is currently already being
 executed, the next one will be delayed until the current one returns. In other words, it is
 automatically queueing. On the dashboard, this has been enabled by default.
 
-#### API
+##### API
 
 You can change between these two modes at any time, by using:
 
@@ -44,6 +46,18 @@ var mage = require('mage');
 
 mage.msgServer.setCmdMode('free'); // or 'blocking'
 ```
+
+#### Piggyback
+
+The message server already exposes a `queue(callback)` method to delay execution of a user command
+until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
+execution will still affect the user experience in a negative way, by blocking the channel yet
+again. There are use cases where all you want to do is send a user command with the next batch
+(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
+
+The callback will be fired immediately, and your user command call will be registered. It will
+however not be sent to the server yet. Instead it will be queued and will be sent with the next
+batch.
 
 ### Archivist changes
 
