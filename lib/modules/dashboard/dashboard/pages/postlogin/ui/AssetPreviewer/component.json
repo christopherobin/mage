@@ -2,7 +2,7 @@
 	"name": "AssetPreviewer",
 	"description": "Asset preview and edit library",
 	"dependencies": {
-		"component/emitter": "1.0.1"
+		"component/emitter": "1.1.0"
 	},
 	"local": [
 		"mage",

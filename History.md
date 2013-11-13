@@ -18,24 +18,26 @@ been deleted.
 
 ### Message server client
 
+#### Command modes
+
 The message server client has traditionally always executed user commands on a per-batch basis. In
 cases where you need to make sure a user command gets executed even if another has already been
 sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
 we open up the door to choosing between two modes on the message server: *blocking* and *free*:
 
-#### Blocking mode
+##### Blocking mode
 
 This is still the default behavior, and is how the message server has always operated: one batch of
 commands at a time. This protects your application from button hammering, where one player tapping
 a "Quest" button 20 times does not trigger 20 quest executions.
 
-#### Free mode
+##### Free mode
 
 This allows user commands to *always* be executed. If a user command is currently already being
 executed, the next one will be delayed until the current one returns. In other words, it is
 automatically queueing. On the dashboard, this has been enabled by default.
 
-#### API
+##### API
 
 You can change between these two modes at any time, by using:
 
@@ -45,11 +47,48 @@ var mage = require('mage');
 mage.msgServer.setCmdMode('free'); // or 'blocking'
 ```
 
+#### Piggyback
+
+The message server already exposes a `queue(callback)` method to delay execution of a user command
+until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
+execution will still affect the user experience in a negative way, by blocking the channel yet
+again. There are use cases where all you want to do is send a user command with the next batch
+(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
+
+The callback will be fired immediately, and your user command call will be registered. It will
+however not be sent to the server yet. Instead it will be queued and will be sent with the next
+batch.
+
+### Archivist changes
+
+Archivist on the client is now an event emitter. After an operation is completed, archivist emits
+the topic as the event name with opName and vaultValue. This enables game developers to set up
+event listeners to handle the creation of topics on the client side. Here's an example:
+
+```javascript
+var archivist = require('archivist');
+
+archivist.on('raidBoss', function (opName, vaultValue) {
+	exports.raidBosses = vaultValue.data;
+});
+```
+
+Fixed an issue with diff distribution that could occur if distribute is called more than once
+during a request.
+
+Fixed an issue with archivist component where rawList was not properly being aliased to list.
+
 ### Component changes
 
 The Tomes and Rumplestiltskin components required by the archivist client are now included by
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
 
 ### Shokoti
 
@@ -81,9 +120,12 @@ default it will still use your application's exposed URL.
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
-about `this.getTask()` being `undefined`. This fixes it.
+  about `this.getTask()` being `undefined`. This fixes it.
 * When the process was killed when a user terminal disconnected, it would leave .sock files behind.
   This was due to MAGE not handling the SIGHUP signal, which has been addressed.
+* The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
+  `../mage` which by some incredible luck was working in most conditions, but not when `node_modules/mage`
+  is a symbolic link leading to failure.
 
 
 ## v0.24.0 - Bullettime Cat
