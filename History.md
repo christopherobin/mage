@@ -38,16 +38,24 @@ Fixed an issue with archivist component where `rawList` was not properly being a
 ### Shokoti
 
 The `cronClient` module that you use to talk to Shokoti, now allows for timezones *per job*. You
-can use this by calling `setJob` with one more argument, like this:
+can use this by calling `setJob` with one more argument. Shokoti will also give you a message
+object, which will contain some interesting information. Example:
 
 ```js
-mage.cronClient.setJob('generateRanking', '0 0 0 * * *', 'Asia/Tokyo', function (state, cb) {
+var timezone = 'Asia/Tokyo';
+
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', timezone, function (state, message, cb) {
 	// generate ranking at midnight (Tokyo time)
+	logger.debug('Time on the Shokoti server:', message.meta.localTime);
+	logger.debug('Timestamp of this job execution:', message.meta.thisRun);
+	logger.debug('Timestamp of the next scheduled job execution:', message.meta.nextRun);
+
 	cb();
 });
 ```
 
-It's an optional argument, so this still works:
+The `timezone` argument is optional, as is the `message` argument in your callback, so the following
+still works:
 
 ```js
 mage.cronClient.setJob('generateRanking', '0 0 0 * * *', function (state, cb) {
