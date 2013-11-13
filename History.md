@@ -120,14 +120,54 @@ Other improvements:
 |-------------------|--------------|--------------|-----------|
 | component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
 
+### Logger
+
+The client side logger will now serialize objects to parseable JSON even if they contain circular
+references. It also knows how to deal with special objects like `window`, text nodes and DOM
+elements. When serializing a DOM element, it will generate a querySelector compatible path to the
+element and log it. For example:
+
+```js
+var btn = document.querySelector('button');
+
+btn.onclick = function () {
+	var view = document.querySelector('.view[inventory]');
+
+	try {
+		openView(view);
+	} catch (error) {
+		mage.logger.error('Player clicked button', btn, 'to open', view, 'but failed:', error);
+	}
+};
+```
+
+And you would see a server side log similar to this:
+
+```
+w-13121 - 18:16:04.547     <error> [mage-app html5] Player clicked button
+    "[DOM Element (#navInventory)]" to open
+    "[DOM Element (html > body > div.mage-page > div.inventoryView)]" but failed:
+    Error: Cannot open inventory while in tutorial
+  data: {
+    "error": {
+      "name": "Error",
+      "message": "Cannot open inventory while in tutorial",
+      "stack": [
+        "Error: Cannot open inventory while in tutorial",
+        "    at openView (<anonymous>:2:29)",
+        "    at HTMLButtonElement.btn.onclick (<anonymous>:6:3)"
+      ]
+    },
+    "clientInfo": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1707.0 Safari/537.36"
+    },
+    "client": "html5"
+  }
+```
+
 ### Minor improvements
 
 * Logs about invalid hostnames for mmrp nodes have been filtered to leave only relevant ones.
-
-### Minor improvements
-
-* The client side logger will now serialize objects to parseable JSON even if they contain circular
-  references.
 
 ### Bugfixes
 
