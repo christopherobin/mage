@@ -96,6 +96,10 @@ The `cronClient` module that you use to talk to Shokoti, now logs a bit better w
 complete. You can now also configure a different endpoint for Shokoti to call back to, although by
 default it will still use your application's exposed URL.
 
+### Minor improvements
+
+* Logs about invalid hostnames for mmrp nodes have been filtered to leave only relevant ones.
+
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
@@ -105,6 +109,7 @@ default it will still use your application's exposed URL.
 * The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
   `../mage` which by some incredible luck was working in most conditions, but not when `node_modules/mage`
   is a symbolic link leading to failure.
+* A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
 
 
 ## v0.24.0 - Bullettime Cat
