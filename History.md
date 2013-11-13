@@ -131,8 +131,8 @@ Other improvements:
 * When the process was killed when a user terminal disconnected, it would leave .sock files behind.
   This was due to MAGE not handling the SIGHUP signal, which has been addressed.
 * The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
-  `../mage` which by some incredible luck was working in most conditions, but not when `node_modules/mage`
-  is a symbolic link leading to failure.
+  `../mage` which by some incredible luck was working in most conditions, but not when
+  `node_modules/mage` is a symbolic link to a folder that wasn't named `mage`.
 * A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
 
 
