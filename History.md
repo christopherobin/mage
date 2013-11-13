@@ -49,11 +49,11 @@ mage.msgServer.setCmdMode('free'); // or 'blocking'
 
 #### Piggyback
 
-The message server exposes a `queue(callback)` method to delay execution of a user command until the
-HTTP channel is available again, in order to avoid `busy` errors. Often that deferred execution
-will still affect the user experience in a negative way, by blocking the channel yet again. There
-are use cases where all you want to do is send a user command with the next batch (whenever that may
-be). To accomplish that, we have added a `piggyback(callback)` method.
+The message server already exposes a `queue(callback)` method to delay execution of a user command
+until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
+execution will still affect the user experience in a negative way, by blocking the channel yet
+again. There are use cases where all you want to do is send a user command with the next batch
+(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
 
 The callback will be fired immediately, and your user command call will be registered. It will
 however not be sent to the server yet. Instead it will be queued and will be sent with the next
