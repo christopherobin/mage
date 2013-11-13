@@ -120,6 +120,10 @@ Other improvements:
 |-------------------|--------------|--------------|-----------|
 | component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
 
+### Minor improvements
+
+* Logs about invalid hostnames for mmrp nodes have been filtered to leave only relevant ones.
+
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
@@ -129,6 +133,7 @@ Other improvements:
 * The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
   `../mage` which by some incredible luck was working in most conditions, but not when `node_modules/mage`
   is a symbolic link leading to failure.
+* A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
 
 
 ## v0.24.0 - Bullettime Cat
