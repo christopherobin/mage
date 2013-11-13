@@ -106,19 +106,15 @@ mage.cronClient.setJob('generateRanking', '0 0 0 * * *', function (state, cb) {
 ```
 
 If you want to use Shokoti with timezones, you must make sure you are using
-**Shokoti v0.3.0 or later.**
+**Shokoti v0.3.0 or later.** Please check with your sysadmin to make sure **all** environments you
+deploy on have the right version of Shokoti for you.
 
 Other improvements:
 
-* Cron client now logs a bit better when jobs start and complete.
+* Cron client now logs a notice when jobs start and complete (so you **no longer have to do this**
+  yourself).
 * You can now also configure a different endpoint for Shokoti to call back to, although by
   default it will still use your application's exposed URL.
-
-### Dependency updates
-
-| dependency        | from         | to           | changes   |
-|-------------------|--------------|--------------|-----------|
-| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
 
 ### Logger
 
@@ -164,6 +160,15 @@ w-13121 - 18:16:04.547     <error> [mage-app html5] Player clicked button
     "client": "html5"
   }
 ```
+
+> To generate the selectors, we use the
+> [unique-selector](https://github.com/ericclemmons/unique-selector) component.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
 
 ### Minor improvements
 
