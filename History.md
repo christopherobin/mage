@@ -105,6 +105,9 @@ mage.cronClient.setJob('generateRanking', '0 0 0 * * *', function (state, cb) {
 });
 ```
 
+If you want to use Shokoti with timezones, you must make sure you are using
+**Shokoti v0.3.0 or later.**
+
 Other improvements:
 
 * Cron client now logs a bit better when jobs start and complete.
