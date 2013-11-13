@@ -84,17 +84,41 @@ The Tomes and Rumplestiltskin components required by the archivist client are no
 referring to their repositories. This avoids issues that arise when a component is included in a
 game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now allows for timezones *per job*. You
+can use this by calling `setJob` with one more argument, like this:
+
+```js
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', 'Asia/Tokyo', function (state, cb) {
+	// generate ranking at midnight (Tokyo time)
+	cb();
+});
+```
+
+It's an optional argument, so this still works:
+
+```js
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', function (state, cb) {
+	// generate ranking at midnight (using whatever timezone Shokoti has been configured with)
+	cb();
+});
+```
+
+If you want to use Shokoti with timezones, you must make sure you are using
+**Shokoti v0.3.0 or later.**
+
+Other improvements:
+
+* Cron client now logs a bit better when jobs start and complete.
+* You can now also configure a different endpoint for Shokoti to call back to, although by
+  default it will still use your application's exposed URL.
+
 ### Dependency updates
 
 | dependency        | from         | to           | changes   |
 |-------------------|--------------|--------------|-----------|
 | component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
-
-### Shokoti
-
-The `cronClient` module that you use to talk to Shokoti, now logs a bit better when jobs start and
-complete. You can now also configure a different endpoint for Shokoti to call back to, although by
-default it will still use your application's exposed URL.
 
 ### Minor improvements
 
