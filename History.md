@@ -2,6 +2,20 @@
 
 ## vNEXT
 
+### Archivist
+
+We have made the tests that get applied when referring to a topic and index even stricter, by also
+doing type checks on every single value. Topics may only be strings, and the values provided in an
+index may only be strings and numbers. If these rules are broken in development mode, an early error
+is now issued.
+
+**Bugfix:**
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
 ### Message server client
 
 #### Command modes
@@ -45,10 +59,52 @@ The callback will be fired immediately, and your user command call will be regis
 however not be sent to the server yet. Instead it will be queued and will be sent with the next
 batch.
 
+### Archivist changes
+
+Archivist on the client is now an event emitter. After an operation is completed, archivist emits
+the topic as the event name with opName and vaultValue. This enables game developers to set up
+event listeners to handle the creation of topics on the client side. Here's an example:
+
+```javascript
+var archivist = require('archivist');
+
+archivist.on('raidBoss', function (opName, vaultValue) {
+	exports.raidBosses = vaultValue.data;
+});
+```
+
+Fixed an issue with diff distribution that could occur if distribute is called more than once
+during a request.
+
+Fixed an issue with archivist component where rawList was not properly being aliased to list.
+
+### Component changes
+
+The Tomes and Rumplestiltskin components required by the archivist client are now included by
+referring to their repositories. This avoids issues that arise when a component is included in a
+game's package.json file which causes it to not appear in MAGE's node_modules directory.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
+
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now logs a bit better when jobs start and
+complete. You can now also configure a different endpoint for Shokoti to call back to, although by
+default it will still use your application's exposed URL.
+
 ### Bugfixes
 
 * If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
   about `this.getTask()` being `undefined`. This fixes it.
+* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
+  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
+* The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
+  `../mage` which by some incredible luck was working in most conditions, but not when `node_modules/mage`
+  is a symbolic link leading to failure.
 
 
 ## v0.24.0 - Bullettime Cat

@@ -2,7 +2,7 @@
 	"name": "loader",
 	"description": "MAGE page loader",
 	"dependencies": {
-		"component/emitter": "1.0.1",
+		"component/emitter": "1.1.0",
 		"component/inherit": "0.0.2"
 	},
 	"scripts": [
