@@ -4,62 +4,14 @@
 
 ### Archivist
 
+#### Sanity checks
+
 We have made the tests that get applied when referring to a topic and index even stricter, by also
 doing type checks on every single value. Topics may only be strings, and the values provided in an
 index may only be strings and numbers. If these rules are broken in development mode, an early error
 is now issued.
 
-**Bugfix:**
-
-An `archivist.del()` operation was not setting the value as initialized. The result of this would be
-that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
-transaction (state instance) would still hit the datastore, rather than accept that the value has
-been deleted.
-
-### Message server client
-
-#### Command modes
-
-The message server client has traditionally always executed user commands on a per-batch basis. In
-cases where you need to make sure a user command gets executed even if another has already been
-sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
-we open up the door to choosing between two modes on the message server: *blocking* and *free*:
-
-##### Blocking mode
-
-This is still the default behavior, and is how the message server has always operated: one batch of
-commands at a time. This protects your application from button hammering, where one player tapping
-a "Quest" button 20 times does not trigger 20 quest executions.
-
-##### Free mode
-
-This allows user commands to *always* be executed. If a user command is currently already being
-executed, the next one will be delayed until the current one returns. In other words, it is
-automatically queueing. On the dashboard, this has been enabled by default.
-
-##### API
-
-You can change between these two modes at any time, by using:
-
-```javascript
-var mage = require('mage');
-
-mage.msgServer.setCmdMode('free'); // or 'blocking'
-```
-
-#### Piggyback
-
-The message server already exposes a `queue(callback)` method to delay execution of a user command
-until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
-execution will still affect the user experience in a negative way, by blocking the channel yet
-again. There are use cases where all you want to do is send a user command with the next batch
-(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
-
-The callback will be fired immediately, and your user command call will be registered. It will
-however not be sent to the server yet. Instead it will be queued and will be sent with the next
-batch.
-
-### Archivist changes
+#### Client side events
 
 Archivist on the client is now an event emitter. After an operation is completed, archivist emits
 the topic as the event name with opName and vaultValue. This enables game developers to set up
@@ -73,16 +25,17 @@ archivist.on('raidBoss', function (opName, vaultValue) {
 });
 ```
 
+#### Bugfixes
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
 Fixed an issue with diff distribution that could occur if distribute is called more than once
 during a request.
 
 Fixed an issue with archivist component where rawList was not properly being aliased to list.
-
-### Component changes
-
-The Tomes and Rumplestiltskin components required by the archivist client are now included by
-referring to their repositories. This avoids issues that arise when a component is included in a
-game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
 ### Shokoti
 
@@ -163,6 +116,55 @@ w-13121 - 18:16:04.547     <error> [mage-app html5] Player clicked button
 
 > To generate the selectors, we use the
 > [unique-selector](https://github.com/ericclemmons/unique-selector) component.
+
+### Message server client
+
+#### Command modes
+
+The message server client has traditionally always executed user commands on a per-batch basis. In
+cases where you need to make sure a user command gets executed even if another has already been
+sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
+we open up the door to choosing between two modes on the message server: *blocking* and *free*:
+
+##### Blocking mode
+
+This is still the default behavior, and is how the message server has always operated: one batch of
+commands at a time. This protects your application from button hammering, where one player tapping
+a "Quest" button 20 times does not trigger 20 quest executions.
+
+##### Free mode
+
+This allows user commands to *always* be executed. If a user command is currently already being
+executed, the next one will be delayed until the current one returns. In other words, it is
+automatically queueing. On the dashboard, this has been enabled by default.
+
+##### API
+
+You can change between these two modes at any time, by using:
+
+```javascript
+var mage = require('mage');
+
+mage.msgServer.setCmdMode('free'); // or 'blocking'
+```
+
+#### Piggyback
+
+The message server already exposes a `queue(callback)` method to delay execution of a user command
+until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
+execution will still affect the user experience in a negative way, by blocking the channel yet
+again. There are use cases where all you want to do is send a user command with the next batch
+(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
+
+The callback will be fired immediately, and your user command call will be registered. It will
+however not be sent to the server yet. Instead it will be queued and will be sent with the next
+batch.
+
+### Component changes
+
+The Tomes and Rumplestiltskin components required by the archivist client are now included by
+referring to their repositories. This avoids issues that arise when a component is included in a
+game's package.json file which causes it to not appear in MAGE's node_modules directory.
 
 ### Dependency updates
 
