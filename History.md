@@ -1,5 +1,199 @@
 # Release history
 
+## v0.25.0 - Piggyback Cat
+
+### Archivist
+
+#### Sanity checks
+
+We have made the tests that get applied when referring to a topic and index even stricter, by also
+doing type checks on every single value. Topics may only be strings, and the values provided in an
+index may only be strings and numbers. If these rules are broken in development mode, an early error
+is now issued.
+
+#### Client side events
+
+Archivist on the client is now an event emitter. After an operation is completed, archivist emits
+the topic as the event name with opName and vaultValue. This enables game developers to set up
+event listeners to handle the creation of topics on the client side. Here's an example:
+
+```javascript
+mage.archivist.on('raidBoss', function (opName, vaultValue) {
+	exports.raidBosses = vaultValue.data;
+});
+```
+
+#### Bugfixes
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
+Fixed an issue with diff distribution that could occur if distribute was called more than once
+during a request.
+
+Fixed an issue with archivist component where `rawList` was not properly being aliased to `list`.
+
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now allows for timezones *per job*. You
+can use this by calling `setJob` with one more argument. Shokoti will also give you a message
+object, which will contain some interesting information. Example:
+
+```js
+var timezone = 'Asia/Tokyo';
+
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', timezone, function (state, message, cb) {
+	// generate ranking at midnight (Tokyo time)
+	logger.debug('Time on the Shokoti server:', message.meta.localTime);
+	logger.debug('Timestamp of this job execution:', message.meta.thisRun);
+	logger.debug('Timestamp of the next scheduled job execution:', message.meta.nextRun);
+
+	cb();
+});
+```
+
+The `timezone` argument is optional, as is the `message` argument in your callback, so the following
+still works:
+
+```js
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', function (state, cb) {
+	// generate ranking at midnight (using whatever timezone Shokoti has been configured with)
+	cb();
+});
+```
+
+If you want to use Shokoti with timezones, you must make sure you are using
+**Shokoti v0.3.0 or later.** Please check with your sysadmin to make sure **all** environments you
+deploy on have the right version of Shokoti for you.
+
+Other improvements:
+
+* Cron client now logs a notice when jobs start and complete (so you **no longer have to do this**
+  yourself).
+* You can now also configure a different endpoint for Shokoti to call back to, although by
+  default it will still use your application's exposed URL.
+
+### Logger
+
+The client side logger will now serialize objects to parseable JSON even if they contain circular
+references. It also knows how to deal with special objects like `window`, text nodes and DOM
+elements. When serializing a DOM element, it will generate a querySelector compatible path to the
+element and log it. For example:
+
+```js
+var btn = document.querySelector('button');
+
+btn.onclick = function () {
+	var view = document.querySelector('.view[inventory]');
+
+	try {
+		openView(view);
+	} catch (error) {
+		mage.logger.error('Player clicked button', btn, 'to open', view, 'but failed:', error);
+	}
+};
+```
+
+And you would see a server side log similar to this:
+
+```
+w-13121 - 18:16:04.547     <error> [mage-app html5] Player clicked button
+    "[DOM Element (#navInventory)]" to open
+    "[DOM Element (html > body > div.mage-page > div.inventoryView)]" but failed:
+    Error: Cannot open inventory while in tutorial
+  data: {
+    "error": {
+      "name": "Error",
+      "message": "Cannot open inventory while in tutorial",
+      "stack": [
+        "Error: Cannot open inventory while in tutorial",
+        "    at openView (<anonymous>:2:29)",
+        "    at HTMLButtonElement.btn.onclick (<anonymous>:6:3)"
+      ]
+    },
+    "clientInfo": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1707.0 Safari/537.36"
+    },
+    "client": "html5"
+  }
+```
+
+> To generate the selectors, we use the
+> [unique-selector](https://github.com/ericclemmons/unique-selector) component.
+
+### Message server client
+
+#### Command modes
+
+The message server client has traditionally always executed user commands on a per-batch basis. In
+cases where you need to make sure a user command gets executed even if another has already been
+sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
+we open up the door to choosing between two modes on the message server: *blocking* and *free*:
+
+##### Blocking mode
+
+This is still the default behavior, and is how the message server has always operated: one batch of
+commands at a time. This protects your application from button hammering, where one player tapping
+a "Quest" button 20 times does not trigger 20 quest executions.
+
+##### Free mode
+
+This allows user commands to *always* be executed. If a user command is currently already being
+executed, the next one will be delayed until the current one returns. In other words, it is
+automatically queueing. On the dashboard, this has been enabled by default.
+
+##### API
+
+You can change between these two modes at any time, by using:
+
+```javascript
+var mage = require('mage');
+
+mage.msgServer.setCmdMode('free'); // or 'blocking'
+```
+
+#### Piggyback
+
+The message server already exposes a `queue(callback)` method to delay execution of a user command
+until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
+execution will still affect the user experience in a negative way, by blocking the channel yet
+again. There are use cases where all you want to do is send a user command with the next batch
+(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
+
+The callback will be fired immediately, and your user command call will be registered. It will
+however not be sent to the server yet. Instead it will be queued and will be sent with the next
+batch.
+
+### Component changes
+
+The Tomes and Rumplestiltskin components required by the archivist client are now included by
+referring to their repositories. This avoids issues that arise when a component is included in a
+game's package.json file which causes it to not appear in MAGE's node_modules directory.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
+
+### Minor improvements
+
+* Logs about invalid hostnames for mmrp nodes have been filtered to leave only relevant ones.
+
+### Bugfixes
+
+* If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
+  about `this.getTask()` being `undefined`. This fixes it.
+* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
+  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
+* The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
+  `../mage` which by some incredible luck was working in most conditions, but not when
+  `node_modules/mage` is a symbolic link to a folder that wasn't named `mage`.
+* A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
+
+
 ## v0.24.0 - Bullettime Cat
 
 ### Shutdown changes

@@ -2,7 +2,8 @@
 	"name": "logger",
 	"description": "Logger module.",
 	"dependencies": {
-		"component/emitter": "1.0.1"
+		"ericclemmons/unique-selector": "v0.0.3",
+		"component/emitter": "1.1.0"
 	},
 	"local": ["mage"],
 	"paths": [
