@@ -1,5 +1,10 @@
 # Release history
 
+## v0.24.1 - CommandCenter Client Hotfix
+
+CommandCenterClient now outputs more useful logs, and no longer auto-retries after network errors.
+
+
 ## v0.24.0 - Bullettime Cat
 
 ### Shutdown changes
