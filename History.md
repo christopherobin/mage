@@ -194,6 +194,11 @@ game's package.json file which causes it to not appear in MAGE's node_modules di
 * A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
 
 
+## v0.24.1 - CommandCenter Client Hotfix
+
+CommandCenterClient now outputs more useful logs, and no longer auto-retries after network errors.
+
+
 ## v0.24.0 - Bullettime Cat
 
 ### Shutdown changes
