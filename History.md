@@ -1,6 +1,5 @@
 # Release history
 
-<<<<<<< HEAD
 ## v0.25.0 - Piggyback Cat
 
 ### Archivist
@@ -193,11 +192,11 @@ game's package.json file which causes it to not appear in MAGE's node_modules di
   `../mage` which by some incredible luck was working in most conditions, but not when
   `node_modules/mage` is a symbolic link to a folder that wasn't named `mage`.
 * A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
-=======
+
+
 ## v0.24.1 - CommandCenter Client Hotfix
 
 CommandCenterClient now outputs more useful logs, and no longer auto-retries after network errors.
->>>>>>> hotfix/v0.24.1
 
 
 ## v0.24.0 - Bullettime Cat
