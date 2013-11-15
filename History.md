@@ -2,7 +2,69 @@
 
 ## vNEXT
 
+### Event emission and sharding
 
+Sharding on the client vault was usually done in one of these three patterns, as defined in a game's
+`/lib/archivist/index.js` file:
+
+```js
+// pattern 1: only playerId may read this, changes will be sent in realtime
+
+exports.inventory = {
+	index: ['playerId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return value.index.playerId;
+			}
+		}
+	}
+};
+
+// pattern 2: two friends may read this, changes will be sent to both in realtime
+
+exports.friendship = {
+	index: ['playerA', 'playerB'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return [value.index.playerA, value.index.playerB];
+			}
+		}
+	}
+};
+
+// pattern 3: everybody may read this, but changes won't be broadcast to anyone
+
+exports.cardDefinitions = {
+	index: [],
+	vaults: {
+		client: {
+			shard: function () {
+				return true;
+			}
+		}
+	}
+};
+```
+
+The only way to allow someone else to read your document, was to give up the ability to receive
+realtime change propagation. This has been resolved by augmenting the shard format as follows:
+
+```js
+// pattern 4: everybody may read this, changes will only be sent to playerId in realtime
+
+exports.inventory = {
+	index: ['playerId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return [value.index.playerId, true];
+			}
+		}
+	}
+};
+```
 
 
 ## v0.25.0 - Piggyback Cat
