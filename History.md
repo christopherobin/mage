@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Component installation
+
+Components are now installed with the `--force` option, making sure that version changes of already
+existing components are not ignored. The component will always be downloaded.
+
 ### Event emission and sharding
 
 Sharding on the client vault was usually done in one of these three patterns, as defined in a game's
