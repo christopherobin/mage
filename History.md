@@ -52,7 +52,7 @@ The only way to allow someone else to read your document, was to give up the abi
 realtime change propagation. This has been resolved by augmenting the shard format as follows:
 
 ```js
-// pattern 4: everybody may read this, changes will be sent to playerId in realtime
+// pattern 4: everybody may read this, changes will only be sent to playerId in realtime
 
 exports.inventory = {
 	index: ['playerId'],
