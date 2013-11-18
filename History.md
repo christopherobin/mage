@@ -194,6 +194,12 @@ game's package.json file which causes it to not appear in MAGE's node_modules di
 * A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
 
 
+## v0.24.2 - Tomes Hotfix
+
+Tomes got updated to v0.0.17, as it fixes a bug that one if our apps has been experiencing. This
+version of Tomes works around that (seemingly) browser bug.
+
+
 ## v0.24.1 - CommandCenter Client Hotfix
 
 CommandCenterClient now outputs more useful logs, and no longer auto-retries after network errors.
