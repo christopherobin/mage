@@ -80,6 +80,22 @@ will now raise a warning in the console.
 Either make sure to `Tome.conjure` your value when storing it if it is a tome, otherwise if you don't
 want that value to be "tomified" on read, setup the correct read options in your topic.
 
+### Bugfix: Android and xhr.abort
+
+It seems that on Android (at least 4.x) the following error happens, and this has happened on one of
+our titles since they started calling `http.abort()`:
+
+```
+Uncaught InvalidStateError: Failed to read the 'status' property from 'XMLHttpRequest':
+the object's state must not be OPENED.
+```
+
+The hypothesis is that `xhr.abort()` calls the readystatechange event synchronously, setting
+readystate to 4. Our callback was not yet reset, causing the request completion to continue
+executing and using `xhr.status`. According to w3c
+[that is completely valid](http://www.w3.org/TR/XMLHttpRequest/#the-status-attribute), but this
+browser doesn't like it, causing uncaught errors. This bugfix should address this race condition.
+
 
 ## v0.25.0 - Piggyback Cat
 
