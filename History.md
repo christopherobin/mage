@@ -75,6 +75,11 @@ diffs to be pushed on the client side with no way to apply them (as the `json` m
 have a method to apply diffs). Trying to apply diffs to types on the client that doesn't support them
 will now raise a warning in the console.
 
+#### What to do when I get that warning?
+
+Either make sure to `Tome.conjure` your value when storing it if it is a tome, otherwise if you don't
+want that value to be "tomified" on read, setup the correct read options in your topic.
+
 
 ## v0.25.0 - Piggyback Cat
 
