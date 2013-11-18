@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.25.1 - I Can Handle This cat
 
 ### Event emission and sharding
 
