@@ -90,9 +90,9 @@ Uncaught InvalidStateError: Failed to read the 'status' property from 'XMLHttpRe
 the object's state must not be OPENED.
 ```
 
-The hypothesis is that `xhr.abort()` calls the readystatechange event synchronously, setting state
-to 4. Our callback was not yet reset, causing the request completion to continue executing and
-using `xhr.status`. According to w3c
+The hypothesis is that `xhr.abort()` calls the readystatechange event synchronously, setting
+readystate to 4. Our callback was not yet reset, causing the request completion to continue
+executing and using `xhr.status`. According to w3c
 [that is completely valid](http://www.w3.org/TR/XMLHttpRequest/#the-status-attribute), but this
 browser doesn't like it, causing uncaught errors. This bugfix should address this race condition.
 
