@@ -66,6 +66,20 @@ exports.inventory = {
 };
 ```
 
+### Archivist client
+
+Due to the way archivist work, when the developer would not set read options on a topic you could get
+a weird situation where writing a value using the `json` media-type would be converted to a `tome`
+media type on next read on the server, but not on the client. Modifying this tome would then cause
+diffs to be pushed on the client side with no way to apply them (as the `json` media type doesn't
+have a method to apply diffs). Trying to apply diffs to types on the client that doesn't support them
+will now raise a warning in the console.
+
+#### What to do when I get that warning?
+
+Either make sure to `Tome.conjure` your value when storing it if it is a tome, otherwise if you don't
+want that value to be "tomified" on read, setup the correct read options in your topic.
+
 
 ## v0.25.0 - Piggyback Cat
 
