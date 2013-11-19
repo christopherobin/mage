@@ -1,5 +1,27 @@
 # Release history
 
+## vNEXT
+
+### Component builder improvements
+
+The build process for components is now much more elegant and smart, yielding a pretty much **2x**
+performance boost across the board.
+
+This is also preparation work for sourcemap support, which we hope to add soon.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
+| component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
+
+### Bugfixes
+
+* If `make build` failed, it would likely not display an error.
+* If `make deps-component` failed, it would still terminate with a 0 exit code.
+
+
 ## v0.25.1 - I Can Handle This cat
 
 ### Event emission and sharding
