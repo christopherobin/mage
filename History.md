@@ -1,5 +1,15 @@
 # Release history
 
+## vNEXT
+
+### Component builder improvements
+
+The build process for components is now much more elegant and smart, yielding a pretty much **2x**
+performance boost across the board.
+
+This is also preparation work for sourcemap support, which we hope to add soon.
+
+
 ## v0.25.1 - I Can Handle This cat
 
 ### Event emission and sharding
