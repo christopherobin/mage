@@ -20,6 +20,7 @@ This is also preparation work for sourcemap support, which we hope to add soon.
 
 * If `make build` failed, it would likely not display an error.
 * If `make deps-component` failed, it would still terminate with a 0 exit code.
+* If mage would fail during setup, it would still terminate with a 0 exit code.
 
 
 ## v0.25.1 - I Can Handle This cat
