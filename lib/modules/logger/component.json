@@ -3,6 +3,7 @@
 	"description": "Logger module.",
 	"dependencies": {
 		"ericclemmons/unique-selector": "v0.0.3",
+		"eriwen/javascript-stacktrace": "*",
 		"component/emitter": "1.1.0"
 	},
 	"local": ["mage"],
