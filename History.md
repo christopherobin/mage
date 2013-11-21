@@ -54,6 +54,8 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 
 ### Bugfixes
 
+* A bug in the message server client could cause user commands to be in each other's way while
+  in free mode, as is the case on the dashboard (since v0.25.0).
 * If `make build` failed, it would likely not display an error.
 * If `make deps-component` failed, it would still terminate with a 0 exit code.
 * If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
