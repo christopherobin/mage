@@ -31,7 +31,7 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 
 1. Only few browsers support error objects at the window `error` event. That means that uncaught
    errors, while logged, often do not carry an error object and therefore not a stack trace either.
-   Best results so far are gained with Chrome.
+   Best results so far have been achieved with Chrome.
 2. Not every browser supports SourceURL, which we need in order to identify which file a frame in
    the stack trace originated in. See also
    [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
@@ -46,12 +46,13 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 |-------------------|--------------|--------------|-----------|
 | component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
 | component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
+| tomes             | 0.0.17       | 0.0.18       | [Commit log](https://github.com/Wizcorp/node-tomes/commits/0.0.18) |
 
 ### Bugfixes
 
 * If `make build` failed, it would likely not display an error.
 * If `make deps-component` failed, it would still terminate with a 0 exit code.
-* If mage would fail during setup, it would still terminate with a 0 exit code.
+* If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
 
 
 ## v0.25.1 - I Can Handle This cat
