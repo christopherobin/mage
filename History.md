@@ -32,11 +32,8 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 1. Only few browsers support error objects at the window `error` event. That means that uncaught
    errors, while logged, often do not carry an error object and therefore not a stack trace either.
    Best results so far are gained with Chrome.
-2. Different browsers have different behaviors, and line numbers may be offset. We are currently
-   basing this magical offset on Chrome. In the future we may be able to make a more intelligent
-   choice based on the user agent.
-3. Not every browser supports SourceURL, which we need in order to identify which file a
-   frame in the stack trace originated in. See also
+2. Not every browser supports SourceURL, which we need in order to identify which file a frame in
+   the stack trace originated in. See also
    [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
 
 #### Small improvements on the component builder
