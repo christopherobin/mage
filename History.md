@@ -54,6 +54,11 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 * If `make deps-component` failed, it would still terminate with a 0 exit code.
 * If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
 
+### Component installation
+
+Components are now installed with the `--force` option, making sure that version changes of already
+existing components are not ignored. The component will always be downloaded.
+
 
 ## v0.25.1 - I Can Handle This cat
 
