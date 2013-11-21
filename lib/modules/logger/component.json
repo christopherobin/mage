@@ -11,7 +11,9 @@
 		"../.."
 	],
 	"scripts": [
-		"client.js"
+		"client/index.js",
+		"client/serialize.js",
+		"client/errors.js"
 	],
-	"main": "client.js"
+	"main": "client/index.js"
 }
