@@ -36,10 +36,6 @@ Before jumping in the air in pure bliss, there are a few things you must know.
    the stack trace originated in. See also
    [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
 
-#### Small improvements on the component builder
-
-* We now rewrite `//@ sourceURL` to the more modern and well-supported `//# sourceURL`.
-
 ### Dependency updates
 
 | dependency        | from         | to           | changes   |
@@ -47,6 +43,12 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 | component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
 | component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
 | tomes             | 0.0.17       | 0.0.18       | [Commit log](https://github.com/Wizcorp/node-tomes/commits/0.0.18) |
+
+### Minor improvements
+
+* We now rewrite `//@ sourceURL` to the more modern and well-supported `//# sourceURL` in the
+  component builder.
+* The channel reference in the logger documentation has been restructured to be more readable.
 
 ### Bugfixes
 
