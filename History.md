@@ -48,6 +48,8 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 
 * We now rewrite `//@ sourceURL` to the more modern and well-supported `//# sourceURL` in the
   component builder.
+* Components are now installed with the `--force` option, making sure that version changes of
+  already existing components are not ignored. The component will always be downloaded.
 * The channel reference in the logger documentation has been restructured to be more readable.
 
 ### Bugfixes
@@ -55,11 +57,6 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 * If `make build` failed, it would likely not display an error.
 * If `make deps-component` failed, it would still terminate with a 0 exit code.
 * If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
-
-### Component installation
-
-Components are now installed with the `--force` option, making sure that version changes of already
-existing components are not ignored. The component will always be downloaded.
 
 
 ## v0.25.1 - I Can Handle This cat
