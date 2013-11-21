@@ -2,10 +2,65 @@
 
 ## vNEXT
 
+### Component builder speedup and source map support
+
+#### Speed boost
+
+The build process for components is now much more elegant and smart, yielding a pretty much **2x**
+performance boost across the board.
+
+#### Source maps
+
+But the real news is that we now support source maps. We have released version v0.3.0 of
+[component-uglifyjs](https://npmjs.org/package/component-uglifyjs) which you are probably already
+using a previous version of in your games. This new version supports sourcemaps, and you can enable
+it by adding an option to the plugin registration:
+
+```js
+builder.use(uglify.withOptions({ mangle: true, outSourceMap: true }));
+```
+
+Just adding that will make this work, and whenever you receive a stack trace on an error from a
+minified source on a browser, the stack will be unwrapped for you into readable symbols, files, line
+number and horizontal position. So **don't forget** to update your version of `component-uglifyjs`
+and make your stack traces more awesome today.
+
+#### Caveats
+
+Before jumping in the air in pure bliss, there are a few things you must know.
+
+1. Only few browsers support error objects at the window `error` event. That means that uncaught
+   errors, while logged, often do not carry an error object and therefore not a stack trace either.
+   Best results so far have been achieved with Chrome.
+2. Not every browser supports SourceURL, which we need in order to identify which file a frame in
+   the stack trace originated in. See also
+   [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
+
+#### Small improvements on the component builder
+
+* We now rewrite `//@ sourceURL` to the more modern and well-supported `//# sourceURL`.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
+| component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
+| tomes             | 0.0.17       | 0.0.18       | [Commit log](https://github.com/Wizcorp/node-tomes/commits/0.0.18) |
+
+### Bugfixes
+
+* If `make build` failed, it would likely not display an error.
+* If `make deps-component` failed, it would still terminate with a 0 exit code.
+* If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
+
 ### Component installation
 
 Components are now installed with the `--force` option, making sure that version changes of already
 existing components are not ignored. The component will always be downloaded.
+
+
+## v0.25.1 - I Can Handle This cat
 
 ### Event emission and sharding
 
@@ -70,6 +125,36 @@ exports.inventory = {
 	}
 };
 ```
+
+### Archivist client
+
+Due to the way archivist work, when the developer would not set read options on a topic you could get
+a weird situation where writing a value using the `json` media-type would be converted to a `tome`
+media type on next read on the server, but not on the client. Modifying this tome would then cause
+diffs to be pushed on the client side with no way to apply them (as the `json` media type doesn't
+have a method to apply diffs). Trying to apply diffs to types on the client that doesn't support them
+will now raise a warning in the console.
+
+#### What to do when I get that warning?
+
+Either make sure to `Tome.conjure` your value when storing it if it is a tome, otherwise if you don't
+want that value to be "tomified" on read, setup the correct read options in your topic.
+
+### Bugfix: Android and xhr.abort
+
+It seems that on Android (at least 4.x) the following error happens, and this has happened on one of
+our titles since they started calling `http.abort()`:
+
+```
+Uncaught InvalidStateError: Failed to read the 'status' property from 'XMLHttpRequest':
+the object's state must not be OPENED.
+```
+
+The hypothesis is that `xhr.abort()` calls the readystatechange event synchronously, setting
+readystate to 4. Our callback was not yet reset, causing the request completion to continue
+executing and using `xhr.status`. According to w3c
+[that is completely valid](http://www.w3.org/TR/XMLHttpRequest/#the-status-attribute), but this
+browser doesn't like it, causing uncaught errors. This bugfix should address this race condition.
 
 
 ## v0.25.0 - Piggyback Cat
@@ -264,6 +349,12 @@ game's package.json file which causes it to not appear in MAGE's node_modules di
   `../mage` which by some incredible luck was working in most conditions, but not when
   `node_modules/mage` is a symbolic link to a folder that wasn't named `mage`.
 * A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
+
+
+## v0.24.2 - Tomes Hotfix
+
+Tomes got updated to v0.0.17, as it fixes a bug that one if our apps has been experiencing. This
+version of Tomes works around that (seemingly) browser bug.
 
 
 ## v0.24.1 - CommandCenter Client Hotfix
