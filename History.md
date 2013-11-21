@@ -46,6 +46,7 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 |-------------------|--------------|--------------|-----------|
 | component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
 | component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
+| tomes             | 0.0.17       | 0.0.18       | [Commit log](https://github.com/Wizcorp/node-tomes/commits/0.0.18) |
 
 ### Bugfixes
 
