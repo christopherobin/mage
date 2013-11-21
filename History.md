@@ -2,12 +2,43 @@
 
 ## vNEXT
 
-### Component builder improvements
+### Component builder speedup and source map support
+
+#### Speed boost
 
 The build process for components is now much more elegant and smart, yielding a pretty much **2x**
 performance boost across the board.
 
-This is also preparation work for sourcemap support, which we hope to add soon.
+#### Source maps
+
+But the real news is that we now support source maps. We have released version v0.3.0 of
+[component-uglifyjs](https://npmjs.org/package/component-uglifyjs) which you are probably already
+using a previous version of in your games. This new version supports sourcemaps, and you can enable
+it by adding an option to the plugin registration:
+
+```js
+builder.use(uglify.withOptions({ mangle: true, outSourceMap: true }));
+```
+
+Just adding that will make this work, and whenever you receive a stack trace on an error from a
+minified source on a browser, the stack will be unwrapped for you into readable symbols, files, line
+number and horizontal position. So **don't forget** to update your version of `component-uglifyjs`
+and make your stack traces more awesome today.
+
+#### Caveats
+
+Before jumping in the air in pure bliss, there are a few things you must know.
+
+1. Only few browsers support error objects at the window `error` event. That means that uncaught
+   errors, while logged, often do not carry an error object and therefore not a stack trace either.
+   Best results so far are gained with Chrome.
+2. Not every browser supports SourceURL, which we need in order to identify which file a frame in
+   the stack trace originated in. See also
+   [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
+
+#### Small improvements on the component builder
+
+* We now rewrite `//@ sourceURL` to the more modern and well-supported `//# sourceURL`.
 
 ### Dependency updates
 
