@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.25.2 - Gimme! Cat
 
 ### Component builder speedup and source map support
@@ -286,7 +289,7 @@ w-13121 - 18:16:04.547     <error> [mage-app html5] Player clicked button
 The message server client has traditionally always executed user commands on a per-batch basis. In
 cases where you need to make sure a user command gets executed even if another has already been
 sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
-we open up the door to choosing between two modes on the message server: *blocking* and *free*:
+we open up the door to choosing between two modes on the message server: *blocking* and *free*.
 
 ##### Blocking mode
 
