@@ -51,6 +51,8 @@ Before jumping in the air in pure bliss, there are a few things you must know.
 * Components are now installed with the `--force` option, making sure that version changes of
   already existing components are not ignored. The component will always be downloaded.
 * The channel reference in the logger documentation has been restructured to be more readable.
+* The filevault has been made a little bit more robust against race conditions. More work in this
+  area is expected.
 
 ### Bugfixes
 
