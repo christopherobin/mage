@@ -1,5 +1,64 @@
 # Release history
 
+## v0.25.2 - Gimme! Cat
+
+### Component builder speedup and source map support
+
+#### Speed boost
+
+The build process for components is now much more elegant and smart, yielding a pretty much **2x**
+performance boost across the board.
+
+#### Source maps
+
+But the real news is that we now support source maps. We have released version v0.3.0 of
+[component-uglifyjs](https://npmjs.org/package/component-uglifyjs) which you are probably already
+using a previous version of in your games. This new version supports source maps, and you can enable
+it by adding an option to the plugin registration:
+
+```js
+builder.use(uglify.withOptions({ mangle: true, outSourceMap: true }));
+```
+
+Just adding that `outSourceMap` boolean will make this work, and whenever you receive a stack trace
+on an error from a minified source on a browser (see also: "Caveats"), the stack will be unwrapped
+for you into readable symbols, files, line number and horizontal position. So **don't forget** to
+update your version of `component-uglifyjs` and make your stack traces more awesome today.
+
+#### Caveats
+
+Before jumping in the air in pure bliss, there are a few things you must be aware of.
+
+1. Only few browsers support error objects at the window `error` event. That means that uncaught
+   errors, while logged, often do not carry an error object and therefore not a stack trace either.
+   Best results so far have been achieved with Chrome.
+2. Not every browser supports SourceURL, which we need in order to identify which file a frame in
+   the stack trace originated in. See also
+   [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
+| component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
+| tomes             | 0.0.17       | 0.0.18       | [Commit log](https://github.com/Wizcorp/node-tomes/commits/0.0.18) |
+
+### Minor improvements
+
+* The channel reference in the logger documentation has been restructured to be more readable.
+* The filevault has been made a little bit more robust against race conditions. More work in this
+  area is expected.
+
+### Bugfixes
+
+* A bug in the message server client could cause user commands to be in each other's way while
+  in free mode, as is the case on the dashboard (since v0.25.0).
+* If `make build` failed, it would likely not display an error.
+* If `make deps-component` failed, it would still terminate with a 0 exit code.
+* If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
+
+
 ## v0.25.1 - I Can Handle This cat
 
 ### Event emission and sharding
