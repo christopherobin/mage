@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.25.2 - Gimme! Cat
 
 ### Component builder speedup and source map support
 
