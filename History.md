@@ -2,6 +2,19 @@
 
 ## vNEXT
 
+### Cache Puncher
+
+We have created and open sourced a little component called
+[cachepuncher](https://github.com/Wizcorp/cachepuncher). Its purpose is to generate always unique
+strings that can be used to fool the browser cache into thinking every HTTP request it makes is
+unique. This will stop even the most aggressive browser caches from ruining your day.
+
+The component has been integrated in these three places:
+
+1. The page loader (since it has its own hash-based caching mechanism).
+2. The command center.
+3. The asynchronous event message stream.
+
 
 ## v0.25.2 - Gimme! Cat
 
