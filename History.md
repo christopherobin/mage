@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.25.3 - Punchy Cat
 
 ### Cache Puncher
 
