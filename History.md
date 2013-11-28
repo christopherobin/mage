@@ -2,6 +2,13 @@
 
 ## vNEXT
 
+### Savvy and server expose URL improvements
+
+1. Savvy no longer takes any configuration. It now always binds to savvy.sock and the workers can
+   proxy to that socket.
+2. `getClientHostBaseUrl()` can now take HTTP headers and create a URL based on those, if
+   configuration is not available.
+3. Better logging in savvy and HTTP server.
 
 
 ## v0.25.3 - Punchy Cat
