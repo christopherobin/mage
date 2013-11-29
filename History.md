@@ -10,6 +10,19 @@
    configuration is not available. This also applies to the built-in asset serving logic.
 3. Better logging in savvy and HTTP server.
 
+### XML support
+
+We now support xml files in our web builder. Additionally, you can pass a specific context to index
+pages if you want something besides html.
+
+For example:
+
+```javascript
+apps.gadget.addIndexPage('gadget', './www/gadget/', { context: 'xml' });
+```
+
+Will now serve the xml files from www/gadget when receiving requests for app/gadget
+
 
 ## v0.25.3 - Punchy Cat
 
