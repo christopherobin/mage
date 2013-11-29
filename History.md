@@ -2,13 +2,38 @@
 
 ## vNEXT
 
-### Savvy and server expose URL improvements
+### ClientHost Expose URL
 
-1. Savvy no longer takes any configuration. It now always binds to savvy.sock and the workers can
-   proxy to that socket.
-2. `getClientHostBaseUrl()` can now take HTTP headers and create a URL based on those, if
-   configuration is not available. This also applies to the built-in asset serving logic.
-3. Better logging in savvy and HTTP server.
+The `expose` configuration is now officially optional. For many production environments however it
+is still advisable to configure. Especially PhoneGap depends on it, because its loader page (the
+initial HTML file) is hosted on the device itself, so the domain from which you host your game
+cannot be guessed.
+
+The `clientHost.getClientHostBaseUrl()` method can now take an HTTP headers object and create a URL
+based on those, for cases where there is an incoming HTTP request and configuration is not
+available.
+
+### Savvy
+
+Savvy no longer takes any configuration. It now always binds to `savvy.sock` and the workers proxy
+incoming savvy requests to that socket. That means that savvy now always runs off the same host and
+port as the application itself, avoiding cross origin problems and keeping the infrastructure
+simple and contained.
+
+### Phantom loader
+
+The Phantom Loader has been updated to have the following usage:
+
+```
+PhantomJS loader for MAGE app: game
+
+Usage: ./load.sh <options>
+
+Where <options> is:
+  --help         Prints this information
+  --url <URL>    A full URL to run with PhantomJS (default: http://localhost)
+  --path <PATH>  A path at the given URL (optional, default: /app/game)
+```
 
 ### XML support
 
