@@ -7,7 +7,7 @@
 1. Savvy no longer takes any configuration. It now always binds to savvy.sock and the workers can
    proxy to that socket.
 2. `getClientHostBaseUrl()` can now take HTTP headers and create a URL based on those, if
-   configuration is not available.
+   configuration is not available. This also applies to the built-in asset serving logic.
 3. Better logging in savvy and HTTP server.
 
 

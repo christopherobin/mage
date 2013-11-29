@@ -243,13 +243,16 @@ function bootstrap(cb) {
 			exec('make', ['all'], null, callback);
 		},
 		function (callback) {
+			var baseUrl = templateRules.replace('APP_CLIENTHOST_EXPOSE');
+
 			var msg = [
 				'All done! You can now start your game in the foreground by running "./game",',
 				'or see startup options by running "./game --help".',
 				'',
-				'Once your application is running, you can access:',
-				'- the game:      ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/game',
-				'- the dashboard: ' + templateRules.replace('APP_CLIENTHOST_EXPOSE') + '/app/dev'
+				'We also installed a Makefile for you. You can use that to do a few more operations.',
+				'Please run "make" once for a full explanation of what you can do with it.',
+				'',
+				'Once your application is running, you can open the game at: ' + baseUrl + '/app/game'
 			];
 
 			pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');
