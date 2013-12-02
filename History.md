@@ -53,6 +53,12 @@ Will now serve the xml files from www/gadget when receiving requests for app/gad
 * There are browsers that passed the ErrorEvent object as the first argument to `window.onerror`
   while not setting it on `window.event`. We were not catching that case, and that has been fixed.
 
+### Bugfixes
+
+* When command center client was unable to connect to its endpoint, it would fail and keep the
+  client marked as busy, preventing other requests from going through. This was hurting the correct
+  operation of Shokoti.
+
 
 ## v0.25.3 - Punchy Cat
 
