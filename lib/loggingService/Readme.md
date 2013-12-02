@@ -52,7 +52,7 @@ Each channel name is a method on a logger. This allows you to write:
 
 ```javascript
 mage.logger.emergency('Crucial file missing');
-mage.logger.warn('Stamina too low to quest:', stamina, 'quest:', questId);
+mage.logger.warning('Stamina too low to quest:', stamina, 'quest:', questId);
 mage.logger.verbose('Reading from file:', filePath);
 ```
 
@@ -127,61 +127,24 @@ on the server. The API is however limited to logging a `message`. At this time, 
 and key/value data are not supported. Stack traces of Error objects are automatically logged in the
 data part however. The client can log to console, but also to the server.
 
-
 ## Built-in Logging Channels
 
 The built-in channels are designed to be granular and meaningful; this should help production
 operation by allowing you to throw alerts properly (only 3-4 emergencies or alerts a minute should
 alert operation, but it might take 100's of user errors a minute to trigger the same alerting).
 
-### emergency
-
-Internal service or external service unavailability. The app cannot boot or stopped unexpectedly.
-
-### alert
-
-There are major issues that affect the correct operation of the application.
-
-* Internal service (datastore API call, etc) or external service
-* API calls throw Exception or return errors
-
-### critical
-
-A user request has gone wrong; user session or data is broken or corrupted. The user is expected to
-require a restart.
-
-### error
-
-A user request has errored and the user experience is expected to be negatively impacted.
-
-### warning
-
-Acceptable problems that are expected to happen and will always be dealt with gracefully.
-
-* A user made an unusual request
-* System warning
-
-### notice
-
-Events regarding the state of services. Server up, server down, setup completion, build completion,
-and other non-error state change within the game.
-
-### info
-
-Summarizing requests from the end-user and their outcomes.
-
-### debug
-
-Relevant game debugging information that goes beyond verbose. Always turned on during development.
-
-### verbose
-
-For very low-level debug information (I/O details, etc). Often used by MAGE internals.
-
-### time
-
-Generally used for logging benchmark information.
-
+| channel   | meaning |
+|-----------|---------|
+| time      | Generally used for logging benchmark information. |
+| verbose   | For very low-level debug information (I/O details, etc). Often used by MAGE internals. |
+| debug     | Relevant game debugging information that goes beyond verbose. Always turned on during development. |
+| info      | Summarizing the result of a request from the end-user. |
+| notice    | Events regarding the state of services. Server up, server down, setup completion, build completion and other non-error state changes within the game. |
+| warning   | Acceptable problems that are expected to happen and will always be dealt with gracefully. A user made an unusual request, or there was a warning by the system. |
+| error     | A user request has gone wrong; the user experience is expected to be negatively impacted. |
+| critical  | A user request has gone wrong; user session or data is broken or corrupted. The user is expected to require a restart. Further investigation is probably required. |
+| alert     | Major issues that affect the correct operation of the application. Internal service (datastore API calls failed, etc) or external service. |
+| emergency | Internal service or external service unavailability. The app cannot boot or stopped unexpectedly. |
 
 ## Configuration
 
@@ -227,7 +190,7 @@ Available themes: `default`, `dark`, `light`.
 logging:
     server:
         file:
-            channels: ["<info", ">=critical", "error"]  # this is a horrible idea!
+            channels: ["info", ">=critical"]
             config:
                 jsonIndent: 2
                 path: "./logs/"

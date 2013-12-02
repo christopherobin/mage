@@ -5,48 +5,92 @@
 # When it overlaps with default.yaml it will override its values.
 #
 
+
+# Developers should set this to true in their environment, in order to enable dev specific features.
+
 developmentMode: true
 
+
+# Add dashboard apps to the system (see also: default.yaml)
+
 apps:
+    # Dashboard for developers
     dev:
-        responseCache: 10
-        access: admin
-    cms:
-        responseCache: 10
-        access: admin
-    support:
-        responseCache: 10
+        responseCache: 30
         access: admin
 
-savvy:
-    bind:
-        file: ./savvy.sock
-    expose: "%APP_SAVVY_EXPOSE%"
+    # Dashboard for content managers
+    cms:
+        responseCache: 30
+        access: admin
+
+    # Dashboard for customer support (you will probably need this in production)
+    support:
+        responseCache: 30
+        access: admin
+
+
+# Augmenting the default configuration for our server
 
 server:
     clientHost:
-# Uncomment the "cors" entry if you want to set up CORS.
+        # Uncomment the "cors" entry if you want to set up CORS.
 #       cors:
 #           origin: "%APP_CLIENTHOST_EXPOSE%"
+
+        # What to listen on
         bind:
             file: ./server.sock
+
+        # What the world will see us as (a full base URL)
         expose: "%APP_CLIENTHOST_EXPOSE%"
-    cluster: false
+    cluster: 1
+
+
+# Define how we want to log debug information, notices, warnings, errors, etc
+
+logging:
+    # Logging in the browser
+    html5:
+        # Log to the browser console
+        console:
+            channels:
+                - ">=debug"
+
+    # Logging on the server
+    server:
+        # Log to the terminal (hurts performance, not recommended in production)
+        terminal:
+            channels:
+                - ">=debug"
+            config:
+                # Themes enable colors
+                theme: default
+
+
+# Databases
 
 archivist:
     vaults:
+        # Our vaults, augment this with as many as you need.
+        # You should take care to name them appropriately given the context of how they will be used.
         memory:
             type: memory
         file:
             type: file
             config:
                 path: ./filevault
+
+    # When doing "list" operations, we will attempt each mentioned vault until successful
     listOrder:
         - file
-        - memory # memory is not ultimately persistent, so we can't trust it will always contain all data
+
+    # When doing "get" operations, we will attempt each mentioned vault until successful
     readOrder:
         - memory
         - file
+
+    # When doing "add/set/touch/del" operations, we will write to each mentioned vault in the given order
     writeOrder:
         - client
         - memory
