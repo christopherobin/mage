@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.26.0 - White Mage Cat
 
 ### ClientHost Expose URL
 
