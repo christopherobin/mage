@@ -62,7 +62,7 @@ server:
                 heartbeat: 30
 
     # Set cluster to boolean true to have as many workers as this machine has cores, or a number
-    # if you want to be very precise.
+    # if you want to be more precise.
     cluster: 1
 
     # MMRP is the messaging layer between node instances
