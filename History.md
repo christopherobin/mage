@@ -48,6 +48,11 @@ apps.gadget.addIndexPage('gadget', './www/gadget/', { context: 'xml' });
 
 Will now serve the xml files from www/gadget when receiving requests for app/gadget
 
+### Small improvements
+
+* There are browsers that passed the ErrorEvent object as the first argument to `window.onerror`
+  while not setting it on `window.event`. We were not catching that case, and that has been fixed.
+
 
 ## v0.25.3 - Punchy Cat
 
