@@ -55,6 +55,8 @@ Will now serve the xml files from www/gadget when receiving requests for app/gad
 
 ### Bugfixes
 
+* The `archivist.list` method was not functioning since v0.22.0 (apparently nobody has used this API
+  recently?). Han was nice enough to find it and fix it (massive thanks!).
 * When command center client was unable to connect to its endpoint, it would fail and keep the
   client marked as busy, preventing other requests from going through. This was hurting the correct
   operation of Shokoti.
