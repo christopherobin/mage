@@ -5,7 +5,7 @@
 ### ClientHost Expose URL
 
 The `expose` configuration is now officially optional. For many production environments however it
-is still advisable to configure. Especially PhoneGap depends on it, because its loader page (the
+is still advisable to configure. PhoneGap in particular depends on it, because its loader page (the
 initial HTML file) is hosted on the device itself, so the domain from which you host your game
 cannot be guessed.
 
