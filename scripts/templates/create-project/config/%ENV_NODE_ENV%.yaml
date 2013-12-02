@@ -30,14 +30,6 @@ apps:
         access: admin
 
 
-# A management interface for MAGE internals, and for the dashboard
-
-savvy:
-    bind:
-        file: ./savvy.sock
-    expose: "%APP_SAVVY_EXPOSE%"
-
-
 # Augmenting the default configuration for our server
 
 server:

@@ -5,4 +5,3 @@ clientHost:
             heartbeat: 120
     bind:
         file: ./server.sock
-    expose: "http://localhost"
