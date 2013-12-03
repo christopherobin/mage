@@ -49,7 +49,7 @@
 	},
 	"optionalDependencies": {
 		"mdns2": "2.1.1",
-		"couchbase": "1.0.1",
+		"couchbase": "1.1.1",
 		"ldapjs": "0.6.3"
 	},
 	"devDependencies": {
