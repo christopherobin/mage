@@ -45,28 +45,3 @@ connection objects.
 
 The same route may be registered for a WebSocket handler **and** an HTTP handler. The right handler
 will be selected based on the incoming request.
-
-## Configuration
-
-Savvy configuation is small. For example for local development the following is a reasonable
-template (at the top level of your configuration):
-
-```yaml
-savvy:
-    bind:
-        host: 0.0.0.0
-        port: 4321
-    expose: http://mydomain:4321
-```
-
-If you want to use a unix socket, then replace the `host` and `port` keys with `file`:
-
-```yaml
-savvy:
-    bind:
-        file: ./savvy.sock
-    expose: http://mydomain/savvy
-```
-
-Unix socket bindings depend on proxies like Nginx. Be warned though, until recently websockets were
-not supported with Nginx.

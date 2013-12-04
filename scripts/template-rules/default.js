@@ -43,7 +43,6 @@ replacements = {
 	APP_LICENSE: 'Private',
 	APP_REPO: '',
 	APP_CLIENTHOST_EXPOSE: '',
-	APP_SAVVY_EXPOSE: '',
 	MAGE_REPO: 'git+ssh://git@github.com:Wizcorp/mage.git',
 	MAGE_VERSION: magePackage.version,
 	MAGE_NODE_VERSION: (magePackage.engines && magePackage.engines.node) ? magePackage.engines.node : '',
@@ -69,10 +68,7 @@ exports.prepare = function (cb) {
 			ask('Name the author/company:', 'APP_AUTHOR', null, callback);
 		},
 		function (callback) {
-			ask('Provide the base URL for your game:', 'APP_CLIENTHOST_EXPOSE', null, callback);
-		},
-		function (callback) {
-			ask('Provide the base URL for the Savvy interface:', 'APP_SAVVY_EXPOSE', null, callback);
+			ask('Provide the base URL for your game (you may leave this empty for now):', 'APP_CLIENTHOST_EXPOSE', null, callback);
 		},
 		function (callback) {
 			ask('Please provide a valid GitHub repository URL (if there is one):', 'APP_REPO', null, callback);
