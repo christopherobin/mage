@@ -67,9 +67,7 @@ Will now serve the xml files from www/gadget when receiving requests for app/gad
 * When command center client was unable to connect to its endpoint, it would fail and keep the
   client marked as busy, preventing other requests from going through. This was hurting the correct
   operation of Shokoti.
->>>>>>> 08655ae159a9a9e71c7c2136e1814de0df5ad3f8
 
-Archivist now sends the full document to the client when it didn't exist before instead of diffs.
 
 ## v0.25.3 - Punchy Cat
 
