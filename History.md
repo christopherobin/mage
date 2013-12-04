@@ -2,7 +2,9 @@
 
 ## vNEXT
 
+### Archivist
 
+Archivist now sends the full document to the client when it didn't exist before instead of diffs.
 
 ## v0.25.3 - Punchy Cat
 
