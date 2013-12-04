@@ -1,5 +1,12 @@
 # Release history
 
+## vNEXT
+
+###Archivist
+
+Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+
+
 ## v0.26.0 - White Mage Cat
 
 ### ClientHost Expose URL
