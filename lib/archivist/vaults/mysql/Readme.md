@@ -54,8 +54,9 @@ signature                  | required | default implementation
 
 ## Bootstrapping a database
 
-Is supported through the `./game archivist-create` CLI command. This will create your empty
-database. Tables must be created through migration scripts.
+This is supported through the `./game archivist-create` CLI command. This will create your empty
+database. Tables must be created through migration scripts. Running `./game archivist-drop` will
+drop the entire database.
 
 
 ## Schema migrations
