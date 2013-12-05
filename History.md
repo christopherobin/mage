@@ -2,9 +2,18 @@
 
 ## vNEXT
 
-###Archivist
+### Archivist
+
+#### File vault creation
+
+You can now run `./game archivist-create` and `archivist-drop` to create and destroy a file vault.
+That means that an empty file vault no longer needs to be comitted into a repository with a
+placeholder file. Simply running `make all` will set it up for you.
+
+#### Fix in diff emission
 
 Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+
 
 
 ## v0.26.0 - White Mage Cat
