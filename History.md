@@ -4,6 +4,13 @@
 
 ### Archivist
 
+#### A new Couchbase vault
+
+A while ago the [couchbase](https://npmjs.org/package/couchbase) npm module was radically refactored
+and improved. This paved the way for it to become production ready. We have therefore upgraded the
+Couchbase vault to use this new version. This should improve performance over `node-memcached`. It
+also adds sharding, making it possible to bundle a user's data in the same physical space.
+
 #### File vault creation
 
 You can now run `./game archivist-create` and `archivist-drop` to create and destroy a file vault.
@@ -13,7 +20,6 @@ placeholder file. Simply running `make all` will set it up for you.
 #### Fix in diff emission
 
 Archivist now sends the full document to the client when it didn't exist before instead of diffs.
-
 
 
 ## v0.26.0 - White Mage Cat
