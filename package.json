@@ -28,7 +28,7 @@
 		"redis": "0.9.0",
 		"manta": "1.0.1",
 		"memorystream": "0.2.0",
-		"rumplestiltskin": "0.0.5",
+		"rumplestiltskin": "0.0.6",
 		"tomes": "0.0.18",
 		"oauth": "0.9.10",
 		"node-uuid": "1.4.1",

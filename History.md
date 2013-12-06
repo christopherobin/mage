@@ -17,9 +17,13 @@ You can now run `./game archivist-create` and `archivist-drop` to create and des
 That means that an empty file vault no longer needs to be comitted into a repository with a
 placeholder file. Simply running `make all` will set it up for you.
 
-#### Fix in diff emission
+#### Bugfix
 
 Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+
+#### Improvements
+
+You may now safely use tomes as topics and indexes when using the archivist APIs.
 
 
 ## v0.26.0 - White Mage Cat
