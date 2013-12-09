@@ -1,5 +1,15 @@
 # Release history
 
+## v0.26.1 - Not amused Cat
+
+The logger client uses a dependency called
+[stacktrace.js](https://github.com/stacktracejs/stacktrace.js/) to parse stack traces and make them
+consistent and resolvable to source maps. The repository got moved, and since `component` depends
+on GitHub URLs and doesn't follow redirects
+([an issue has been created](https://github.com/component/component/issues/447)), it was breaking
+installations. We now point the dependency at its new location.
+
+
 ## v0.26.0 - White Mage Cat
 
 ### ClientHost Expose URL
