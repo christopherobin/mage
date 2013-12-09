@@ -25,6 +25,11 @@ Archivist now sends the full document to the client when it didn't exist before 
 
 You may now safely use tomes as topics and indexes when using the archivist APIs.
 
+### Bugfixes
+
+* The documentation dashboard would stop working when encountering a symlink that didn't point to
+  an actual file.
+
 
 ## v0.26.1 - Not amused Cat
 
