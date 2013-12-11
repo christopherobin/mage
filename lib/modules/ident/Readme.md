@@ -14,17 +14,21 @@ The first step to making engines available to your game is through configuration
 
 ```yaml
 module:
-	ident:
-		apps:
-			# here is your app name, usually game
-			game:
-				# like archivist, any name will do here, allows you to swap engines easily
-				dev:
-					# the type is the engine type (ldap, userpass, etc...)
+    ident:
+        apps:
+            # here is your app name, usually game
+            game:
+                # like archivist, any name will do here, allows you to swap engines easily
+                dev:
+                    # "type" is the engine type (ldap, userpass, etc...).
 					type: anonymous
-					config:
-						# you need to tell the auth module what level the user will be set to
-						access: user
+
+                    # "access" is the access level the user will get after authenticating.
+                    # During development mode, this will be ignored in favor of "admin".
+                    access: user
+
+                    # Specific configuration to pass to the auth engine (see their documentation).
+                    #config:
 ```
 
 That's all you need for anonymous authentication. You can then proceed to implementation. See the
@@ -41,16 +45,26 @@ individual [engines](#engines)' readme for more details on available configurati
 Once that config is here, for anonymous login you would just need to call:
 
 ```javascript
-// Here we use our "dev" definition. You can totally omit the second parameter, which is used to
-// pass data to the auth engine (for example the "userpass" engine expects a username and password
-// here.
+// Credentials to send to the auth engine. Optional for anonymous login.
 
-mage.ident.check('main', {}, function (err) {
-	if (err) {
-		// display some error to the user
-		return;
+var credentials = {
+	username: window.prompt('What is your username?'),
+	password: window.prompt('What is your password?')
+};
+
+// The control object is optional and cannot be used outside of development mode.
+
+var control = {
+	access: 'admin',     // choose a specific access level (optional, default: admin)
+	userId: someUsersId  // login as someone else (optional)
+};
+
+mage.ident.check('dev', credentials, control, function (error, userId) {
+	if (error) {
+		return window.alert(error);
 	}
 
-	// login was successful, display the game
+	// login was successful!
 });
 ```
+

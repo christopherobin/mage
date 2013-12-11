@@ -18,14 +18,16 @@
 	opacity: 0;
 }
 
-#anonymousLogin {
-	transition: opacity 1s;
-	-webkit-transition: opacity 1s;
-	opacity: 0;
-    display: none;
+.loginSpace {
+    opacity: 0;
 }
 
-#loginForm {
+.error {
+    text-align: center;
+    color: red;
+}
+
+.loginSpace form {
     width: 300px;
     margin: 20px auto;
     text-align: right;
@@ -36,17 +38,9 @@
     padding: 12px;
     transition: opacity 1s;
     -webkit-transition: opacity 1s;
-    opacity: 0;
-    display: none;
 }
 
-#loginError {
-    text-align: center;
-    color: red;
-    display: none;
-}
-
-#loginForm h1 {
+.loginSpace h1 {
     display: block;
     margin: -12px -12px 12px -12px;
     padding: 10px 4px;
@@ -57,18 +51,14 @@
     color: #000;
 }
 
-#loginForm div {
+.loginSpace form div {
     padding: 5px;
 }
 
-#loginForm label {
+.loginSpace form label {
     float: left;
 }
 
-#loginForm input {
+.loginSpace form input {
     border: 1px solid #999;
-}
-
-#invalidIdentConfig {
-    opacity: 0;
 }

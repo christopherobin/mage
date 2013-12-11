@@ -1,23 +1,12 @@
 # Anonymous Ident Engine
 
-The anonymous ident engine is the default identification that was used on the dashboard before, it
-runs only in development mode and allows you to quickly login without any check. It also allows you
-to override the access level you are login with and force the actorId from the client.
+The anonymous ident engine is the default identification that is used on the dashboard. It allows
+you to quickly login without credentials. This can be a useful timesaver during development.
 
 ## Configuration
 
-This is the engine configuration:
-
-```yaml
-config:
-	# access is the default access level the user gets on login
-	access: admin
-```
+The anonymous engine requires no configuration.
 
 ## Parameters
 
-This are the parameters you can give to the `check` function for that engine:
-
-* __access__ _(string)_: Override the default access level.
-* __actorId__ _(string)_: The actor ID, a new `actorId` will be generated for each login attempt if
-  you don't provide one here.
+The anonymous engine requires no parameters.

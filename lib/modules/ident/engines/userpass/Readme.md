@@ -17,9 +17,6 @@ This is the engine configuration:
 
 ```yaml
 config:
-	# access is the default access level the user get on login
-	access: user
-
 	# you can override the topic here
 	#topic: something_else_than_credentials
 
