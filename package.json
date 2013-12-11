@@ -12,7 +12,7 @@
 		"node": "0.8.x"
 	},
 	"dependencies": {
-		"commander": "2.0.0",
+		"commander": "2.1.0",
 		"async": "0.2.9",
 		"zmq": "2.5.1",
 		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.4",
@@ -42,7 +42,7 @@
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
 		"marked": "0.2.9",
-		"highlight.js": "7.4.0",
+		"highlight.js": "7.5.0",
 		"node-zookeeper-client": "0.2.0",
 		"aws-sdk": "1.8.1",
 		"es": "0.3.12"
