@@ -25,6 +25,16 @@ Archivist now sends the full document to the client when it didn't exist before 
 
 You may now safely use tomes as topics and indexes when using the archivist APIs.
 
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| commander         | 2.0.0  | 2.1.0  | [History](https://github.com/visionmedia/commander.js/blob/master/History.md) |
+| highlight.js      | 7.4.0  | 7.5.0  | [History](https://github.com/isagalaev/highlight.js/blob/master/CHANGES.md) |
+| marked            | 0.2.9  | 0.2.10 | [Commit log](https://github.com/chjj/marked/compare/v0.2.9...v0.2.10) |
+| mocha             | 0.13.0 | 0.15.1 | [History](https://github.com/visionmedia/mocha/blob/1.15.1/History.md) |
+| istanbul          | 0.1.44 | 0.1.46 | [History](https://github.com/gotwarlost/istanbul/blob/master/CHANGELOG.md) |
+
 ### Small improvements
 
 * The syntax highligher we use in our Markdown rendering was not recognising `js` and `sh` (unlike

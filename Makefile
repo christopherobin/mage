@@ -62,7 +62,7 @@ define helpQuality
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
 	@echo "  make test-lint         Lints every JavaScript and JSON file in the project."
-	@echo "  make test-unit         Runs every unit test in $(TEST)."
+	@echo "  make test-unit         Runs every unit test."
 	@echo "  make report-complexity Creates a Plato code complexity report."
 	@echo "  make report-coverage   Creates a unit test coverage report."
 	@echo
