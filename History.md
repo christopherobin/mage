@@ -27,10 +27,11 @@ You may now safely use tomes as topics and indexes when using the archivist APIs
 
 ### Dependency updates
 
-| dependency        | from  | to    | changes   |
-|-------------------|-------|-------|-----------|
-| commander         | 2.0.0 | 2.1.0 | [History](https://github.com/visionmedia/commander.js/blob/master/History.md) |
-| highlight.js      | 7.4.0 | 7.5.0 | [History](https://github.com/isagalaev/highlight.js/blob/master/CHANGES.md) |
+| dependency        | from  | to     | changes   |
+|-------------------|-------|--------|-----------|
+| commander         | 2.0.0 | 2.1.0  | [History](https://github.com/visionmedia/commander.js/blob/master/History.md) |
+| highlight.js      | 7.4.0 | 7.5.0  | [History](https://github.com/isagalaev/highlight.js/blob/master/CHANGES.md) |
+| marked            | 0.2.9 | 0.2.10 | [Commit log](https://github.com/chjj/marked/compare/v0.2.9...v0.2.10) |
 
 ### Small improvements
 

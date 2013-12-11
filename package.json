@@ -41,7 +41,7 @@
 		"semver": "2.2.1",
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
-		"marked": "0.2.9",
+		"marked": "0.2.10",
 		"highlight.js": "7.5.0",
 		"node-zookeeper-client": "0.2.0",
 		"aws-sdk": "1.8.1",
