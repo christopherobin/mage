@@ -25,6 +25,11 @@ Archivist now sends the full document to the client when it didn't exist before 
 
 You may now safely use tomes as topics and indexes when using the archivist APIs.
 
+### Small improvements
+
+* The syntax highligher we use in our Markdown rendering was not recognising `js` and `sh` (unlike
+  GitHub). We now circumvent this problem by renaming them before highlighting.
+
 ### Bugfixes
 
 * The documentation dashboard would stop working when encountering a symlink that didn't point to
