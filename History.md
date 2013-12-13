@@ -17,10 +17,6 @@ You can now run `./game archivist-create` and `archivist-drop` to create and des
 That means that an empty file vault no longer needs to be comitted into a repository with a
 placeholder file. Simply running `make all` will set it up for you.
 
-#### MySQL vault
-
-No longer throws an error when dropping databases that don't exist.
-
 #### archivist-create & archivist-drop
 
 You can now specify which vaults you want to create or drop using the cli. If you do not specify
@@ -31,7 +27,7 @@ spaces.
 node . archivist-create mysql,testVault
 ```
 
-#### Config
+### Config
 
 MAGE can now handle applying multiple configs specified in your NODE_ENV environment variable. This
 should be comma separated with no spaces. Configs will be applied in order from left to right. The
@@ -63,10 +59,13 @@ main motivation for this change is allow developers to override user configs for
 ### Bugfixes
 
 * Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+* The MySQL vault no longer throws an error when dropping databases that don't exist.
 * The documentation dashboard would stop working when encountering a symlink that didn't point to
   an actual file.
 * The assets module now resolves paths starting from the game's root directory instead of the
   directory of the process that required mage.
+* When the `cronClient` module is used without being configured, it will now return a friendly error
+  (thanks Brian!).
 
 
 ## v0.26.1 - Not amused Cat
