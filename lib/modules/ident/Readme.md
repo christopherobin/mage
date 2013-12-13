@@ -15,40 +15,47 @@ The first step to making engines available to your game is through configuration
 ```yaml
 module:
     ident:
-        apps:
-            # here is your app name, usually game
-            game:
-                # like archivist, any name will do here, allows you to swap engines easily
-                dev:
-                    # "type" is the engine type (ldap, userpass, etc...).
-					type: anonymous
+        engines:
+            # configuration for all the engines we want to use
 
-                    # "access" is the access level the user will get after authenticating.
-                    # During development mode, this will be ignored in favor of "admin".
-                    access: user
+            open:                  # the name we give to the engine
+                type: anonymous    # the engine type
+                access: anonymous  # An anonymous user can do no more than anonymous access level
+                                   # user commands. During development mode, this is ignored in
+                                   # favor of "admin" level.
 
-                    # Specific configuration to pass to the auth engine (see their documentation).
-                    #config:
+            userlogin:             # the name we give to the engine
+                type: userpass
+                access: user       # Authenticated users can access up to "user" level user commands.
+                config:
+                                   # engine specific config
+
+            dashboardlogin:        # the name we give to the engine
+                type: ldap
+                access: admin      # Authenticated users can access up to "admin" level user commands.
+                config:
+                                   # engine specific config
 ```
 
-That's all you need for anonymous authentication. You can then proceed to implementation. See the
-individual [engines](#engines)' readme for more details on available configuration.
+The example above shows you all patterns for authentication. Feel free to name the engines anything
+you want. See the individual [engines](#engines)' documentation for more details on how to configure
+them.
 
 ## Engines
 
-* [anonymous](engines/anonymous/Readme.md): Anonymous login, available only in development mode.
+* [anonymous](engines/anonymous/Readme.md): Anonymous login.
 * [userpass](engines/userpass/Readme.md): Username and password login.
-* [ldap](engines/ldap/Readme.md): LDAP login.
+* [ldap](engines/ldap/Readme.md): LDAP based login.
 
 ## Implementation
 
-Once that config is here, for anonymous login you would just need to call:
+Once that config is here, to login from a browser you would just need to call the following.
 
 ```javascript
 // Credentials to send to the auth engine. Optional for anonymous login.
 
 var credentials = {
-	username: window.prompt('What is your username?'),
+	userId: window.prompt('What is your username?'),
 	password: window.prompt('What is your password?')
 };
 
@@ -59,7 +66,7 @@ var control = {
 	userId: someUsersId  // login as someone else (optional)
 };
 
-mage.ident.check('dev', credentials, control, function (error, userId) {
+mage.ident.check('dev', credentials, control, function (error, user) {
 	if (error) {
 		return window.alert(error);
 	}
@@ -68,3 +75,16 @@ mage.ident.check('dev', credentials, control, function (error, userId) {
 });
 ```
 
+### User objects
+
+Whenever a user object is returned, it will have the following format.
+
+```javascript
+var user = {
+  "userId": "string",      // unique identifier within the realm of the engine
+  "displayName": "string", // a name used to represent the user, not required to be unique
+  "data": {}               // an arbitrary object with extra properties to describe this user
+};
+```
+
+No credentials will ever be included in this object.

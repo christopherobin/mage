@@ -17,13 +17,13 @@ This is the engine configuration:
 
 ```yaml
 config:
-	# you can override the topic here
-	#topic: something_else_than_credentials
+	# you can override the topic here (default: "credentials")
+	#topic: "identusers"
 
 	# change the size of salts generated when creating a new user, by default the engine uses
 	# 32 bytes which should be more than enough for quite a while but like the pbkdf2 iterations
 	# you may want to bump it every few years if you are using a basic hash algo (such as md5 or
-	# sha1) as cloud computing and ASICs become cheapers every year making brute force easier
+	# sha1) as cloud computing and ASICs become cheaper every year making brute force easier
 	#saltSize: 32
 
 	# you can enable password hashing by setting a valid hash algo here, see:
@@ -48,20 +48,22 @@ config:
 
 ## Parameters
 
-This is the parameters you can give to the `check` function for that engine:
+These are the parameters you can give to the `check` function for that engine:
 
 * __username__ _(string)_: The user's username.
 * __password__ _(string)_: The user's password.
 
-## Special commands
+## User management
 
-Those commands are called through the `sendCommand` API on the ident module.
+### Creating a user
 
-### createUser
+```js
+var credentials = {
+	username: 'Bob',
+	password: 'f00b4r'
+};
 
-#### Parameters
+mage.ident.createUser(engineName, credentials, user, function (error, user) { /* */ });
 
-Those are the expected parameters for creating a new user:
+### Listing users
 
-* __username__ _(string)_: The user's username.
-* __password__ _(string)_: The user's password.
