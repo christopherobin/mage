@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.27.0 - Christmas Cat
 
 ### Archivist
 
