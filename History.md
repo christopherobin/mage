@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.27.0 - Christmas Cat
 
 ### Archivist
 
@@ -17,18 +17,32 @@ You can now run `./game archivist-create` and `archivist-drop` to create and des
 That means that an empty file vault no longer needs to be comitted into a repository with a
 placeholder file. Simply running `make all` will set it up for you.
 
-#### Bugfix
+#### archivist-create & archivist-drop
 
-Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+You can now specify which vaults you want to create or drop using the cli. If you do not specify
+any vaults, archivist will create or drop all vaults. Vault names must be comma separated with no
+spaces.
 
-#### Improvements
+```bash
+node . archivist-create mysql,testVault
+```
 
-You may now safely use tomes as topics and indexes when using the archivist APIs.
+### Config
+
+MAGE can now handle applying multiple configs specified in your NODE_ENV environment variable. This
+should be comma separated with no spaces. Configs will be applied in order from left to right. The
+main motivation for this change is allow developers to override user configs for unit testing.
+
+```bash
+@NODE_ENV=$NODE_ENV,unit-test node ./test
+```
 
 ### Dependency updates
 
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
+| couchbase         | 0.0.12 | 1.2.0  | [Release notes](https://github.com/couchbase/couchnode/releases) |
+| rumplestiltskin   | 0.0.5  | 0.0.6  | [Commit log](https://github.com/Wizcorp/node-rumplestiltskin/compare/0.0.5...0.0.6) |
 | commander         | 2.0.0  | 2.1.0  | [History](https://github.com/visionmedia/commander.js/blob/master/History.md) |
 | highlight.js      | 7.4.0  | 7.5.0  | [History](https://github.com/isagalaev/highlight.js/blob/master/CHANGES.md) |
 | marked            | 0.2.9  | 0.2.10 | [Commit log](https://github.com/chjj/marked/compare/v0.2.9...v0.2.10) |
@@ -39,11 +53,19 @@ You may now safely use tomes as topics and indexes when using the archivist APIs
 
 * The syntax highligher we use in our Markdown rendering was not recognising `js` and `sh` (unlike
   GitHub). We now circumvent this problem by renaming them before highlighting.
+* The dashboard no longer uses locks to prevent you from switching between views.
+* You may now safely use tomes as topics and indexes when using the archivist APIs.
 
 ### Bugfixes
 
+* Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+* The MySQL vault no longer throws an error when dropping databases that don't exist.
 * The documentation dashboard would stop working when encountering a symlink that didn't point to
   an actual file.
+* The assets module now resolves paths starting from the game's root directory instead of the
+  directory of the process that required mage.
+* When the `cronClient` module is used without being configured, it will now return a friendly error
+  (thanks Brian!).
 
 
 ## v0.26.1 - Not amused Cat
