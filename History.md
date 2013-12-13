@@ -17,6 +17,30 @@ You can now run `./game archivist-create` and `archivist-drop` to create and des
 That means that an empty file vault no longer needs to be comitted into a repository with a
 placeholder file. Simply running `make all` will set it up for you.
 
+#### mysql vault
+
+No longer throws an error when dropping databases that don't exist.
+
+#### archivist-create & archivist-drop
+
+You can now specify which vaults you want to create or drop using the cli. If you do not specify
+any vaults, archivist will create or drop all vaults. Vault names must be comma separated with no
+spaces.
+
+```bash
+node . archivist-create mysql,testVault
+```
+
+#### Config
+
+MAGE can now handle applying multiple configs specified in your NODE_ENV environment variable. This
+should be comma separated with no spaces. Configs will be applied in order from left to right. The
+main motivation for this change is allow developers to override user configs for unit testing.
+
+```bash
+@NODE_ENV=$NODE_ENV,unit-test node $(TEST)
+```
+
 #### Bugfix
 
 Archivist now sends the full document to the client when it didn't exist before instead of diffs.
@@ -40,11 +64,14 @@ You may now safely use tomes as topics and indexes when using the archivist APIs
 * The syntax highligher we use in our Markdown rendering was not recognising `js` and `sh` (unlike
   GitHub). We now circumvent this problem by renaming them before highlighting.
 
+* The dashboard no longer uses locks to prevent you from switching between views.
+
 ### Bugfixes
 
 * The documentation dashboard would stop working when encountering a symlink that didn't point to
   an actual file.
 
+* The assets module now uses your game's root directory to look for assets.
 
 ## v0.26.1 - Not amused Cat
 
