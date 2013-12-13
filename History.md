@@ -45,6 +45,8 @@ main motivation for this change is allow developers to override user configs for
 
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
+| couchbase         | 0.0.12 | 1.2.0  | [Release notes](https://github.com/couchbase/couchnode/releases) |
+| rumplestiltskin   | 0.0.5  | 0.0.6  | [Commit log](https://github.com/Wizcorp/node-rumplestiltskin/compare/0.0.5...0.0.6) |
 | commander         | 2.0.0  | 2.1.0  | [History](https://github.com/visionmedia/commander.js/blob/master/History.md) |
 | highlight.js      | 7.4.0  | 7.5.0  | [History](https://github.com/isagalaev/highlight.js/blob/master/CHANGES.md) |
 | marked            | 0.2.9  | 0.2.10 | [Commit log](https://github.com/chjj/marked/compare/v0.2.9...v0.2.10) |
