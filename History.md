@@ -71,7 +71,8 @@ You may now safely use tomes as topics and indexes when using the archivist APIs
 * The documentation dashboard would stop working when encountering a symlink that didn't point to
   an actual file.
 
-* The assets module now uses your game's root directory to look for assets.
+* The assets module now resolves paths starting from the game's root directory instead of the
+  directory of the process that required mage.
 
 ## v0.26.1 - Not amused Cat
 
