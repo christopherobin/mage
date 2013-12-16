@@ -6,7 +6,7 @@ and name them based on your needs. You can switch between them easily with minim
 code.
 
 The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
-password by overriding the default configuration. The engine is expected to be named `default`.
+password by overriding the default configuration.
 
 ## Configuration
 
@@ -16,19 +16,19 @@ The first step to making engines available to your game is through configuration
 module:
     ident:
         engines:
-            # configuration for all the engines we want to use
+            # Configuration for all the engines we want to use
 
-            userlogin:             # the name we give to the engine
-                type: userpass
+            userlogin:             # The name we give to the engine
+                type: userpass     # The type of engine
                 access: user       # Authenticated users can access up to "user" level user commands.
                 config:
-                                   # engine specific config
+                                   # Engine specific config
 
-            dashboardlogin:        # the name we give to the engine
-                type: ldap
+            dashboardlogin:        # The name we give to the engine
+                type: ldap         # The type of engine
                 access: admin      # Authenticated users can access up to "admin" level user commands.
                 config:
-                                   # engine specific config
+                                   # Engine specific config
 ```
 
 The example above shows you all patterns for authentication. Feel free to name the engines anything
