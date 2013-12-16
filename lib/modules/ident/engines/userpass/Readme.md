@@ -1,15 +1,14 @@
 # User/Password Ident Engine
 
 The `userpass` engine provides a basic username/password identification mechanism to be used with
-your game. It uses hash based identification and allows you to store your credentials in any
-archivist topic that matches its signature.
-
-This archivist topic, default being `credentials`, can be overridden in the configuration.
-
+your game. It uses hash based identification and allows you to store your credentials in archivist.
+This archivist topic (`credentials` by default), can be overridden in the configuration.
 Requirements are that the vault you use supports `get` and `set` operations and the index is set to
-`[ 'username' ]`. It will pull the credentials data from there and look for a property named
-`password`. Upon first successful identification, the user will then receive a new `actorId` (if
-none was set yet) on the topic value.
+`[ 'userId' ]`.
+
+The userId is not the same as the username. To create a user ID that is unique to the whole system
+and across different ident engines, the ID is built as `engine name COLON username`, for example:
+`userpass:bob`.
 
 ## Configuration
 
@@ -17,7 +16,7 @@ This is the engine configuration:
 
 ```yaml
 config:
-	# you can override the topic here (default: "credentials")
+	# you can override the archivist topic here (default: "credentials")
 	#topic: "identusers"
 
 	# change the size of salts generated when creating a new user, by default the engine uses
@@ -55,15 +54,32 @@ These are the parameters you can give to the `check` function for that engine:
 
 ## User management
 
+### Getting the engine instance
+
+```javascript
+var engine = mage.ident.getEngine(engineName);
+```
+
 ### Creating a user
 
-```js
+```javascript
 var credentials = {
 	username: 'Bob',
 	password: 'f00b4r'
 };
 
-mage.ident.createUser(engineName, credentials, user, function (error, user) { /* */ });
+engine.createUser(state, credentials, user, function (error, user) { /* .. */ });
+```
+
+### Getting a single user object
+
+```javascript
+engine.getUser(state, userId, function (error, user) { /* .. */ });
+```
 
 ### Listing users
 
+```javascript
+engine.listUsers(state, function (error, users) {
+	// users is an array of User objects
+});

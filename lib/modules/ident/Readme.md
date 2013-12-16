@@ -18,12 +18,6 @@ module:
         engines:
             # configuration for all the engines we want to use
 
-            open:                  # the name we give to the engine
-                type: anonymous    # the engine type
-                access: anonymous  # An anonymous user can do no more than anonymous access level
-                                   # user commands. During development mode, this is ignored in
-                                   # favor of "admin" level.
-
             userlogin:             # the name we give to the engine
                 type: userpass
                 access: user       # Authenticated users can access up to "user" level user commands.
@@ -43,41 +37,15 @@ them.
 
 ## Engines
 
-* [anonymous](engines/anonymous/Readme.md): Anonymous login.
+* [anonymous](engines/anonymous/Readme.md): Anonymous login (not configurable).
 * [userpass](engines/userpass/Readme.md): Username and password login.
 * [ldap](engines/ldap/Readme.md): LDAP based login.
 
-## Implementation
-
-Once that config is here, to login from a browser you would just need to call the following.
-
-```javascript
-// Credentials to send to the auth engine. Optional for anonymous login.
-
-var credentials = {
-	userId: window.prompt('What is your username?'),
-	password: window.prompt('What is your password?')
-};
-
-// The control object is optional and cannot be used outside of development mode.
-
-var control = {
-	access: 'admin',     // choose a specific access level (optional, default: admin)
-	userId: someUsersId  // login as someone else (optional)
-};
-
-mage.ident.check('dev', credentials, control, function (error, user) {
-	if (error) {
-		return window.alert(error);
-	}
-
-	// login was successful!
-});
-```
+## API
 
 ### User objects
 
-Whenever a user object is returned, it will have the following format.
+Whenever a user object is returned through any API, it will have the following format.
 
 ```javascript
 var user = {
@@ -88,3 +56,58 @@ var user = {
 ```
 
 No credentials will ever be included in this object.
+
+### Client API
+
+After Mage has run the `setup` function on the ident module, the module should be aware of the
+available engines. You can inspect this by looking at `mage.ident.engines`.
+
+To login from a browser you would just need to call the following.
+
+```javascript
+// Credentials to send to the auth engine. Optional for anonymous login.
+
+var credentials = {
+	userId: window.prompt('What is your username?'),
+	password: window.prompt('What is your password?')
+};
+
+// The control object is **optional** and cannot be used outside of development mode.
+
+var control = {
+	access: 'admin',     // choose a specific access level (optional, default: admin)
+	userId: someUsersId  // login as someone else (optional)
+};
+
+// you use the `check` method to login and pass it the name of the engine as you have configured it.
+
+mage.ident.check('userlogin', credentials, control, function (error, user) {
+	if (error) {
+		return window.alert(error);
+	}
+
+	// Login was successful! You should now have a session.
+});
+```
+
+After a successful login, the ident module will expose a property called `mage.ident.user`,
+containing your user object (see the chapter above on "User objects").
+
+### Server API
+
+#### ident.registerPostLoginHook([engineName], hook)
+
+To register a function that is to be called whenever a user logs in, you can register a function on
+a particular engine. If you leave out the engine name, the function will be registered on all
+engines.
+
+#### ident.unregisterPostLoginHook([engineName], hook)
+
+By passing a previously registered function, you can remove it from the login hooks. It will then no
+longer be called when a user logs in on the given engine (or all engines if engine name was left
+out).
+
+#### ident.getEngine(engineName)
+
+Returns the engine by the given name. You can use this to access engine specific API. See the
+engines documentation for more on their APIs.

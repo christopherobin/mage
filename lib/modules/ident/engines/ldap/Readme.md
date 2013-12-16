@@ -1,8 +1,8 @@
 # LDAP Ident Engine
 
-The `ldap` engine provides a username/password identification mechanism that queries a LDAP server
-for checking the user credentials. It doesn't require anything beside installing the `ldapjs` module
-and having a functional LDAP server.
+The `ldap` engine provides a username/password identification mechanism that queries an LDAP server
+for checking the user credentials. It uses the [ldapjs](https://npmjs.org/package/ldapjs) module
+and requires you to have access to a functional LDAP server.
 
 ## Configuration
 
