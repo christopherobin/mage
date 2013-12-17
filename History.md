@@ -21,6 +21,11 @@ You can now replace Tomes that already exist on the client by calling `del` befo
 This will cause Archivist to send a whole new Tome to the client and call `Tome.destroy` on the
 existing Tome.
 
+### Small improvements
+
+* The documentation indexer (the slowest of the user commands on the built-in dashboards) has been
+  sped up by a factor of roughly 2 (potentially more on big projects).
+
 
 ## v0.27.0 - Christmas Cat
 
