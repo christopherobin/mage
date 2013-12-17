@@ -1,5 +1,27 @@
 # Release history
 
+## vNEXT
+
+### The ident module
+
+The ident module has undergone some radical changes. What you need to know is mostly limited to
+configuration however. In a nutshell, the `apps` layer in the `module.ident` configuration has been
+removed and replaced by `engines`. In there, you configure the various user identification engines
+you want to set up. The `anonymous` engine is always built-in, so you don't need to configure that
+anymore. Any app can use any engine simply by referring to its name.
+
+Please refer to the [ident documentation](./lib/modules/ident/Readme.md) for more information on how
+to use it.
+
+### Archivist
+
+#### Replace existing Tomes on the client
+
+You can now replace Tomes that already exist on the client by calling `del` before calling `set`.
+This will cause Archivist to send a whole new Tome to the client and call `Tome.destroy` on the
+existing Tome.
+
+
 ## v0.27.0 - Christmas Cat
 
 ### Archivist
