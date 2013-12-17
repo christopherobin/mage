@@ -8,3 +8,5 @@ grants the following access level:
 
 * `anonymous` access level in production.
 * `admin` access level in development mode.
+
+When logging in, you do not have to pass credentials, and therefore may send `{}` or `null`.

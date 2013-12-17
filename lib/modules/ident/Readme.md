@@ -65,7 +65,7 @@ available engines. You can inspect this by looking at `mage.ident.engines`.
 To login from a browser you would just need to call the following.
 
 ```javascript
-// Credentials to send to the auth engine. Optional for anonymous login.
+// Credentials to send to the auth engine.
 
 var credentials = {
 	userId: window.prompt('What is your username?'),
