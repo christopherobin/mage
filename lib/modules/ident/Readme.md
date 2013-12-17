@@ -6,7 +6,7 @@ and name them based on your needs. You can switch between them easily with minim
 code.
 
 The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
-password by overriding the default configuration. The engine is expected to be named `default`.
+password by overriding the default configuration.
 
 ## Configuration
 
@@ -14,43 +14,105 @@ The first step to making engines available to your game is through configuration
 
 ```yaml
 module:
-	ident:
-		apps:
-			# here is your app name, usually game
-			game:
-				# like archivist, any name will do here, allows you to swap engines easily
-				dev:
-					# the type is the engine type (ldap, userpass, etc...)
-					type: anonymous
-					config:
-						# you need to tell the auth module what level the user will be set to
-						access: user
+    ident:
+        engines:
+            # Configuration for all the engines we want to use
+
+            userlogin:             # The name we give to the engine
+                type: userpass     # The type of engine
+                access: user       # Authenticated users can access up to "user" level user commands.
+                config:
+                                   # Engine specific config
+
+            dashboardlogin:        # The name we give to the engine
+                type: ldap         # The type of engine
+                access: admin      # Authenticated users can access up to "admin" level user commands.
+                config:
+                                   # Engine specific config
 ```
 
-That's all you need for anonymous authentication. You can then proceed to implementation. See the
-individual [engines](#engines)' readme for more details on available configuration.
+The example above shows you all patterns for authentication. Feel free to name the engines anything
+you want. See the individual [engines](#engines)' documentation for more details on how to configure
+them.
 
 ## Engines
 
-* [anonymous](engines/anonymous/Readme.md): Anonymous login, available only in development mode.
+* [anonymous](engines/anonymous/Readme.md): Anonymous login (not configurable).
 * [userpass](engines/userpass/Readme.md): Username and password login.
-* [ldap](engines/ldap/Readme.md): LDAP login.
+* [ldap](engines/ldap/Readme.md): LDAP based login.
 
-## Implementation
+## API
 
-Once that config is here, for anonymous login you would just need to call:
+### User objects
+
+Whenever a user object is returned through any API, it will have the following format.
 
 ```javascript
-// Here we use our "dev" definition. You can totally omit the second parameter, which is used to
-// pass data to the auth engine (for example the "userpass" engine expects a username and password
-// here.
+var user = {
+  "userId": "string",      // unique identifier within the realm of the engine
+  "displayName": "string", // a name used to represent the user, not required to be unique
+  "data": {}               // an arbitrary object with extra properties to describe this user
+};
+```
 
-mage.ident.check('main', {}, function (err) {
-	if (err) {
-		// display some error to the user
-		return;
-	}
+No credentials will ever be included in this object.
 
-	// login was successful, display the game
+### Client API
+
+If you need to detect which engines have been exposed by the ident module, please run:
+
+```javascript
+mage.ident.getEngines(function (error, engines) {
+	/* engines is now [{ type: 'userpass', engineName: 'userlogin', access: 'user' }, { etc }] */
 });
 ```
+
+To login from a browser you would just need to call the following.
+
+```javascript
+// Credentials to send to the auth engine.
+
+var credentials = {
+	userId: window.prompt('What is your username?'),
+	password: window.prompt('What is your password?')
+};
+
+// The options object only contains parameters that can be used in development mode.
+
+var options = {
+	access: 'admin',     // choose a specific access level (optional, default: admin)
+	userId: someUsersId  // login as someone else (optional)
+};
+
+// you use the `check` method to login and pass it the name of the engine as you have configured it.
+
+mage.ident.login('userlogin', credentials, options, function (error, user) {
+	if (error) {
+		return window.alert(error);
+	}
+
+	// Login was successful! You should now have a session.
+});
+```
+
+After a successful login, the ident module will expose a property called `mage.ident.user`,
+containing your user object (see the chapter above on "User objects").
+
+### Server API
+
+#### ident.registerPostLoginHook([engineName], hook)
+
+To register a function that is to be called whenever a user logs in, you can register a function on
+a particular engine. If you leave out the engine name, the function will be registered on all
+engines.
+
+#### ident.unregisterPostLoginHook([engineName], hook)
+
+By passing a previously registered function, you can remove it from the login hooks. It will then no
+longer be called when a user logs in on the given engine (or all engines if engine name was left
+out).
+
+#### ident.getEngine(engineName)
+
+Returns the engine by the given name. You can use this to access engine specific API. See the
+engines documentation for more on their APIs.
