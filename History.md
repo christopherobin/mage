@@ -1,5 +1,15 @@
 # Release history
 
+## vNext
+
+### Archivist
+
+#### Rplace existing Tomes on the client
+
+You can now replace Tomes that already exist on the client by calling `del` before calling `set`.
+This will cause Archivist to send a whole new Tome to the client and call `Tome.destroy`on the
+existing Tome.
+
 ## v0.27.0 - Christmas Cat
 
 ### Archivist
