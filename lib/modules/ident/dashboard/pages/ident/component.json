@@ -2,6 +2,7 @@
 	"name": "ident",
 	"local": [
 		"mage",
+		"loader",
 		"forms",
 		"ident-userpass"
 	],

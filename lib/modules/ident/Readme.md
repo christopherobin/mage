@@ -72,16 +72,16 @@ var credentials = {
 	password: window.prompt('What is your password?')
 };
 
-// The control object is **optional** and cannot be used outside of development mode.
+// The options object only contains parameters that can be used in development mode.
 
-var control = {
+var options = {
 	access: 'admin',     // choose a specific access level (optional, default: admin)
 	userId: someUsersId  // login as someone else (optional)
 };
 
 // you use the `check` method to login and pass it the name of the engine as you have configured it.
 
-mage.ident.check('userlogin', credentials, control, function (error, user) {
+mage.ident.login('userlogin', credentials, options, function (error, user) {
 	if (error) {
 		return window.alert(error);
 	}
