@@ -59,8 +59,13 @@ No credentials will ever be included in this object.
 
 ### Client API
 
-After Mage has run the `setup` function on the ident module, the module should be aware of the
-available engines. You can inspect this by looking at `mage.ident.engines`.
+If you need to detect which engines have been exposed by the ident module, please run:
+
+```javascript
+mage.ident.getEngines(function (error, engines) {
+	/* engines is now [{ type: 'userpass', engineName: 'userlogin', access: 'user' }, { etc }] */
+});
+```
 
 To login from a browser you would just need to call the following.
 
