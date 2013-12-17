@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.28.0 - Viking Cat
 
 ### The ident module
 
