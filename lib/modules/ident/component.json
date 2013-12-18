@@ -2,8 +2,7 @@
 	"name": "ident",
 	"description": "Authentication for MAGE.",
 	"local": [
-		"mage",
-		"loader"
+		"mage"
 	],
 	"paths": [
 		"../.."

@@ -1,15 +1,14 @@
 # User/Password Ident Engine
 
 The `userpass` engine provides a basic username/password identification mechanism to be used with
-your game. It uses hash based identification and allows you to store your credentials in any
-archivist topic that matches its signature.
-
-This archivist topic, default being `credentials`, can be overridden in the configuration.
-
+your game. It uses hash based identification and allows you to store your credentials in archivist.
+This archivist topic (`credentials` by default), can be overridden in the configuration.
 Requirements are that the vault you use supports `get` and `set` operations and the index is set to
-`[ 'username' ]`. It will pull the credentials data from there and look for a property named
-`password`. Upon first successful identification, the user will then receive a new `actorId` (if
-none was set yet) on the topic value.
+`[ 'userId' ]`.
+
+The userId is not the same as the username. To create a user ID that is unique to the whole system
+and across different ident engines, the ID is built as `engine name COLON username`, for example:
+`userpass:bob`.
 
 ## Configuration
 
@@ -17,16 +16,13 @@ This is the engine configuration:
 
 ```yaml
 config:
-	# access is the default access level the user get on login
-	access: user
-
-	# you can override the topic here
-	#topic: something_else_than_credentials
+	# you can override the archivist topic here (default: "credentials")
+	#topic: "identusers"
 
 	# change the size of salts generated when creating a new user, by default the engine uses
 	# 32 bytes which should be more than enough for quite a while but like the pbkdf2 iterations
 	# you may want to bump it every few years if you are using a basic hash algo (such as md5 or
-	# sha1) as cloud computing and ASICs become cheapers every year making brute force easier
+	# sha1) as cloud computing and ASICs become cheaper every year making brute force easier
 	#saltSize: 32
 
 	# you can enable password hashing by setting a valid hash algo here, see:
@@ -51,20 +47,39 @@ config:
 
 ## Parameters
 
-This is the parameters you can give to the `check` function for that engine:
+These are the parameters you can give to the `check` function for that engine:
 
 * __username__ _(string)_: The user's username.
 * __password__ _(string)_: The user's password.
 
-## Special commands
+## User management
 
-Those commands are called through the `sendCommand` API on the ident module.
+### Getting the engine instance
 
-### createUser
+```javascript
+var engine = mage.ident.getEngine(engineName);
+```
 
-#### Parameters
+### Creating a user
 
-Those are the expected parameters for creating a new user:
+```javascript
+var credentials = {
+	username: 'Bob',
+	password: 'f00b4r'
+};
 
-* __username__ _(string)_: The user's username.
-* __password__ _(string)_: The user's password.
+engine.createUser(state, credentials, user, function (error, user) { /* .. */ });
+```
+
+### Getting a single user object
+
+```javascript
+engine.getUser(state, userId, function (error, user) { /* .. */ });
+```
+
+### Listing users
+
+```javascript
+engine.listUsers(state, function (error, users) {
+	// users is an array of User objects
+});
