@@ -1,5 +1,21 @@
 # Release history
 
+## v0.29.0 - Cloud Cat
+
+### Archivist
+
+#### Updated DynamoDB vault
+
+Updated DynamoDB vault to use latest aws-sdk. If no report is provided by a migration, it will now
+default to empty object.
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| aws-sdk           | 1.8.1  | 1.15.0 | [Release notes](http://aws.amazon.com/releasenotes/SDK/JavaScript/1497711678189204) |
+
+
 ## v0.28.0 - Viking Cat
 
 ### The ident module
