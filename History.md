@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.29.0 - Cloud Cat
 
 ### Archivist
 
