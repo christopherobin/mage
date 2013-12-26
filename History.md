@@ -8,7 +8,7 @@
 
 FileVault will no longer return data from files that are expired and will actively delete the files
 if their expiration time has come and gone. Previously, if MAGE started up and the file had not
-expired yet, the file would not expire until MAGE restarted.
+expired yet, fileVault would continue returning data from it until MAGE restarted.
 
 ## v0.29.0 - Cloud Cat
 
