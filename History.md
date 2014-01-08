@@ -4,16 +4,26 @@
 
 ### Builder speedup
 
-This entry is about a bug fix, but it's critical enough to warrant its own little chapter in the
-release notes. Since the new and improved builder from MAGE v0.25.2, which significantly improved
-build times, a bug was introduced that created an `O(n^2)` situation. Given enough pages to build,
-the list of components to not include in a page (because of its existence in a previous page) would
-blow out of proportion. An exponentional problem like this can quickly turn a problem of size 10 to
-size a million gazillion.
+#### Bugfix
+
+Since the new and improved builder from MAGE v0.25.2, which significantly improved build times, a
+bug was introduced that created an `O(n^2)` situation. Given enough pages to build, the list of
+components to not include in a page (because of its existence in a previous page) would blow out of
+proportion. An exponentional problem like this can quickly turn a problem of size 10 to size a
+million gazillion.
 
 The cause has been tracked down and the issue has been resolved. This should not have an affect on
 the produced build, but the time it takes to create it should have been reduced (and you will
 experience this more as your project contains more pages).
+
+#### Aliases
+
+The way we have been avoiding the over-production of aliases, was by removing duplicates from our
+builds after they were generated. In some projects, that could mean that we were scanning through
+megabytes of aliases in order to throw many of them away. We now hacked around the megabytes, by
+overriding how component-builder generates the aliases to begin with. When we detect duplication,
+we bail out. This way, a lot less work needs to be done, and in one project the build-time has
+been reduced roughly 10-fold.
 
 ### Memory usage tracking
 
