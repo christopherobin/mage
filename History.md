@@ -1,6 +1,63 @@
 # Release history
 
-## vNEXT - ??? Cat
+## vNEXT
+
+### Builder speedup
+
+#### Bugfix
+
+Since the new and improved builder from MAGE v0.25.2, which significantly improved build times, a
+bug was introduced that created an `O(n^2)` situation. Given enough pages to build, the list of
+components to not include in a page (because of its existence in a previous page) would blow out of
+proportion. An exponentional problem like this can quickly turn a problem of size 10 to size a
+million gazillion.
+
+The cause has been tracked down and the issue has been resolved. This should not have an affect on
+the produced build, but the time it takes to create it should have been reduced (and you will
+experience this more as your project contains more pages).
+
+#### Aliases
+
+The way we have been avoiding the over-production of aliases, was by removing duplicates from our
+builds after they were generated. In some projects, that could mean that we were scanning through
+megabytes of aliases in order to throw many of them away. We now hacked around the megabytes, by
+overriding how component-builder generates the aliases to begin with. When we detect duplication,
+we bail out. This way, a lot less work needs to be done, and in one project the build-time has
+been reduced roughly 10-fold.
+
+### Memory usage tracking
+
+Messages sent over the wire through **ZeroMQ** are now tracked by sampler (size and count). Besides
+that, this release also introduces two new dependencies which will help us in tracking down memory
+leaks.
+
+**node-memwatch**
+
+Created by Mozilla, [memwatch](https://npmjs.org/package/memwatch) emits events after garbage
+collection cycles, and reports how much memory V8 is consuming. This information is now shared with
+sampler, so that we can start graphing it in production. When we notice that memory usage is growing
+or getting out of hand, we can use the next library to analyse the situation.
+
+**node-heapdump**
+
+Created by Strongloop, [heapdump](https://npmjs.org/package/heapdump) can make a full JavaScript
+memory dump to disk, in the folder of your project. This is a very expensive job (as more memory
+is being used up), so use this with care. It should not freeze your game too much, as the dump
+happens in a forked process.
+
+The memory dump created by heapdump can be imported into Google Chrome, which can display it just
+like you would normally do when making a memory dump in the browser. The dump can be created by
+sending `SIGUSR2` to a worker process. You can do this by running
+
+```sh
+kill -USR2 workerpid
+```
+
+Where you replace "workerpid" with the PID of your worker process. Please note that the master
+process does not support this, although that may change in the future.
+
+For more information on how to use heapdump, please read the Strongloop
+[blog post](http://strongloop.com/strongblog/how-to-heap-snapshots/).
 
 ### Archivist
 
@@ -8,7 +65,15 @@
 
 FileVault will no longer return data from files that are expired and will actively delete the files
 if their expiration time has come and gone. Previously, if MAGE started up and the file had not
-expired yet, fileVault would continue returning data from it until MAGE restarted.
+expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
+will no longer delete files before setting them unless the file extension changes.
+
+### Small improvements
+
+* The daemonizer no longer uses `SIGCONT` to test if a process is running, but instead signal 0,
+  which is universally recommended for this exact purpose.
+* On the client side, the asset module now exposes the `Asset` class, so a developer can use that to
+  augment the asset map on-the-fly (thanks Brian!).
 
 ## v0.29.0 - Cloud Cat
 

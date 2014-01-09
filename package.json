@@ -45,7 +45,9 @@
 		"highlight.js": "7.5.0",
 		"node-zookeeper-client": "0.2.0",
 		"aws-sdk": "1.15.0",
-		"es": "0.3.12"
+		"es": "0.3.12",
+		"memwatch": "0.2.2",
+		"heapdump": "0.1.0"
 	},
 	"optionalDependencies": {
 		"mdns2": "2.1.1",
