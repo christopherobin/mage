@@ -5,126 +5,121 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 */
 
 .markdown pre code {
-	display: block; padding: 0.5em;
-	color: #333;
-	background: #f8f8ff
+    display: block; padding: 0.5em;
+    color: #333;
+    background: #f8f8f8
 }
 
-.markdown pre .comment,
-.markdown pre .template_comment,
-.markdown pre .diff .header,
-.markdown pre .javadoc {
-	color: #998;
-	font-style: italic
+.markdown pre code .hljs-comment,
+.markdown pre code .hljs-template_comment,
+.markdown pre code .diff .hljs-header,
+.markdown pre code .hljs-javadoc {
+    color: #998;
+    font-style: italic
 }
 
-.markdown pre .keyword,
-.markdown pre .literal,
-.markdown pre .css .rule .keyword,
-.markdown pre .winutils,
-.markdown pre .javascript .title,
-.markdown pre .nginx .title,
-.markdown pre .subst,
-.markdown pre .request,
-.markdown pre .status {
-	color: #333;
-	font-weight: bold
+.markdown pre code .hljs-keyword,
+.markdown pre code .css .rule .hljs-keyword,
+.markdown pre code .hljs-winutils,
+.markdown pre code .javascript .hljs-title,
+.markdown pre code .nginx .hljs-title,
+.markdown pre code .hljs-subst,
+.markdown pre code .hljs-request,
+.markdown pre code .hljs-status {
+    color: #333;
+    font-weight: bold
 }
 
-.markdown pre .number,
-.markdown pre .hexcolor,
-.markdown pre .ruby .constant {
-	color: #099;
+.markdown pre code .hljs-number,
+.markdown pre code .hljs-hexcolor,
+.markdown pre code .ruby .hljs-constant {
+    color: #099;
 }
 
-.markdown pre .string,
-.markdown pre .tag .value,
-.markdown pre .phpdoc,
-.markdown pre .tex .formula {
-	color: #d14
+.markdown pre code .hljs-string,
+.markdown pre code .hljs-tag .hljs-value,
+.markdown pre code .hljs-phpdoc,
+.markdown pre code .tex .hljs-formula {
+    color: #d14
 }
 
-.markdown pre .title,
-.markdown pre .id,
-.markdown pre .coffeescript .params,
-.markdown pre .scss .preprocessor {
-	color: #900;
-	font-weight: bold
+.markdown pre code .hljs-title,
+.markdown pre code .hljs-id,
+.markdown pre code .coffeescript .hljs-params,
+.markdown pre code .scss .hljs-preprocessor {
+    color: #900;
+    font-weight: bold
 }
 
-.markdown pre .javascript .title,
-.markdown pre .lisp .title,
-.markdown pre .clojure .title,
-.markdown pre .subst {
-	font-weight: normal
+.markdown pre code .javascript .hljs-title,
+.markdown pre code .lisp .hljs-title,
+.markdown pre code .clojure .hljs-title,
+.markdown pre code .hljs-subst {
+    font-weight: normal
 }
 
-.markdown pre .class .title,
-.markdown pre .haskell .type,
-.markdown pre .vhdl .literal,
-.markdown pre .tex .command {
-	color: #458;
-	font-weight: bold
+.markdown pre code .hljs-class .hljs-title,
+.markdown pre code .haskell .hljs-type,
+.markdown pre code .vhdl .hljs-literal,
+.markdown pre code .tex .hljs-command {
+    color: #458;
+    font-weight: bold
 }
 
-.markdown pre .tag,
-.markdown pre .tag .title,
-.markdown pre .rules .property,
-.markdown pre .django .tag .keyword {
-	color: #000080;
-	font-weight: normal
+.markdown pre code .hljs-tag,
+.markdown pre code .hljs-tag .hljs-title,
+.markdown pre code .hljs-rules .hljs-property,
+.markdown pre code .django .hljs-tag .hljs-keyword {
+    color: #000080;
+    font-weight: normal
 }
 
-.markdown pre .attribute,
-.markdown pre .variable,
-.markdown pre .lisp .body {
-	color: #000080;
+.markdown pre code .hljs-attribute,
+.markdown pre code .hljs-variable,
+.markdown pre code .lisp .hljs-body {
+    color: #008080
 }
 
-.markdown pre .regexp {
-	color: #009926
+.markdown pre code .hljs-regexp {
+    color: #009926
 }
 
-.markdown pre .class {
-	color: #458;
-	font-weight: bold
+.markdown pre code .hljs-symbol,
+.markdown pre code .ruby .hljs-symbol .hljs-string,
+.markdown pre code .lisp .hljs-keyword,
+.markdown pre code .tex .hljs-special,
+.markdown pre code .hljs-prompt {
+    color: #990073
 }
 
-.markdown pre .symbol,
-.markdown pre .ruby .symbol .string,
-.markdown pre .lisp .keyword,
-.markdown pre .tex .special,
-.markdown pre .prompt {
-	color: #990073
+.markdown pre code .hljs-built_in,
+.markdown pre code .lisp .hljs-title,
+.markdown pre code .clojure .hljs-built_in {
+    color: #0086b3
 }
 
-.markdown pre .built_in,
-.markdown pre .lisp .title,
-.markdown pre .clojure .built_in {
-	color: #0086b3
+.markdown pre code .hljs-preprocessor,
+.markdown pre code .hljs-pragma,
+.markdown pre code .hljs-pi,
+.markdown pre code .hljs-doctype,
+.markdown pre code .hljs-shebang,
+.markdown pre code .hljs-cdata {
+    color: #999;
+    font-weight: bold
 }
 
-.markdown pre .preprocessor,
-.markdown pre .pi,
-.markdown pre .doctype,
-.markdown pre .shebang,
-.markdown pre .cdata {
-	color: #999;
-	font-weight: bold
+.markdown pre code .hljs-deletion {
+    background: #fdd
 }
 
-.markdown pre .deletion {
-	background: #fdd
+.markdown pre code .hljs-addition {
+    background: #dfd
 }
 
-.markdown pre .addition {
-	background: #dfd
+.markdown pre code .diff .hljs-change {
+    background: #0086b3
 }
 
-.markdown pre .diff .change {
-	background: #0086b3
-}
-
-.markdown pre .chunk {
-	color: #aaa
+.markdown pre code .hljs-chunk {
+    color: #aaa
 }
