@@ -63,6 +63,8 @@ For more information on how to use heapdump, please read the Strongloop
 
 * The daemonizer no longer uses `SIGCONT` to test if a process is running, but instead signal 0,
   which is universally recommended for this exact purpose.
+* On the client side, the asset module now exposes the `Asset` class, so a developer can use that to
+  augment the asset map on-the-fly (thanks Brian!).
 
 
 ## v0.29.0 - Cloud Cat
