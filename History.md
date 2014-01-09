@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.30.0 - The Persistence of Memory Cat
 
 ### Builder speedup
 
