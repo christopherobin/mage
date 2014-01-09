@@ -2,7 +2,14 @@
 
 ## vNEXT
 
+### Archivist
 
+#### FileVault
+
+FileVault will no longer return data from files that are expired and will actively delete the files
+if their expiration time has come and gone. Previously, if MAGE started up and the file had not
+expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
+will no longer delete files before setting them unless the file extension changes.
 
 ## v0.30.0 - The Persistence of Memory Cat
 
@@ -62,15 +69,6 @@ process does not support this, although that may change in the future.
 
 For more information on how to use heapdump, please read the Strongloop
 [blog post](http://strongloop.com/strongblog/how-to-heap-snapshots/).
-
-### Archivist
-
-#### FileVault
-
-FileVault will no longer return data from files that are expired and will actively delete the files
-if their expiration time has come and gone. Previously, if MAGE started up and the file had not
-expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
-will no longer delete files before setting them unless the file extension changes.
 
 ### Small improvements
 
