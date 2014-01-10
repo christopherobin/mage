@@ -18,7 +18,7 @@ will no longer delete files before setting them unless the file extension change
 | highlight.js      | 7.5.0  | 8.0.0  | [History](https://github.com/isagalaev/highlight.js/blob/8.0/CHANGES.md) |
 | marked            | 0.2.10 | 0.3.0  | [Commit log](https://github.com/chjj/marked/compare/v0.2.10...v0.3.0) |
 | jshint            | 2.3.0  | 2.4.1  | [Release notes](https://github.com/jshint/jshint/releases) |
-| mocha             | 1.15.1 | 1.16.2 | [History](https://github.com/visionmedia/mocha/blob/1.16.2/History.md) |
+| mocha             | 1.15.1 | 1.17.0 | [History](https://github.com/visionmedia/mocha/blob/1.17.0/History.md) |
 | istanbul          | 0.1.46 | 0.2.1  | [History](https://github.com/gotwarlost/istanbul/blob/v0.2.1/CHANGELOG.md) |
 
 

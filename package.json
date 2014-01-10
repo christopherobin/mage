@@ -56,7 +56,7 @@
 	},
 	"devDependencies": {
 		"jshint": "2.4.1",
-		"mocha": "1.16.2",
+		"mocha": "1.17.0",
 		"istanbul": "0.2.1",
 		"mocha-istanbul": "0.2.0",
 		"plato": "0.6.2"
