@@ -1,11 +1,16 @@
 {
 	"name": "FileCrawler",
 	"description": "File Crawler UI element",
-	"local": ["mage"],
 	"dependencies": {
-		"component/emitter": "1.0.1",
+		"component/emitter": "1.1.0",
 		"component/inherit": "0.0.2"
 	},
+	"local": [
+		"mage"
+	],
+	"paths": [
+		"../../../../../../.."
+	],
 	"scripts": [
 		"index.js"
 	]

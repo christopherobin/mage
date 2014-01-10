@@ -4,7 +4,7 @@
 ## What's this all about?
 
 A common challenge in game development is the ability to schedule particular operations. Think for
-example of Weekly Rankings, that needs to be generated every Monday morning at 0:05 am. Easy enough,
+example of Weekly Rankings that need to be generated every Monday morning at 0:05 am. Easy enough,
 right?
 
 The simple way to write this:
@@ -37,7 +37,7 @@ The Shokoti application has a module called Cron Server that is the counter part
 
 Cron Client only has a single API for you to use:
 
-### setJob(uniqueId, schedule, callback)
+### setJob(uniqueId, schedule, timezone, callback)
 
 The schedule argument is either a valid crontab syntax (optionally preceeded by a seconds-column),
 or a unix timestamp which may be in seconds or in milliseconds.
@@ -49,6 +49,9 @@ mage.cronClient.setJob('weeklyRanking', '5 0 * * mon', function (state, cb) {
 	mage.ranking.generateWeekly(state, cb);
 });
 ```
+
+The timezone argument is optional, and will be ignored when using a timestamp as schedule. When not
+specified, Shokoti will use its own configured timezone.
 
 
 ## Crontab schedule syntax
@@ -67,12 +70,19 @@ configuration:
 module:
     cronClient:
         clientAppId: game
+        clientBaseUrl: "http://mygame.example.com"   # optional
         serverAppId: shokoti
         serverBaseUrl: "http://shokoti.example.com"
 ```
 
-| entry         | description                                                             |
-|---------------|-------------------------------------------------------------------------|
-| clientAppId   | The App ID that you have given your game in the `apps` configuration.   |
-| serverAppId   | The App ID of the Shokoti server.                                       |
+| entry         | description |
+|---------------|-------------|
+| clientAppId   | The App ID that you have given your game in the `apps` configuration. |
+| clientBaseUrl | Optional, by default it's the `expose` configuration entry of your server's `clientHost`. It's where Shokoti will call back to. |
+| serverAppId   | The App ID of the Shokoti server. |
 | serverBaseUrl | The `expose` configuration entry for the Shokoti server's `clientHost`. |
+
+> Note: Both `serverAppId` and `serverBaseUrl` are to be found in the configuration file belonging
+> to the Shokoti server that you want to use. If you don't have access to this, ask your system
+> administrator (or whoever manages Shokoti in your environment) to give you these two configuration
+> entries.

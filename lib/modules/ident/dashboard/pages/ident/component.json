@@ -1,0 +1,17 @@
+{
+	"name": "ident",
+	"local": [
+		"mage",
+		"loader",
+		"forms",
+		"ident-userpass"
+	],
+	"paths": [
+		"../../../../..",
+		"../../../../dashboard/dashboard/pages/postlogin/ui",
+		"../../../engines/userpass/dashboard"
+	],
+	"scripts": [
+		"index.js"
+	]
+}

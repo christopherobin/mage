@@ -5,17 +5,30 @@ The node-mysql module is supported through the built-in "mysql" vault type.
 
 ## Configuration
 
-```json
-{
-	"type": "mysql",
-	"config": {
-		"url": "mysql url as described in the node-mysql readme"
-	}
-}
+### URL based config
+```yaml
+		mysql:
+			type: mysql
+			config:
+				url: "mysql://user:password@host/db?extraConfig=extraValue"
 ```
 
 This URL format is documented in the [node-mysql readme](https://npmjs.org/package/mysql).
 
+### Object based config
+```yaml
+		mysql:
+			type: mysql
+			config:
+				options:
+					host: "myhost"
+					user: "myuser"
+					password: "mypassword"
+					database: "mydb"
+```
+
+The available connection options are documented in the [node-mysql readme](https://github.com/felixge/node-mysql#connection-options).
+For pool options please look at [Pool options](https://github.com/felixge/node-mysql#pool-options).
 
 ## Supported operations
 
@@ -41,8 +54,9 @@ signature                  | required | default implementation
 
 ## Bootstrapping a database
 
-Is supported through the `./game archivist-create` CLI command. This will create your empty
-database. Tables must be created through migration scripts.
+This is supported through the `./game archivist-create` CLI command. This will create your empty
+database. Tables must be created through migration scripts. Running `./game archivist-drop` will
+drop the entire database.
 
 
 ## Schema migrations

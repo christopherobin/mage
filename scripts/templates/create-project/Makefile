@@ -16,9 +16,9 @@ define helpStarting
 	@echo "  make version           Prints version information about the game, MAGE and Node.js."
 	@echo "  make all               Installs all dependencies and datastores (shortcut for deps, datastores and build)."
 	@echo
-	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-component and deps-submodules)."
+	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-submodules and deps-component)."
 	@echo "  make datastores        Creates datastores and runs all migrations up to the current version."
-	@echo "  make build             Creates builds for all apps."
+	@echo "  make build             Creates html/css/js builds for all apps."
 	@echo
 	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
 	@echo "  make deps-component    Downloads and installs all external components."
@@ -26,7 +26,7 @@ define helpStarting
 	@echo
 endef
 
-.PHONY: help version all deps deps-npm deps-component deps-submodules datastores build
+.PHONY: help version all deps deps-npm deps-submodules deps-component datastores build
 
 help:
 	@echo
@@ -41,9 +41,10 @@ version:
 
 all: deps datastores build
 
-deps: deps-npm deps-component deps-submodules
+deps: deps-npm deps-submodules deps-component
 
 deps-npm:
+	mkdir -p node_modules
 	npm install
 
 deps-component:
@@ -85,6 +86,7 @@ dev-githooks:
 
 define helpQuality
 	@echo "Quality:"
+	@echo
 	@echo "  make test              Runs all tests (shortcut for test-lint and test-unit)."
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
@@ -139,7 +141,8 @@ report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
-instrument: clean-coverage
+instrument:
+	rm -rf "$(LIBCOV)"
 	$(BIN)/istanbul instrument --output $(LIBCOV) --no-compact --variable global.__coverage__ $(LIB)
 
 report-coverage: instrument
@@ -183,29 +186,29 @@ status:
 define helpCleanup
 	@echo "Cleanup:"
 	@echo
-	@echo "  make clean             Cleans all builds, caches and reports."
+	@echo "  make clean             Removes all builds, dependencies and reports."
 	@echo
-	@echo "  make clean-build       Cleans all application builds."
-	@echo "  make clean-npm         Cleans the NPM cache."
-	@echo "  make clean-coverage    Removes the test coverage report and its instrumented files."
-	@echo "  make clean-complexity  Removes the Plato report."
+	@echo "  make clean-build       Removes all application builds."
+	@echo "  make clean-deps        Removes components and node_modules."
+	@echo "  make clean-report      Removes all reports."
 	@echo
 endef
 
-.PHONY: clean clean-build clean-npm clean-coverage clean-complexity
+.PHONY: clean clean-build clean-deps clean-report
 
-clean: clean-build clean-npm clean-coverage clean-complexity
+clean: clean-build clean-deps clean-report
 
 clean-build:
-	node . build --clean
+# If the app cannot be started (eg, if clean already happened) this will fail, but it should not be fatal.
+	@if [ -d "node_modules/mage" ]; then echo "Removing builds"; node . build --clean; else echo "Cannot remove builds without MAGE installed (skipping)"; fi
 
-clean-npm:
-	npm cache clean
+clean-deps:
+	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
+	@git ls-files components --error-unmatch > /dev/null 2>&1 && echo "Not removing components from repo" || echo "Removing components" && rm -rf components
 
-clean-coverage:
-	rm -rf $(LIBCOV)
-	rm -rf $(COVERAGE_REPORT)
-
-clean-complexity:
-	rm -rf $(COMPLEXITY_REPORT)
+clean-report:
+	@echo "Removing reports"
+	rm -rf "$(LIBCOV)"
+	rm -rf "$(COVERAGE_REPORT)"
+	rm -rf "$(COMPLEXITY_REPORT)"
 

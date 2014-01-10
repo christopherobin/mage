@@ -52,7 +52,7 @@ Each channel name is a method on a logger. This allows you to write:
 
 ```javascript
 mage.logger.emergency('Crucial file missing');
-mage.logger.warn('Stamina too low to quest:', stamina, 'quest:', questId);
+mage.logger.warning('Stamina too low to quest:', stamina, 'quest:', questId);
 mage.logger.verbose('Reading from file:', filePath);
 ```
 
@@ -100,7 +100,14 @@ try {
 
 ```javascript
 mage.logger.debug
-	.data(questData)
+	.data({
+		playerId: 'abc',
+		questId: questId,
+		conditions: {
+			stamina: player.stamina,
+			xp: player.xp
+		}
+	})
 	.log('Trying to run quest', questId);
 ```
 
@@ -117,64 +124,27 @@ mage.logger.debug
 
 If configured, the client module will also expose all the channels, so you can log just like you do
 on the server. The API is however limited to logging a `message`. At this time, contexts, details
-and key/value data are not supported. Stack traces are automatically logged in the data part
-however. The client can log to console, but also to the server. Please make sure you expose the
-"sendReport" user command to enable that.
-
+and key/value data are not supported. Stack traces of Error objects are automatically logged in the
+data part however. The client can log to console, but also to the server.
 
 ## Built-in Logging Channels
 
-The default channels have been expanded to be more granular and more meaningful; this should help
-production operation by allowing you to throw alerts properly (only 3-4 emergencies or alerts a
-minute should alert operation, but it might take 100's of user errors a minute to trigger the same
-alerting).
+The built-in channels are designed to be granular and meaningful; this should help production
+operation by allowing you to throw alerts properly (only 3-4 emergencies or alerts a minute should
+alert operation, but it might take 100's of user errors a minute to trigger the same alerting).
 
-### emergency
-
-Internal service or external service unavailability. The app cannot boot or stopped unexpectedly.
-
-### alert
-
-There are major issues that affect the correct operation of the application.
-* Internal service (datastore API call, etc) or external service
-* API calls throw Exception or return errors
-
-### critical
-
-A user request has gone wrong; user session or data is broken or corrupted. The user is expected to
-require a restart.
-
-### error
-
-A user request has errored and the user experience is expected to be negatively impacted.
-
-### warning
-
-Acceptable problems that are expected to happen and will always be dealt with gracefully.
-* A user made an unusual request
-* System warning
-
-### notice
-
-Events regarding the state of services. Server up, server down, setup completion, build completion,
-and other non-error state change within the game.
-
-### info
-
-Summarizing requests from the end-user and their outcomes.
-
-### debug
-
-Relevant game debugging information that goes beyond verbose. Always turned on during development.
-
-### verbose
-
-For very low-level debug information (I/O details, etc). Often used by MAGE internals.
-
-### time
-
-Generally used for logging benchmark information.
-
+| channel   | meaning |
+|-----------|---------|
+| time      | Generally used for logging benchmark information. |
+| verbose   | For very low-level debug information (I/O details, etc). Often used by MAGE internals. |
+| debug     | Relevant game debugging information that goes beyond verbose. Always turned on during development. |
+| info      | Summarizing the result of a request from the end-user. |
+| notice    | Events regarding the state of services. Server up, server down, setup completion, build completion and other non-error state changes within the game. |
+| warning   | Acceptable problems that are expected to happen and will always be dealt with gracefully. A user made an unusual request, or there was a warning by the system. |
+| error     | A user request has gone wrong; the user experience is expected to be negatively impacted. |
+| critical  | A user request has gone wrong; user session or data is broken or corrupted. The user is expected to require a restart. Further investigation is probably required. |
+| alert     | Major issues that affect the correct operation of the application. Internal service (datastore API calls failed, etc) or external service. |
+| emergency | Internal service or external service unavailability. The app cannot boot or stopped unexpectedly. |
 
 ## Configuration
 
@@ -185,118 +155,84 @@ the server:
 * file: write to log files on disk
 * graylog: www.graylog2.com
 * loggly: www.loggly.com
-* websocket: log to on-demand incoming websocket connections
+* websocket: streams the log on a [Savvy](../savvy/Readme.md) websocket
 
 And the following are available on the client:
 
 * console: outputs to console.log/warn/error
-* server: send log entries to the server to be reported in a server-side writer
+* server: send log entries to the server to be reported in server-side writers
 
 Configuration happens in your config file in:
 
-```json
-{
-	"logging": {
-		"server": {},
-		"html5": {}
-	}
-}
+```yaml
+logging:
+    server: {}
+    html5: {}
 ```
 
 ### Server: Terminal
 
-```json
-{
-	"logging": {
-		"server": {
-			"terminal": {
-				"channels": [">=info"],
-				"config": {
-					"jsonIndent": 2,
-					"theme": "default"
-				}
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        terminal:
+            channels: [">=info"]
+            config:
+                jsonIndent: 2
+                theme: default
 ```
+
 Available themes: `default`, `dark`, `light`.
 
 ### Server: File
 
-```json
-{
-	"logging": {
-		"server": {
-			"file": {
-				"channels": ["<info", ">=critical", "error"],
-				"config": {
-					"jsonIndent": 2,
-					"path": "./logs/",
-					"mode": "0600"
-				}
-			},
-
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        file:
+            channels: ["info", ">=critical"]
+            config:
+                jsonIndent: 2
+                path: "./logs/"
+                mode: "0600"    # make sure this is a string!
 ```
 
 ### Server: Graylog
 
-```json
-{
-	"logging": {
-		"server": {
-			"graylog": {
-				"channels": [">=info"],
-				"config": {
-					"servers": [
-						{ "host": "192.168.100.85", "port": 12201 },
-						{ "host": "192.168.100.86", "port": 12201 }
-					],
-					"facility": "Application identifier"
-				}
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        graylog:
+            channels: [">=info"]
+            config:
+                servers:
+                    - { host: "192.168.100.85", port: 12201 }
+                    - { host: "192.168.100.86", port: 12201 }
+                facility: Application identifier
 ```
 
 ### Server: Loggly
 
-```json
-{
-	"logging": {
-		"server": {
-			"channels": [">=info"],
-			"config": {
-				"token": "the token, see loggly indication on web interface account login",
-				"subdomain": "mysubdomain"
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        loggly:
+            channels: [">=error"]
+            config:
+                token: "the token, see loggly indication on web interface account login"
+                subdomain: mysubdomain
 ```
 
 ### Server: Websocket
 
-```json
-{
-	"logging": {
-		"server": {
-			"websocket": {
-				"config": {
-					"port": 31337
-				}
-			}
-		}
-	}
-}
+```yaml
+logging:
+    server:
+        websocket: {}
 ```
 
-Socket files are not supported, nor are channels. The channel description is to be passed into the
-connection once it has been established.
+Please note that channels are not supported in the websocket configuration. The channel description
+array is to be passed as JSON into the connection once it has been established.
 
 ### HTML5: All writers
 
@@ -307,30 +243,24 @@ configuration property is optional, and should generally be left out.
 
 ### HTML5: Console
 
-```json
-{
-	"logging": {
-		"html5": {
-			"console": {
-				"channels": [">=verbose"],
-				"disableOverride": false
-			}
-		}
-	}
-}
+Logs to the browser's console.
+
+```yaml
+logging:
+    html5:
+        console:
+            channels: [">=verbose"]
+            disableOverride: false
 ```
 
 ### HTML5: Server
 
-```json
-{
-	"logging": {
-		"html5": {
-			"server": {
-				"channels": [">=verbose"],
-				"disableOverride": false
-			}
-		}
-	}
-}
+Sends logs from client to server.
+
+```yaml
+logging:
+    html5:
+        server:
+            channels: [">=error"]
+            disableOverride: false
 ```
