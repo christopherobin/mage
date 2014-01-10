@@ -21,6 +21,10 @@ will no longer delete files before setting them unless the file extension change
 | mocha             | 1.15.1 | 1.17.0 | [History](https://github.com/visionmedia/mocha/blob/1.17.0/History.md) |
 | istanbul          | 0.1.46 | 0.2.1  | [History](https://github.com/gotwarlost/istanbul/blob/v0.2.1/CHANGELOG.md) |
 
+### Small improvements
+
+* We now display the logged in user's name on the home screen in the dashboard.
+
 
 ## v0.30.0 - The Persistence of Memory Cat
 
