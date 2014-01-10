@@ -36,6 +36,8 @@ For more information on the time API, please read [the documentation](./lib/modu
 * We now display the logged in user's name on the home screen in the dashboard.
 * When problems arise during archivist client's distribute phase, the issues returned in the 2nd
   argument of the `distribute` callback is now of the format `{ topic, index, operation, error }`.
+* The long since deprecated `pauser` module has been removed from MAGE. Instead, please use the
+  [Locks component](https://github.com/Wizcorp/locks).
 
 ### Bugfixes
 
