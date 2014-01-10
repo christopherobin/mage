@@ -34,6 +34,8 @@ For more information on the time API, please read [the documentation](./lib/modu
 ### Small improvements
 
 * We now display the logged in user's name on the home screen in the dashboard.
+* When problems arise during archivist client's distribute phase, the issues returned in the 2nd
+  argument of the `distribute` callback is now of the format `{ topic, index, operation, error }`.
 
 ### Bugfixes
 
