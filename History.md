@@ -34,6 +34,13 @@ For more information on the time API, please read [the documentation](./lib/modu
 ### Small improvements
 
 * We now display the logged in user's name on the home screen in the dashboard.
+* When problems arise during archivist client's distribute phase, the issues returned in the 2nd
+  argument of the `distribute` callback is now of the format `{ topic, index, operation, error }`.
+
+### Bugfixes
+
+* When the archivist client was distributing changes back to the server, it could crash the process
+  if a topic did not exist, or something else went wrong during a set/add/del/touch operation.
 
 
 ## v0.30.0 - The Persistence of Memory Cat
