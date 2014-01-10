@@ -2,14 +2,24 @@
 
 ## vNEXT
 
-### Archivist
-
-#### FileVault
+### Archivist: File vault
 
 FileVault will no longer return data from files that are expired and will actively delete the files
 if their expiration time has come and gone. Previously, if MAGE started up and the file had not
 expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
 will no longer delete files before setting them unless the file extension changes.
+
+### Time module
+
+The time module has received a server implementation where none existed before. This **deprecates**
+the use of `mage.core.time`. From now on, please use `mage.time.now()` instead. This function works
+on the server side as well as on the client side. A simple find and replace should allow for a
+seemless migration.
+
+One of the reasons for this transition is a future update to the time module which will make it
+possible to shift the offset and accelerate and decelerate the clock.
+
+For more information on the time API, please read [the documentation](./lib/modules/time/Readme.md).
 
 ### Dependency updates
 
