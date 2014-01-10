@@ -11,6 +11,17 @@ if their expiration time has come and gone. Previously, if MAGE started up and t
 expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
 will no longer delete files before setting them unless the file extension changes.
 
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| highlight.js      | 7.5.0  | 8.0.0  | [History](https://github.com/isagalaev/highlight.js/blob/8.0/CHANGES.md) |
+| marked            | 0.2.10 | 0.3.0  | [Commit log](https://github.com/chjj/marked/compare/v0.2.10...v0.3.0) |
+| jshint            | 2.3.0  | 2.4.1  | [Release notes](https://github.com/jshint/jshint/releases) |
+| mocha             | 1.15.1 | 1.17.0 | [History](https://github.com/visionmedia/mocha/blob/1.17.0/History.md) |
+| istanbul          | 0.1.46 | 0.2.1  | [History](https://github.com/gotwarlost/istanbul/blob/v0.2.1/CHANGELOG.md) |
+
+
 ## v0.30.0 - The Persistence of Memory Cat
 
 ### Builder speedup
@@ -60,7 +71,7 @@ The memory dump created by heapdump can be imported into Google Chrome, which ca
 like you would normally do when making a memory dump in the browser. The dump can be created by
 sending `SIGUSR2` to a worker process. You can do this by running
 
-```sh
+```bash
 kill -USR2 workerpid
 ```
 
@@ -1015,7 +1026,7 @@ fail to install your dependencies on a fresh install of your project.
 
 Because of these changes, **please run the following command** and commit this to your repository:
 
-```sh
+```bash
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
 
@@ -1123,7 +1134,7 @@ unless `index.html` is hosted elsewhere (which is the case with PhoneGap for exa
 In v0.23.0 we forgot to update the default precommit command to the new Makefile test-target, so
 please run this one more time:
 
-```sh
+```bash
 cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
 make dev
 ```
@@ -1202,7 +1213,7 @@ and should make it more straight forward to get started, for developers who are 
 
 Do this once and commit the changes to your project:
 
-```sh
+```bash
 cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
@@ -1212,7 +1223,7 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 Because the make commands changed for linting staged files, the pre-commit git hook should be
 rewritten for each developer working on the project. Each developer should run:
 
-```sh
+```bash
 make dev
 ```
 
@@ -1322,7 +1333,7 @@ entry which configuration file it came from. Also, when printing configuration, 
 output is now a distinct list of all the files that made up this configuration. This file list is
 output on `stderr`, so it does not affect the output when you run:
 
-```sh
+```bash
 ./game show-config archivist > ./archivist-config.json
 ```
 
@@ -1386,7 +1397,7 @@ MAGE creates for each page that gets built.
 
 Having access to the builder allows you to register plugins. For example:
 
-```sh
+```bash
 npm install -s component-uglifyjs
 npm install -s component-less
 ```
@@ -1658,7 +1669,7 @@ and *stderr*. The reason for this, is so that CLI commands that output content c
 You can now output the working configuration of the application through the `show-config` command.
 By optionally given it a trail, you can output a sub-configuration. For example:
 
-```sh
+```bash
 ./game show-config archivist.vaults
 ```
 
@@ -2336,7 +2347,6 @@ This proved to fail on some machines, so here is an gawk replacement which also 
 ls ./ | gawk '{newName=gensub(/?/,"#","",$0); system("git mv \""$0"\" \""newName"\"")}'
 ```
 
-
 ### Logger
 
 Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
@@ -2394,7 +2404,6 @@ To enable this, simply leave out the base URL configuration from your config fil
 MAGE will automatically fall back to built-in asset hosting for asset contexts that do not have a
 configured base URL.
 
-
 ### User command system overhaul
 
 #### Access levels
@@ -2433,7 +2442,6 @@ mage.session.register(state, actorId, language, { access: 'user' }, function (er
 ```
 
 Make sure your game executes that logic correctly.
-
 
 #### Code removal
 
@@ -2532,20 +2540,17 @@ for file in $(ls */usercommands/*.js | grep -v import); do
 done
 ```
 
-
 ### Configuration
 
 The new configuration loader is here! Read all about it [here](./lib/config/Readme.md). There are
 some big changes in how configuration is loaded, so you *will* need to read this. The resulting
 object is essentially the same though, so conversion should be simple to do.
 
-
 ### MMRP
 
 Fixed a bug with msgServer that caused events to not be emitted on the client when an event was
 stored after an event had already been emitted to the client and the communication channel
 disconnected.
-
 
 ### ClientHost configuration
 
@@ -2614,19 +2619,16 @@ to upgrade!
 
 ## v0.12.1
 
-
 ### `useModules` enhancement
 
 You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
 many arguments as you like, and you can mix and match arguments with module names and arrays of
 module names however you like.
 
-
 ### Bot module
 
 The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
 [./lib/modules/bot/Readme.md](./lib/modules/bot/Readme.md) that should help get you started.
-
 
 ### Moved User Command Response Cache into Archivist
 
@@ -2670,7 +2672,6 @@ A number will be used for TTL, false will indicate that you don't want to apply 
 
 ## v0.12.0
 
-
 ### Mithril is now called MAGE!
 
 This also means that the module you require is no longer called `mithril`, but is now called `mage`.
@@ -2688,19 +2689,16 @@ To replace selected instances (Linux Flavour):
 for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
 ```
 
-
 ### Archivist
 
 DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
 highly encouraged to use Archivist from now on, since DataSources will be removed in a future
 release. Learn more about Archivist in [./lib/archivist/Readme.md](./lib/archivist/Readme.md).
 
-
 ### Daemonization
 
 Mage now supports daemonization out-of-the-box. That means that you can control your application's
 runtime by passing a command on your command line. Run `node . help` to get a list of commands.
-
 
 ### Module removal
 
@@ -2720,7 +2718,6 @@ The following modules have been removed:
  * sns
 
 You can retrieve them from the v0.10.2 of Mage if you still want to use them.
-
 
 ### Module loading
 
@@ -2768,12 +2765,10 @@ var mage = require('mage').addModulesPath('./modules').useModules(
 This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as
 arguments, although it would be unusual to use more than one.
 
-
 ### Deprecated: app.expose()
 
 Apps are now automatically exposed, so calls in your bootstrap sequence to `myApp.expose` and
 `tools.expose` should be removed.
-
 
 ### Booting mage
 
@@ -2820,7 +2815,6 @@ mage.setup(configFiles);
 
 This is verbose, and not to everyone's taste, but it's more in line with how node.js core modules work.
 
-
 ### A new logger
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
@@ -2837,7 +2831,6 @@ logging there as well.
 
 When you use the logger module, you should always access the logger through `mage.logger`, **not**
 `mage.core.logger`, which is now reserved for MAGE's internal use.
-
 
 ### Sampler
 
@@ -2874,7 +2867,6 @@ where the key-val pairs in `"intervals"` are named intervals and their durations
 socket or address to serve sample data from (this may be optional in the future, as what you see should be the
 default), and `"sampleMage"` turns on the sampling of mage internals.
 
-
 ### Smarter multi-server connections
 
 Servers (master process) connecting to other servers (mmrp) will now validate that their peer is
@@ -2885,7 +2877,6 @@ This feature is useful when doing a rolling restart of your game, when launching
 You wouldn't want the new version to start connecting to the running instances that are being shut
 down.
 
-
 ### Built-in JSON linting
 
 If there is a parse error in your configuration JSON file(s), the lint-result will be output
@@ -2894,7 +2885,6 @@ immediately. This should save you time when trying to find the error.
 You may also access this JSON parser helper yourself, by calling:
 `mage.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
 containing the human readable lint-information in its `message` property.
-
 
 ### Dependency changes
 
@@ -2927,7 +2917,6 @@ Updated from v2.2.0 to v2.3.0
 
 The epipebomb module was added to suppress EPIPE warnings on stdout and stderr, which are innocent,
 but regularly happen when you start piping your output to another process (like grep).
-
 
 ### Small refactoring
 
