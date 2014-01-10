@@ -2,7 +2,14 @@
 
 ## vNEXT
 
+### Archivist
 
+#### FileVault
+
+FileVault will no longer return data from files that are expired and will actively delete the files
+if their expiration time has come and gone. Previously, if MAGE started up and the file had not
+expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
+will no longer delete files before setting them unless the file extension changes.
 
 ## v0.30.0 - The Persistence of Memory Cat
 
@@ -69,7 +76,6 @@ For more information on how to use heapdump, please read the Strongloop
   which is universally recommended for this exact purpose.
 * On the client side, the asset module now exposes the `Asset` class, so a developer can use that to
   augment the asset map on-the-fly (thanks Brian!).
-
 
 ## v0.29.0 - Cloud Cat
 
