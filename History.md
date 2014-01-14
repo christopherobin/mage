@@ -111,6 +111,7 @@ For more information on how to use heapdump, please read the Strongloop
 * On the client side, the asset module now exposes the `Asset` class, so a developer can use that to
   augment the asset map on-the-fly (thanks Brian!).
 
+
 ## v0.29.0 - Cloud Cat
 
 ### Archivist
