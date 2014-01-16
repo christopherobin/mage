@@ -2,6 +2,7 @@
 	"name": "time",
 	"description": "Client/Server time sync module for MAGE.",
 	"scripts": [
+		"Timer.js",
 		"client.js"
 	],
 	"main": "client.js"
