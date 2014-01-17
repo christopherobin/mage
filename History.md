@@ -43,6 +43,8 @@ For more information on the time API, please read [the documentation](./lib/modu
 
 * When the archivist client was distributing changes back to the server, it could crash the process
   if a topic did not exist, or something else went wrong during a set/add/del/touch operation.
+* If cluster communication is never established (mdns / zookeeper), MMRP messages would pile up,
+  leaking memory.
 
 
 ## v0.30.0 - The Persistence of Memory Cat
