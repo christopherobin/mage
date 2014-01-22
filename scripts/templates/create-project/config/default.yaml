@@ -63,16 +63,12 @@ server:
 
     # Set cluster to boolean true to have as many workers as this machine has cores, or a number
     # if you want to be more precise.
-    cluster: 1
+    cluster: false
 
-    # MMRP is the messaging layer between node instances
-    mmrp:
-        bind:
-            # MMRP communicates using zeromq
-            protocol: zmq
+    # MMRP is the messaging layer between node instances. Turn this on when you want to allow
+    # asynchronous message passing to users. See production.yaml for an example.
+    mmrp: false
 
-            # Wildcard host binds on all interfaces
-            host: "*"
-
-            # Wildcard port binds on a random available port
-            port: "*"
+    # Peers in the network should be discoverable. Use mdns or zookeeper.
+    # See production.yaml for an example.
+    serviceDiscovery: false

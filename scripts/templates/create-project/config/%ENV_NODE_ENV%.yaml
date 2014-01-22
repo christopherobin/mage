@@ -44,7 +44,6 @@ server:
 
         # What the world will see us as (a full base URL)
         expose: "%APP_CLIENTHOST_EXPOSE%"
-    cluster: 1
 
 
 # Define how we want to log debug information, notices, warnings, errors, etc

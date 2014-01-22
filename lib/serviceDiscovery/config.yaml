@@ -1,3 +1,0 @@
-serviceDiscovery:
-    engine: mdns
-    options: {}
