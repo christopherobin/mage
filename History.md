@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Small improvements
+
+* The `io.error.busy` event that the message server in the browser could emit has been augmented to
+  show which command could not be executed, and which batch was blocking it.
 
 
 ## v0.31.0 - Skateboard Cat
