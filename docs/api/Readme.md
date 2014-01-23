@@ -22,3 +22,4 @@ traversing the folders in which these subsystems live.
 * [Cron Client](../../lib/modules/cronClient)
 * [Sessions](../../lib/modules/session)
 * [Ident](../../lib/modules/ident)
+* [Time](../../lib/modules/time)
