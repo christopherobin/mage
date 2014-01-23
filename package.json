@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.30.0",
+	"version": "0.31.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -30,7 +30,6 @@
 		"memorystream": "0.2.0",
 		"rumplestiltskin": "0.0.6",
 		"tomes": "0.0.18",
-		"oauth": "0.9.10",
 		"node-uuid": "1.4.1",
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",

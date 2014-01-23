@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+
+
+## v0.31.0 - Skateboard Cat
+
 ### Archivist: File vault
 
 FileVault will no longer return data from files that are expired and will actively delete the files
@@ -38,6 +42,7 @@ For more information on the time API, please read [the documentation](./lib/modu
   argument of the `distribute` callback is now of the format `{ topic, index, operation, error }`.
 * The long since deprecated `pauser` module has been removed from MAGE. Instead, please use the
   [Locks component](https://github.com/Wizcorp/locks).
+* The `oauth` dependency was not being used anymore and has been removed.
 
 ### Bugfixes
 
@@ -45,6 +50,8 @@ For more information on the time API, please read [the documentation](./lib/modu
   if a topic did not exist, or something else went wrong during a set/add/del/touch operation.
 * If cluster communication is never established (mdns / zookeeper), MMRP messages would pile up,
   leaking memory.
+* When calling `mage.useModules()` on the server giving an already registered module, it would re-
+  register it (without problematic consequences).
 
 
 ## v0.30.0 - The Persistence of Memory Cat
