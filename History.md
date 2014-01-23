@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Small improvements
+
+* The `io.error.busy` event that the message server in the browser could emit has been augmented to
+  show which command could not be executed, and which batch was blocking it. It also carried a
+  `behavior` property, which has had no meaning since forever, and has therefore been removed.
 
 
 ## v0.31.0 - Skateboard Cat
