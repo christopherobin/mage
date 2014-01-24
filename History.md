@@ -8,6 +8,10 @@
   show which command could not be executed, and which batch was blocking it. It also carried a
   `behavior` property, which has had no meaning since forever, and has therefore been removed.
 
+### Bugfixes
+
+* When not running in cluster mode, depending on your environment, Savvy would not be available.
+
 
 ## v0.31.0 - Skateboard Cat
 
