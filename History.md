@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### Asset hashing cache
+
+
+
+
+
 ### Small improvements
 
 * The `io.error.busy` event that the message server in the browser could emit has been augmented to
