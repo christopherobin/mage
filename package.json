@@ -36,7 +36,7 @@
 		"source-map": "0.1.31",
 		"memwatch": "0.2.2",
 		"heapdump": "0.1.0",
-		"codependency": "0.1.1"
+		"codependency": "0.1.2"
 	},
 	"optionalPeerDependencies": {
 		"loggly": "0.3.11",
