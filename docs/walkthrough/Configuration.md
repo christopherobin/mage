@@ -34,7 +34,9 @@ control over which of these behaviors are turned on or off, you can specify them
 
 ```yaml
 developmentMode: true  # This turns on all options
+```
 
+```yaml
 # Alternatively, take control by toggling the individual options. The ones you leave out are
 # considered to be set to true. Set any of the following to false to change the default
 # development mode behavior.
