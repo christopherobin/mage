@@ -54,7 +54,7 @@
 		"ldapjs": "0.6.3"
 	},
 	"devDependencies": {
-		"jshint": "2.4.1",
+		"jshint": "2.4.3",
 		"mocha": "1.17.0",
 		"istanbul": "0.2.1",
 		"mocha-istanbul": "0.2.0",

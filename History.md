@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| jshint            | 2.4.1  | 2.4.3  | [Release notes](https://github.com/jshint/jshint/releases) |
+
 ### Small improvements
 
 * The `io.error.busy` event that the message server in the browser could emit has been augmented to
