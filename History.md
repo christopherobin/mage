@@ -7,11 +7,20 @@
 We now start up a small http server that proxies requests to install components. This means we can
 install components from private repositories on github!
 
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| jshint            | 2.4.1  | 2.4.3  | [Release notes](https://github.com/jshint/jshint/releases) |
+
+
 ### Small improvements
 
 * The `io.error.busy` event that the message server in the browser could emit has been augmented to
   show which command could not be executed, and which batch was blocking it. It also carried a
   `behavior` property, which has had no meaning since forever, and has therefore been removed.
+* Development mode has become more configurable. Please read
+  [the documentation](./docs/walkthrough/Configuration.md) for information on how to use it.
 
 ### Bugfixes
 
