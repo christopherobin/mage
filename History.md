@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Component
+
+We now start up a small http server that proxies requests to install components. This means we can
+install components from private repositories on github!
+
 ### Small improvements
 
 * The `io.error.busy` event that the message server in the browser could emit has been augmented to
