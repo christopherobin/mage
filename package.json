@@ -37,7 +37,7 @@
 		"component-require": "0.3.1",
 		"component-builder": "0.10.0",
 		"component": "0.18.0",
-		"component-proxy-install": "git+https://github.com/Wizcorp/component-proxy-install",
+		"component-proxy-install": "Wizcorp/component-proxy-install",
 		"semver": "2.2.1",
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
