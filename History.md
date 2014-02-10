@@ -17,11 +17,17 @@ this refactoring a number of things have changed for the better.
 * All HTTP 404 responses are now logged at the "warning" level.
 * Less use of the async library in command center, which means cleaner stack traces.
 
+### Component
+
+We now start up a small http server that proxies requests to install components. This means we can
+install components from private repositories on github!
+
 ### Dependency updates
 
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | jshint            | 2.4.1  | 2.4.3  | [Release notes](https://github.com/jshint/jshint/releases) |
+
 
 ### Small improvements
 
