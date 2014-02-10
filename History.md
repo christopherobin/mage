@@ -12,10 +12,11 @@ reduce an array of channels down to a string in your configuration file.
 
 #### Custom log files
 
-The default behavior of the file logger has always been (and still is) to log each channel to its
-own file (eg: `error.log`, `alert.log`). You can now configure the file logger to write any channel
-to any file name. It also means that you can log a channel to multiple files in parallel. This is an
-example configuration to illustrate how this could benefit you:
+The default behavior of the file logger has always been to log each channel to its own file (eg:
+`error.log`, `alert.log`). That default has been changed to always log everything to a single file
+called `app.log`. You can now also configure the file logger to write any channel to any file
+name. It also means that you can log a channel to multiple files in parallel. This is an example
+configuration to illustrate how this could benefit you:
 
 ```yaml
 logging:
@@ -30,6 +31,9 @@ logging:
                     "access.log": "info"
                     "error.log": ">=warning"
 ```
+
+Channels that are enabled, but not covered by the `fileNames` configuration will be written to
+`app.log`.
 
 #### File modes
 
