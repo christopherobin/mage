@@ -37,6 +37,17 @@ When configuring the file logger with a file mode, the creation of a log file wo
 mode. Once created however, the file's mode would never change, even when your configuration did.
 This has been resolved by always updating the file mode when it's opened.
 
+### Component
+
+We now start up a small http server that proxies requests to install components. This means we can
+install components from private repositories on github!
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| jshint            | 2.4.1  | 2.4.3  | [Release notes](https://github.com/jshint/jshint/releases) |
+
 ### Small improvements
 
 * The `io.error.busy` event that the message server in the browser could emit has been augmented to
