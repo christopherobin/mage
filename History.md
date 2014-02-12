@@ -27,7 +27,7 @@ logging:
                 path: "./logs"
                 mode: "666"
                 fileNames:
-                    "app.log": []   # this lets you turn off or redine what gets logged to app.log
+                    "app.log": []   # this lets you turn off or redefine what gets logged to app.log
                     "dev.log": "all"
                     "access.log": "info"
                     "error.log": ">=warning"
