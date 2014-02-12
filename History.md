@@ -27,13 +27,11 @@ logging:
                 path: "./logs"
                 mode: "666"
                 fileNames:
+                    "app.log": []   # this lets you turn off or redine what gets logged to app.log
                     "dev.log": "all"
                     "access.log": "info"
                     "error.log": ">=warning"
 ```
-
-Channels that are enabled, but not covered by the `fileNames` configuration will be written to
-`app.log`.
 
 #### File modes
 
