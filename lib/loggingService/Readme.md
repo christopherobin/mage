@@ -194,8 +194,7 @@ Available themes: `default`, `dark`, `light`.
 logging:
     server:
         file:
-            channels: [">=debug"]  # any channel represented here, but not in the optional
-                                   # fileNames config, will be written to `<channelName>.log`
+            channels: [">=debug"]
             config:
                 path: "./logs"
 
@@ -204,7 +203,7 @@ logging:
                 mode: "0600"    # make sure this is a string!
 
                 fileNames:
-                    "dev.log": "all"
+                    "app.log": "all"    # this is configured by default and you may override it
                     "access.log": "info"
                     "error.log": ">=warning"
 ```

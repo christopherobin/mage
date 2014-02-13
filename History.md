@@ -4,7 +4,7 @@
 
 ### Logger
 
-#### Configuration change
+#### Simpler configuration
 
 The logger configuration now accepts channel range strings (eg: `>=debug`), as well as the
 previously supported arrays of range strings (eg: `["debug", "info"]`). That means that you may
