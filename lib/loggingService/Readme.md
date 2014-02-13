@@ -170,6 +170,10 @@ logging:
     html5: {}
 ```
 
+Any time you see a channel range configuration, it may be a string describing a range of channels,
+or an array of multiple of these strings. A range may contain `>`, `>=`, `<` and `<=` comparison
+operators. The special string `all` represents all channels.
+
 ### Server: Terminal
 
 ```yaml
@@ -190,11 +194,18 @@ Available themes: `default`, `dark`, `light`.
 logging:
     server:
         file:
-            channels: ["info", ">=critical"]
+            channels: [">=debug"]
             config:
+                path: "./logs"
+
+                # optional:
                 jsonIndent: 2
-                path: "./logs/"
                 mode: "0600"    # make sure this is a string!
+
+                fileNames:
+                    "app.log": "all"    # this is configured by default and you may override it
+                    "access.log": "info"
+                    "error.log": ">=warning"
 ```
 
 ### Server: Graylog
