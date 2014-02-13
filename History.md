@@ -2,6 +2,43 @@
 
 ## vNEXT
 
+### Logger
+
+#### Configuration change
+
+The logger configuration now accepts channel range strings (eg: `>=debug`), as well as the
+previously supported arrays of range strings (eg: `["debug", "info"]`). That means that you may
+reduce an array of channels down to a string in your configuration file.
+
+#### Custom log files
+
+The default behavior of the file logger has always been to log each channel to its own file (eg:
+`error.log`, `alert.log`). That default has been changed to always log everything to a single file
+called `app.log`. You can now also configure the file logger to write any channel to any file
+name. It also means that you can log a channel to multiple files in parallel. This is an example
+configuration to illustrate how this could benefit you:
+
+```yaml
+logging:
+    server:
+        file:
+            channels: [">=debug"]
+            config:
+                path: "./logs"
+                mode: "666"
+                fileNames:
+                    "app.log": []   # this lets you turn off or redefine what gets logged to app.log
+                    "dev.log": "all"
+                    "access.log": "info"
+                    "error.log": ">=warning"
+```
+
+#### File modes
+
+When configuring the file logger with a file mode, the creation of a log file would follow this file
+mode. Once created however, the file's mode would never change, even when your configuration did.
+This has been resolved by always updating the file mode when it's opened.
+
 ### Command Center and Message Stream revisited
 
 The command center and the message stream subsystems have been dramatically refactored. This cleans
@@ -27,7 +64,6 @@ install components from private repositories on github!
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | jshint            | 2.4.1  | 2.4.3  | [Release notes](https://github.com/jshint/jshint/releases) |
-
 
 ### Small improvements
 
