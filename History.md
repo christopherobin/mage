@@ -39,6 +39,21 @@ When configuring the file logger with a file mode, the creation of a log file wo
 mode. Once created however, the file's mode would never change, even when your configuration did.
 This has been resolved by always updating the file mode when it's opened.
 
+### Command Center and Message Stream revisited
+
+The command center and the message stream subsystems have been dramatically refactored. This cleans
+up quite a bit of internal spaghetti, and paves the way for further architectural improvement. With
+this refactoring a number of things have changed for the better.
+
+* Gzip compression now is always on (you can remove it from your configuration).
+* Web clients that do not support gzip will be served an unzipped version automatically.
+* If MMRP (the server-to-server event system) is not configured, the MAGE client will no longer set
+  up a message stream.
+* When a non-existing URL is received in an HTTP request, it no longer logs an error that a user
+  command could not be found. Instead it becomes a normal 404.
+* All HTTP 404 responses are now logged at the "warning" level.
+* Less use of the async library in command center, which means cleaner stack traces.
+
 ### Component
 
 We now start up a small http server that proxies requests to install components. This means we can
