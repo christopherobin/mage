@@ -72,6 +72,7 @@ install components from private repositories on github!
   `behavior` property, which has had no meaning since forever, and has therefore been removed.
 * Development mode has become more configurable. Please read
   [the documentation](./docs/walkthrough/Configuration.md) for information on how to use it.
+* The builder will now only JSON.stringify $cfg injection if the context is js.
 
 ### Bugfixes
 
