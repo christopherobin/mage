@@ -76,7 +76,7 @@ install components from private repositories on github!
 ### Bugfixes
 
 * When not running in cluster mode, depending on your environment, Savvy would not be available.
-
+* You can now disable a logger by setting it to a falsy value (ie. null, false, 0).
 
 ## v0.31.0 - Skateboard Cat
 
