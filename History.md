@@ -74,12 +74,15 @@ install components from private repositories on github!
   `behavior` property, which has had no meaning since forever, and has therefore been removed.
 * Development mode has become more configurable. Please read
   [the documentation](./docs/walkthrough/Configuration.md) for information on how to use it.
+* The client logger used to send a `client` property with the value `html5` with every report, which
+  was absolutely useless as there is no other value for it, so it's been removed.
 * The builder will now only JSON.stringify $cfg injection if the context is js.
 
 ### Bugfixes
 
 * When not running in cluster mode, depending on your environment, Savvy would not be available.
 * You can now disable a logger by setting it to a falsy value (ie. null, false, 0).
+
 
 ## v0.31.0 - Skateboard Cat
 
