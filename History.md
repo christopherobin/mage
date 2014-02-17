@@ -48,7 +48,9 @@ this refactoring a number of things have changed for the better.
 * Gzip compression now is always on (you can remove it from your configuration).
 * Web clients that do not support gzip will be served an unzipped version automatically.
 * If MMRP (the server-to-server event system) is not configured, the MAGE client will no longer set
-  up a message stream.
+  up a message stream. **WARNING**: If you are using `mage.msgServer.stream.[abort/start]`, please
+  make sure you first test if `stream` is actually there. Turning off mmrp will no longer expose
+  `stream`.
 * When a non-existing URL is received in an HTTP request, it no longer logs an error that a user
   command could not be found. Instead it becomes a normal 404.
 * All HTTP 404 responses are now logged at the "warning" level.
@@ -74,6 +76,7 @@ install components from private repositories on github!
   [the documentation](./docs/walkthrough/Configuration.md) for information on how to use it.
 * The client logger used to send a `client` property with the value `html5` with every report, which
   was absolutely useless as there is no other value for it, so it's been removed.
+* The builder will now only JSON.stringify $cfg injection if the context is js.
 
 ### Bugfixes
 
