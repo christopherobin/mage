@@ -1,0 +1,14 @@
+{
+	"name": "ident",
+	"description": "Authentication for MAGE.",
+	"local": [
+		"mage"
+	],
+	"paths": [
+		"../.."
+	],
+	"scripts": [
+		"client.js"
+	],
+	"main": "client.js"
+}

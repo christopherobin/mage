@@ -1,5 +1,1232 @@
 # Release history
 
+## v0.32.0 - Please Work Cat
+
+### Logger
+
+#### Simpler configuration
+
+The logger configuration now accepts channel range strings (eg: `>=debug`), as well as the
+previously supported arrays of range strings (eg: `["debug", "info"]`). That means that you may
+reduce an array of channels down to a string in your configuration file.
+
+#### Custom log files
+
+The default behavior of the file logger has always been to log each channel to its own file (eg:
+`error.log`, `alert.log`). That default has been changed to always log everything to a single file
+called `app.log`. You can now also configure the file logger to write any channel to any file
+name. It also means that you can log a channel to multiple files in parallel. This is an example
+configuration to illustrate how this could benefit you:
+
+```yaml
+logging:
+    server:
+        file:
+            channels: [">=debug"]
+            config:
+                path: "./logs"
+                mode: "666"
+                fileNames:
+                    "app.log": []   # this lets you turn off or redefine what gets logged to app.log
+                    "dev.log": "all"
+                    "access.log": "info"
+                    "error.log": ">=warning"
+```
+
+#### File modes
+
+When configuring the file logger with a file mode, the creation of a log file would follow this file
+mode. Once created however, the file's mode would never change, even when your configuration did.
+This has been resolved by always updating the file mode when it's opened.
+
+### Command Center and Message Stream revisited
+
+The command center and the message stream subsystems have been dramatically refactored. This cleans
+up quite a bit of internal spaghetti, and paves the way for further architectural improvement. With
+this refactoring a number of things have changed for the better.
+
+* Gzip compression now is always on (you can remove it from your configuration).
+* Web clients that do not support gzip will be served an unzipped version automatically.
+* If MMRP (the server-to-server event system) is not configured, the MAGE client will no longer set
+  up a message stream. **WARNING**: If you are using `mage.msgServer.stream.[abort/start]`, please
+  make sure you first test if `stream` is actually there. Turning off mmrp will no longer expose
+  `stream`.
+* When a non-existing URL is received in an HTTP request, it no longer logs an error that a user
+  command could not be found. Instead it becomes a normal 404.
+* All HTTP 404 responses are now logged at the "warning" level.
+* Less use of the async library in command center, which means cleaner stack traces.
+
+### Component
+
+We now start up a small http server that proxies requests to install components. This means we can
+install components from private repositories on github!
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| jshint            | 2.4.1  | 2.4.3  | [Release notes](https://github.com/jshint/jshint/releases) |
+
+### Small improvements
+
+* The `io.error.busy` event that the message server in the browser could emit has been augmented to
+  show which command could not be executed, and which batch was blocking it. It also carried a
+  `behavior` property, which has had no meaning since forever, and has therefore been removed.
+* Development mode has become more configurable. Please read
+  [the documentation](./docs/walkthrough/Configuration.md) for information on how to use it.
+* The client logger used to send a `client` property with the value `html5` with every report, which
+  was absolutely useless as there is no other value for it, so it's been removed.
+* The builder will now only JSON.stringify $cfg injection if the context is js.
+
+### Bugfixes
+
+* When not running in cluster mode, depending on your environment, Savvy would not be available.
+* You can now disable a logger by setting it to a falsy value (ie. null, false, 0).
+
+
+## v0.31.0 - Skateboard Cat
+
+### Archivist: File vault
+
+FileVault will no longer return data from files that are expired and will actively delete the files
+if their expiration time has come and gone. Previously, if MAGE started up and the file had not
+expired yet, fileVault would continue returning data from it until MAGE restarted. Also, fileVault
+will no longer delete files before setting them unless the file extension changes.
+
+### Time module
+
+The time module has received a server implementation where none existed before. This **deprecates**
+the use of `mage.core.time`. From now on, please use `mage.time.now()` instead. This function works
+on the server side as well as on the client side. A simple find and replace should allow for a
+seemless migration.
+
+One of the reasons for this transition is a future update to the time module which will make it
+possible to shift the offset and accelerate and decelerate the clock.
+
+For more information on the time API, please read [the documentation](./lib/modules/time/Readme.md).
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| highlight.js      | 7.5.0  | 8.0.0  | [History](https://github.com/isagalaev/highlight.js/blob/8.0/CHANGES.md) |
+| marked            | 0.2.10 | 0.3.0  | [Commit log](https://github.com/chjj/marked/compare/v0.2.10...v0.3.0) |
+| jshint            | 2.3.0  | 2.4.1  | [Release notes](https://github.com/jshint/jshint/releases) |
+| mocha             | 1.15.1 | 1.17.0 | [History](https://github.com/visionmedia/mocha/blob/1.17.0/History.md) |
+| istanbul          | 0.1.46 | 0.2.1  | [History](https://github.com/gotwarlost/istanbul/blob/v0.2.1/CHANGELOG.md) |
+
+### Small improvements
+
+* We now display the logged in user's name on the home screen in the dashboard.
+* When problems arise during archivist client's distribute phase, the issues returned in the 2nd
+  argument of the `distribute` callback is now of the format `{ topic, index, operation, error }`.
+* The long since deprecated `pauser` module has been removed from MAGE. Instead, please use the
+  [Locks component](https://github.com/Wizcorp/locks).
+* The `oauth` dependency was not being used anymore and has been removed.
+
+### Bugfixes
+
+* When the archivist client was distributing changes back to the server, it could crash the process
+  if a topic did not exist, or something else went wrong during a set/add/del/touch operation.
+* If cluster communication is never established (mdns / zookeeper), MMRP messages would pile up,
+  leaking memory.
+* When calling `mage.useModules()` on the server giving an already registered module, it would re-
+  register it (without problematic consequences).
+
+
+## v0.30.0 - The Persistence of Memory Cat
+
+### Builder speedup
+
+#### Bugfix
+
+Since the new and improved builder from MAGE v0.25.2, which significantly improved build times, a
+bug was introduced that created an `O(n^2)` situation. Given enough pages to build, the list of
+components to not include in a page (because of its existence in a previous page) would blow out of
+proportion. An exponentional problem like this can quickly turn a problem of size 10 to size a
+million gazillion.
+
+The cause has been tracked down and the issue has been resolved. This should not have an affect on
+the produced build, but the time it takes to create it should have been reduced (and you will
+experience this more as your project contains more pages).
+
+#### Aliases
+
+The way we have been avoiding the over-production of aliases, was by removing duplicates from our
+builds after they were generated. In some projects, that could mean that we were scanning through
+megabytes of aliases in order to throw many of them away. We now hacked around the megabytes, by
+overriding how component-builder generates the aliases to begin with. When we detect duplication,
+we bail out. This way, a lot less work needs to be done, and in one project the build-time has
+been reduced roughly 10-fold.
+
+### Memory usage tracking
+
+Messages sent over the wire through **ZeroMQ** are now tracked by sampler (size and count). Besides
+that, this release also introduces two new dependencies which will help us in tracking down memory
+leaks.
+
+**node-memwatch**
+
+Created by Mozilla, [memwatch](https://npmjs.org/package/memwatch) emits events after garbage
+collection cycles, and reports how much memory V8 is consuming. This information is now shared with
+sampler, so that we can start graphing it in production. When we notice that memory usage is growing
+or getting out of hand, we can use the next library to analyse the situation.
+
+**node-heapdump**
+
+Created by Strongloop, [heapdump](https://npmjs.org/package/heapdump) can make a full JavaScript
+memory dump to disk, in the folder of your project. This is a very expensive job (as more memory
+is being used up), so use this with care. It should not freeze your game too much, as the dump
+happens in a forked process.
+
+The memory dump created by heapdump can be imported into Google Chrome, which can display it just
+like you would normally do when making a memory dump in the browser. The dump can be created by
+sending `SIGUSR2` to a worker process. You can do this by running
+
+```bash
+kill -USR2 workerpid
+```
+
+Where you replace "workerpid" with the PID of your worker process. Please note that the master
+process does not support this, although that may change in the future.
+
+For more information on how to use heapdump, please read the Strongloop
+[blog post](http://strongloop.com/strongblog/how-to-heap-snapshots/).
+
+### Small improvements
+
+* The daemonizer no longer uses `SIGCONT` to test if a process is running, but instead signal 0,
+  which is universally recommended for this exact purpose.
+* On the client side, the asset module now exposes the `Asset` class, so a developer can use that to
+  augment the asset map on-the-fly (thanks Brian!).
+
+
+## v0.29.0 - Cloud Cat
+
+### Archivist
+
+#### Updated DynamoDB vault
+
+Updated DynamoDB vault to use latest aws-sdk. If no report is provided by a migration, it will now
+default to empty object.
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| aws-sdk           | 1.8.1  | 1.15.0 | [Release notes](http://aws.amazon.com/releasenotes/SDK/JavaScript/1497711678189204) |
+
+
+## v0.28.0 - Viking Cat
+
+### The ident module
+
+The ident module has undergone some radical changes. What you need to know is mostly limited to
+configuration however. In a nutshell, the `apps` layer in the `module.ident` configuration has been
+removed and replaced by `engines`. In there, you configure the various user identification engines
+you want to set up. The `anonymous` engine is always built-in, so you don't need to configure that
+anymore. Any app can use any engine simply by referring to its name.
+
+Please refer to the [ident documentation](./lib/modules/ident/Readme.md) for more information on how
+to use it.
+
+### Archivist
+
+#### Replace existing Tomes on the client
+
+You can now replace Tomes that already exist on the client by calling `del` before calling `set`.
+This will cause Archivist to send a whole new Tome to the client and call `Tome.destroy` on the
+existing Tome.
+
+### Small improvements
+
+* The documentation indexer (the slowest of the user commands on the built-in dashboards) has been
+  sped up by a factor of roughly 2 (potentially more on big projects).
+
+
+## v0.27.0 - Christmas Cat
+
+### Archivist
+
+#### A new Couchbase vault
+
+A while ago the [couchbase](https://npmjs.org/package/couchbase) npm module was radically refactored
+and improved. This paved the way for it to become production ready. We have therefore upgraded the
+Couchbase vault to use this new version. This should improve performance over `node-memcached`. It
+also adds sharding, making it possible to bundle a user's data in the same physical space.
+
+#### File vault creation
+
+You can now run `./game archivist-create` and `archivist-drop` to create and destroy a file vault.
+That means that an empty file vault no longer needs to be comitted into a repository with a
+placeholder file. Simply running `make all` will set it up for you.
+
+#### archivist-create & archivist-drop
+
+You can now specify which vaults you want to create or drop using the cli. If you do not specify
+any vaults, archivist will create or drop all vaults. Vault names must be comma separated with no
+spaces.
+
+```bash
+node . archivist-create mysql,testVault
+```
+
+### Config
+
+MAGE can now handle applying multiple configs specified in your NODE_ENV environment variable. This
+should be comma separated with no spaces. Configs will be applied in order from left to right. The
+main motivation for this change is allow developers to override user configs for unit testing.
+
+```bash
+@NODE_ENV=$NODE_ENV,unit-test node ./test
+```
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| couchbase         | 0.0.12 | 1.2.0  | [Release notes](https://github.com/couchbase/couchnode/releases) |
+| rumplestiltskin   | 0.0.5  | 0.0.6  | [Commit log](https://github.com/Wizcorp/node-rumplestiltskin/compare/0.0.5...0.0.6) |
+| commander         | 2.0.0  | 2.1.0  | [History](https://github.com/visionmedia/commander.js/blob/master/History.md) |
+| highlight.js      | 7.4.0  | 7.5.0  | [History](https://github.com/isagalaev/highlight.js/blob/master/CHANGES.md) |
+| marked            | 0.2.9  | 0.2.10 | [Commit log](https://github.com/chjj/marked/compare/v0.2.9...v0.2.10) |
+| mocha             | 0.13.0 | 0.15.1 | [History](https://github.com/visionmedia/mocha/blob/1.15.1/History.md) |
+| istanbul          | 0.1.44 | 0.1.46 | [History](https://github.com/gotwarlost/istanbul/blob/master/CHANGELOG.md) |
+
+### Small improvements
+
+* The syntax highligher we use in our Markdown rendering was not recognising `js` and `sh` (unlike
+  GitHub). We now circumvent this problem by renaming them before highlighting.
+* The dashboard no longer uses locks to prevent you from switching between views.
+* You may now safely use tomes as topics and indexes when using the archivist APIs.
+
+### Bugfixes
+
+* Archivist now sends the full document to the client when it didn't exist before instead of diffs.
+* The MySQL vault no longer throws an error when dropping databases that don't exist.
+* The documentation dashboard would stop working when encountering a symlink that didn't point to
+  an actual file.
+* The assets module now resolves paths starting from the game's root directory instead of the
+  directory of the process that required mage.
+* When the `cronClient` module is used without being configured, it will now return a friendly error
+  (thanks Brian!).
+
+
+## v0.26.1 - Not amused Cat
+
+The logger client uses a dependency called
+[stacktrace.js](https://github.com/stacktracejs/stacktrace.js/) to parse stack traces and make them
+consistent and resolvable to source maps. The repository got moved, and since `component` depends
+on GitHub URLs and doesn't follow redirects
+([an issue has been created](https://github.com/component/component/issues/447)), it was breaking
+installations. We now point the dependency at its new location.
+
+
+## v0.26.0 - White Mage Cat
+
+### ClientHost Expose URL
+
+The `expose` configuration is now officially optional. For many production environments however it
+is still advisable to configure. PhoneGap in particular depends on it, because its loader page (the
+initial HTML file) is hosted on the device itself, so the domain from which you host your game
+cannot be guessed.
+
+The `clientHost.getClientHostBaseUrl()` method can now take an HTTP headers object and create a URL
+based on those, for cases where there is an incoming HTTP request and configuration is not
+available.
+
+### Savvy
+
+Savvy no longer takes any configuration. It now always binds to `savvy.sock` and the workers proxy
+incoming savvy requests to that socket. That means that savvy now always runs off the same host and
+port as the application itself, avoiding cross origin problems and keeping the infrastructure
+simple and contained.
+
+### Phantom loader
+
+The Phantom Loader has been updated to have the following usage:
+
+```
+PhantomJS loader for MAGE app: game
+
+Usage: ./load.sh <options>
+
+Where <options> is:
+  --help         Prints this information
+  --url <URL>    A full URL to run with PhantomJS (default: http://localhost)
+  --path <PATH>  A path at the given URL (optional, default: /app/game)
+```
+
+### XML support
+
+We now support xml files in our web builder. Additionally, you can pass a specific context to index
+pages if you want something besides html.
+
+For example:
+
+```javascript
+apps.gadget.addIndexPage('gadget', './www/gadget/', { context: 'xml' });
+```
+
+Will now serve the xml files from www/gadget when receiving requests for app/gadget
+
+### Small improvements
+
+* There are browsers that passed the ErrorEvent object as the first argument to `window.onerror`
+  while not setting it on `window.event`. We were not catching that case, and that has been fixed.
+
+### Bugfixes
+
+* The `archivist.list` method was not functioning since v0.22.0 (apparently nobody has used this API
+  recently?). Han was nice enough to find it and fix it (massive thanks!).
+* When command center client was unable to connect to its endpoint, it would fail and keep the
+  client marked as busy, preventing other requests from going through. This was hurting the correct
+  operation of Shokoti.
+
+
+## v0.25.3 - Punchy Cat
+
+### Cache Puncher
+
+We have created and open sourced a little component called
+[cachepuncher](https://github.com/Wizcorp/cachepuncher). Its purpose is to generate always unique
+strings that can be used to fool the browser cache into thinking every HTTP request it makes is
+unique. This will stop even the most aggressive browser caches from ruining your day.
+
+The component has been integrated in these three places:
+
+1. The page loader (since it has its own hash-based caching mechanism).
+2. The command center.
+3. The asynchronous event message stream.
+
+### Alias killer
+
+Our game builds are generated by [component-builder](https://github.com/component/builder.js) with a
+thin Mage sauce around it. One of the open bugs on component-builder is an
+[issue](https://github.com/component/builder.js/issues/117) where way too many aliases for
+components are being registered, causing incredible bloat in the generated build. Because of our
+Mage sauce around the builder, we are able to correct some of this and remove duplicate aliases from
+the builds that component-builder gives us.
+
+In this Mage release, we have done just that. The result on one Wizcorp game was that the entire
+game client code shrank (uncompressed) from `3.1 MB` to `2.2 MB`. That's around 30% saved! The
+number of `require.alias` calls was reduced from `14392` to `2065`.
+
+The effects of this are as follows:
+
+1. The Mage loader stores the smaller downloads in localStorage (generally consumes 2 bytes per
+   character), so we should have faster caching and will be less likely to hit the storage quota.
+2. Less `require.alias` calls means better performance during startup.
+3. Less memory should be consumed by the script.
+4. Download speed is not affected too much, as gzip was taking care of compressing duplication.
+
+
+## v0.25.2 - Gimme! Cat
+
+### Component builder speedup and source map support
+
+#### Speed boost
+
+The build process for components is now much more elegant and smart, yielding a pretty much **2x**
+performance boost across the board.
+
+#### Source maps
+
+But the real news is that we now support source maps. We have released version v0.3.0 of
+[component-uglifyjs](https://npmjs.org/package/component-uglifyjs) which you are probably already
+using a previous version of in your games. This new version supports source maps, and you can enable
+it by adding an option to the plugin registration:
+
+```js
+builder.use(uglify.withOptions({ mangle: true, outSourceMap: true }));
+```
+
+Just adding that `outSourceMap` boolean will make this work, and whenever you receive a stack trace
+on an error from a minified source on a browser (see also: "Caveats"), the stack will be unwrapped
+for you into readable symbols, files, line number and horizontal position. So **don't forget** to
+update your version of `component-uglifyjs` and make your stack traces more awesome today.
+
+#### Caveats
+
+Before jumping in the air in pure bliss, there are a few things you must be aware of.
+
+1. Only few browsers support error objects at the window `error` event. That means that uncaught
+   errors, while logged, often do not carry an error object and therefore not a stack trace either.
+   Best results so far have been achieved with Chrome.
+2. Not every browser supports SourceURL, which we need in order to identify which file a frame in
+   the stack trace originated in. See also
+   [Mozilla bugtracker](https://bugzilla.mozilla.org/show_bug.cgi?id=583083)
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component         | 0.17.2       | 0.18.0       | [History](https://github.com/component/component/blob/0.18.0/History.md) |
+| component-builder | 0.9.0        | 0.10.0       | [History](https://github.com/component/builder.js/blob/0.10.0/History.md) |
+| tomes             | 0.0.17       | 0.0.18       | [Commit log](https://github.com/Wizcorp/node-tomes/commits/0.0.18) |
+
+### Minor improvements
+
+* The channel reference in the logger documentation has been restructured to be more readable.
+* The filevault has been made a little bit more robust against race conditions. More work in this
+  area is expected.
+
+### Bugfixes
+
+* A bug in the message server client could cause user commands to be in each other's way while
+  in free mode, as is the case on the dashboard (since v0.25.0).
+* If `make build` failed, it would likely not display an error.
+* If `make deps-component` failed, it would still terminate with a 0 exit code.
+* If mage would fail during setup, it would still terminate with a 0 exit code (since v0.24.0).
+
+
+## v0.25.1 - I Can Handle This cat
+
+### Event emission and sharding
+
+Sharding on the client vault was usually done in one of these three patterns, as defined in a game's
+`/lib/archivist/index.js` file:
+
+```js
+// pattern 1: only playerId may read this, changes will be sent in realtime
+
+exports.inventory = {
+	index: ['playerId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return value.index.playerId;
+			}
+		}
+	}
+};
+
+// pattern 2: two friends may read this, changes will be sent to both in realtime
+
+exports.friendship = {
+	index: ['playerA', 'playerB'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return [value.index.playerA, value.index.playerB];
+			}
+		}
+	}
+};
+
+// pattern 3: everybody may read this, but changes won't be broadcast to anyone
+
+exports.cardDefinitions = {
+	index: [],
+	vaults: {
+		client: {
+			shard: function () {
+				return true;
+			}
+		}
+	}
+};
+```
+
+The only way to allow someone else to read your document, was to give up the ability to receive
+realtime change propagation. This has been resolved by augmenting the shard format as follows:
+
+```js
+// pattern 4: everybody may read this, changes will only be sent to playerId in realtime
+
+exports.inventory = {
+	index: ['playerId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return [value.index.playerId, true];
+			}
+		}
+	}
+};
+```
+
+### Archivist client
+
+Due to the way archivist work, when the developer would not set read options on a topic you could get
+a weird situation where writing a value using the `json` media-type would be converted to a `tome`
+media type on next read on the server, but not on the client. Modifying this tome would then cause
+diffs to be pushed on the client side with no way to apply them (as the `json` media type doesn't
+have a method to apply diffs). Trying to apply diffs to types on the client that doesn't support them
+will now raise a warning in the console.
+
+#### What to do when I get that warning?
+
+Either make sure to `Tome.conjure` your value when storing it if it is a tome, otherwise if you don't
+want that value to be "tomified" on read, setup the correct read options in your topic.
+
+### Bugfix: Android and xhr.abort
+
+It seems that on Android (at least 4.x) the following error happens, and this has happened on one of
+our titles since they started calling `http.abort()`:
+
+```
+Uncaught InvalidStateError: Failed to read the 'status' property from 'XMLHttpRequest':
+the object's state must not be OPENED.
+```
+
+The hypothesis is that `xhr.abort()` calls the readystatechange event synchronously, setting
+readystate to 4. Our callback was not yet reset, causing the request completion to continue
+executing and using `xhr.status`. According to w3c
+[that is completely valid](http://www.w3.org/TR/XMLHttpRequest/#the-status-attribute), but this
+browser doesn't like it, causing uncaught errors. This bugfix should address this race condition.
+
+
+## v0.25.0 - Piggyback Cat
+
+### Archivist
+
+#### Sanity checks
+
+We have made the tests that get applied when referring to a topic and index even stricter, by also
+doing type checks on every single value. Topics may only be strings, and the values provided in an
+index may only be strings and numbers. If these rules are broken in development mode, an early error
+is now issued.
+
+#### Client side events
+
+Archivist on the client is now an event emitter. After an operation is completed, archivist emits
+the topic as the event name with opName and vaultValue. This enables game developers to set up
+event listeners to handle the creation of topics on the client side. Here's an example:
+
+```javascript
+mage.archivist.on('raidBoss', function (opName, vaultValue) {
+	exports.raidBosses = vaultValue.data;
+});
+```
+
+#### Bugfixes
+
+An `archivist.del()` operation was not setting the value as initialized. The result of this would be
+that if a `del` was executed without being preceeded by a `get`, a follow-up `get` in the same
+transaction (state instance) would still hit the datastore, rather than accept that the value has
+been deleted.
+
+Fixed an issue with diff distribution that could occur if distribute was called more than once
+during a request.
+
+Fixed an issue with archivist component where `rawList` was not properly being aliased to `list`.
+
+### Shokoti
+
+The `cronClient` module that you use to talk to Shokoti, now allows for timezones *per job*. You
+can use this by calling `setJob` with one more argument. Shokoti will also give you a message
+object, which will contain some interesting information. Example:
+
+```js
+var timezone = 'Asia/Tokyo';
+
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', timezone, function (state, message, cb) {
+	// generate ranking at midnight (Tokyo time)
+	logger.debug('Time on the Shokoti server:', message.meta.localTime);
+	logger.debug('Timestamp of this job execution:', message.meta.thisRun);
+	logger.debug('Timestamp of the next scheduled job execution:', message.meta.nextRun);
+
+	cb();
+});
+```
+
+The `timezone` argument is optional, as is the `message` argument in your callback, so the following
+still works:
+
+```js
+mage.cronClient.setJob('generateRanking', '0 0 0 * * *', function (state, cb) {
+	// generate ranking at midnight (using whatever timezone Shokoti has been configured with)
+	cb();
+});
+```
+
+If you want to use Shokoti with timezones, you must make sure you are using
+**Shokoti v0.3.0 or later.** Please check with your sysadmin to make sure **all** environments you
+deploy on have the right version of Shokoti for you.
+
+Other improvements:
+
+* Cron client now logs a notice when jobs start and complete (so you **no longer have to do this**
+  yourself).
+* You can now also configure a different endpoint for Shokoti to call back to, although by
+  default it will still use your application's exposed URL.
+
+### Logger
+
+The client side logger will now serialize objects to parseable JSON even if they contain circular
+references. It also knows how to deal with special objects like `window`, text nodes and DOM
+elements. When serializing a DOM element, it will generate a querySelector compatible path to the
+element and log it. For example:
+
+```js
+var btn = document.querySelector('button');
+
+btn.onclick = function () {
+	var view = document.querySelector('.view[inventory]');
+
+	try {
+		openView(view);
+	} catch (error) {
+		mage.logger.error('Player clicked button', btn, 'to open', view, 'but failed:', error);
+	}
+};
+```
+
+And you would see a server side log similar to this:
+
+```
+w-13121 - 18:16:04.547     <error> [mage-app html5] Player clicked button
+    "[DOM Element (#navInventory)]" to open
+    "[DOM Element (html > body > div.mage-page > div.inventoryView)]" but failed:
+    Error: Cannot open inventory while in tutorial
+  data: {
+    "error": {
+      "name": "Error",
+      "message": "Cannot open inventory while in tutorial",
+      "stack": [
+        "Error: Cannot open inventory while in tutorial",
+        "    at openView (<anonymous>:2:29)",
+        "    at HTMLButtonElement.btn.onclick (<anonymous>:6:3)"
+      ]
+    },
+    "clientInfo": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1707.0 Safari/537.36"
+    },
+    "client": "html5"
+  }
+```
+
+> To generate the selectors, we use the
+> [unique-selector](https://github.com/ericclemmons/unique-selector) component.
+
+### Message server client
+
+#### Command modes
+
+The message server client has traditionally always executed user commands on a per-batch basis. In
+cases where you need to make sure a user command gets executed even if another has already been
+sent to the server, developers were able to use the `mage.msgServer.queue(callback)` method. Now,
+we open up the door to choosing between two modes on the message server: *blocking* and *free*.
+
+##### Blocking mode
+
+This is still the default behavior, and is how the message server has always operated: one batch of
+commands at a time. This protects your application from button hammering, where one player tapping
+a "Quest" button 20 times does not trigger 20 quest executions.
+
+##### Free mode
+
+This allows user commands to *always* be executed. If a user command is currently already being
+executed, the next one will be delayed until the current one returns. In other words, it is
+automatically queueing. On the dashboard, this has been enabled by default.
+
+##### API
+
+You can change between these two modes at any time, by using:
+
+```javascript
+var mage = require('mage');
+
+mage.msgServer.setCmdMode('free'); // or 'blocking'
+```
+
+#### Piggyback
+
+The message server already exposes a `queue(callback)` method to delay execution of a user command
+until the HTTP channel is available again, in order to avoid `busy` errors. Often that deferred
+execution will still affect the user experience in a negative way, by blocking the channel yet
+again. There are use cases where all you want to do is send a user command with the next batch
+(whenever that may be). To accomplish that, we have added a `piggyback(callback)` method.
+
+The callback will be fired immediately, and your user command call will be registered. It will
+however not be sent to the server yet. Instead it will be queued and will be sent with the next
+batch.
+
+### Component changes
+
+The Tomes and Rumplestiltskin components required by the archivist client are now included by
+referring to their repositories. This avoids issues that arise when a component is included in a
+game's package.json file which causes it to not appear in MAGE's node_modules directory.
+
+### Dependency updates
+
+| dependency        | from         | to           | changes   |
+|-------------------|--------------|--------------|-----------|
+| component-emitter | 1.0.1        | 1.1.0        | [Changelog](https://github.com/component/emitter/blob/master/History.md) |
+
+### Minor improvements
+
+* Logs about invalid hostnames for mmrp nodes have been filtered to leave only relevant ones.
+
+### Bugfixes
+
+* If an exception happened before mage tasks are setup, an exception would be thrown by `mage.quit`
+  about `this.getTask()` being `undefined`. This fixes it.
+* When the process was killed when a user terminal disconnected, it would leave .sock files behind.
+  This was due to MAGE not handling the SIGHUP signal, which has been addressed.
+* The `node` object in the serviceDiscovery module was referring to `../../../mage` instead of
+  `../mage` which by some incredible luck was working in most conditions, but not when
+  `node_modules/mage` is a symbolic link to a folder that wasn't named `mage`.
+* A very rare log in `serviceDiscovery/node.js` was not using the right syntax causing an exception.
+
+
+## v0.24.2 - Tomes Hotfix
+
+Tomes got updated to v0.0.17, as it fixes a bug that one if our apps has been experiencing. This
+version of Tomes works around that (seemingly) browser bug.
+
+
+## v0.24.1 - CommandCenter Client Hotfix
+
+CommandCenterClient now outputs more useful logs, and no longer auto-retries after network errors.
+
+
+## v0.24.0 - Bullettime Cat
+
+### Shutdown changes
+
+Tasks can now implement a shutdown function that will be called during mage shutdown. Great care
+should be taken so that those functions never fail as it will prevent mage's master process from
+fully shutting down. It allows mage core modules to have possible async work done before exiting.
+
+**Breaking change:**
+
+The signature of `mage.quit` was changed from `quit(graceful, exitCode)` to only `quit(exitCode)`.
+The concept of graceful shutdown has been scrapped and it is now considered that every shutdown
+should be as graceful as possible. If your project ever calls `mage.quit`, please update it now.
+
+### Speed up dashboard builds
+
+The component builder has been made much more efficient, allowing builds with many component pages
+(ie: dashboard) to build an order of magnitude faster.
+
+### Client logger
+
+The disableOverride configuration option in the client logger now matches the documentation and also
+disables uncaught exception handling. The relevant config entries are:
+
+```yaml
+logging:
+    html5:
+        console:
+            disableOverride: true
+        server:
+            disableOverride: true
+```
+
+### Ident module
+
+Added `registerPostLoginHook` and `unregisterPostLoginHook` functions to the `ident` module to setup
+hooks after login that are called with the state and a callback, if the hook sends an error to the
+callback then the login is marked as failed and the session reset. For example if you wanted to write
+a small module to ban users:
+
+```javascript
+// in my module setup, a small hook is added to check if a user is banned and deny access
+// first parameter is the app name, an engine name can be provided as a second argument
+// to target a specific engine but is optional
+mage.ident.registerPostLoginHook('game', function (state, cb) {
+	var index = { actorId: state.actorId };
+	var options = { optional: true };
+
+	state.archivist.get('banList', index, options, function (err, data) {
+		if (err) {
+			return cb(err);
+		}
+
+		// return an error if the user is banned
+		if (data) {
+			return cb(new Error('User "' + state.session.actorId + '" is banned.'));
+		}
+
+		// all is fine, let the login function succeed (or go to the next hook in the list)
+		cb();
+	});
+});
+```
+
+### Archivist improvements
+
+* If you configure a topic with an index that is not an array, MAGE will now quit with an error on
+  startup.
+* In development mode (as the check is quite heavy), if you try to access a document using an
+  incomplete or badly named index, it will be detected and an emergency will be logged.
+
+### Client configuration
+
+When the browser requests a page through MAGE, it can send along a so called "client config". This
+contains up to three values:
+
+- language (fallback: "en")
+- screen resolution (fallback: 0x0)
+- pixel density (fallback: 1)
+
+If any of those values was not provided, the fallback value would be used. These fallback values
+have been updated to better reflect the capabilities of the application. Most importantly, the
+fallback language is no longer English, but the first configured language for the application.
+
+It is also important to note, that previously the fallback resolution was 1x1. This would create
+problems when a device would report its resolution as 0x0 (which happened). Therefore, the fallback
+resolution has been reduced to 0x0.
+
+### Minor improvements
+
+* Removed the rethrow function from the Router in the dashboard as well as the try catch so that
+  hopefully if / when you get errors you will be able to track them down easier.
+* Removed the fixup to the rootPath of MAGE that occured when you ran a MAGE game outside of its
+  directory. This is necessary to allow developers to run unit tests. Now that we have a Makefile
+  all interactions with your game should take place in the game's root directory (ie. /home/bt/game)
+* We now also log the exit code and process run time on shutdown.
+* The configuration provided in the project template now sets up a 1-worker cluster, rather than
+  running in solo-mode.
+
+### Dependency updates
+
+| dependency     | from         | to           | changes   |
+|----------------|--------------|--------------|-----------|
+| node-memcached | 0.2.5        | 0.2.6        | [Changelog](https://github.com/3rd-Eden/node-memcached/blob/master/CHANGELOG.md#026) |
+| highlight.js   | 7.3.0        | 7.4.0        | [Website news](http://highlightjs.org) |
+| node-semver    | 2.1.0        | 2.2.1        | [Commit log](https://github.com/isaacs/node-semver/commits/master) |
+| jshint         | 2.1.11       | 2.3.0        | [Release notes](https://github.com/jshint/jshint/releases) |
+
+
+## v0.23.5 - LDAP Cat
+
+### Module dependency chains
+
+MAGE now officially supports calling `mage.useModules('abc')` from other modules on the server.
+Dashboard now always calls `mage.useModules('ident')`, so **you no longer have to** (but you may).
+
+### Identification module updates
+
+* The identification module now provides a tool on the dashboard to create users for the `userpass`
+  engine.
+* The `userpass` engine now use salts by default and supports `pbkdf2` hashing.
+* Added a `ldap` engine.
+* If the game is not configured correctly, an error will be displayed on the dashboard.
+* When using the `anonymous` engine, the dashboard will now auto-login you.
+* Updated some of the `mage.ident` server API functions to allow admin users to poll/query data
+  on different apps instead of the current one.
+
+You **will need to update your configuration**. Everything that was under:
+
+```yaml
+module:
+	ident:
+		# your app names and config here
+```
+
+Needs to move under an entry called `apps`:
+
+```yaml
+module:
+	ident:
+		apps:
+			# your app names and config here
+```
+
+### Minor improvements
+
+* Expired sessions are no longer logged as a warning, but are now marked at the "debug" level.
+* msgServer now decodes the URI when handling routes so it can deal with routes with
+  characters that need to be escaped, like spaces.
+* .sock files are cleaned up if `process.exit()` is called. Mocha calls process.exit when doing unit
+  tests and without this change it leaves .sock files laying around. Savvy already listens for
+  process.exit, msgServer now matches that behavior and performs the same task whether it's
+  mage#shutdown or process#exit.
+* The shard rights management now allow admins to access all entries if no shard function is defined.
+* The state object provides a `canAccess(level)` method that can be used for checking user rights in
+  user commands. It returns `true` if the user has at least that level of access.
+* Archivist cache is now ignored whenever displaying a document in the archivist dashboard, ensuring
+  you will always see the latest version.
+
+### Bugfixes
+
+* The `archivist.assertTopicAbilities` function was failing to detect if the topic itself was missing
+  and return a cryptic error to the user when that happened.
+
+### Dependency updates
+
+| dependency    | from         | to           |
+|---------------|--------------|--------------|
+| graylog2      | 0.1.0        | 0.1.1        |
+
+
+## v0.23.4 - Cat'n Hook
+
+### Replaced WebApp firewall with request hooks
+
+The WebApp firewall function has been deprecated and replaced with a more generic request hook API.
+The idea is to register request hooks to an app which will be executed on each request. If all is
+fine, the request will proceed as per normal. However if there is a problem, the hook may return a
+response code, header and message body. This could essentially be used for any form of request
+checking.
+
+Setting the `app.firewall` function will register it as a request hook and work as before, with a
+deprecation warning.
+
+To implement a device compatibility handler for webkit support you would do something like this:
+
+```javascript
+var useragent = require('useragent');
+var game = mage.core.app.get('game');
+
+game.registerRequestHook(function (req, path, params, requestType) {
+	// By filtering by requestType, we improve performance of all commands
+
+	if (requestType === 'webapp') {
+		if (!useragent.is(req.headers['user-agent']).webkit) {
+			return { code: 303, headers: { 'Location': 'http://some.url.com/' }, output: null };
+		}
+	}
+});
+```
+
+### Identification module
+
+An ident module has been added to MAGE, providing anonymous (development mode only) and classic user
+and password login. Usage is fairly simple, first add some configuration based on your app to enable
+the right engine(s):
+
+```yaml
+module:
+	ident:
+		# here is your app name, usually game
+		game:
+			# like archivist, any name will do here, allows you to swap engines easily
+			main:
+				# available engine types for now are "anonymous" and "userpass"
+				type: userpass
+				config:
+					# the access level provided to the user, if not provided default to the lowest
+					access: user
+					# default topic is credentials but you can override it here, that topic expects
+					# the index to be ['username'] and contain a 'password' field in the data
+					#topic: user
+			# add another config for anonymous login
+			dev:
+				type: anonymous
+				config:
+					access: user
+```
+
+Once that config has been set up, you will just need to run the following code to log in.
+
+```javascript
+// Here we use the "main" engine, which was defined as userpass. The "userpass" engine expects a
+// username and password. If you were calling the "dev" engine instead, you could provide an access
+// level. See the engines' documentation for more details.
+
+mage.ident.check('main', { username: 'bob', password: 'banana' }, function (err) {
+	if (err) {
+		// display some error to the user
+		return;
+	}
+
+	// login was successful, display the game
+});
+```
+
+The dashboard is by default plugged on the anonymous engine. You can set it up to use username and
+password by overriding the default configuration. The engine is expected to be named `default`.
+
+For now that's it, as more engines make their way in, you will also have access to components to
+help with the heavier authentication frameworks. Read the
+[ident documentation](lib/modules/ident/Readme.md) for more details.
+
+**Please note**: If you are using dashboards, you *must* call `mage.useModules('ident');` in your
+server code, else you will not be able to log in.
+
+### Minor improvements
+
+* Added event emission `panopticonRegistered` in sampler when panopticon instances are created.
+* You can now get the name of the app from your state object with `state.appName` (during user
+  commands).
+* You can also get the current access level of the user in the state object using `state.access`
+  (during user commands).
+* During shutdown, we could end up in a race condition that would log a ZeroMQ disconnect error.
+* Archivist now gives a JSON.parse error instead of a "No encoder found" error when JSON data cannot
+  be parsed.
+* Logging in the command center has been improved: better timing for batches and replaced some
+  `info` logging with `debug`.
+
+
+## v0.23.3 - TP Cat
+
+### msgServer interconnections
+
+The way master and worker connected through ZeroMQ was a bit too strict. When there was a version
+mismatch, the master and worker would refuse to share events. This is a bit silly, as we know that
+after a `make reload` operation the version on the workers may have changed. When this happens, the
+master will keep its previous version, but allow the mismatch with its worker to happen.
+
+When master processes communicate with their peers however, the check is still strict: the
+application name and version *must* match in order for them to connect and communicate messages.
+
+We also made it so that relays will now explicitly disconnect from relays that went down. Not doing
+this will result in ZeroMQ trying to reconnect to the missing relay indefinitely. For the longest
+time, ZeroMQ did not implement a `disconnect` function, but recently this was added and received
+support in ZeroMQ for Node.js.
+
+### Minor improvements
+
+* When the logger sends a browser error to the server, it will now include the user agent string.
+  We also took the opportunity to make the log data structure for these cases a bit flatter.
+* The configuration files that come with the bootstrap template have been annotated with
+  explanations about the meaning of each entry.
+
+### Critical MySQL bugfix
+
+The previous release (v0.23.2) introduced support for MySQL connection pools. This introduced a bug
+when trying to use `make datastores` (when a MySQL vault was configured), because the database
+creation would no longer be able to extract the database name from the configuration. This has been
+addressed.
+
+
+## v0.23.2 - Basketball Cat
+
+### Security advisory
+
+Node.js 0.8.26 fixes a critical security bug in the HTTP server. Read more about it [on the Node.js
+website](http://blog.nodejs.org/2013/10/22/cve-2013-4450-http-server-pipeline-flood-dos/).
+
+### New client-side msgServer error: "maintenance"
+
+The msgServer client can now also yield a `maintenance` error (thanks Tien) during the execution of
+a user command. On the http transport, this happens when a "503 Service Unavailable" is encountered.
+Your game MUST take this into account or risk locking up when this error is encountered. The
+following code can be added to where you set up the rest of your msgServer event handlers:
+
+```javascript
+mage.msgServer.on('io.error.maintenance', function () {
+	// Do whatever logic your game requires for maintenance mode.
+	// In this case, we retry the user command and we use a long timeout, because our server is
+	// either under heavy load or under real maintenance. That means that this may take a while, and
+	// we don't want to needlessly overwhelm the servers with requests.
+
+	window.setTimeout(function () {
+		mage.msgServer.resend();
+	}, 30 * 1000);
+});
+```
+
+### Support for CORS
+
+If you want your application to span multiple domains, you need to enable CORS. This can now be
+enabled through your configuration. For more information, please read the
+[Message Server documentation](lib/msgServer).
+
+### Documentation
+
+A new document has been added: [Taking your MAGE game to production](docs/production).
+
+A number of small errors in the various parts of the documentation have been addressed.
+
+### Makefile
+
+In our ongoing efforts to make installation, CI and deployment simpler, we have revisited the
+behavior of `make clean`. It used to clear the npm-cache. That is no longer the case. Now, when you
+run `make clean`, it removes your `components` and `node_modules`. However, it will *not* remove
+them if they are part of your git repository.
+
+We have also renamed `clean-npm` to `clean-deps` (which now includes components), and we have merged
+`clean-coverage` and `clean-complexity` into `clean-report`.
+
+We have reordered the commands that `make deps` runs to install components *after* git submodules,
+(thanks Micky) since the building of components might depend on those. The previous version could
+fail to install your dependencies on a fresh install of your project.
+
+Because of these changes, **please run the following command** and commit this to your repository:
+
+```bash
+cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
+```
+
+### MySQL update and pool connections
+
+The `mysql` node module has been updated from `2.0.0-alpha7` to `2.0.0-alpha9`. It means that the
+vault now uses connection pools, see here for more details:
+[Pooling Connections](https://github.com/felixge/node-mysql#pooling-connections).
+
+The `pool` property is now available on the vault object, the `connection` property is still available
+but now links to the pool itself and is deprecated. For people updating, calling `query()` directly
+on the pool property instead of connection will work the same as before.
+
+If you have series of queries you want to run on a single connection (for performance or transaction
+reasons) then the following code can be used:
+
+```javascript
+function myAwesomeFunction(state, cb) {
+	// get the vault as usual, but take the pool
+	var pool = state.archivist.getWriteVault('mysql').pool;
+
+	// ask for a connection
+	pool.getConnection(function (err, conn) {
+		if (err) {
+			return cb(err);
+		}
+
+		async.series([
+			function (callback) {
+				conn.query('SELECT something FROM somewhere', function (err, rows) {
+					if (err) {
+						return callback(err);
+					}
+
+					// do something with those rows ...
+
+					callback();
+				});
+			},
+			function (callback) {
+				conn.query('UPDATE somewhereelse SET anotherthing = anothervalue', callback);
+			},
+			// maybe more ...
+		], function (err) {
+			// we are done, release the connection asap, allows other peoples to use it
+			conn.release();
+
+			// then we are done, using the connection at this point will not work
+			cb(err);
+		});
+	});
+}
+```
+
+### Minor improvements
+
+* The File vault is now a bit more robust to handling failed or half-completed writes.
+* We made the log message a bit friendlier when building a component with "files" attached.
+* We moved service discovery configuration defaults into a file, so they actually show up when you
+  display config.
+* For service discovery, mDNS service names longer than 63 bytes are now converted to a sha1 hash
+  instead of generating an error, a warning will be displayed to the user when it is the case.
+* The dashboard doc browser now supports anchors, just hover to the left of a title to get a copyable
+  anchor, also anchors can be used for links between documents the same as in GitHub.
+* The daemonizer would error on `reload` if the app was not yet running. Now it will simply start
+  the app instead.
+
+### Dependency updates
+
+| dependency    | from         | to           | notes           |
+|---------------|--------------|--------------|-----------------|
+| tomes         | 0.0.15       | 0.0.16       |                 |
+| node-uuid     | 1.4.0        | 1.4.1        |                 |
+| aws-sdk       | 1.5.2        | 1.8.1        |                 |
+| elasticsearch | 0.3.11       | 0.3.12       | Renamed to "es" |
+| mysql         | 2.0.0-alpha7 | 2.0.0-alpha9 |                 |
+| js-yaml       | 2.1.1        | 2.1.3        |                 |
+| redis         | 0.8.4        | 0.9.0        |                 |
+
+### Bugfixes
+
+* When writing data from the archivist client to the server, it would not pretty-stringify JSON and
+  tomes. This has been fixed, at the slight cost of an increased transport size. This should however
+  only affect the dashboard, since no data mutations are allowed to be made by game clients. (thanks
+  Almir)
+
+
 ## v0.23.1 - Derp Cat
 
 ### Bootstrap improvements
@@ -20,7 +1247,7 @@ unless `index.html` is hosted elsewhere (which is the case with PhoneGap for exa
 In v0.23.0 we forgot to update the default precommit command to the new Makefile test-target, so
 please run this one more time:
 
-```sh
+```bash
 cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
 make dev
 ```
@@ -99,7 +1326,7 @@ and should make it more straight forward to get started, for developers who are 
 
 Do this once and commit the changes to your project:
 
-```sh
+```bash
 cp ./node_modules/mage/scripts/templates/create-project/scripts/githooks.js ./scripts/githooks.js
 cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 ```
@@ -109,7 +1336,7 @@ cp ./node_modules/mage/scripts/templates/create-project/Makefile ./Makefile
 Because the make commands changed for linting staged files, the pre-commit git hook should be
 rewritten for each developer working on the project. Each developer should run:
 
-```sh
+```bash
 make dev
 ```
 
@@ -219,7 +1446,7 @@ entry which configuration file it came from. Also, when printing configuration, 
 output is now a distinct list of all the files that made up this configuration. This file list is
 output on `stderr`, so it does not affect the output when you run:
 
-```sh
+```bash
 ./game show-config archivist > ./archivist-config.json
 ```
 
@@ -283,7 +1510,7 @@ MAGE creates for each page that gets built.
 
 Having access to the builder allows you to register plugins. For example:
 
-```sh
+```bash
 npm install -s component-uglifyjs
 npm install -s component-less
 ```
@@ -555,7 +1782,7 @@ and *stderr*. The reason for this, is so that CLI commands that output content c
 You can now output the working configuration of the application through the `show-config` command.
 By optionally given it a trail, you can output a sub-configuration. For example:
 
-```sh
+```bash
 ./game show-config archivist.vaults
 ```
 
@@ -1233,7 +2460,6 @@ This proved to fail on some machines, so here is an gawk replacement which also 
 ls ./ | gawk '{newName=gensub(/?/,"#","",$0); system("git mv \""$0"\" \""newName"\"")}'
 ```
 
-
 ### Logger
 
 Terminal and File loggers now prefix the PID with "m-" or "w-" to indicate if the process is master
@@ -1291,7 +2517,6 @@ To enable this, simply leave out the base URL configuration from your config fil
 MAGE will automatically fall back to built-in asset hosting for asset contexts that do not have a
 configured base URL.
 
-
 ### User command system overhaul
 
 #### Access levels
@@ -1330,7 +2555,6 @@ mage.session.register(state, actorId, language, { access: 'user' }, function (er
 ```
 
 Make sure your game executes that logic correctly.
-
 
 #### Code removal
 
@@ -1429,20 +2653,17 @@ for file in $(ls */usercommands/*.js | grep -v import); do
 done
 ```
 
-
 ### Configuration
 
 The new configuration loader is here! Read all about it [here](./lib/config/Readme.md). There are
 some big changes in how configuration is loaded, so you *will* need to read this. The resulting
 object is essentially the same though, so conversion should be simple to do.
 
-
 ### MMRP
 
 Fixed a bug with msgServer that caused events to not be emitted on the client when an event was
 stored after an event had already been emitted to the client and the communication channel
 disconnected.
-
 
 ### ClientHost configuration
 
@@ -1511,19 +2732,16 @@ to upgrade!
 
 ## v0.12.1
 
-
 ### `useModules` enhancement
 
 You asked, and we listened! `useModules` can now take arrays as arguments. You can still have as
 many arguments as you like, and you can mix and match arguments with module names and arrays of
 module names however you like.
 
-
 ### Bot module
 
 The bot module finally landed in MAGE (`lib/modules/bot`). It's accompanied by a
 [./lib/modules/bot/Readme.md](./lib/modules/bot/Readme.md) that should help get you started.
-
 
 ### Moved User Command Response Cache into Archivist
 
@@ -1567,7 +2785,6 @@ A number will be used for TTL, false will indicate that you don't want to apply 
 
 ## v0.12.0
 
-
 ### Mithril is now called MAGE!
 
 This also means that the module you require is no longer called `mithril`, but is now called `mage`.
@@ -1585,19 +2802,16 @@ To replace selected instances (Linux Flavour):
 for file in $(grep "mithril" -r ./* | awk -F '\ |:' '{print $1}' | uniq); do sed -i "s/mithril./mage./g ; s/window.mithril/window.mage/g; s/var mithril [\ ]*=/var mage =/g; s/require('mithril')/require('mage')/g; s/\/mithril\/node_modules/\/mage\/node_modules/g" $file; done
 ```
 
-
 ### Archivist
 
 DataSources and PropertyMaps have been superceded by the Archivist library and module. You are
 highly encouraged to use Archivist from now on, since DataSources will be removed in a future
 release. Learn more about Archivist in [./lib/archivist/Readme.md](./lib/archivist/Readme.md).
 
-
 ### Daemonization
 
 Mage now supports daemonization out-of-the-box. That means that you can control your application's
 runtime by passing a command on your command line. Run `node . help` to get a list of commands.
-
 
 ### Module removal
 
@@ -1617,7 +2831,6 @@ The following modules have been removed:
  * sns
 
 You can retrieve them from the v0.10.2 of Mage if you still want to use them.
-
 
 ### Module loading
 
@@ -1665,12 +2878,10 @@ var mage = require('mage').addModulesPath('./modules').useModules(
 This is a breaking change, but easy to implement. `addModulesPath` can optionally take more than one path as
 arguments, although it would be unusual to use more than one.
 
-
 ### Deprecated: app.expose()
 
 Apps are now automatically exposed, so calls in your bootstrap sequence to `myApp.expose` and
 `tools.expose` should be removed.
-
 
 ### Booting mage
 
@@ -1717,7 +2928,6 @@ mage.setup(configFiles);
 
 This is verbose, and not to everyone's taste, but it's more in line with how node.js core modules work.
 
-
 ### A new logger
 
 Mage has been outfitted with a new logger. It is backwards compatible. However, in order to make
@@ -1734,7 +2944,6 @@ logging there as well.
 
 When you use the logger module, you should always access the logger through `mage.logger`, **not**
 `mage.core.logger`, which is now reserved for MAGE's internal use.
-
 
 ### Sampler
 
@@ -1771,7 +2980,6 @@ where the key-val pairs in `"intervals"` are named intervals and their durations
 socket or address to serve sample data from (this may be optional in the future, as what you see should be the
 default), and `"sampleMage"` turns on the sampling of mage internals.
 
-
 ### Smarter multi-server connections
 
 Servers (master process) connecting to other servers (mmrp) will now validate that their peer is
@@ -1782,7 +2990,6 @@ This feature is useful when doing a rolling restart of your game, when launching
 You wouldn't want the new version to start connecting to the running instances that are being shut
 down.
 
-
 ### Built-in JSON linting
 
 If there is a parse error in your configuration JSON file(s), the lint-result will be output
@@ -1791,7 +2998,6 @@ immediately. This should save you time when trying to find the error.
 You may also access this JSON parser helper yourself, by calling:
 `mage.core.helpers.lintingJsonParse('jsonstring');`. This function will throw an Error
 containing the human readable lint-information in its `message` property.
-
 
 ### Dependency changes
 
@@ -1824,7 +3030,6 @@ Updated from v2.2.0 to v2.3.0
 
 The epipebomb module was added to suppress EPIPE warnings on stdout and stderr, which are innocent,
 but regularly happen when you start piping your output to another process (like grep).
-
 
 ### Small refactoring
 

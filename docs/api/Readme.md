@@ -4,7 +4,9 @@ Here you will find the complete reference to MAGE APIs. This documentation can a
 traversing the folders in which these subsystems live.
 
 ## Core systems
+
 * [Archivist](../../lib/archivist)
+* [Message Server](../../lib/msgServer)
 * [Command Center](../../lib/commandCenter)
 * [Configuration](../../lib/config)
 * [Helpers](../../lib/helpers)
@@ -19,3 +21,5 @@ traversing the folders in which these subsystems live.
 
 * [Cron Client](../../lib/modules/cronClient)
 * [Sessions](../../lib/modules/session)
+* [Ident](../../lib/modules/ident)
+* [Time](../../lib/modules/time)
