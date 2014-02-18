@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT
+
+
 ## v0.32.0 - Please Work Cat
 
 ### Logger
