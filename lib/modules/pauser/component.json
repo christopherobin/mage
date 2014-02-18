@@ -1,8 +1,0 @@
-{
-  "name": "pauser",
-  "description": "Mutexes for the browser",
-  "scripts": [
-    "client.js"
-  ],
-  "main": "client.js"
-}

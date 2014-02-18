@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.29.0",
+	"version": "0.32.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -30,7 +30,6 @@
 		"memorystream": "0.2.0",
 		"rumplestiltskin": "0.0.6",
 		"tomes": "0.0.18",
-		"oauth": "0.9.10",
 		"node-uuid": "1.4.1",
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
@@ -38,14 +37,17 @@
 		"component-require": "0.3.1",
 		"component-builder": "0.10.0",
 		"component": "0.18.0",
+		"component-proxy-install": "git+https://github.com/Wizcorp/component-proxy-install.git",
 		"semver": "2.2.1",
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
-		"marked": "0.2.10",
-		"highlight.js": "7.5.0",
+		"marked": "0.3.0",
+		"highlight.js": "8.0.0",
 		"node-zookeeper-client": "0.2.0",
 		"aws-sdk": "1.15.0",
-		"es": "0.3.12"
+		"es": "0.3.12",
+		"memwatch": "0.2.2",
+		"heapdump": "0.1.0"
 	},
 	"optionalDependencies": {
 		"mdns2": "2.1.1",
@@ -53,9 +55,9 @@
 		"ldapjs": "0.6.3"
 	},
 	"devDependencies": {
-		"jshint": "2.3.0",
-		"mocha": "1.15.1",
-		"istanbul": "0.1.46",
+		"jshint": "2.4.3",
+		"mocha": "1.17.0",
+		"istanbul": "0.2.1",
 		"mocha-istanbul": "0.2.0",
 		"plato": "0.6.2"
 	},

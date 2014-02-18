@@ -1,0 +1,35 @@
+<h1>Time</h1>
+
+<h2>Current time</h2>
+
+<div id="timeClock"></div>
+
+<h2>Time travel</h2>
+
+<section>
+    <form id="frmTimeBend">
+        <section class="dialog">
+            <h3>Acceleration factor</h3>
+            <div>
+                <input type="number" name="acceleration" value="1"> x
+                <span>(for example: 2.5)</span>
+            </div>
+
+            <h3>Offset</h3>
+            <div>
+                <input type="number" name="offset" value="0">
+                <select name="offsetUnit">
+                    <option value="1">seconds</option>
+                    <option value="60">minutes</option>
+                    <option value="3600">hours</option>
+                    <option value="86400">days</option>
+                </select>
+                <span>(for example: -10 minutes)</span>
+            </div>
+        </section>
+
+        <blockquote>
+            Note: After changing these settings, please reload all connected game sessions.
+        </blockquote>
+    </form>
+</section>
