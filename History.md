@@ -1,7 +1,11 @@
 # Release history
 
-## v0.32.0 - Please Work Cat
+## vNEXT
 
+### Internet Explorer 9 Support
+
+MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
+now added to script tags using textContent instead of innerHTML.
 
 ## v0.32.0 - Please Work Cat
 
