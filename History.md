@@ -9,7 +9,8 @@ now added to script tags using textContent instead of innerHTML.
 
 ### Graylog2 Fix
 
-Graylog will no longer cause an uncaught exception when a DNS lookup fails.
+Graylog will no longer cause an uncaught exception when a DNS lookup fails. However, it will only
+console.error if errors do occur.
 
 ### Dependency updates
 
