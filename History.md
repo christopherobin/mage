@@ -7,6 +7,10 @@
 MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
 now added to script tags using textContent instead of innerHTML.
 
+### Long running requests
+
+MAGE will now log a warning if any http request takes longer than 500ms to complete.
+
 ## v0.32.0 - Please Work Cat
 
 ### Logger
