@@ -20,7 +20,7 @@
 		"epipebomb": "0.1.1",
 		"loggly": "0.3.11",
 		"ws": "0.4.31",
-		"graylog2": "0.1.1",
+		"graylog2": "0.1.2",
 		"colours": "0.6.0-2",
 		"source-map": "0.1.31",
 		"mysql": "2.0.0-alpha9",
