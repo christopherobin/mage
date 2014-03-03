@@ -7,6 +7,11 @@
 MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
 now added to script tags using textContent instead of innerHTML.
 
+### Long running requests
+
+MAGE will now log a warning if any http request takes longer than 500ms to complete, but only if
+you're using node v0.10+
+
 ### Graylog2 Fix
 
 Graylog will no longer cause an uncaught exception when a DNS lookup fails. However, it will only
@@ -17,6 +22,7 @@ console.error if errors do occur.
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
+
 
 ## v0.32.0 - Please Work Cat
 
