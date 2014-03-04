@@ -23,6 +23,11 @@ console.error if errors do occur.
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
 
+### Miscellaneous changes
+
+Disable the console override by setting disableOverride to true in logging.html5 instead of setting
+disableOverride to true in both logging.html5.console and logging.html5.server
+
 
 ## v0.32.0 - Please Work Cat
 
