@@ -2,7 +2,15 @@
 
 ## vNEXT
 
-### Internet Explorer 9 Support
+### Asset indexing
+
+MAGE now keeps a .digest-cache.json file in your assets folders to speed up asset indexing.
+Additionally, you can now have MAGE index your assets whenever you want by running:
+```bash
+node . assets-index
+```
+
+### Internet Explorer 9 support
 
 MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
 now added to script tags using textContent instead of innerHTML.
@@ -23,6 +31,9 @@ console.error if errors do occur.
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
 
+### Miscellaneous changes
+
+Build -f has been removed. If you don't want to build, don't build.
 
 ## v0.32.0 - Please Work Cat
 
