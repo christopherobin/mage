@@ -19,7 +19,8 @@ function makePreCommit(inp, gitTop, hooksPath) {
 	var buffer;
 
 	buffer = '#!/bin/sh\n' +
-		'make -C "' + gitTop + '" ' + inp + '\n';
+		'REPO_ROOT="$(dirname $(dirname $(dirname "$0")))"\n' +
+		'make -C "${REPO_ROOT}" ' + inp + '\n';
 	fs.writeFileSync(preCommitPath, buffer);
 
 	var mode = '775';
