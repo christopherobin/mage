@@ -104,3 +104,8 @@ signature                             | required | default implementation
 `serialize(value)`                    |          | returns a `utf8` representation of `value.data`
 `deserialize(data, mediaType, value)` |          | writes `data` and `mediaType` into `value`
 
+
+## Views Migration
+
+Archivist allows for [schema migrations](../../SchemaMigrations.md), and the CouchBase vault supports
+this. This should however only be used to migrate document views.
