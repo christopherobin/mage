@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Archivist Fixes
+
+Archivist was not properly communicating with the client that a value did not exist, this has been
+corrected.
+
 ### Asset indexing
 
 MAGE now keeps a .digest-cache.json file in your assets folders to speed up asset indexing.
