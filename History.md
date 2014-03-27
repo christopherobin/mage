@@ -31,6 +31,10 @@ console.error if errors do occur.
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
 
+### Bug fixes
+
+MsgStream will now get it's url configured in builds.
+
 ### Miscellaneous changes
 
 Build -f has been removed. If you don't want to build, don't build.
