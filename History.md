@@ -31,9 +31,9 @@ console.error if errors do occur.
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
 
-### CouchBase Migrations
+### Couchbase Migrations
 
-Added CouchBase migration functions, allowing the user to create migration scripts for couchbase
+Added Couchbase migration functions, allowing the user to create migration scripts for couchbase
 typed vaults. Though this may be the case, these should only be used to create couchbase views and
 "NOT" migrate player data itself.
 

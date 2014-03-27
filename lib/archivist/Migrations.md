@@ -1,7 +1,7 @@
 # Migrations
 
 As much as we need versioning for our application code, we also need versioning for our datastore
-formats. This includes things like MySQL schemas & stored procedures, as well as CouchBase document
+formats. This includes things like MySQL schemas & stored procedures, as well as Couchbase document
 views. As such migrations are required to safely move between these versions.
 
 

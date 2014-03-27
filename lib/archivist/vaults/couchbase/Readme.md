@@ -107,7 +107,7 @@ signature                             | required | default implementation
 
 ## Views Migration
 
-Archivist allows for [schema migrations](../../SchemaMigrations.md), and the CouchBase vault
+Archivist allows for [schema migrations](../../SchemaMigrations.md), and the Couchbase vault
 supports this. This should however only be used to migrate document views.
 
 Also as couchbase only allows for 20MB of data per key and as this feature stores all the version
