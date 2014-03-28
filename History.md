@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Archivist Fixes
+
+Archivist was not properly communicating with the client that a value did not exist, this has been
+corrected.
+
 ### Asset indexing
 
 MAGE now keeps a .digest-cache.json file in your assets folders to speed up asset indexing.
@@ -36,6 +41,10 @@ console.error if errors do occur.
 Added Couchbase migration functions, allowing the user to create migration scripts for couchbase
 typed vaults. Though this may be the case, these should only be used to create couchbase views and
 "NOT" migrate player data itself.
+
+### Bug fixes
+
+MsgStream will now get it's url configured in builds.
 
 ### Miscellaneous changes
 
