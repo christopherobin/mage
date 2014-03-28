@@ -104,3 +104,11 @@ signature                             | required | default implementation
 `serialize(value)`                    |          | returns a `utf8` representation of `value.data`
 `deserialize(data, mediaType, value)` |          | writes `data` and `mediaType` into `value`
 
+
+## Views Migration
+
+Archivist allows for [schema migrations](../../SchemaMigrations.md), and the Couchbase vault
+supports this. This should however only be used to migrate document views.
+
+Also as couchbase only allows for 20MB of data per key and as this feature stores all the version
+data into a single key, please write short concise reports to avoid breaking that limit.
