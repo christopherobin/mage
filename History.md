@@ -58,6 +58,7 @@ MsgStream will now get it's url configured in builds.
 * Disable the console override by setting disableOverride to true in logging.html5 instead of setting
 disableOverride to true in both logging.html5.console and logging.html5.server. Your config will
 need to be updated to continue disabling console overrides.
+* MAGE now stores builds in hash directories to avoid creating paths with really long names.
 
 ## v0.32.0 - Please Work Cat
 
