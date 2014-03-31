@@ -30,11 +30,17 @@ you're using node v0.10+
 Graylog will no longer cause an uncaught exception when a DNS lookup fails. However, it will only
 console.error if errors do occur.
 
+### MDNS Fix
+
+MAGE was logging errors at an alert level when dns failed to resolve hostnames from other games. It
+will now log them at a verbose level.
+
 ### Dependency updates
 
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
+| mdns2             | 2.1.1  | 2.1.4  | [Change log](https://github.com/Wizcorp/node_mdns/blob/master/CHANGES) |
 
 ### Couchbase Migrations
 
