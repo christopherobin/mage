@@ -8,7 +8,7 @@ var defaultMakeArgs = 'test filter=staged';
 
 // functions
 
-function makePreCommit(inp, gitTop, hooksPath) {
+function makePreCommit(inp, hooksPath) {
 	inp = inp || defaultMakeArgs;
 
 	console.log('Make command that will be run on commit: ' + inp);
@@ -19,7 +19,8 @@ function makePreCommit(inp, gitTop, hooksPath) {
 	var buffer;
 
 	buffer = '#!/bin/sh\n' +
-		'make -C "' + gitTop + '" ' + inp + '\n';
+		'REPO_ROOT="$(dirname $(dirname $(dirname "$0")))"\n' +
+		'make -C "${REPO_ROOT}" ' + inp + '\n';
 	fs.writeFileSync(preCommitPath, buffer);
 
 	var mode = '775';
@@ -49,7 +50,7 @@ function createGitHooks(gitTop) {
 	}
 
 	if (process.env.NOQUESTIONS) {
-		makePreCommit(null, gitTop, hooksPath);
+		makePreCommit(null, hooksPath);
 	} else {
 		var rl = readline.createInterface({
 			input: process.stdin,
@@ -57,7 +58,7 @@ function createGitHooks(gitTop) {
 		});
 
 		rl.question('Make command to run before commit (default: ' + defaultMakeArgs + '): ', function (answer) {
-			makePreCommit(answer, gitTop, hooksPath);
+			makePreCommit(answer, hooksPath);
 			rl.close();
 		});
 	}

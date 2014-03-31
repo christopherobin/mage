@@ -1,16 +1,15 @@
-# Schema Migrations
+# Migrations
 
-When dealing with static schemas, such as is generally the case with SQL based databases, you need
-a way to migrate that full database schema up (to the latest version of your software) and down (in
-order to safely roll back to an older software version). This can be tricky, but Archivist is here
-to help.
+As much as we need versioning for our application code, we also need versioning for our datastore
+formats. This includes things like MySQL schemas & stored procedures, as well as Couchbase document
+views. As such migrations are required to safely move between these versions.
 
 
 ## How it works
 
-All schemas in your project are considered versioned identically to the version of your project
+All migrations in your project are considered versioned identically to the version of your project
 itself (the version in your `package.json` file). That means that when you deploy version v1.6.0 of
-your game and it contains a schema change:
+your game and it contains a datastore change:
 
 - that change should be applied automatically before the game goes live.
 - that change must be undone if we ever roll back from version 1.6.0 to a version before it.
@@ -51,9 +50,9 @@ have a `.js` extension will be ignored in the migration process.
 Some typical examples:
 
 ```
-lib/archivist/migrations/mysql/v0.1.0.js
-lib/archivist/migrations/mysql/v0.1.1.js
-lib/archivist/migrations/mysql/v0.2.0.js
+lib/archivist/migrations/<vaultname>/v0.1.0.js
+lib/archivist/migrations/<vaultname>/v0.1.1.js
+lib/archivist/migrations/<vaultname>/v0.2.0.js
 ```
 
 Let's have a look inside one of these files:

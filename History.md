@@ -2,7 +2,20 @@
 
 ## vNEXT
 
-### Internet Explorer 9 Support
+### Archivist Fixes
+
+Archivist was not properly communicating with the client that a value did not exist, this has been
+corrected.
+
+### Asset indexing
+
+MAGE now keeps a .digest-cache.json file in your assets folders to speed up asset indexing.
+Additionally, you can now have MAGE index your assets whenever you want by running:
+```bash
+node . assets-index
+```
+
+### Internet Explorer 9 support
 
 MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
 now added to script tags using textContent instead of innerHTML.
@@ -23,11 +36,22 @@ console.error if errors do occur.
 |-------------------|--------|--------|-----------|
 | node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
 
+### Couchbase Migrations
+
+Added Couchbase migration functions, allowing the user to create migration scripts for couchbase
+typed vaults. Though this may be the case, these should only be used to create couchbase views and
+"NOT" migrate player data itself.
+
+### Bug fixes
+
+MsgStream will now get it's url configured in builds.
+
 ### Miscellaneous changes
 
-Disable the console override by setting disableOverride to true in logging.html5 instead of setting
-disableOverride to true in both logging.html5.console and logging.html5.server
-
+* Build -f has been removed. If you don't want to build, don't build.
+* Disable the console override by setting disableOverride to true in logging.html5 instead of setting
+disableOverride to true in both logging.html5.console and logging.html5.server. Your config will
+need to be updated to continue disabling console overrides.
 
 ## v0.32.0 - Please Work Cat
 
