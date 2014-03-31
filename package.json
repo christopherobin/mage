@@ -50,7 +50,7 @@
 		"heapdump": "0.1.0"
 	},
 	"optionalDependencies": {
-		"mdns2": "2.1.1",
+		"mdns2": "2.1.4",
 		"couchbase": "1.2.0",
 		"ldapjs": "0.6.3"
 	},
