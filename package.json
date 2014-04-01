@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.32.0",
+	"version": "0.33.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -20,7 +20,7 @@
 		"epipebomb": "0.1.1",
 		"loggly": "0.3.11",
 		"ws": "0.4.31",
-		"graylog2": "0.1.1",
+		"graylog2": "0.1.2",
 		"colours": "0.6.0-2",
 		"source-map": "0.1.31",
 		"mysql": "2.0.0-alpha9",
@@ -50,7 +50,7 @@
 		"heapdump": "0.1.0"
 	},
 	"optionalDependencies": {
-		"mdns2": "2.1.1",
+		"mdns2": "2.1.4",
 		"couchbase": "1.2.0",
 		"ldapjs": "0.6.3"
 	},

@@ -13,3 +13,4 @@
 *.log
 *.sock
 npm-debug.log
+.digest-cache.json

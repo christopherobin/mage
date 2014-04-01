@@ -1,5 +1,65 @@
 # Release history
 
+## v0.33.0 - Long Cat
+
+### Archivist Fixes
+
+Archivist was not properly communicating with the client that a value did not exist, this has been
+corrected.
+
+### Asset indexing
+
+MAGE now keeps a .digest-cache.json file in your assets folders to speed up asset indexing.
+Additionally, you can now have MAGE index your assets whenever you want by running:
+```bash
+node . assets-index
+```
+
+### Internet Explorer 9 support
+
+MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
+now added to script tags using textContent instead of innerHTML.
+
+### Long running requests
+
+MAGE will now log a warning if any http request takes longer than 500ms to complete, but only if
+you're using node v0.10+
+
+### Graylog2 Fix
+
+Graylog will no longer cause an uncaught exception when a DNS lookup fails. However, it will only
+console.error if errors do occur.
+
+### MDNS Fix
+
+MAGE was logging errors at an alert level when dns failed to resolve hostnames from other games. It
+will now log them at a verbose level.
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
+| mdns2             | 2.1.1  | 2.1.4  | [Change log](https://github.com/Wizcorp/node_mdns/blob/master/CHANGES) |
+
+### Couchbase Migrations
+
+Added Couchbase migration functions, allowing the user to create migration scripts for couchbase
+typed vaults. Though this may be the case, these should only be used to create couchbase views and
+"NOT" migrate player data itself.
+
+### Bug fixes
+
+MsgStream will now get it's url configured in builds.
+
+### Miscellaneous changes
+
+* Build -f has been removed. If you don't want to build, don't build.
+* Disable the console override by setting disableOverride to true in logging.html5 instead of setting
+disableOverride to true in both logging.html5.console and logging.html5.server. Your config will
+need to be updated to continue disabling console overrides.
+* the MAGE dashboard loader now uses a relative path.
+
 ## v0.32.0 - Please Work Cat
 
 ### Logger
