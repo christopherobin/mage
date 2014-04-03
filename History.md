@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### Builds now use first route
+
+v0.33.0 broke the dashboard. Reverted changes to the path used for dashboard component registration.
+Now builds use the route they will be served at instead of a path from the machine they were built on.
+
 ## v0.33.0 - Long Cat
 
 ### Archivist Fixes
