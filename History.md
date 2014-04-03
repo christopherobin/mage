@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.33.1 - Heli Fail Cat
 
 ### Builds now use first route
 
