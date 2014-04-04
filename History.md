@@ -2,6 +2,58 @@
 
 ## vNEXT
 
+### Peer Dependencies
+
+Are you sitting down? This is a massive **breaking change**, with a simple solution. A while ago we
+released an NPM module called [codependency](https://www.npmjs.org/package/codependency). Read about
+it on Tumblr: [Node.js peer dependencies done right](http://wizcorp.tumblr.com/post/74368547644/).
+
+This MAGE release adds the codependency system to MAGE. All the dependencies that MAGE used to
+contain which are used as "engines" for archivist, logging, service discovery, authentication and
+messaging are now **gone**. They are no longer built into MAGE. Instead, it's up to you to add these
+dependencies to your project.
+
+### What does this mean for you exactly?
+
+* Smaller and faster installations (and thus faster CI and deployment as well).
+* A bit more work for you, because now you manage which packages (and versions) you install.
+* MAGE enforces semver version ranges of these packages, so compatibility is still guaranteed by MAGE.
+
+### How do you know which version of a library to use?
+
+You can see the list of supported packages in `./node_modules/mage/package.json` in the
+"optionalPeerDependencies" entry. If you get the version wrong, MAGE will tell you exactly what to
+install instead.
+
+### So which packages are we talking about exactly?
+
+To save you one trip to `./node_modules/mage/package.json`, here's the list:
+
+```json
+{
+	"optionalPeerDependencies": {
+		"loggly": "0.3.11",
+		"graylog2": "0.1.2",
+		"mysql": "2.0.0-alpha9",
+		"couchbase": "1.2.0",
+		"memcached": "0.2.6",
+		"redis": "0.9.0",
+		"manta": "1.0.1",
+		"memorystream": "0.2.0",
+		"aws-sdk": "1.15.0",
+		"es": "0.3.12",
+		"node-zookeeper-client": "0.2.0",
+		"mdns2": "2.1.4",
+		"zmq": "2.5.1",
+		"ldapjs": "0.6.3"
+	}
+}
+```
+
+If you need any of these (which is incredibly likely), please add them to your `package.json`'s
+`dependencies` list using a version compatible to what you see above.
+
+
 ## v0.33.1 - Heli Fail Cat
 
 ### Builds now use first route
