@@ -170,6 +170,10 @@ logging:
     html5: {}
 ```
 
+Any time you see a channel range configuration, it may be a string describing a range of channels,
+or an array of multiple of these strings. A range may contain `>`, `>=`, `<` and `<=` comparison
+operators. The special string `all` represents all channels.
+
 ### Server: Terminal
 
 ```yaml
@@ -190,11 +194,18 @@ Available themes: `default`, `dark`, `light`.
 logging:
     server:
         file:
-            channels: ["info", ">=critical"]
+            channels: [">=debug"]
             config:
+                path: "./logs"
+
+                # optional:
                 jsonIndent: 2
-                path: "./logs/"
                 mode: "0600"    # make sure this is a string!
+
+                fileNames:
+                    "app.log": "all"    # this is configured by default and you may override it
+                    "access.log": "info"
+                    "error.log": ">=warning"
 ```
 
 ### Server: Graylog
@@ -236,10 +247,9 @@ array is to be passed as JSON into the connection once it has been established.
 
 ### HTML5: All writers
 
-If the `disableOverride` argument is truthy for all HTML5 writers, the browser's window `console`
-API will not be overriden to trigger logs through the MAGE logger. That means that by default,
-calling into console.log/info/warn/error will mean "calling into the MAGE logger". This
-configuration property is optional, and should generally be left out.
+MAGE will override the client's console object with it's own version that supports logging to the
+server and hiding output on the client. If you do not want this behavior you can set disableOverride
+to true, but MAGE will no longer be able to collect logs from the client.
 
 ### HTML5: Console
 
@@ -248,19 +258,9 @@ Logs to the browser's console.
 ```yaml
 logging:
     html5:
+        disableOverride: false
         console:
             channels: [">=verbose"]
-            disableOverride: false
-```
-
-### HTML5: Server
-
-Sends logs from client to server.
-
-```yaml
-logging:
-    html5:
         server:
             channels: [">=error"]
-            disableOverride: false
 ```

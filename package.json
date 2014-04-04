@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.30.0",
+	"version": "0.33.1",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -28,6 +28,7 @@
 		"component-require": "0.3.1",
 		"component-builder": "0.10.0",
 		"component": "0.18.0",
+		"component-proxy-install": "git+https://github.com/Wizcorp/component-proxy-install.git",
 		"semver": "2.2.1",
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",
@@ -40,7 +41,7 @@
 	},
 	"optionalPeerDependencies": {
 		"loggly": "0.3.11",
-		"graylog2": "0.1.1",
+		"graylog2": "0.1.2",
 		"mysql": "2.0.0-alpha9",
 		"memcached": "0.2.6",
 		"redis": "0.9.0",
@@ -50,12 +51,12 @@
 		"node-zookeeper-client": "0.2.0",
 		"aws-sdk": "1.15.0",
 		"es": "0.3.12",
-		"mdns2": "2.1.1",
+		"mdns2": "2.1.4",
 		"couchbase": "1.2.0",
 		"ldapjs": "0.6.3"
 	},
 	"devDependencies": {
-		"jshint": "2.4.1",
+		"jshint": "2.4.3",
 		"mocha": "1.17.0",
 		"istanbul": "0.2.1",
 		"mocha-istanbul": "0.2.0",

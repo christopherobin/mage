@@ -19,6 +19,7 @@ define helpStarting
 	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-submodules and deps-component)."
 	@echo "  make datastores        Creates datastores and runs all migrations up to the current version."
 	@echo "  make build             Creates html/css/js builds for all apps."
+	@echo "  make assets-index      Indexes assets fo all apps."
 	@echo
 	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
 	@echo "  make deps-component    Downloads and installs all external components."
@@ -39,7 +40,7 @@ help:
 version:
 	node . --version
 
-all: deps datastores build
+all: deps datastores build assets-index
 
 deps: deps-npm deps-submodules deps-component
 
@@ -62,6 +63,8 @@ datastores:
 build:
 	node . build
 
+assets-index:
+	node . assets-index
 
 # DEVELOPMENT
 
