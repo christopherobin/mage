@@ -31,22 +31,22 @@ To save you one trip to `./node_modules/mage/package.json`, here's the list:
 
 ```json
 {
-	"optionalPeerDependencies": {
-		"loggly": "0.3.11",
-		"graylog2": "0.1.2",
-		"mysql": "2.0.0-alpha9",
-		"couchbase": "1.2.0",
-		"memcached": "0.2.6",
-		"redis": "0.9.0",
-		"manta": "1.0.1",
-		"memorystream": "0.2.0",
-		"aws-sdk": "1.15.0",
-		"es": "0.3.12",
-		"node-zookeeper-client": "0.2.0",
-		"mdns2": "2.1.4",
-		"zmq": "2.5.1",
-		"ldapjs": "0.6.3"
-	}
+  "optionalPeerDependencies": {
+    "loggly": "0.3.11",
+    "graylog2": "0.1.2",
+    "mysql": "2.0.0-alpha9",
+    "couchbase": "1.2.0",
+    "memcached": "0.2.6",
+    "redis": "0.9.0",
+    "manta": "1.0.1",
+    "memorystream": "0.2.0",
+    "aws-sdk": "1.15.0",
+    "es": "0.3.12",
+    "node-zookeeper-client": "0.2.0",
+    "mdns2": "2.1.4",
+    "zmq": "2.5.1",
+    "ldapjs": "0.6.3"
+  }
 }
 ```
 
