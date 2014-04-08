@@ -44,7 +44,7 @@ To save you one trip to `./node_modules/mage/package.json`, here's the list:
     "es": "0.3.12",
     "node-zookeeper-client": "0.2.0",
     "mdns2": "2.1.4",
-    "zmq": "2.5.1",
+    "zmq": ">=2.5.1 <=2.6.0",
     "ldapjs": "0.6.3"
   }
 }
