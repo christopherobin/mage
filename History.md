@@ -8,7 +8,7 @@ Are you sitting down? This is a massive **breaking change**, with a simple solut
 released an NPM module called [codependency](https://www.npmjs.org/package/codependency). Read about
 it on Tumblr: [Node.js peer dependencies done right](http://wizcorp.tumblr.com/post/74368547644/).
 
-This MAGE release adds the codependency system to MAGE. All the dependencies that MAGE used to
+This MAGE release incorporates the codependency system. All the dependencies that MAGE used to
 contain which are used as "engines" for archivist, logging, service discovery, authentication and
 messaging are now **gone**. They are no longer built into MAGE. Instead, it's up to you to add these
 dependencies to your project.
@@ -21,37 +21,22 @@ dependencies to your project.
 
 ### How do you know which version of a library to use?
 
-You can see the list of supported packages in `./node_modules/mage/package.json` in the
-"optionalPeerDependencies" entry. If you get the version wrong, MAGE will tell you exactly what to
-install instead.
+When you run `./game --version` you now see the complete status on peer dependencies. Which are
+allowed for which system, and which are currently installed. This is on top of the other version
+information that `--version` displays, which are about the app itself, the MAGE release, Node.js
+and Node's internal subsystems.
 
-### So which packages are we talking about exactly?
+This is the kind of thing you will encounter when you run that:
 
-To save you one trip to `./node_modules/mage/package.json`, here's the list:
-
-```json
-{
-  "optionalPeerDependencies": {
-    "loggly": "0.3.11",
-    "graylog2": "0.1.2",
-    "mysql": "2.0.0-alpha9",
-    "couchbase": "1.2.0",
-    "memcached": "0.2.6",
-    "redis": "0.9.0",
-    "manta": "1.0.1",
-    "memorystream": "0.2.0",
-    "aws-sdk": "1.15.0",
-    "es": "0.3.12",
-    "node-zookeeper-client": "0.2.0",
-    "mdns2": "2.1.4",
-    "zmq": ">=2.5.1 <=2.6.0",
-    "ldapjs": "0.6.3"
-  }
-}
+```
+Archivist Memcached vault:
+  supported: memcached@0.2.6
+  installed: none
 ```
 
-If you need any of these (which is incredibly likely), please add them to your `package.json`'s
-`dependencies` list using a version compatible to what you see above.
+If you want to use any of the listed subsystems (which is incredibly likely), please install the
+dependencies and save them to your `package.json` file. For example, by running
+`npm install memcached@0.2.6 --save`.
 
 
 ## v0.33.1 - Heli Fail Cat
