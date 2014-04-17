@@ -2,6 +2,75 @@
 
 ## vNEXT
 
+## v0.33.1 - Heli Fail Cat
+
+### Builds now use first route
+
+v0.33.0 broke the dashboard. Reverted changes to the path used for dashboard component registration.
+Now builds use the route they will be served at instead of a path from the machine they were built on.
+
+## v0.33.0 - Long Cat
+
+### Archivist Fixes
+
+Archivist was not properly communicating with the client that a value did not exist, this has been
+corrected.
+
+### Asset indexing
+
+MAGE now keeps a .digest-cache.json file in your assets folders to speed up asset indexing.
+Additionally, you can now have MAGE index your assets whenever you want by running:
+```bash
+node . assets-index
+```
+
+### Internet Explorer 9 support
+
+MAGE now supports Internet Explorer 9! Charset is now properly set to 'UTF-8' and javascript is
+now added to script tags using textContent instead of innerHTML.
+
+### Long running requests
+
+MAGE will now log a warning if any http request takes longer than 500ms to complete, but only if
+you're using node v0.10+
+
+### Graylog2 Fix
+
+Graylog will no longer cause an uncaught exception when a DNS lookup fails. However, it will only
+console.error if errors do occur.
+
+### MDNS Fix
+
+MAGE was logging errors at an alert level when dns failed to resolve hostnames from other games. It
+will now log them at a verbose level.
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| node-graylog2     | 0.1.1  | 0.1.2  | [Release notes](https://github.com/Wizcorp/node-graylog2/releases) |
+| mdns2             | 2.1.1  | 2.1.4  | [Change log](https://github.com/Wizcorp/node_mdns/blob/master/CHANGES) |
+
+### Couchbase Migrations
+
+Added Couchbase migration functions, allowing the user to create migration scripts for couchbase
+typed vaults. Though this may be the case, these should only be used to create couchbase views and
+"NOT" migrate player data itself.
+
+### Bug fixes
+
+MsgStream will now get it's url configured in builds.
+
+### Miscellaneous changes
+
+* Build -f has been removed. If you don't want to build, don't build.
+* Disable the console override by setting disableOverride to true in logging.html5 instead of setting
+disableOverride to true in both logging.html5.console and logging.html5.server. Your config will
+need to be updated to continue disabling console overrides.
+* the MAGE dashboard loader now uses a relative path.
+
+## v0.32.0 - Please Work Cat
+
 ### Logger
 
 #### Simpler configuration
@@ -48,7 +117,9 @@ this refactoring a number of things have changed for the better.
 * Gzip compression now is always on (you can remove it from your configuration).
 * Web clients that do not support gzip will be served an unzipped version automatically.
 * If MMRP (the server-to-server event system) is not configured, the MAGE client will no longer set
-  up a message stream.
+  up a message stream. **WARNING**: If you are using `mage.msgServer.stream.[abort/start]`, please
+  make sure you first test if `stream` is actually there. Turning off mmrp will no longer expose
+  `stream`.
 * When a non-existing URL is received in an HTTP request, it no longer logs an error that a user
   command could not be found. Instead it becomes a normal 404.
 * All HTTP 404 responses are now logged at the "warning" level.
@@ -72,10 +143,14 @@ install components from private repositories on github!
   `behavior` property, which has had no meaning since forever, and has therefore been removed.
 * Development mode has become more configurable. Please read
   [the documentation](./docs/walkthrough/Configuration.md) for information on how to use it.
+* The client logger used to send a `client` property with the value `html5` with every report, which
+  was absolutely useless as there is no other value for it, so it's been removed.
+* The builder will now only JSON.stringify $cfg injection if the context is js.
 
 ### Bugfixes
 
 * When not running in cluster mode, depending on your environment, Savvy would not be available.
+* You can now disable a logger by setting it to a falsy value (ie. null, false, 0).
 
 
 ## v0.31.0 - Skateboard Cat
