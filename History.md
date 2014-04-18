@@ -13,13 +13,13 @@ contain which are used as "engines" for archivist, logging, service discovery, a
 messaging are now **gone**. They are no longer built into MAGE. Instead, it's up to you to add these
 dependencies to your project.
 
-### What does this mean for you exactly?
+#### What does this mean for you exactly?
 
 * Smaller and faster installations (and thus faster CI and deployment as well).
 * A bit more work for you, because now you manage which packages (and versions) you install.
 * MAGE enforces semver version ranges of these packages, so compatibility is still guaranteed by MAGE.
 
-### How do you know which version of a library to use?
+#### How do you know which version of a library to use?
 
 When you run `./game --version` you now see the complete status on peer dependencies. Which are
 allowed for which system, and which are currently installed. This is on top of the other version
@@ -37,6 +37,10 @@ Archivist Memcached vault:
 If you want to use any of the listed subsystems (which is incredibly likely), please install the
 dependencies and save them to your `package.json` file. For example, by running
 `npm install memcached@0.2.6 --save`.
+
+### Miscellaneous changes
+
+* Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
 
 
 ## v0.33.1 - Heli Fail Cat
