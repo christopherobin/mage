@@ -13,14 +13,25 @@ network can access this metadata!
 
 ## Configuration
 
-By default, configuration is not mandatory, it will default to mDNS for local network discovery. Due to the nature of
-cloud based solutions such as Amazon EC2, mDNS will fail to work correctly and you will need to setup an alternative.
-For now the only alternative is zookeeper, here is the configuration:
+To use service discovery, configuration is mandatory. Due to the nature of cloud based solutions such as Amazon EC2,
+mDNS will fail to work correctly and you will need to setup an alternative. For now the only alternative is zookeeper.
+
+The mDNS configuration is as follows:
 
 ```yaml
 server:
     serviceDiscovery:
-        engine: "zookeeper"
+        engine: mdns
+        options:
+            description: "UniqueIdOnTheNetwork" # optional
+```
+
+The zookeeper configuration is as follows:
+
+```yaml
+server:
+    serviceDiscovery:
+        engine: zookeeper
         options:
             hosts: "192.168.1.12:2181,192.168.3.18:2181,etc..."
 ```
