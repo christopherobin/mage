@@ -4,3 +4,5 @@ node_modules/**
 html-report/**
 plato-report/**
 lib-cov/**
+vagrant_ansible_inventory_*
+.vagrant
