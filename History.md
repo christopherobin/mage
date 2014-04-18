@@ -2,7 +2,45 @@
 
 ## vNEXT
 
-Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
+### Peer Dependencies
+
+Are you sitting down? This is a massive **breaking change**, with a simple solution. A while ago we
+released an NPM module called [codependency](https://www.npmjs.org/package/codependency). Read about
+it on Tumblr: [Node.js peer dependencies done right](http://wizcorp.tumblr.com/post/74368547644/).
+
+This MAGE release incorporates the codependency system. All the dependencies that MAGE used to
+contain which are used as "engines" for archivist, logging, service discovery, authentication and
+messaging are now **gone**. They are no longer built into MAGE. Instead, it's up to you to add these
+dependencies to your project.
+
+#### What does this mean for you exactly?
+
+* Smaller and faster installations (and thus faster CI and deployment as well).
+* A bit more work for you, because now you manage which packages (and versions) you install.
+* MAGE enforces semver version ranges of these packages, so compatibility is still guaranteed by MAGE.
+
+#### How do you know which version of a library to use?
+
+When you run `./game --version` you now see the complete status on peer dependencies. Which are
+allowed for which system, and which are currently installed. This is on top of the other version
+information that `--version` displays, which are about the app itself, the MAGE release, Node.js
+and Node's internal subsystems.
+
+This is the kind of thing you will encounter when you run that:
+
+```
+Archivist Memcached vault:
+  supported: memcached@0.2.6
+  installed: none
+```
+
+If you want to use any of the listed subsystems (which is incredibly likely), please install the
+dependencies and save them to your `package.json` file. For example, by running
+`npm install memcached@0.2.6 --save`.
+
+### Miscellaneous changes
+
+* Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
 
 
 ## v0.33.1 - Heli Fail Cat
