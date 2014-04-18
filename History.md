@@ -2,6 +2,9 @@
 
 ## vNEXT
 
+Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
+
+
 ## v0.33.1 - Heli Fail Cat
 
 ### Builds now use first route
