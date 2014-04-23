@@ -31,11 +31,6 @@ to the [documentation on the install process](./docs/Install.md)
 ### Basic installation
 
 ```bash
-#
-# Make sure to set the NODE_ENV. If you are setting a new
-# project on ,
-# the NODE_ENV should already be set up for you
-#
 export NODE_ENV=development
 mkdir -p newProject/node_modules
 cd newProject
@@ -75,6 +70,6 @@ See Also
 
 * [Documentation](./docs/Readme.md)
 * [About MAGE (in Japanese)](http://www.spiralsense.jp/products/m-a-g-e/)
-* [AerisCloud, a vagrant-based development environment configuration tool]((https://github.com/Wizcorp/AerisCloud)
+* [AerisCloud, a vagrant-based development environment configuration tool](https://github.com/Wizcorp/AerisCloud)
 * [component, a client package management commonly used in MAGE projects](https://github.com/component/component)
 * [Node.js Documentation](http://nodejs.org/api/)
