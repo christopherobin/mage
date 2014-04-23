@@ -1,6 +1,7 @@
 MAGE
 ====
-![MAGE logo](./lib/modules/dashboard/dashboard/assets/img/default/mage_logo_white_font.png)
+
+<img src="./lib/modules/dashboard/dashboard/assets/img/default/mage_logo_black_font.png" alt="MAGE logo" width="250" height="250" />
 
 - [Current release](#current-release)
 - [Install](#install)
