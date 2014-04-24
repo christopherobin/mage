@@ -21,11 +21,19 @@ Applications may fall under two categories:
 
 ### Single-page application
 
+The following model is an example of what is commonly used
+for building large SPA which will required a large quantity
+of pages, files and assets.
+
+Technically, all pages are equals: very small applications
+may be built without an index page as described below, or even
+without a landing page.
+
 #### The index page
 
 The index page is the base HTML, JavaScript and
 CSS code which gets loaded when you access your application
-from the top domain. Also known as application loader or game loader,
+from a specific URL. Also known as application loader or game loader,
 It acts as your index page for your application.
 
 In there, you should normally only put the bare minimal for your
@@ -91,20 +99,18 @@ is now available for display.
 
 In here, you will want to put the main construct of your application,
 i.e. things which should remain pretty much the same throughout the
-execution of your application. This might include a viewport system
+execution of your application. This might include a view system
 built with the following components:
 
 * [wui-DOM](https://github.com/Wizcorp/wui-Dom)
 * [wui-View](https://github.com/Wizcorp/wui-View)
 * [NavTree](https://github.com/Wizcorp/NavTree)
 
+Or any libraries of your choosing (Angular.js, jQuery, etc).
+
 #### Other pages
 
 From there, you can add any number of pages as you want: each pages
 represent a screen which will be shown or hidden as you navigate
-within your application's UI.
-
-### Multiple-pages applications
-
-Archivist: working with datastores
------------------------------------
+within your application's UI (unless you have chosen to do this
+through your own view system).
