@@ -46,6 +46,7 @@ Sometimes Zookeeper emits down with no data, this should no longer cause catastr
 
 * Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
 * Application related data in the sampler has been moved under "apps".
+* added raw.githubusercontent.com to remotes on component install
 
 
 ## v0.33.1 - Heli Fail Cat
