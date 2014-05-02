@@ -5,6 +5,12 @@ The "memory" vault makes this possible. The Memory vault keeps data serialized i
 allows synchronization to clients to happen without any (de)serialization steps, saving you precious
 CPU and garbage collection cycles.
 
+**A word of warning**
+
+Because the memory vault only lives in JavaScript memory, it does not transcend into other
+processes. That means that you can not depend on it to store data for you in one worker, and expect
+it to be accessible by another. That is obviously also true between multiple servers.
+
 ## Configuration
 
 ```json
