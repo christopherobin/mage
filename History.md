@@ -41,7 +41,7 @@ dependencies and save them to your `package.json` file. For example, by running
 ### Miscellaneous changes
 
 * Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
-
+* added raw.githubusercontent.com to remotes on component install
 
 ## v0.33.1 - Heli Fail Cat
 
