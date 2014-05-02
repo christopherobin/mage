@@ -38,6 +38,10 @@ If you want to use any of the listed subsystems (which is incredibly likely), pl
 dependencies and save them to your `package.json` file. For example, by running
 `npm install memcached@0.2.6 --save`.
 
+### Bug fixes
+
+Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
+
 ### Miscellaneous changes
 
 * Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
