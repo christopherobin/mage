@@ -50,7 +50,7 @@ Before bootstrapping a new project on AerisCloud, make sure to:
 mkdir -p newProject/node_modules
 cd newProject
 git init
-aeriscloud init
+aeriscloud vagrant init
 #
 # Update your .aeriscloud.yml
 #

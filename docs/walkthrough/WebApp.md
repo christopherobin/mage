@@ -47,8 +47,9 @@ going to `http://localhost/`.
 
 The MAGE build system allows you to embed files into other files through macros. MAGE exposes
 particular build-strategies by a name, and allows you to limit which files can be included through
-a file context. For example, the following strategy embeds a single CSS file into a `<style>` tag,
-and all JavaScript files in this folder into a `<script>` tag.
+a file context. For example, the following example embeds a single CSS file into a `<style>` tag
+using the "file" macro and "css" context, and it embeds *all* JavaScript files in this folder into
+a `<script>` tag using the "dir" macro and "js" context.
 
 ```html
 <html>
