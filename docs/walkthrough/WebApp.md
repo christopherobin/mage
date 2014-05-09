@@ -226,16 +226,9 @@ use it as follows.
 ```javascript
 var loader = require('loader');
 
-// transmit this build's language and screen settings to the loader
-// (don't worry about this for now)
+// transmit this build's language and screen settings to the loader (don't worry about this for now)
 
 loader.configure(window.mageConfig);
-
-// handle connection related events
-
-loader.on('offline', function () { /* bad connection? */ });
-loader.on('online', function () { /* we're downloading again */ });
-loader.on('maintenance', function () { /* the game cannot be played now */ });
 
 // start downloading the "main" package
 
@@ -250,12 +243,10 @@ loader.once('main.loaded', function () {
 
 The loader must be configured through a call to `loader.configure`. You can copy that line as is in
 the example above. The MAGE component builder automatically makes `window.mageConfig` available
-thanks to the $component.js macro you used in "index.html". Please note the events above, which will
-be fired based on the state of the internet connection, and when the game is undergoing maintenance.
-You should establish an appropriate user experience when these events fire. You start the download
-of the "main" package by calling `loadPage`. Once that download has finished, the "main.loaded"
-event will fire. The name of that event adapts to the name you give to your packages
-("packagename.loaded").
+thanks to the $component.js macro you used in "index.html". You start the download of the "main"
+package by calling `loadPage`. Once that download has finished, the "main.loaded" event will fire.
+
+> The name of the event adapts to the names you give to your packages ("packagename.loaded").
 
 It was mentioned earlier that the "boot" component should *not* refer to the "main" component. You
 may have wondered how we can then `require('main')` once it has been downloaded. This can be done
