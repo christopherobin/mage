@@ -8,10 +8,11 @@ depending on your needs.
 
 ## The simplest single-page app
 
-The idea of a single-page web app, is that your app consists of a single index.html (with HTML, CSS
-and JavaScript parts), which communicates with a server through Ajax calls. MAGE facilitates this,
-and makes the Ajax part a bit simpler, by providing real RPC. That is, you have the ability to
-expose JavaScript functions on the server directly to the browser.
+The idea of a single-page web app, is that your app consists of a single index.html file (with HTML,
+CSS and JavaScript parts), which communicates with a server through Ajax or Websocket calls, rather
+than navigating between different HTML pages. MAGE facilitates this, and makes the communication
+part a bit simpler by providing real RPC. That is, you have the ability to expose JavaScript
+functions on the server directly to the browser.
 
 But let's start at the beginning. You want to make your index.html file for your web app which we'll
 call "game" throughout this guide. The following file structure is just an example, but it seems to
@@ -73,10 +74,11 @@ Your file structure now looks something like this:
 
 ## Dependency management with Component.io
 
-If you want to create a more complex app, the example above becomes problematic. You need a way to
-manage your dependencies. Component.io is a system to do this, and MAGE supports it out of the box.
-Before you continue, please make sure you understand how Component.io works, and that you are able
-to write your codebase in component-style.
+If you want to create a more complex app, the example above becomes problematic. Your files will
+quickly grow out of proportion, making them harder and harder to manage and wrap your head around.
+[Component.io](https://github.com/component/component) can help you with this, and MAGE supports it
+out of the box. Before you continue, please make sure you understand how Component.io works, and
+that you are able to write your codebase in component-style.
 
 On the browser-side, we need to create an entry point for the application. This is where the builds
 will flow from and where your dependency component installations will begin. This first component
