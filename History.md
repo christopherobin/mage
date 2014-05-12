@@ -2,6 +2,24 @@
 
 ## vNEXT
 
+### Official Node 0.10 support
+
+Node.js 0.10 is now the recommended version of Node.js to run your MAGE app on. We will keep
+supporting Node 0.8 for a little while, but you are encouraged to make the transition. The moment
+we drop support for Node 0.8, we will be able to make some needed upgrades to some of the libraries
+we use.
+
+#### Migration
+
+* In your `package.json` file, please change the Node version in `"engines"` to `"~0.10.26"`.
+* Read about [Node.js API changes](https://github.com/joyent/node/wiki/Api-changes-between-v0.8-and-v0.10)
+
+If your project uses AerisCloud, please also make sure to do the following:
+
+* In `.aeriscloud.yml`, please add `node_version: "v0.10.26"`
+* Run `tags="nodejs,web" aeriscloud vagrant provision mygame-myenv` to install the right version of
+  Node.js. Please make sure to replace `mygame` and `myenv` according to your project.
+
 ### Peer Dependencies
 
 Are you sitting down? This is a massive **breaking change**, with a simple solution. A while ago we
