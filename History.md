@@ -56,6 +56,11 @@ If you want to use any of the listed subsystems (which is incredibly likely), pl
 dependencies and save them to your `package.json` file. For example, by running
 `npm install memcached@0.2.6 --save`.
 
+### No more mage.core.time
+
+`mage.core.time` has been deprecated for a while now, and it's time to say goodbye to it (no pun
+intended).
+
 ### Bug fixes
 
 * Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
