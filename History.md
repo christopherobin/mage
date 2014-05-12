@@ -11,12 +11,12 @@ we use.
 
 #### Migration
 
-* In your `package.json` file, please change the Node version in `"engines"` to `"~0.10.26"`.
+* In your `package.json` file, please change the Node version in `"engines"` to `"~0.10.28"`.
 * Read about [Node.js API changes](https://github.com/joyent/node/wiki/Api-changes-between-v0.8-and-v0.10)
 
 If your project uses AerisCloud, please also make sure to do the following:
 
-* In `.aeriscloud.yml`, please add `node_version: "v0.10.26"`
+* In `.aeriscloud.yml`, please add `node_version: "v0.10.28"`
 * Run `tags="nodejs,web" aeriscloud vagrant provision mygame-myenv` to install the right version of
   Node.js. Please make sure to replace `mygame` and `myenv` according to your project.
 
