@@ -40,7 +40,8 @@ dependencies and save them to your `package.json` file. For example, by running
 
 ### Bug fixes
 
-Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
+* Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
+* If no clientHost is exposed, fails to create a websocket in logger dashboard. Should work now.
 
 ### Miscellaneous changes
 
