@@ -80,6 +80,8 @@ endef
 .PHONY: dev dev-githooks
 
 dev: dev-githooks
+	npm link
+	mage completion --save
 
 dev-githooks:
 	node $(SCRIPTS)/githooks.js
