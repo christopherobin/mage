@@ -5,7 +5,8 @@ SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
 TEST = ./test
-
+GAME_PATH = $(shell pwd)
+MAIN_BIN = $(GAME_PATH)/$(shell cat package.json | grep '"main":' | awk '{split($$0,a,"\""); print a[4]}').js
 
 # GETTING STARTED
 
@@ -80,8 +81,8 @@ endef
 .PHONY: dev dev-githooks
 
 dev: dev-githooks
-	npm link
-	mage completion --save
+	node . completion --bin $(MAIN_BIN) --completion "node $(GAME_PATH)"  --save
+	
 
 dev-githooks:
 	node $(SCRIPTS)/githooks.js
