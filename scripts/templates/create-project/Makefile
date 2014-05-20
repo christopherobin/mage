@@ -83,7 +83,7 @@ dev: dev-githooks
 	@echo
 	@echo Tab completion is now installed for this project.
 	@echo Please restart your shell or enter:
-	@echo . ~/.bash_completion
+	@echo source ~/.bash_completion
 	
 
 dev-githooks:
