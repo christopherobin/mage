@@ -5,8 +5,6 @@ SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
 TEST = ./test
-GAME_PATH = $(shell pwd)
-MAIN_BIN = $(GAME_PATH)/$(shell cat package.json | grep '"main":' | awk '{split($$0,a,"\""); print a[4]}').js
 
 # GETTING STARTED
 
@@ -81,7 +79,11 @@ endef
 .PHONY: dev dev-githooks
 
 dev: dev-githooks
-	node . completion --bin $(MAIN_BIN) --completion "node $(GAME_PATH)"  --save
+	node . completion >> ~/.bash_completion
+	@echo
+	@echo Tab completion is now installed for this project.
+	@echo Please restart your shell or enter:
+	@echo . ~/.bash_completion
 	
 
 dev-githooks:
