@@ -11,9 +11,6 @@
 	"engines": {
 		"node": "~0.10.28"
 	},
-	"bin": {
-		"mage": "./lib/mage/index.js"
-	},
 	"dependencies": {
 		"commander": "2.2.0",
 		"tabalot" : "0.3.1",
