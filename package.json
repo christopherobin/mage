@@ -9,7 +9,7 @@
 		"url": "http://github.com/Wizcorp/mage/issues"
 	},
 	"engines": {
-		"node": "~0.10.28"
+		"node": "0.10.28"
 	},
 	"dependencies": {
 		"commander": "2.2.0",
