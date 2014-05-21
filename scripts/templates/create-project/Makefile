@@ -6,6 +6,7 @@ COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
 TEST = ./test
 
+
 # GETTING STARTED
 
 define helpStarting
