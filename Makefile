@@ -18,7 +18,7 @@ define helpStarting
 	@echo
 endef
 
-.PHONY: help deps deps-npm
+.PHONY: help build deps deps-npm start stop
 
 help:
 	@echo
@@ -29,6 +29,12 @@ help:
 
 build:
 	@echo "MAGE has nothing to build."
+
+start:
+	@echo "MAGE has nothing to start."
+
+stop:
+	@echo "MAGE has nothing to stop."
 
 deps: deps-npm
 
