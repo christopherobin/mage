@@ -5,7 +5,7 @@
 		"component/emitter": "1.1.0",
 		"component/inherit": "0.0.2",
 		"Wizcorp/node-rumplestiltskin": "0.0.6",
-		"Wizcorp/node-tomes": "0.0.18"
+		"Wizcorp/node-tomes": "0.0.21"
 	},
 	"local": [
 		"mage"
