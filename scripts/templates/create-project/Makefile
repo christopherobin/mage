@@ -5,6 +5,7 @@ SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
 TEST = ./test
+DEFAULT_COMPLETION_FILENAME = .bash_completion
 
 
 # GETTING STARTED
@@ -80,7 +81,7 @@ endef
 .PHONY: dev dev-githooks
 
 dev: dev-githooks
-	node . completion >> ~/.bash_completion
+	node . completion --filename $(DEFAULT_COMPLETION_FILENAME) --bash-completion ~/.bash_completion --save
 	@echo
 	@echo Tab completion is now installed for this project.
 	@echo Please restart your shell or enter:
