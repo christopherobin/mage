@@ -27,6 +27,9 @@ help:
 	$(helpQuality)
 	$(helpCleanup)
 
+build:
+	@echo "MAGE has nothing to build."
+
 deps: deps-npm
 
 deps-npm:
