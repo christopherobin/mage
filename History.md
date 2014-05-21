@@ -11,7 +11,7 @@ we use.
 
 #### Migration
 
-* In your `package.json` file, please change the Node version in `"engines"` to `"~0.10.28"`.
+* In your `package.json` file, please change the Node version in `"engines"` to `"0.10.28"`.
 * Read about [Node.js API changes](https://github.com/joyent/node/wiki/Api-changes-between-v0.8-and-v0.10)
 
 If your project uses AerisCloud, please also make sure to do the following:
@@ -60,6 +60,12 @@ dependencies and save them to your `package.json` file. For example, by running
 
 `mage.core.time` has been deprecated for a while now, and it's time to say goodbye to it (no pun
 intended).
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tomes             | 0.0.18 | 0.0.21 | [Release notes](https://github.com/Wizcorp/node-tomes/releases) |
 
 ### Bug fixes
 
