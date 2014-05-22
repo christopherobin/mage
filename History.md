@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.34.0
 
 ### Official Node 0.10 support
 
