@@ -1,6 +1,8 @@
 # Release history
 
-## v0.34.0
+## vNEXT
+
+## v0.34.0 - Teamwork Cat
 
 ### Official Node 0.10 support
 
