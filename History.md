@@ -61,6 +61,28 @@ dependencies and save them to your `package.json` file. For example, by running
 `mage.core.time` has been deprecated for a while now, and it's time to say goodbye to it (no pun
 intended).
 
+### CORS for IE9
+
+The XMLHttpRequest object exist on IE8+ but sadly [CORS is not supported on IE8 and IE9](http://caniuse.com/#search=cors).
+So the idea is to use the XDomainRequest object for those old version of IE but here is the catch:
+XDomainRequest doesn't hold a status code.
+
+#### How to deal with IE9 without status code then?
+
+You may already have it in place in your app, if not here what you could do.
+
+When communicating with the server, the request will time out and generate a 'network' error.
+You can listen to it from the [msgServer](https://github.com/Wizcorp/mage/tree/develop/lib/msgServer)
+`msgServer.on('io.error.network', doSomething);`.
+The suggestion here is to retry (`msgServer.resend();`) on a network error and to reload the app after n retries.
+If the app is in maintenance it would probably show the maintenance page.
+
+#### What does it change for other browsers?
+Absolutely nothing.
+And you can still apply the retry logic on network errors, it's not a bad idea.
+
+Reference: (http://www.html5rocks.com/en/tutorials/cors/)
+
 ### Dependency updates
 
 | dependency        | from   | to     | changes   |
