@@ -14,3 +14,7 @@
 *.log
 *.sock
 npm-debug.log
+vagrant_ansible_inventory_*
+.vagrant
+Vagrantfile
+check.txt

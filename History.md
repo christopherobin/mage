@@ -1,5 +1,106 @@
 # Release history
 
+## v0.34.0
+
+### Official Node 0.10 support
+
+Node.js 0.10 is now the recommended version of Node.js to run your MAGE app on. We will keep
+supporting Node 0.8 for a little while, but you are encouraged to make the transition. The moment
+we drop support for Node 0.8, we will be able to make some needed upgrades to some of the libraries
+we use.
+
+#### Migration
+
+* In your `package.json` file, please change the Node version in `"engines"` to `"0.10.28"`.
+* Read about [Node.js API changes](https://github.com/joyent/node/wiki/Api-changes-between-v0.8-and-v0.10)
+
+If your project uses AerisCloud, please also make sure to do the following:
+
+* In `.aeriscloud.yml`, please add `node_version: "v0.10.28"`
+* Run `tags="nodejs,web" aeriscloud vagrant provision mygame-myenv` to install the right version of
+  Node.js. Please make sure to replace `mygame` and `myenv` according to your project.
+
+### Peer Dependencies
+
+Are you sitting down? This is a massive **breaking change**, with a simple solution. A while ago we
+released an NPM module called [codependency](https://www.npmjs.org/package/codependency). Read about
+it on Tumblr: [Node.js peer dependencies done right](http://wizcorp.tumblr.com/post/74368547644/).
+
+This MAGE release incorporates the codependency system. All the dependencies that MAGE used to
+contain which are used as "engines" for archivist, logging, service discovery, authentication and
+messaging are now **gone**. They are no longer built into MAGE. Instead, it's up to you to add these
+dependencies to your project.
+
+#### What does this mean for you exactly?
+
+* Smaller and faster installations (and thus faster CI and deployment as well).
+* A bit more work for you, because now you manage which packages (and versions) you install.
+* MAGE enforces semver version ranges of these packages, so compatibility is still guaranteed by MAGE.
+
+#### How do you know which version of a library to use?
+
+When you run `./game --version` you now see the complete status on peer dependencies. Which are
+allowed for which system, and which are currently installed. This is on top of the other version
+information that `--version` displays, which are about the app itself, the MAGE release, Node.js
+and Node's internal subsystems.
+
+This is the kind of thing you will encounter when you run that:
+
+```
+Archivist Memcached vault:
+  supported: memcached@0.2.6
+  installed: none
+```
+
+If you want to use any of the listed subsystems (which is incredibly likely), please install the
+dependencies and save them to your `package.json` file. For example, by running
+`npm install memcached@0.2.6 --save`.
+
+### No more mage.core.time
+
+`mage.core.time` has been deprecated for a while now, and it's time to say goodbye to it (no pun
+intended).
+
+### CORS for IE9
+
+The XMLHttpRequest object exist on IE8+ but sadly [CORS is not supported on IE8 and IE9](http://caniuse.com/#search=cors).
+So the idea is to use the XDomainRequest object for those old version of IE but here is the catch:
+XDomainRequest doesn't hold a status code.
+
+#### How to deal with IE9 without status code then?
+
+You may already have it in place in your app, if not here what you could do.
+
+When communicating with the server, the request will time out and generate a 'network' error.
+You can listen to it from the [msgServer](https://github.com/Wizcorp/mage/tree/develop/lib/msgServer)
+`msgServer.on('io.error.network', doSomething);`.
+The suggestion here is to retry (`msgServer.resend();`) on a network error and to reload the app after n retries.
+If the app is in maintenance it would probably show the maintenance page.
+
+#### What does it change for other browsers?
+Absolutely nothing.
+And you can still apply the retry logic on network errors, it's not a bad idea.
+
+Reference: (http://www.html5rocks.com/en/tutorials/cors/)
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tomes             | 0.0.18 | 0.0.21 | [Release notes](https://github.com/Wizcorp/node-tomes/releases) |
+
+### Bug fixes
+
+* Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
+* If no clientHost is exposed, fails to create a websocket in logger dashboard. Should work now.
+
+### Miscellaneous changes
+
+* Newly bootstrapped projects now automatically log errors and worse to "./logs/app.log".
+* Application related data in the sampler has been moved under "apps".
+* added raw.githubusercontent.com to remotes on component install
+
+
 ## v0.33.1 - Heli Fail Cat
 
 ### Builds now use first route
