@@ -71,6 +71,7 @@ define helpQuality
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
 	@echo "  make test-lint         Lints every JavaScript and JSON file in the project."
+	@echo "  make test-style        Tests code style on every JavaScript and JSON file in the project."
 	@echo "  make test-unit         Runs every unit test."
 	@echo "  make report-complexity Creates a Plato code complexity report."
 	@echo "  make report-coverage   Creates a unit test coverage report."
@@ -113,9 +114,24 @@ else
   endif
 endif
 
+define stylePath
+	$(BIN)/jscs "$1" --config jscs-config.json
+endef
+
 test-style:
-	@echo Testing for style consistency
-	$(BIN)/jscs lib --config jscs-config.json
+ifdef path
+	$(call stylePath,$(path))
+else
+  ifdef filter
+    ifeq ($(filter),staged)
+	git diff --raw --name-only --cached --diff-filter=ACMR | grep -E '\.js$$' | xargs -I '{}' $(call stylePath,{})
+    else
+	$(error Unknown filter: $(filter))
+    endif
+  else
+	$(call stylePath,lib)
+  endif
+endif
 
 test-unit:
 	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
