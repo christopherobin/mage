@@ -81,7 +81,7 @@ define helpQuality
 	@echo
 endef
 
-.PHONY: lint lint-all test report test-lint test-unit report-complexity report-coverage
+.PHONY: lint lint-all test report test-lint test-style test-unit report-complexity report-coverage
 
 # lint is deprecated
 lint: test-lint
@@ -91,7 +91,7 @@ lint: test-lint
 lint-all: test-lint
 	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'test-lint'."
 
-test: test-lint test-unit
+test: test-lint test-style test-unit
 report: report-complexity report-coverage
 
 define lintPath
@@ -112,6 +112,10 @@ else
 	$(call lintPath,.)
   endif
 endif
+
+test-style:
+	@echo Testing for style consistency
+	$(BIN)/jscs lib --config jscs-config.json
 
 test-unit:
 	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
