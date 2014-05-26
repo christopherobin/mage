@@ -2,6 +2,21 @@
 
 ## vNEXT
 
+### Code style consistency
+
+Part of the MAGE internal test suite is now a code style checker called
+[JSCS](https://www.npmjs.org/package/jscs). As far as code style is concerned, it's much more
+complete than JSHint. It doesn't test unsafe development practices however, so JSHint is not to be
+replaced by it, but simply augmented. The goal of this addition is to streamline pull requests to
+MAGE by a stricter enforcing of rules, in order to avoid human beings from having to waste time on
+pointing out these issues to each other.
+
+If you want to replicate this in your game set up, please do the following.
+
+1. Copy node_modules/mage/jscs-config.json to your project root (and adjust it to your style).
+2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
+
+
 ## v0.34.0 - Teamwork Cat
 
 ### Official Node 0.10 support
