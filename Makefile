@@ -71,6 +71,7 @@ define helpQuality
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
 	@echo "  make test-lint         Lints every JavaScript and JSON file in the project."
+	@echo "  make test-style        Tests code style on every JavaScript and JSON file in the project."
 	@echo "  make test-unit         Runs every unit test."
 	@echo "  make report-complexity Creates a Plato code complexity report."
 	@echo "  make report-coverage   Creates a unit test coverage report."
@@ -81,7 +82,7 @@ define helpQuality
 	@echo
 endef
 
-.PHONY: lint lint-all test report test-lint test-unit report-complexity report-coverage
+.PHONY: lint lint-all test report test-lint test-style test-unit report-complexity report-coverage
 
 # lint is deprecated
 lint: test-lint
@@ -91,7 +92,7 @@ lint: test-lint
 lint-all: test-lint
 	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'test-lint'."
 
-test: test-lint test-unit
+test: test-lint test-style test-unit
 report: report-complexity report-coverage
 
 define lintPath
@@ -110,6 +111,25 @@ else
     endif
   else
 	$(call lintPath,.)
+  endif
+endif
+
+define stylePath
+	$(BIN)/jscs "$1"
+endef
+
+test-style:
+ifdef path
+	$(call stylePath,$(path))
+else
+  ifdef filter
+    ifeq ($(filter),staged)
+	git diff --raw --name-only --cached --diff-filter=ACMR | grep -E '\.js$$' | xargs -I '{}' $(call stylePath,{})
+    else
+	$(error Unknown filter: $(filter))
+    endif
+  else
+	$(call stylePath,lib)
   endif
 endif
 
