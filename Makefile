@@ -115,7 +115,7 @@ else
 endif
 
 define stylePath
-	$(BIN)/jscs "$1" --config jscs-config.json
+	$(BIN)/jscs "$1"
 endef
 
 test-style:
