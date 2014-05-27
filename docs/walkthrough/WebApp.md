@@ -63,6 +63,12 @@ $dir.js('.');
 </html>
 ```
 
+| Please note that the build process will treat macros literally as find & replace. That means that
+| simply putting "//" in front of it, will not comment out its contents, and "/* */" is likely not
+| to work when the macro is replaced by text that contains comment symbols. If you want to turn off
+| a macro, you must either remove it, or comment it out after renaming it (for example by putting a
+| space between the "$" symbol and the rest of the macro.
+
 Your file structure now looks something like this:
 
 ```
