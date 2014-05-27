@@ -2,6 +2,48 @@
 
 ## vNEXT
 
+### Code style consistency
+
+Part of the MAGE internal test suite are now a JavaScript code style checker called
+[JSCS](https://www.npmjs.org/package/jscs) and JSDoc correctness checker called
+[JSCS-JSDoc](https://www.npmjs.org/package/jscs-jsdoc). As far as code style is concerned, this is
+much more complete than JSHint. It doesn't test unsafe development practices however, so JSHint is
+not to be replaced by it, but simply augmented. The goal of this addition is to streamline pull
+requests to MAGE by a stricter enforcing of rules, in order to avoid human beings from having to
+waste time on pointing out these issues to each other.
+
+If you want to replicate this in your game set up, please following these steps.
+
+1. Copy node_modules/mage/.jscsrc to your project root (and adjust it to your style).
+2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
+3. Add "jscs" and "jscs-jsdoc" to your package.json and install them.
+
+### Bug fixes
+
+* When loading "dashboard" without "assets", it would create weird errors. Now it auto-loads "assets".
+* When loading "ident" without "session", it would throw uncaught errors. Now it warns gracefully.
+
+
+## v0.34.0 - Teamwork Cat
+
+### Official Node 0.10 support
+
+Node.js 0.10 is now the recommended version of Node.js to run your MAGE app on. We will keep
+supporting Node 0.8 for a little while, but you are encouraged to make the transition. The moment
+we drop support for Node 0.8, we will be able to make some needed upgrades to some of the libraries
+we use.
+
+#### Migration
+
+* In your `package.json` file, please change the Node version in `"engines"` to `"0.10.28"`.
+* Read about [Node.js API changes](https://github.com/joyent/node/wiki/Api-changes-between-v0.8-and-v0.10)
+
+If your project uses AerisCloud, please also make sure to do the following:
+
+* In `.aeriscloud.yml`, please add `node_version: "v0.10.28"`
+* Run `tags="nodejs,web" aeriscloud vagrant provision mygame-myenv` to install the right version of
+  Node.js. Please make sure to replace `mygame` and `myenv` according to your project.
+
 ### Peer Dependencies
 
 Are you sitting down? This is a massive **breaking change**, with a simple solution. A while ago we
@@ -38,9 +80,43 @@ If you want to use any of the listed subsystems (which is incredibly likely), pl
 dependencies and save them to your `package.json` file. For example, by running
 `npm install memcached@0.2.6 --save`.
 
+### No more mage.core.time
+
+`mage.core.time` has been deprecated for a while now, and it's time to say goodbye to it (no pun
+intended).
+
+### CORS for IE9
+
+The XMLHttpRequest object exist on IE8+ but sadly [CORS is not supported on IE8 and IE9](http://caniuse.com/#search=cors).
+So the idea is to use the XDomainRequest object for those old version of IE but here is the catch:
+XDomainRequest doesn't hold a status code.
+
+#### How to deal with IE9 without status code then?
+
+You may already have it in place in your app, if not here what you could do.
+
+When communicating with the server, the request will time out and generate a 'network' error.
+You can listen to it from the [msgServer](https://github.com/Wizcorp/mage/tree/develop/lib/msgServer)
+`msgServer.on('io.error.network', doSomething);`.
+The suggestion here is to retry (`msgServer.resend();`) on a network error and to reload the app after n retries.
+If the app is in maintenance it would probably show the maintenance page.
+
+#### What does it change for other browsers?
+Absolutely nothing.
+And you can still apply the retry logic on network errors, it's not a bad idea.
+
+Reference: (http://www.html5rocks.com/en/tutorials/cors/)
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tomes             | 0.0.18 | 0.0.21 | [Release notes](https://github.com/Wizcorp/node-tomes/releases) |
+
 ### Bug fixes
 
-Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
+* Sometimes Zookeeper emits down with no data, this should no longer cause catastrophic failure.
+* If no clientHost is exposed, fails to create a websocket in logger dashboard. Should work now.
 
 ### Miscellaneous changes
 
