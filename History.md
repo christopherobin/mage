@@ -18,6 +18,11 @@ If you want to replicate this in your game set up, please following these steps.
 2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
 3. Add "jscs" and "jscs-jsdoc" to your package.json and install them.
 
+### Bug fixes
+
+* When loading "dashboard" without "assets", it would create weird errors. Now it auto-loads "assets".
+* When loading "ident" without "session", it would throw uncaught errors. Now it warns gracefully.
+
 
 ## v0.34.0 - Teamwork Cat
 
