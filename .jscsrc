@@ -33,7 +33,7 @@
 	"validateLineBreaks": "LF",
 	"validateQuoteMarks": {
 		"mark": "'",
-		"escape": true
+		"escape": false
 	},
 	"disallowMixedSpacesAndTabs": "smart",
 	"disallowTrailingWhitespace": true,
