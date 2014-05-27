@@ -259,9 +259,31 @@ may have wondered how we can then `require('main')` once it has been downloaded.
 through `window.require`, which has access to every build's entry point component. You can call
 this, the moment you know that the package has been downloaded.
 
-Now that your "main" package logic is running, you can continue implementing your loading screen and
-the game itself, knowing that mobile users will get a user experience better fit for their hardware
-and connection.
+#### Rendering your package
+
+The `window.require` call we made has executed all the JavaScript that comes with the "main"
+package. It is now time to set up your HTML. The loader will render each package it downloads in a
+dedicated container made of a `<div>` element. To create that container, you need to call the
+`renderPage` function. The return value of that function is the container element itself, that you
+may use to put your content in.
+
+Once you are done creating the content of your app, call the `displayPage` function to inject the
+CSS into the `<head>` tag of your HTML document and make the container visible. You can do all of
+the above from either the "boot" or the "main" JavaScript. In the latter case, don't forget to
+require() the loader and to add "loader" to your component.json file.
+
+An example:
+
+```js
+// create the content
+
+var pageElm = loader.renderPage('main');
+pageElm.innerHTML = '<h1>Hello world</h1>';
+
+// display the content
+
+loader.displayPage('main');
+```
 
 ### Further experimentation
 
