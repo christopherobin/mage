@@ -2,6 +2,23 @@
 
 ## vNEXT
 
+### Code style consistency
+
+Part of the MAGE internal test suite is now a code style checker called
+[JSCS](https://www.npmjs.org/package/jscs). As far as code style is concerned, it's much more
+complete than JSHint. It doesn't test unsafe development practices however, so JSHint is not to be
+replaced by it, but simply augmented. The goal of this addition is to streamline pull requests to
+MAGE by a stricter enforcing of rules, in order to avoid human beings from having to waste time on
+pointing out these issues to each other.
+
+If you want to replicate this in your game set up, please do the following.
+
+1. Copy node_modules/mage/jscs-config.json to your project root (and adjust it to your style).
+2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
+
+
+## v0.34.0 - Teamwork Cat
+
 ### Official Node 0.10 support
 
 Node.js 0.10 is now the recommended version of Node.js to run your MAGE app on. We will keep
@@ -11,7 +28,7 @@ we use.
 
 #### Migration
 
-* In your `package.json` file, please change the Node version in `"engines"` to `"~0.10.28"`.
+* In your `package.json` file, please change the Node version in `"engines"` to `"0.10.28"`.
 * Read about [Node.js API changes](https://github.com/joyent/node/wiki/Api-changes-between-v0.8-and-v0.10)
 
 If your project uses AerisCloud, please also make sure to do the following:
@@ -60,6 +77,34 @@ dependencies and save them to your `package.json` file. For example, by running
 
 `mage.core.time` has been deprecated for a while now, and it's time to say goodbye to it (no pun
 intended).
+
+### CORS for IE9
+
+The XMLHttpRequest object exist on IE8+ but sadly [CORS is not supported on IE8 and IE9](http://caniuse.com/#search=cors).
+So the idea is to use the XDomainRequest object for those old version of IE but here is the catch:
+XDomainRequest doesn't hold a status code.
+
+#### How to deal with IE9 without status code then?
+
+You may already have it in place in your app, if not here what you could do.
+
+When communicating with the server, the request will time out and generate a 'network' error.
+You can listen to it from the [msgServer](https://github.com/Wizcorp/mage/tree/develop/lib/msgServer)
+`msgServer.on('io.error.network', doSomething);`.
+The suggestion here is to retry (`msgServer.resend();`) on a network error and to reload the app after n retries.
+If the app is in maintenance it would probably show the maintenance page.
+
+#### What does it change for other browsers?
+Absolutely nothing.
+And you can still apply the retry logic on network errors, it's not a bad idea.
+
+Reference: (http://www.html5rocks.com/en/tutorials/cors/)
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tomes             | 0.0.18 | 0.0.21 | [Release notes](https://github.com/Wizcorp/node-tomes/releases) |
 
 ### Bug fixes
 
