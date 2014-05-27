@@ -29,14 +29,20 @@ to expose this file to the world. You can do that through the `addIndexPage` fun
 instance carries.
 
 ```javascript
+var mage = require('mage');
+
 mage.setup(function (error, apps) {
   // instruct to build from the HTML file(s) in the given folder
   var indexPage = apps.game.addIndexPage('game', './www/game');
 
   // make this app the endpoint for the "/" route
   indexPage.routes.push('/');
+
+  mage.start();
 });
 ```
+
+**You have just created a MAGE application. Congratulations!**
 
 You can now access this application at `http://localhost/app/game` (change the host and port
 according to your configuration). Because we added a custom route, we can also access it by simply
