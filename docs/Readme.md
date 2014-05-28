@@ -37,6 +37,7 @@ Table of Content
 * [Getting started with MAGE](./walkthrough/Readme.md)
   * [Concepts](./walkthrough/Concepts.md)
   * [Configuration](./walkthrough/Configuration.md)
+  * [Creating a web app](./walkthrough/WebApp.md)
   * [States](./walkthrough/State.md)
   * [Events](./walkthrough/Events.md)
   * [Modules](./walkthrough/Modules.md)
