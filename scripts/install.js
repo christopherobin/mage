@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 
-var isBootstrap = !!process.env.BOOTSTRAP;
+var bootstrapName = process.env.BOOTSTRAP;
 
-if (!isBootstrap) {
+if (!bootstrapName) {
 	process.exit(0);
 }
+
+// remove the BOOTSTRAP environment variable to avoid it being visible in child processes.
+
+delete process.env.BOOTSTRAP;
+
 
 var path = require('path');
 var fs = require('fs');
@@ -21,9 +26,11 @@ var appPath = path.resolve(magePath, '../..');
 var magePackagePath = path.join(magePath, 'package.json');
 var appPackagePath = path.join(appPath, 'package.json');
 
+var templateRulesPath = path.join(magePath, 'scripts/template-rules/' + bootstrapName + '.js');
+var templateRulesName = fs.existsSync(templateRulesPath) ? bootstrapName : 'default';
 
-var templateRulesName = fs.existsSync(path.join(magePath, 'scripts/template-rules/' + process.env.BOOTSTRAP + '.js')) ? process.env.BOOTSTRAP : 'default';
 var templateRules = require('./template-rules/' + templateRulesName + '.js');
+
 
 pretty.h1('Setting up application');
 
