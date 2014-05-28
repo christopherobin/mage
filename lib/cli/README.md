@@ -2,7 +2,7 @@
 
 ## CLI
 
-Those are the commands you can pass to mage:
+Those are the commands you can pass to Mage:
 
 To run those, ```cd``` to the root folder of your game,
 and use ```node . [command]``` where ```[command]``` is one of the commands listed below.
@@ -35,12 +35,12 @@ Which will setup the githooks and the tab completion.
 
 ```make dev-autocomplete```
 
-Which will only setup the tab completion
+Which will only setup the tab completion.
 
 
 ### Implementation Details
 
-The current implementation of tab completion uses tabalot.
+The current implementation of tab completion uses [Tabalot](https://www.npmjs.org/package/tabalot).
 
 Tabalot pretty much works this way:
 
@@ -53,14 +53,8 @@ Because of a few tweaks we made to simplify the installation process, you can us
     - save this tab completion script in ```test_file```
     - add a line to ```bash_completion_file``` (usually ```~/.bash_completion```), sourcing ```test_file```
     
-Typing make dev-autocomplete at the root folder of your mage project will basically do this for you.
+Typing make dev-autocomplete at the root folder of your Mage project will basically do this for you.  
 You will then have to ```source``` your ```bash_completion``` (usually ```~/.bash_completion```) file
 or restart your shell to benefit from the tab completion.
 
 Every command added to the *program* object in ```lib/cli/index.js``` will benefit from tab completion.
-
-### Others
-
-- I want to create a command for the CLI of Mage, will it show up in the tab completion?
-
-Yes, it will, as long as you respect the convention of adding it to ```program``` in ```lib/cli/index.js```
