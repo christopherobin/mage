@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"commander": "2.2.0",
-		"tabalot" : "0.3.1",
+		"tabalot" : "0.4.0",
 		"async": "0.2.9",
 		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.4",
 		"multipart-parser": "0.0.2",
