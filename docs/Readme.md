@@ -3,10 +3,10 @@ Documentation
 
 - [About](#about)
 - [I cannot find the information I am looking for](#i-cannot-find-the-information-i-am-looking-for)
-- [Table of Content](#table-of-content)
+- [Table of Contents](#table-of-contents)
 
 About
-------
+-----
 
 Welcome to MAGE documentation! In here you should be able to
 find answers to how to use MAGE, from bootstrapping a new project
@@ -22,7 +22,7 @@ documentation:
 2. [Open an issue](https://github.com/Wizcorp/mage/issues/new) and request an addition to the documentation
 3. If you have some time, please make a pull request to enhance the documentation
 
-Table of Content
+Table of Contents
 -----------------
 
 * [About MAGE](./AboutMage.md)
@@ -39,6 +39,6 @@ Table of Content
   * [Configuration](./walkthrough/Configuration.md)
   * [Creating a web app](./walkthrough/WebApp.md)
   * [States](./walkthrough/State.md)
-  * [Events](./walkthrough/Events.md)
-  * [Modules](./walkthrough/Modules.md)
+  * [Events](./walkthrough/Events.md)
+  * [Modules](./walkthrough/Modules.md)
 * [Setting up MAGE to run as a cluster](./walkthrough-cluster/Readme.md)
