@@ -40,7 +40,7 @@ server:
 
         # What to listen on
         bind:
-            file: ./server.sock
+            port: 8080
 
         # What the world will see us as (a full base URL)
         expose: "%APP_CLIENTHOST_EXPOSE%"
