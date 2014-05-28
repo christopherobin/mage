@@ -16,6 +16,7 @@ Further documenation can be found at [node-sqlite3](https://github.com/mapbox/no
 ```
 
 If no filename is provided, an in memory db will be created that will be destroyed upon end of connection.
+If an empty string is provided, an temporary db stored on disk will be created and destroyed upon end of connection.
 
 
 ## Supported operations

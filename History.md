@@ -2,6 +2,13 @@
 
 ## vNEXT
 
+### SQLite3 Vault
+
+Archivist has been enriched with support for an SQLite3 vault through the
+[sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
+[SQLite vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
+
+
 ### Code style consistency
 
 Part of the MAGE internal test suite are now a JavaScript code style checker called
