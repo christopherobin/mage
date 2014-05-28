@@ -1,22 +1,24 @@
-# SQLite vault
+# SQLite3 vault
 
-The node-sqlite3 module is supported through the built-in "sqlite3" vault type.
+The sqlite3 package is supported through the built-in "sqlite3" vault type.
 This vault should really only be used for development and testing. Be forwarned.
 Further documenation can be found at [node-sqlite3](https://github.com/mapbox/node-sqlite3).
+To avoid confusion, the npm package name is sqlite3, but the project is called node-sqlite3.
 
 
 ## Configuration
 
 ### URL based config
 ```yaml
-		sqlite:
-			type: sqlite
+		sqlite3:
+			type: sqlite3
 			config:
-				filename: "/home/vagrant/awesomegame/sqlitevault/awesomegame.db"
+				filename: "./sqlitevault/awesomegame.db"
 ```
 
-If no filename is provided, an in memory db will be created that will be destroyed upon end of connection.
-If an empty string is provided, an temporary db stored on disk will be created and destroyed upon end of connection.
+Filename takes both absolute and relative (to project root) references.
+If no filename is provided, an in memory db will be created that will be destroyed on close.
+If an empty string is provided, an temporary db stored on disk will be created and destroyed on close.
 
 
 ## Supported operations
@@ -25,8 +27,8 @@ operation | supported | implementation
 ----------|:---------:|---------------
 list      | ✔         | `SELECT FROM table WHERE partialIndex`
 get       | ✔         | `SELECT FROM table WHERE fullIndex`
-add       | ✔         | `INSERT INTO table SET ?`
-set       | ✔         | `INSERT INTO table SET ? ON DUPLICATE KEY UPDATE ?`
+add       | ✔         | `INSERT INTO table () VALUES ()`
+set       | ✔         | `INSERT OR REPLACE INTO table () VALUES ()`
 touch     |           |
 del       | ✔         | `DELETE FROM table WHERE fullIndex`
 
