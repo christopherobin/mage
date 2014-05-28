@@ -20,6 +20,7 @@ If you want to replicate this in your game set up, please following these steps.
 
 ### Bug fixes
 
+* Bootstrapping a new project would abort halfway through (possibly only on recent Node.js versions).
 * When loading "dashboard" without "assets", it would create weird errors. Now it auto-loads "assets".
 * When loading "ident" without "session", it would throw uncaught errors. Now it warns gracefully.
 
