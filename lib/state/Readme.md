@@ -13,7 +13,7 @@ server-sent events. We explain more about that and the concepts behind the State
 
 ## Methods
 
-**State(actorId, session)**
+### State(actorId, session)
 
 The constructor. Pass an `actorId` to bind the state to the actor. That way events that are emitted
 to this actor will batch up inside this state object, waiting to pulled out for delivery. If you do
@@ -21,36 +21,36 @@ not pass an actorId, emitting events to it will asynchronously be delivered via 
 stream system. If you pass a `session` object, it can be used for access level and user language
 settings.
 
-**state.setTimeout(number msec)**
+### state.setTimeout(number msec)
 
 If the state object is not closed within the given time, it will automatically close itself.
 
-**state.clearTimeout()**
+### state.clearTimeout()
 
 If a timeout has been set, this will remove it.
 
-**state.registerSession(Object session)**
+### state.registerSession(Object session)
 
 Will register the actorId and session. This is called from the constructor if a session was passed.
 
-**boolean state.canAccess(string accessLevel)**
+### boolean state.canAccess(string accessLevel)
 
 Returns `true` if the registered session is authorised at the given access level or beyond. Returns
 `false` otherwise.
 
-**state.setDescription(string desc)**
+### state.setDescription(string desc)
 
 Tags the state with a description that is used whenever an error is logged from the state object.
 
-**string state.getDescription()**
+### string state.getDescription()
 
 Returns the registered description.
 
-**string state.language()**
+### string state.language()
 
-Returns the language of the registered session. Returns `EN` if none is known.
+Returns the language of the registered session. Returns `en` if none is known.
 
-**state.emit(string actorId, string path, data, string language, boolean isJson)**
+### state.emit(string actorId, string path, data, string language, boolean isJson)
 
 Emits an event to the given actorId's client.
 
@@ -60,12 +60,12 @@ Emits an event to the given actorId's client.
 * language: A language code that may be given if the data is bound to a single language only.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
 
-**state.emitToActors(actorIds, path, data, language, isJson)**
+### state.emitToActors(array actorIds, string path, data, string language, boolean isJson)
 
 Just like `emit`, but for multiple actors at once. The actorIds argument is an array of actor ID
 strings.
 
-**state.error(string code, string logDetails, Function callback)**
+### state.error(string code, string logDetails, Function callback)
 
 Marks the state as in-error. No archivist mutations will be distributed, and the registered actor
 will receive the error `code` as the first argument in the client-side callback. Pass `null` as a
@@ -73,16 +73,16 @@ code for the default "server" error code. Pass `logDetails` to write it to the l
 error-channel. If you want to call a callback function immediately after, pass it as the third
 argument.
 
-**state.respond(data)**
+### state.respond(data)
 
 This is the response that will be sent to the actor's client-side callback as the second argument.
 
-**state.respondJson(string data)**
+### state.respondJson(string data)
 
 This is the response that will be sent to the actor's client-side callback as the second argument.
 Use this variation of the respond function when your response is already JSON serialized.
 
-**state.close(Function callback)**
+### state.close(Function callback)
 
 Call this when you're done with the state object. All archivist mutations will now be distributed to
 their datastores and events will be sent to the client. If an error has been registered, all
@@ -110,3 +110,7 @@ state.archivist.get('player', { id: state.actorId }, function (error, player) {
 	state.close();
 });
 ```
+
+## Read more
+
+* [Events](../../docs/walkthrough/Events.md)
