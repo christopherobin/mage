@@ -59,4 +59,4 @@ For more information about running a game in production, please read
 
 ## Next chapter
 
-[The State class](./State.md)
+[Creating a web app](./WebApp.md)
