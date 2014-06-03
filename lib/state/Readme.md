@@ -13,13 +13,23 @@ server-sent events. We explain more about that and the concepts behind the State
 
 ## Methods
 
-### State(actorId, session)
+### State(string actorId, string session)
 
 The constructor. Pass an `actorId` to bind the state to the actor. That way events that are emitted
-to this actor will batch up inside this state object, waiting to pulled out for delivery. If you do
-not pass an actorId, emitting events to it will asynchronously be delivered via MAGE's message
-stream system. If you pass a `session` object, it can be used for access level and user language
-settings.
+to this actor will batch up inside this state object, waiting to pulled out for delivery. This is
+what MAGE's command center does when returning a response following a user command execution.
+
+**Please note: you probably do not want to bind the state object to an actorId.**
+
+When you do not pass an actorId, emitting events to it will asynchronously be delivered via MAGE's
+message stream system. If you pass a `session` object, it can be used for access level and user
+language settings.
+
+### state.registerSession(Object session)
+
+Will register the actorId and session. This is called from the constructor if a session was passed.
+
+**Please note: you probably do not want to bind the state object to a session.**
 
 ### state.setTimeout(number msec)
 
@@ -29,14 +39,10 @@ If the state object is not closed within the given time, it will automatically c
 
 If a timeout has been set, this will remove it.
 
-### state.registerSession(Object session)
-
-Will register the actorId and session. This is called from the constructor if a session was passed.
-
 ### boolean state.canAccess(string accessLevel)
 
 Returns `true` if the registered session is authorised at the given access level or beyond. Returns
-`false` otherwise.
+`false` otherwise. If no session is registered, the state object's access level becomes "anonymous".
 
 ### state.setDescription(string desc)
 
