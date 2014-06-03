@@ -13,6 +13,7 @@ Now that you have installed MAGE and have it up and running, you can go through 
 to get further acquainted with the platform.
 
 * [Configuration](./Configuration.md)
+* [Concepts](./Concepts.md)
 * [Creating a web app](./WebApp.md)
 * [Actors and Sessions](./ActorsSessions.md)
 * [The State class](./State.md)
