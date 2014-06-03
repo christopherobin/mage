@@ -5,7 +5,7 @@
 #
 ROOT_DIR="$(dirname "$(which "$0")")"
 KERNEL=$(uname);
-NODE_VERSION="0.8";
+NODE_VERSION="0.10";
 
 #
 # Some tools for more colors
