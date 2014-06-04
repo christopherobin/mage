@@ -75,12 +75,13 @@ Once a package has finished loading, you may add its HTML contents to the docume
 put those contents inside a `<div>` element that it creates, which starts out hidden by a
 `display: none;` style. When that is done, it returns the `<div>` container.
 
-#### displayPage(string name)
+#### HTMLDivElement displayPage(string name)
 
 Will call `renderPage(name)` if you haven't done that yourself, and then make the package visible by
 removing its `display: none;` style. If another package is currently visible, it will make that one
 invisible at the same time. The loader will emit a "<name>.close" event for the package it hides,
-and a "<name>.display" event for the package it displays.
+and a "<name>.display" event for the package it displays. When everything is done, it returns the
+`<div>` container of the package that is now displayed.
 
 #### HTMLDivElement getDisplayedPage()
 
