@@ -46,9 +46,9 @@ See also:
 
 ## Git and GitHub
 
-Git is a free and open source version control system that is used on MAGE. It is hosted at
-GitHub.com from where you can install it. That requires you to have installed a Git client first.
-Installation of Git can be done by following the instructions at the
+Git is a free and open source version control system that is used on MAGE. The MAGE repository is
+hosted at GitHub.com from where you can install it. That requires you to have installed a Git client
+first. Installation of Git can be done by following the instructions at the
 [Git download page](http://git-scm.com/download).
 
 To be able to install MAGE, please make sure that:
