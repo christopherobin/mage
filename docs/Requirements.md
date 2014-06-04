@@ -2,17 +2,40 @@
 
 ## Understanding MAGE requirements
 
-### Node.js
+The [installation guide](./Install.md) will guide you through the necessary steps to install MAGE.
+But before you go there, please make sure that the requirements described below are met.
 
-Node.js is essentially JavaScript for servers, and the MAGE platform has been built on it. There are
-some concepts you will most likely benefit from understanding before getting started on a serious
-Node project. Here are some resources which might help you make your first steps on Node:
+If you are using [AerisCloud](https://github.com/Wizcorp/AerisCloud) to run your project, all the
+requirements that are described here are automatically taken care of.
 
-* [The Node Beginner Book](http://www.nodebeginner.org/)
-* [NodeSchool](http://nodeschool.io/)
-* [Node API Documentation](http://nodejs.org/api/)
 
-We recommend using nvm (Node Version Manager) to manage your Node versions and environments.
+## Operating system
+
+MAGE is currently only supported to run on Linux and Mac OS X.
+
+
+## Node.js
+
+Node.js (or Node) is essentially JavaScript for servers, and the MAGE platform has been built on it.
+There are some concepts you will most likely benefit from understanding before getting started on a
+serious Node project. Here are some resources which might help you make your first steps on Node:
+
+* [The Node Beginner Book](http://www.nodebeginner.org)
+* [NodeSchool](http://nodeschool.io)
+* [Node API Documentation](http://nodejs.org/api)
+
+We recommend using NVM (Node Version Manager), to be able to install multiple Node versions on your
+system.
+
+To install NVM, please follow the instructions in
+[the NVM documentation](https://github.com/creationix/nvm/blob/master/README.markdown#installation).
+
+To then install Node.js, please run:
+
+```sh
+nvm install 0.10
+nvm use 0.10
+```
 
 See also:
 
@@ -20,132 +43,23 @@ See also:
 * [NPM - Node Package Manager](https://npmjs.org/)
 * [NVM - Node Version Manager](https://github.com/creationix/nvm)
 
-### Git and GitHub
 
-To install MAGE, you will need to have access to a git client and to [github.com](https://github.com/),
-where the MAGE repository is hosted. The [installation guide](./Install.md) will guide you through
-the necessary steps to install MAGE. But before you go there, please make sure that:
+## Git and GitHub
 
-* You have been given access to the MAGE repository on GitHub.
+Git is a free and open source version control system that is used on MAGE. The MAGE repository is
+hosted at GitHub.com from where you can install it. That requires you to have installed a Git client
+first. Installation of Git can be done by following the instructions at the
+[Git download page](http://git-scm.com/download).
+
+To be able to install MAGE, please make sure that:
+
+* You have created a free account on [GitHub.com](https://github.com).
+* You have been given access to the [MAGE repository](https://github.com/Wizcorp/mage).
 * You are set up to use [git-over-ssh](https://help.github.com/articles/generating-ssh-keys).
 
 See also:
 
-* [Git website](http://git-scm.com/)
-* [GitHub](http://github.com/)
-* [Set up git](https://help.github.com/articles/set-up-git)
-
-### ZeroMQ (aka ØMQ)
-
-MAGE uses the ZeroMQ library to enable fast messaging between servers and processes. To allow MAGE
-to build against it, the ZeroMQ library must be installed beforehand.
-
-See also:
-
-* [ZeroMQ website](http://www.zeromq.org/)
-
-### Multicast DNS (aka mDNS, Bonjour, Zero-configuration networking)
-
-MAGE uses mDNS to automatically discover other MAGE instances of the same game on the network. This
-easily enables one to create a cluster of servers without much configuration. Building MAGE requires
-the necessary libraries to be installed.
-
-## Installing all requirements
-
-If you have cURL installed on your environment, you can run the following to set up your machine.
-
-```bash
-curl http://www.wizcorp.jp/mage/environment.sh | bash
-. ~/.nvm/nvm.sh
-nvm use 0.10
-```
-
-Alternatively, you can manually install them by following these steps.
-
-### All environments
-
-NVM (Node Version Manager)
-
-```bash
-curl https://raw.github.com/creationix/nvm/master/install.sh | sh
-```
-
-The latest stable Node version compatible with MAGE.
-
-```bash
-nvm install 0.10
-nvm use 0.10
-```
-
-### OS X (10.6 and up)
-
-Please install:
-
-* XCode (to be able to compile ZeroMQ)
-* [zeromq](http://www.zeromq.org/intro:get-the-software)
-* [git](http://git-scm.com/downloads) (MacPorts: git-core)
-
-mDNS is enabled by default on OS X.
-
-### CentOS (5 and up)
-
-Please first download the official ZeroMQ repository:
-
-```bash
-sudo curl -s "http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-${CENTOS_VERSION}/home:fengshuo:zeromq.repo" > /etc/yum.repos.d/zeromq.repo
-```
-
-Then install:
-
-* git-all
-* avahi
-* avahi-tools
-* avahi-compat-libdns_sd
-* avahi-compat-libdns_sd-devel
-* zeromq (an external repository is required)
-* zeromq-devel (an external repository is required)
-
-### Ubuntu (12.04 and up)
-
-Please install:
-
-* git-all
-* build-essential
-* avahi-utils
-* avahi-daemon
-* libavahi-compat-libdnssd1
-* libavahi-compat-libdnssd-dev
-* libavahi-common-data
-* libavahi-common3
-* libavahi-core7
-* libdbus-1-3
-* libzmq1
-* libzmq-dev
-
-### Debian (6 only)
-
-Please add the following line to `/etc/apt/sources.list`:
-
-```
-deb http://backports.debian.org/debian-backports squeeze-backports main
-```
-
-Then run `apt-get update` and use `apt-get install` to install the following:
-
-* git-all
-* build-essential
-* avahi-utils
-* avahi-daemon
-* libavahi-compat-libdnssd1
-* libavahi-compat-libdnssd-dev
-* libavahi-common-data
-* libavahi-common3
-* libavahi-core7
-* libdbus-1-3
-* libnss-mdns
-* libzmq
-* libzmq-dev
-
-### Windows
-
-Windows is currently not supported.
+* [Git website](http://git-scm.com)
+* [GitHub](http://github.com)
+* [Set up Git](https://help.github.com/articles/set-up-git)
+* [Pro Git - a free eBook on using Git](http://git-scm.com/book)
