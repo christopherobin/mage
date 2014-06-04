@@ -1,4 +1,6 @@
 var mage = require('mage');
+mage.core.cli.run();
+
 var logger = mage.core.logger.context('game-boot');
 
 
