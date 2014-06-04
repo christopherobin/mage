@@ -12,6 +12,7 @@ traversing the folders in which these subsystems live.
 * [Helpers](../../lib/helpers)
 * [Logging](../../lib/loggingService)
 * [The "mage" object](../../lib/mage)
+* [Loader](../../lib/loader)
 * [Process Manager](../../lib/processManager)
 * [Sampler](../../lib/sampler)
 * [Savvy](../../lib/savvy)
