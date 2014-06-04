@@ -24,6 +24,8 @@ If you want to replicate this in your game set up, please following these steps.
 * When loading "dashboard" without "assets", it would create weird errors. Now it auto-loads "assets".
 * When loading "ident" without "session", it would throw uncaught errors. Now it warns gracefully.
 * Filevault now lists recursively when there is a '/' in the key (path).
+* Filevault now creates necessary sub-folders when a key contains '/'. Empty folders will also get
+  auto purged upon deletion and startup.
 
 ### Miscellaneous changes
 
