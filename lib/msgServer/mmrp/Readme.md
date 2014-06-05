@@ -5,19 +5,19 @@ It is used to ensure communication between multiple MAGE instances
 and between the different node processes run by MAGE.
 
 ```
-+-----+                  +-----+     
-|     |                  |     |     
-|  M  +------------------+  M  |     
-|     |                  |     |     
-+--+--+                  ++---++     
-   |                      |   |      
-   |                   +--+   +--+   
-   |                   |         |   
-+--+--+             +--+--+   +--+--+
-|     |             |     |   |     |
-|  W  |             |  W  |   |  W  |
-|     |             |     |   |     |
-+-----+             +-----+   +-----+
++-----+                  +-----+
+|     |                  |     |
+|  M  +------------------+  M  |
+|     |                  |     |
++--+--+                  ++---++
+   |                      |   |
+   |                   +--+   +--+
+   |                   |         |
++--+--+             +--+--+   +--+--+
+|     |             |     |   |     |
+|  W  |             |  W  |   |  W  |
+|     |             |     |   |     |
++-----+             +-----+   +-----+
 
 M: MAGE master / MMRP relay
 W: MAGE worker / MMRP client
