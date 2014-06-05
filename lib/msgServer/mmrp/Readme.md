@@ -24,9 +24,10 @@ W: MAGE worker / MMRP client
 ```
 
 Each MAGE master will instanciate an MMRP relay, and each worker an MMRP client.
+
 When the `comm` module of the `msgServer` will send a message,
 the MMRP client will send the message to its MMRP relay.
-The relay will then transfer the messages to all the other relays,
+The relay will then transfer the message to all the other relays,
 if the recipient is not one of its attached clients.
 If one of the relay detects that the recipient is one of its attached clients,
 it will forward the message to the client.
@@ -36,8 +37,9 @@ This protocol is implemented in the [msgServer/comm](../comm.js) module.
 ## Relay
 
 Each relay uses two ZMQ sockets to communicate: a router and a dealer.
-The router acts as a server and receives request messages,
-the dealer acts as a client and receives reply messages.
+
+The router acts as a server and receives `request` messages,
+the dealer acts as a client and receives `reply` messages.
 
 ### Relay(String identity)
 
@@ -162,6 +164,7 @@ The structure is the as follows:
 
 A packet is an array of Buffer.
 The typical structure is a list of addresses, followed by the body and the metadata.
+
 This attribute allows to know the place of the body inside the packet.
 
 Type: 8 bit integer.
@@ -233,6 +236,7 @@ var metadata = new meta.Meta(null, meta.DATATYPE.JSON, meta.FLAGS.REPLY_EXPECTED
 ### meta.getBuffer()
 
 Return the internal `Buffer`.
+
 It's useful to send the `Meta` object over the network.
 
 ### meta.deserialize(Bufffer data)
