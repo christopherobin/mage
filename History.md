@@ -18,6 +18,15 @@ If you want to replicate this in your game set up, please following these steps.
 2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
 3. Add "jscs" and "jscs-jsdoc" to your package.json and install them.
 
+### Loader
+
+The MAGE loader has undergone a few small changes:
+
+* You no longer have to call `loader.configure(window.mageConfig)`. Please simply remove the line
+  from your code.
+* The displayPage() function now returns the page's container div, just like renderPage() does.
+* A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+
 ### Bug fixes
 
 * Bootstrapping a new project would abort halfway through (possibly only on recent Node.js versions).
