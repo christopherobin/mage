@@ -26,6 +26,7 @@ The MAGE loader has undergone a few small changes:
   from your code.
 * The displayPage() function now returns the page's container div, just like renderPage() does.
 * A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+* [Documentation](./lib/loader/Readme.md)!
 
 ### Bug fixes
 

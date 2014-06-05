@@ -15,12 +15,10 @@ The loader component is a "local" dependency, that is located in "mage/lib", so 
 you will need to add to component.json. Incidentally, the path you use to `require('mage');` is the
 same.
 
-To import the loader, simply require it and configure it with the `mageConfig` that the builder
-exposes for you on the `window` object.
+To import the loader, simply require it.
 
 ```javascript
 var loader = require('loader');
-loader.configure(window.mageConfig);
 ```
 
 
@@ -30,9 +28,8 @@ loader.configure(window.mageConfig);
 
 #### configure(Object configuration)
 
-Configures the loader. MAGE will provide the configuration during the build process and exposes it
-as `window.mageConfig`. This configuration includes all that is needed to communicate with the
-server and download its packages.
+Configures the loader. MAGE will provide the configuration automatically however, so unless you
+want to test something or really know what you're doing, **you should not need this function**.
 
 #### setLanguage(string language)
 

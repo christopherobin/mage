@@ -238,10 +238,6 @@ use it as follows.
 ```javascript
 var loader = require('loader');
 
-// transmit this build's language and screen settings to the loader (don't worry about this for now)
-
-loader.configure(window.mageConfig);
-
 // start downloading the "main" package
 
 loader.loadPage('main');
@@ -253,10 +249,8 @@ loader.once('main.loaded', function () {
 });
 ```
 
-The loader must be configured through a call to `loader.configure`. You can copy that line as is in
-the example above. The MAGE component builder automatically makes `window.mageConfig` available
-thanks to the $component.js macro you used in "index.html". You start the download of the "main"
-package by calling `loadPage`. Once that download has finished, the "main.loaded" event will fire.
+You start the download of the "main" package by calling `loadPage`. Once that download has
+finished, the "main.loaded" event will fire.
 
 > The name of the event adapts to the names you give to your packages ("packagename.loaded").
 
