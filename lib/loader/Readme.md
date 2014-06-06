@@ -85,6 +85,30 @@ and a "<name>.display" event for the package it displays. When everything is don
 Returns the package that is currently visible, or `null` if no package has been made visible yet.
 
 
+### Error related events
+
+#### error: (LoadError error, string packageName)
+#### [packageName].error: (LoadError error)
+
+All synchronous errors in the loader are thrown. Asynchronous errors are emitted through the "error"
+event. They are also emitted as "[packageName].error"
+
+The LoadError object contains the following properties:
+
+- message (string): human readable description of the error.
+- response (Object, optional): an object describing the HTTP response that caused the error.
+- packageName (string, optional): the name of the package during the loading of which the error occurred.
+- error (Error, optional): an Error object that may provide more information about the cause.
+- isRetrying (boolean): true if the loader is automatically retrying the download, false if the
+  error was fatal and the download cannot and should not be retried.
+
+What to do in the case of a load-error:
+
+1. If
+
+
+
+
 ### Events
 
 The loader emits events throughout its operations. It also does this to inform you of the state of
@@ -134,18 +158,18 @@ The values below are examples of what they could look like.
 If you need to do any post processing on these values, while not particularly encouraged, you can do
 that during this event.
 
-#### <pageName>.loaded: ()
+#### [pageName].loaded: ()
 
 Emitted once a package has been parsed and its JavaScript has been executed. Please note that in the
 case of a component.io package that does not mean that the code of its modules has been executed.
 It simply means that the modules are now registered and `require` can be used to run them.
 
-#### <pageName>.display: (HTMLDivElement container)
+#### [pageName].display: (HTMLDivElement container)
 
 Emitted when a package is displayed. The `<div>` element contains the HTML for this package and may
 be used to add more HTML content to it.
 
-#### <pageName>.close: ()
+#### [pageName].close: ()
 
 Emitted when a package is being hidden. Only one package is displayed at any time, so this event
 is emitted every time a new page is displayed (except the first time, when there is nothing to hide).
