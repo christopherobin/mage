@@ -72,7 +72,7 @@ module available on its own object as `mage.gifting`.
 ### About component.json
 
 MAGE uses the popular [component](https://github.com/component/component)
-([guide](https://github.com/component/guide)) library to manage client-side dependencies.
+([wiki](https://github.com/component/component/wiki)) library to manage client-side dependencies.
 To allow your module to be accessible, please provide it with a `component.json` file that resembles
 the following:
 
