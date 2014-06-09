@@ -50,6 +50,11 @@ particular pixel density of the device. This is required when offering assets ta
 specific pixel densities (in Apple's terminology, retina and non-retina). It's not absolutely
 required to call this function. The fallback density is `1`.
 
+#### setCacheStorage(CacheStorage constructor)
+
+Assigns a storage API to be the preferred API for the caching of packages. By default, and if
+available, the browser's LocalStorage API will be used.
+
 #### loadPackage(string packageName, Function callback)
 
 Downloads the package from the server. When possible, the loader maintains a package cache in the
