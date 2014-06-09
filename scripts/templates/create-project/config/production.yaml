@@ -55,6 +55,9 @@ server:
             # Wildcard port binds on a random available port
             port: "*"
 
+        # The network you want to use for MMRP
+        # network: "172.16.0.0/16"
+
     # Peers in the network should be discoverable. Use mdns or zookeeper.
     serviceDiscovery:
         engine: mdns
