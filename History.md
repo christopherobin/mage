@@ -2,6 +2,13 @@
 
 ## vNEXT
 
+### mage.session.isValidSession
+
+The session module now allows you to validate a session stored on the client
+side. This is useful when you want to decide whether you need to redirect the
+end-user to a login screen or to the main application when the user
+reloads the application.
+
 ### Code style consistency
 
 Part of the MAGE internal test suite are now a JavaScript code style checker called
