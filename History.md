@@ -20,13 +20,19 @@ If you want to replicate this in your game set up, please following these steps.
 
 ### Loader
 
-The MAGE loader has undergone a few small changes:
+The MAGE loader has been rewritten from the ground up. Please read its documentation to fully
+get up to speed with the right way to interact with it. In an nutshell however, this is what
+happened.
 
-* You no longer have to call `loader.configure(window.mageConfig)`. Please simply remove the line
-  from your code.
-* The displayPage() function now returns the page's container div, just like renderPage() does.
+* The "page" terminology has been renamed to "package".
+* You no longer have to call `loader.configure(window.mageConfig)`.
+* The weak dependency to MAGE's asset class has been removed.
+* The groundwork has been laid to use storage engines other than LocalStorage for cache.
+* Introduction of the Package class that you can interact with to:
+  - Read and manipulate downloaded content.
+  - Inject HTML and CSS early.
 * A lot of sanity checks have been added to warn you early about bad configuration or API calls.
-* [Documentation](./lib/loader/Readme.md)!
+* [Full Documentation](./lib/loader/Readme.md)!
 
 ### Bug fixes
 
