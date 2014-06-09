@@ -56,7 +56,7 @@ server:
             port: "*"
 
         # The network you want to use for MMRP
-        # network: "172.16.0.0/16"
+        network: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8"
 
     # Peers in the network should be discoverable. Use mdns or zookeeper.
     serviceDiscovery:
