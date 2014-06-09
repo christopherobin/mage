@@ -27,7 +27,7 @@ happened.
 * The "page" terminology has been renamed to "package".
 * You no longer have to call `loader.configure(window.mageConfig)`.
 * The weak dependency to MAGE's asset class has been removed.
-* The groundwork has been laid to use storage engines other than LocalStorage for cache.
+* You can use storage engines other than LocalStorage for cache.
 * Introduction of the Package class that you can interact with to:
   - Read and manipulate downloaded content.
   - Inject HTML and CSS early.
