@@ -30,6 +30,8 @@ If you want to replicate this in your game set up, please following these steps.
 ### Miscellaneous changes
 
 * The default HTTP binding on new projects is now port 8080, instead of server.sock.
+* `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
+* Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
 
 
 ## v0.34.0 - Teamwork Cat

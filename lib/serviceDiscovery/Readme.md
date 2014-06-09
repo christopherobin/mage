@@ -78,7 +78,7 @@ server:
 #### Methods
 
  - `getIp(version, network)`, allows you to retrieve an IP from the addresses list, `version` is the IP version, either 4 or 6.
-   `network` is the CIDR notation of the network where you service is.
+   `network` is the [CIDR notation](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation) of the network where you service is.
  - `isLocal()`, whether the node is running on the current server or not.
 
 #### Todo
