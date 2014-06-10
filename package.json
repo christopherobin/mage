@@ -64,7 +64,8 @@
 		"mocha-istanbul": "0.2.0",
 		"plato": "0.6.2",
 		"jscs": "1.4.5",
-		"jscs-jsdoc": "0.0.6"
+		"jscs-jsdoc": "0.0.6",
+		"zmq": "^2.5.1"
 	},
 	"main": "lib/mage",
 	"scripts": {

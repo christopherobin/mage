@@ -2,6 +2,8 @@ var mage = require('mage');
 var logger = mage.core.logger.context('game-boot');
 
 
+mage.cli.run();
+
 mage.addModulesPath('./lib/modules');
 mage.useModules(
 	'archivist',
