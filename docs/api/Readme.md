@@ -6,6 +6,7 @@ traversing the folders in which these subsystems live.
 ## Core systems
 
 * [Archivist](../../lib/archivist)
+* [CLI](../../lib/cli)
 * [Message Server](../../lib/msgServer)
 * [Command Center](../../lib/commandCenter)
 * [Configuration](../../lib/config)

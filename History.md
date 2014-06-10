@@ -34,6 +34,40 @@ happened.
 * A lot of sanity checks have been added to warn you early about bad configuration or API calls.
 * [Full Documentation](./lib/loader/Readme.md)!
 
+### Don't run the CLI by default
+
+The CLI module does not parse anymore the process arguments by default.
+You must call `mage.cli.run()`.
+
+The path of the CLI module has changed.
+You can now access it at `mage.cli` instead of `mage.core.cli`.
+
+It allows you to run `mocha` and include `mage` in your tests or test code requiring `mage`.
+
+#### Migration
+
+You must add `mage.cli.run();` to `lib/index.js` in your project to run the CLI.
+You should obtain:
+``` javascript
+var mage = require('mage');
+var logger = mage.core.logger.context('game-boot');
+
+mage.cli.run();
+```
+
+### msgStream now works without requiring a MAGE cluster
+
+There was a bug in the MMRP relay which disallow the router to send messages
+to its client if the relay was not connected to another relay.
+
+The router is now able to send message as soon as a client is connected to it.
+
+The msgStream uses MMRP to work, and before it was not possible to send an event
+from the server to a client outside of the `commandCenter`.
+
+You can now create a new `State` object and emit event to a client.
+It's like push notifications in MAGE.
+
 ### Bug fixes
 
 * Bootstrapping a new project would abort halfway through (possibly only on recent Node.js versions).
@@ -46,6 +80,8 @@ happened.
 ### Miscellaneous changes
 
 * The default HTTP binding on new projects is now port 8080, instead of server.sock.
+* Add MMRP some tests and documentation.
+* Add CLI documentation.
 
 
 ## v0.34.0 - Teamwork Cat
