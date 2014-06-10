@@ -9,6 +9,9 @@ side. This is useful when you want to decide whether you need to redirect the
 end-user to a login screen or to the main application when the user
 reloads the application.
 
+See [./lib/modules/session/Readme.md](./lib/modules/session/Readme.md#isvalidsessionsessionkey-callbackerr-isvalid)
+for the API documentation
+
 ### Code style consistency
 
 Part of the MAGE internal test suite are now a JavaScript code style checker called
