@@ -82,17 +82,20 @@ argument.
 ### state.respond(data)
 
 This is the response that will be sent to the actor's client-side callback as the second argument.
+This only has meaning if the state originated in the command center.
 
 ### state.respondJson(string data)
 
 This is the response that will be sent to the actor's client-side callback as the second argument.
 Use this variation of the respond function when your response is already JSON serialized.
+This only has meaning if the state originated in the command center.
 
 ### state.close(Function callback)
 
 Call this when you're done with the state object. All archivist mutations will now be distributed to
-their datastores and events will be sent to the client. If an error has been registered, all
-archivist changes, all events, and the response will be discarded.
+their data stores and events will be sent to the client. If an error has been registered, all
+archivist changes, all events, and the response will be discarded. Error or no error, *always* make
+sure to close the state object when you're done with it.
 
 
 ## Usage example
@@ -103,11 +106,7 @@ var State = mage.core.State;
 var state = new State('abc');
 
 state.archivist.get('player', { id: state.actorId }, function (error, player) {
-	// from here on, we can no longer use our state object
-
-	if (error) {
-		console.error(error);
-	} else {
+	if (!error) {
 		state.emit(state.actorId, 'myevent', { hello: 'world', youAre: player });
 
 		console.log('Player:', player);
