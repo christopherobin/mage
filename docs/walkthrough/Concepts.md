@@ -48,3 +48,7 @@ you please, such as:
 In the [next chapter](WebApp.md), we'll explain how you can create a web app, and split it up into
 several packages. We will also cover a system called Component.io that will help us manage our files
 and the dependencies between them.
+
+## Next chapter
+
+[Creating a web app](./WebApp.md)
