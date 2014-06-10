@@ -59,4 +59,4 @@ For more information about running a game in production, please read
 
 ## Next chapter
 
-[Creating a web app](./WebApp.md)
+[Concepts](./Concepts.md)

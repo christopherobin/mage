@@ -307,4 +307,4 @@ depend on an optional package.
 
 ## Next chapter
 
-[The State class](./State.md)
+[Actors and Sessions](./ActorsSessions.md)
