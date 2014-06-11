@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"commander": "2.2.0",
+		"tabalot" : "0.4.0",
 		"async": "0.2.9",
 		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.4",
 		"multipart-parser": "0.0.2",
@@ -37,7 +38,8 @@
 		"source-map": "0.1.31",
 		"memwatch": "0.2.2",
 		"heapdump": "0.1.0",
-		"codependency": "0.1.3"
+		"codependency": "0.1.3",
+		"netmask": "1.0.4"
 	},
 	"optionalPeerDependencies": {
 		"loggly": "0.3.11",
