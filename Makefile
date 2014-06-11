@@ -1,6 +1,7 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
-LIBCOV = ./lib-cov
+TEST_SERVER = ./test/server
+TEST_BROWSER = ./test/browser
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -134,19 +135,14 @@ else
 endif
 
 test-unit:
-	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
-	$(BIN)/mocha -R spec --recursive $(shell find $(LIB) -type d -name test)
+	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
 
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
-instrument:
-	rm -rf "$(LIBCOV)"
-	$(BIN)/istanbul instrument --output $(LIBCOV) --no-compact --variable global.__coverage__ $(LIB)
-
-report-coverage: instrument
-	$(BIN)/mocha -R mocha-istanbul --recursive $(shell find $(LIBCOV) -type d -name test)
+report-coverage:
+	$(BIN)/istanbul cover $(BIN)/_mocha --report html --dir $(COVERAGE_REPORT) -- -R spec --recursive $(TEST_SERVER)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
 
 
@@ -170,6 +166,5 @@ clean-deps:
 	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
 
 clean-report:
-	rm -rf "$(LIBCOV)"
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
