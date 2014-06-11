@@ -29,6 +29,10 @@ The callback function will be passed the following arguments:
 
 #### Example
 
+This example shows how to setup persistent session
+on the client, so that it may be reused after each
+page reload.
+
 ```javascript
 var mage = require('mage');
 var storeKey = 'sessionKey'
@@ -45,7 +49,7 @@ mage.session.isValidSession(sessionKey, function (err, isValid) {
 });
 
 //
-// In general, you will have this it of code
+// In general, you will have this piece of code
 // somewhere in your application to save
 // the session key locally whenever it gets
 // set
