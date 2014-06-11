@@ -38,7 +38,7 @@ del       | ✔         | `DELETE FROM table WHERE fullIndex`
 signature                  | required | default implementation
 ---------------------------|----------|-----------------------
 `createKey(topic, index)`  |          | `{ table: topic, pk: index }`
-`parseKey(mysqlKey)`       |          | `{ topic: key.table, index: key.pk }`
+`parseKey(key)`       |          | `{ topic: key.table, index: key.pk }`
 `serialize(value)`         |          | `{ value: utf8orBufferFromValue, mediaType: value.mediaType }`
 `deserialize(data, value)` |          | parses row.value and row.mediaType into Value
 
@@ -80,7 +80,7 @@ serializer method to do so. For example, consider the following example if you w
 timestamp to a `lastChanged INT UNSIGNED NOT NULL` column.
 
 ```javascript
-exports.people.vaults.mysql.serialize = function (value) {
+exports.people.vaults.sqlite3.serialize = function (value) {
 	return {
 		value: value.setEncoding(['utf8', 'buffer']).data,
 		mediaType: value.mediaType,
