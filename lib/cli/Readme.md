@@ -1,6 +1,6 @@
 # CLI
 
-This module uses [commander](https://github.com/visionmedia/commander.js) to
+This module uses [Commander](https://github.com/visionmedia/commander.js) to
 manage the command-line interface of MAGE.
 
 ## API
@@ -13,15 +13,16 @@ Parse the process arguments obtained via `process.argv`.
 
 Commander object which allows you to extend the provided CLI.
 
-_Example_:
+*Example*:
 
-``` javascript
+```javascript
 var cli = require('mage').cli;
 cli.program.option('--clown', 'Enables clown mode');
 cli.run();
 ```
 
 With the previous code, you should obtain the following:
+
 ```
 $ ./game --verbose --help
 

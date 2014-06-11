@@ -66,6 +66,7 @@ It's like push notifications in MAGE.
 * The default HTTP binding on new projects is now port 8080, instead of server.sock.
 * Add MMRP some tests and documentation.
 * Add CLI documentation.
+* `mage.getModulePath(modName)` will now throw if the module does not exist, instead of return `null`.
 
 
 ## v0.34.0 - Teamwork Cat
