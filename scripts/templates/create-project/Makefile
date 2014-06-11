@@ -72,15 +72,19 @@ assets-index:
 define helpDevelopment
 	@echo "Development:"
 	@echo
-	@echo "  make dev               Sets up the development environment (shortcut for dev-githooks)."
+	@echo "  make dev               Sets up the development environment (shortcut for dev-githooks and dev-autocomplete)."
 	@echo
 	@echo "  make dev-githooks      Sets up git hooks."
+	@echo "  make dev-autocomplete  Sets up bash auto completion."
 	@echo
 endef
 
-.PHONY: dev dev-githooks
+.PHONY: dev dev-githooks dev-autocomplete
 
 dev: dev-githooks dev-autocomplete
+
+dev-githooks:
+	node $(SCRIPTS)/githooks.js
 
 dev-autocomplete:
 	node . completion --filename $(COMPLETION_FILENAME) --bash_completion ~/.bash_completion --save
@@ -88,9 +92,6 @@ dev-autocomplete:
 	@echo Tab completion is now installed for this project.
 	@echo Please restart your shell or enter:
 	@echo source ~/.bash_completion
-
-dev-githooks:
-	node $(SCRIPTS)/githooks.js
 
 
 # QUALITY
