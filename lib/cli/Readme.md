@@ -2,6 +2,9 @@
 
 ## CLI
 
+This module uses [commander](https://github.com/visionmedia/commander.js) to
+manage the command-line interface of MAGE.
+
 Those are the commands you can pass to Mage:
 
 To run those, `cd` to the root folder of your game,
@@ -52,9 +55,39 @@ Because of a few tweaks we made to simplify the installation process, you can us
     - read information from your package.json to get the necessary information to create a tab completion script
     - save this tab completion script in `test_file`
     - add a line to `bash_completion_file` (usually `~/.bash_completion`), sourcing `test_file`
-    
-Typing make dev-autocomplete at the root folder of your Mage project will basically do this for you.  
+
+Typing make dev-autocomplete at the root folder of your Mage project will basically do this for you.
 You will then have to `source` your `bash_completion` (usually `~/.bash_completion`) file
 or restart your shell to benefit from the tab completion.
 
 Every command added to the *program* object in `lib/cli/index.js` will benefit from tab completion.
+
+
+## API
+
+### cli.run()
+
+Parse the process arguments obtained via `process.argv`.
+
+### cli.program
+
+Commander object which allows you to extend the provided CLI.
+
+_Example_:
+
+``` javascript
+var cli = require('mage').cli;
+cli.program.option('--clown', 'Enables clown mode');
+cli.run();
+```
+
+With the previous code, you should obtain the following:
+```
+$ ./game --verbose --help
+
+  Usage: game [options] [command]
+...
+  Options:
+...
+    --clown                Enables clown mode
+```
