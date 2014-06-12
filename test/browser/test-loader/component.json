@@ -1,0 +1,10 @@
+{
+	"name": "test-loader",
+	"dependencies": {
+		"timoxley/assert": "0.0.1"
+	},
+	"scripts": ["index.js"],
+	"main": "index.js",
+	"paths": ["../../../lib"],
+	"local": ["loader"]
+}
