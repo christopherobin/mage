@@ -45,9 +45,7 @@ deps-npm:
 	npm install
 
 deps-component:
-	pushd $(TEST_BROWSER); \
-	$(BIN)/component-install -r https://raw.githubusercontent.com; \
-	popd
+	cd $(TEST_BROWSER); $(CURDIR)/$(BIN)/component-install -r https://raw.githubusercontent.com
 
 
 # DEVELOPMENT
