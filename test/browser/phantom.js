@@ -1,6 +1,9 @@
 var page = require('webpage').create();
 
-var PHANTOM_TIMEOUT = 60000;
+
+// timeout the tests
+
+var PHANTOM_TIMEOUT = 10 * 1000;
 
 var testTimeout = setTimeout(function () {
 	console.error('Timed out.');
@@ -12,9 +15,10 @@ function exit(code) {
 	phantom.exit(code);
 }
 
-page.open('file:///home/vagrant/ankamacomics/node_modules/mage/test/browser/index.html', function (status) {
+page.open('file:///' + phantom.libraryPath + '/index.html', function (status) {
 	if (status !== 'success') {
-		exit('Load error: ' + status);
+		console.error('Load error: ' + status);
+		exit(1);
 	}
 });
 
