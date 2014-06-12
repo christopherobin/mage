@@ -43,7 +43,7 @@ For more information, please read the [State API documentation](../../lib/state/
 On the browser, this event can be picked up by calling:
 
 ```javascript
-mage.msgServer.on('gift.received', function (path, gift) {
+mage.eventManager.on('gift.received', function (path, gift) {
 	// path is "gift.received" or "gift.received.something..."
 
 	alert('You received ' + gift.amount + ' ' + gift.itemType + ' from ' + gift.sender);
@@ -53,7 +53,7 @@ mage.msgServer.on('gift.received', function (path, gift) {
 By leveraging the dot-separation, you can also listen for a shorter part of the event name path:
 
 ```javascript
-mage.msgServer.on('gift', function (path, gift) {
+mage.eventManager.on('gift', function (path, gift) {
 	// path is "gift" or "gift.something..."
 
 	switch (path) {
