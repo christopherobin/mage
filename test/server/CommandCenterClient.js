@@ -1,5 +1,5 @@
 var assert = require('assert');
-var CommandCenterClient = require('../').CommandCenterClient;
+var CommandCenterClient = require('../../lib/commandCenterClient').CommandCenterClient;
 
 var logger = {
 	error: console.error,

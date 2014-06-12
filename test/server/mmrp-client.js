@@ -1,9 +1,9 @@
 var assert = require('assert');
 var zmq = require('zmq');
 
-require('../../..'); // register mage in codependency
-var meta = require('../mmrp/meta');
-var Client = require('../mmrp/client').Client;
+require('../../'); // register mage in codependency
+var meta = require('../../lib/msgServer/mmrp/meta');
+var Client = require('../../lib/msgServer/mmrp/client').Client;
 
 var identity = require('os').hostname();
 

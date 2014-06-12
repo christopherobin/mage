@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Matryoshka = require('../Matryoshka');
+var Matryoshka = require('../../lib/config/Matryoshka');
 
 // A shallow array comparison.
 function compareArrays(a, b) {
