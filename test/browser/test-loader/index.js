@@ -4,7 +4,7 @@ var loader = require('loader');
 
 describe('MAGE Page Loader', function () {
 
-	it('Should accept configuration', function () {
+	it('Configures the loader', function () {
 		loader.configure({
 			appVariants: {
 				languages: ['nl', 'en'],
@@ -13,33 +13,33 @@ describe('MAGE Page Loader', function () {
 		});
 	});
 
-	it('Should allow language change', function () {
+	it('Allows language change', function () {
 		loader.setLanguage('nl');
 	});
 
-	it('Should not allow unknown language', function () {
+	it('Does not allow unknown languages', function () {
 		assert.throws(function () {
 			loader.setLanguage('fr');
 		});
 	});
 
-	it('Should not allow non-string language', function () {
+	it('Does not allow non-string languages', function () {
 		assert.throws(function () {
 			loader.setLanguage(true);
 		});
 	});
 
-	it('Should allow density change', function () {
+	it('Allows density change', function () {
 		loader.setDensity(2);
 	});
 
-	it('Should not allow unknown density', function () {
+	it('Does not allow unknown densities', function () {
 		assert.throws(function () {
 			loader.setDensity(10);
 		});
 	});
 
-	it('Should not allow non-number density', function () {
+	it('Does not allow non-number densities', function () {
 		assert.throws(function () {
 			loader.setDensity('foo');
 		});
