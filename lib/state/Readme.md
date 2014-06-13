@@ -60,10 +60,18 @@ Returns the language of the registered session. Returns `en` if none is known.
 
 Emits an event to the given actorId's client.
 
-* actorId: The actorId to emit to. If null, the event will be broadcasted.
+* actorId: The actorId to emit to.
 * path: The event name (or dot separated path).
 * data: Any data you want to send with this event.
 * language: A language code that may be given if the data is bound to a single language only.
+* isJson: If the data is a pre-serialized JSON string, pass `true`.
+
+### state.broadcast(string path, data, boolean isJson)
+
+Broadcast an event to all the actors.
+
+* path: The event name (or dot separated path).
+* data: Any data you want to send with this event.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
 
 ### state.emitToActors(array actorIds, string path, data, string language, boolean isJson)
