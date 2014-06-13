@@ -2,6 +2,23 @@
 
 ## vNEXT
 
+### component.json, templates and HTML file loading
+
+MAGE now loads HTML files listed in the `templates` array of
+your component.json. This has the following impact:
+
+1. Your HTML files will **no longer be automatically loaded**
+2. You need to inject the content of the templates yourself, like so:
+
+```javascript
+var dom = loader.renderPage('myPage');
+dom.innerHTML = require('./index.html');
+```
+
+This gives you more control on templating from HTML files,
+but also mean that you can now use and create component
+with templates in them.
+
 ### mage.session.isValidSession
 
 The session module now allows you to validate a session stored on the client
