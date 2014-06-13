@@ -55,7 +55,7 @@ In a production environment, you should set `NODE_ENV` to `production` and provi
 configuration file called `config/production.yaml` or `config/production.json`.
 
 For more information about running a game in production, please read
-[Taking your MAGE game to production](../production/Readme.md).
+[Taking your MAGE game to production](../Production.md).
 
 ## Next chapter
 
