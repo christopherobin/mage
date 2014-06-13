@@ -37,6 +37,20 @@ state.close();
 
 For more information, please read the [State API documentation](../../lib/state/Readme.md).
 
+### Sending a broadcast event
+
+You can send an event to all the users who are currently connected to the application.
+You just have to use the same method, but with null as first parameter instead of the actorId.
+
+```javascript
+var gift = {
+	itemType: 'goldcoin',
+	amount: 100,
+	sender: 'Alice'
+};
+
+state.emit(null, 'gift.received', gift);
+```
 
 ## Receiving the event
 

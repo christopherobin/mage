@@ -60,7 +60,7 @@ Returns the language of the registered session. Returns `en` if none is known.
 
 Emits an event to the given actorId's client.
 
-* actorId: The actorId to emit to.
+* actorId: The actorId to emit to. If null, the event will be broadcasted.
 * path: The event name (or dot separated path).
 * data: Any data you want to send with this event.
 * language: A language code that may be given if the data is bound to a single language only.
