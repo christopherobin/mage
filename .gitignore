@@ -1,4 +1,6 @@
 /node_modules
+/components
+/test/browser/build
 /plato-report
 /html-report
 .swp
@@ -13,5 +15,3 @@
 *.sock
 npm-debug.log
 .digest-cache.json
-/test/browser/runner/build
-/test/browser/runner/components

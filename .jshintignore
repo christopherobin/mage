@@ -1,6 +1,5 @@
-components/**
 node_modules/**
+components/**
+test/browser/build/**
 html-report/**
 plato-report/**
-test/browser/runner/build/**
-test/browser/runner/components/**

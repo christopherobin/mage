@@ -1,19 +1,25 @@
-var page = require('webpage').create();
+var webpage = require('webpage');
+
+var testTimeout;
+
+function exit(code) {
+	clearTimeout(testTimeout);
+	phantom.exit(code);
+}
 
 
 // timeout the tests
 
 var PHANTOM_TIMEOUT = 10 * 1000;
 
-var testTimeout = setTimeout(function () {
+testTimeout = setTimeout(function () {
 	console.error('Tests timed out after ' + (PHANTOM_TIMEOUT / 1000) + ' sec.');
 	phantom.exit(1);
 }, PHANTOM_TIMEOUT);
 
-function exit(code) {
-	clearTimeout(testTimeout);
-	phantom.exit(code);
-}
+
+
+var page = webpage.create();
 
 page.open('file:///' + phantom.libraryPath + '/index.html', function (status) {
 	if (status !== 'success') {
@@ -22,9 +28,13 @@ page.open('file:///' + phantom.libraryPath + '/index.html', function (status) {
 	}
 });
 
+
+// Communication from the page
+
 page.onConsoleMessage = function (msg) {
-	var m = msg.match(/^__COMM__:(.+)$/);
+	var m = msg.match(/^__PHANTOM__:(.+)$/);
 	if (!m) {
+		// suppress console messages, unless they were targeted at PhantomJS
 		return;
 	}
 

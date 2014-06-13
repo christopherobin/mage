@@ -1,11 +1,11 @@
 {
 	"name": "browser",
-	"description": "Runs all browser tests",
+	"description": "Browser tests",
 	"dependencies": {
 		"visionmedia/mocha": "1.20.1"
 	},
 	"scripts": ["index.js"],
-	"paths": [".."],
+	"paths": ["./tests", "../../components"],
 	"local": [
 		"test-loader"
 	]

@@ -1,8 +1,8 @@
 var assert = require('assert');
 
-var loader = require('loader');
-
 describe('MAGE Page Loader', function () {
+
+	var loader = require('loader');
 
 	it('Configures the loader', function () {
 		loader.configure({

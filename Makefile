@@ -1,7 +1,8 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
 TEST_SERVER = ./test/server
-TEST_BROWSER = ./test/browser/runner
+TEST_BROWSER = ./test/browser
+TEST_PHANTOM_RUNNER = ./test/mocha-phantom-runner
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -45,7 +46,7 @@ deps-npm:
 	npm install
 
 deps-component:
-	cd $(TEST_BROWSER); $(CURDIR)/$(BIN)/component-install -r https://raw.githubusercontent.com
+	$(BIN)/component-install -r https://raw.githubusercontent.com
 
 
 # DEVELOPMENT
@@ -149,7 +150,7 @@ test-unit:
 	@echo
 	@echo Running browser tests
 	@echo
-	$(BIN)/phantomjs $(TEST_BROWSER)/phantom.js
+	$(BIN)/phantomjs ./test/browser/phantom-runner.js
 
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
