@@ -13,5 +13,5 @@
 *.sock
 npm-debug.log
 .digest-cache.json
-/test/browser/build
-/test/browser/components
+/test/browser/runner/build
+/test/browser/runner/components

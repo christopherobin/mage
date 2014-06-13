@@ -1,7 +1,7 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
 TEST_SERVER = ./test/server
-TEST_BROWSER = ./test/browser
+TEST_BROWSER = ./test/browser/runner
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report

@@ -2,5 +2,5 @@ components/**
 node_modules/**
 html-report/**
 plato-report/**
-test/browser/build/**
-test/browser/components/**
+test/browser/runner/build/**
+test/browser/runner/components/**

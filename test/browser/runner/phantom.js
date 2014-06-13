@@ -6,7 +6,7 @@ var page = require('webpage').create();
 var PHANTOM_TIMEOUT = 10 * 1000;
 
 var testTimeout = setTimeout(function () {
-	console.error('Timed out.');
+	console.error('Tests timed out after ' + (PHANTOM_TIMEOUT / 1000) + ' sec.');
 	phantom.exit(1);
 }, PHANTOM_TIMEOUT);
 
