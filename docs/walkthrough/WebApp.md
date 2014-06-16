@@ -238,51 +238,45 @@ use it as follows.
 ```javascript
 var loader = require('loader');
 
-// start downloading the "main" package
+// download and run the "main" package
 
-loader.loadPage('main');
-
-loader.once('main.loaded', function () {
+loader.loadPackage('main', function () {
   // this is where the two packages meet
 
   window.require('main');
 });
 ```
 
-You start the download of the "main" package by calling `loadPage`. Once that download has
-finished, the "main.loaded" event will fire.
-
-> The name of the event adapts to the names you give to your packages ("packagename.loaded").
+You start the download of the "main" package by calling `loadPackage`. Once that download has
+finished, the "packagename.loaded" (in this case, "main.loaded") and "loaded" events will fire, and
+the optional callback to `loadPackage` will be called.
 
 It was mentioned earlier that the "boot" component should *not* refer to the "main" component. You
 may have wondered how we can then `require('main')` once it has been downloaded. This can be done
 through `window.require`, which has access to every build's entry point component. You can call
 this, the moment you know that the package has been downloaded.
 
-#### Rendering your package
+#### Displaying your package
 
 The `window.require` call we made has executed all the JavaScript that comes with the "main"
 package. It is now time to set up your HTML. The loader will render each package it downloads in a
-dedicated container made of a `<div>` element. To create that container, you need to call the
-`renderPage` function. The return value of that function is the container element itself, that you
-may use to put your content in.
+dedicated container made of a `<div>` element that it appends to the document's `body` element. To
+display that package, simply call `loader.displayPackage`. This function returns the element, and
+you can use it to add more HTML to it if you want. When you called that function, the loader also
+injected the CSS for this package into a `style` tag in your document's `head` element.
 
-Once you are done creating the content of your app, call the `displayPage` function to inject the
-CSS into the `<head>` tag of your HTML document and make the container visible. You can do all of
-the above from either the "boot" or the "main" JavaScript. In the latter case, don't forget to
-require() the loader and to add "loader" to your component.json file.
+You can do all of the above from either the "boot" or the "main" JavaScript. In the latter case,
+don't forget to require() the loader and to add "loader" to your component.json file.
 
 An example:
 
 ```js
-// create the content
+var loader = require('loader');
 
-var pageElm = loader.renderPage('main');
-pageElm.innerHTML = '<h1>Hello world</h1>';
-
-// display the content
-
-loader.displayPage('main');
+loader.loadPackage('main', function () {
+  window.require('main');
+  loader.displayPackage('main');
+});
 ```
 
 ### Further experimentation
@@ -298,6 +292,9 @@ inter-dependencies, packages must always be loaded in the exact same order. So y
 add a complex tutorial as a separate package (avoiding a download after having finished playing it),
 but you should put it last in the chain. The components in the "main" package are not allowed to
 depend on an optional package.
+
+To get more control over how the loader treats HTML and styles that you put into your package,
+please read more about the [Loader API](../../lib/loader/Readme.md).
 
 ## Next chapter
 

@@ -28,6 +28,18 @@ Below follows the API that the loader exposes. You will see references to the `P
 is documented below under "The Package API".
 
 
+### Properties
+
+#### Number timeout
+
+The timeout in milliseconds that is used for HTTP requests to load packages.
+
+#### Number retryInterval
+
+When a package download fails and is automatically retried, this interval in milliseconds will be
+waited before retrying. This is to avoid hammering the server.
+
+
 ### Methods
 
 #### configure(Object configuration)
@@ -121,40 +133,36 @@ loader.on('eventname', function (arg1, arg2, etc) {
 
 The events that the loader emits are documented below.
 
-##### warning: (LoadError error, string packageName)
+##### warning: (LoadError error)
 ##### [packageName].warning: (LoadError error)
 
 A non-fatal problem occurred. This should be logged, but should not interrupt the user experience.
 
-##### error: (LoadError error, string packageName)
+##### error: (LoadError error)
 ##### [packageName].error: (LoadError error)
 
 A serious error occurred, and loading has been interrupted. This should be logged, and you may have
 to take action to guarantee a smooth user experience. For more information, see the chapter below on
 "Error handling".
 
-#### online: (string packageName)
+#### online: ()
 
 When the loader detects we are able to download a package, and the state was not "online" before,
 it emits this event. Please note that the loader starts out assuming we are online, so if the
 connection is stable the whole time, this event should never be emitted.
 
-#### offline: (string packageName, LoadError error)
+#### offline: (LoadError error)
 
 When the loader detects we are unable to download a package, due to the fact that we cannot reach
 the server, it emits this event. It will automatically keep retrying the download. Once it succeeds,
 the "online" event will be emitted.
 
-#### maintenance: (string packageName, LoadError error)
+#### maintenance: (LoadError error)
 
 This is emitted when a server responds with a 503 code, indicating that the server is undergoing
 maintenance. Like when offline, the loader will automatically keep retrying to download the package.
 The error argument will contain a `response` object. In it, the server may have left a message for
-the end user that you may choose
-The `content` argument contains the response body to the HTTP request. Servers can for example
-provide a message to indicate when the service should resume. The `mimeType` argument indicates what
-type the content is. This could for example be `text/html` or `text/plain`. You can use this to
-decide how to render the message.
+the end user that you may choose to display.
 
 #### parsed: (Package pkg)
 #### [packageName].parsed: (Package pkg)
