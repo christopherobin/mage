@@ -19,6 +19,38 @@ var gift = {
 state.emit(playerId, 'gift.received', gift);
 ```
 
+### The origin of the state object
+
+When you implement a user command through a module, you should always have access to the state
+object that represents the user's request. If however, you need to create a state object yourself,
+you can do this as follows.
+
+```javascript
+var mage = require('mage');
+var State = mage.core.State;
+var state = new State();
+
+state.emit(playerId, 'gift.received', gift);
+
+state.close();
+```
+
+For more information, please read the [State API documentation](../../lib/state/Readme.md).
+
+### Sending a broadcast event
+
+You can send an event to all the users who are currently connected to the application.
+
+```javascript
+var gift = {
+	itemType: 'goldcoin',
+	amount: 100,
+	sender: 'Alice'
+};
+
+state.broadcast('gift.received', gift);
+```
+
 ## Receiving the event
 
 On the browser, this event can be picked up by calling:

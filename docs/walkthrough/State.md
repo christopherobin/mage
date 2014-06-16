@@ -48,7 +48,7 @@ Just like having the ability to cancel all data changes, aborting the transactio
 all events that you had queued up to be emitted to players.
 
 For more information on the State API and how events are emitted, please read the
-[State](../../lib/state) API documentation.
+[State](../../lib/state/Readme.md) API documentation.
 
 ## Next chapter
 

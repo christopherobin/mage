@@ -79,6 +79,12 @@ the following:
 ```json
 {
 	"name": "gifting",
+	"local": [
+		"mage"
+	],
+	"paths": [
+		"../../../node_modules/mage/lib"
+	],
 	"scripts": [
 		"client.js",
 		"foo.js"
@@ -88,6 +94,12 @@ the following:
 ```
 
 The `name` **must** be the same as the name of your module, in this case `"gifting"`.
+
+The `local` field contains the list of local dependencies,
+the modules you require in your component.
+It's optional, but in this example, we need to require `mage`.
+
+The `paths` field contains a list of paths where component will search for your components.
 
 The `scripts` field describes all JavaScript files that need to be included as part of this package.
 If `client.js` needs to be able to access `foo.js`, it needs to be listed here.

@@ -1,6 +1,89 @@
 # Release history
 
-## v0.34.0
+## v0.35.0 - King of the Jungle Cat
+
+### mage.session.isValidSession
+
+The session module now allows you to validate a session stored on the client
+side. This is useful when you want to decide whether you need to redirect the
+end-user to a login screen or to the main application when the user
+reloads the application.
+
+See [./lib/modules/session/Readme.md](./lib/modules/session/Readme.md#isvalidsessionsessionkey-callbackerr-isvalid)
+for the API documentation
+
+### Code style consistency
+
+Part of the MAGE internal test suite are now a JavaScript code style checker called
+[JSCS](https://www.npmjs.org/package/jscs) and JSDoc correctness checker called
+[JSCS-JSDoc](https://www.npmjs.org/package/jscs-jsdoc). As far as code style is concerned, this is
+much more complete than JSHint. It doesn't test unsafe development practices however, so JSHint is
+not to be replaced by it, but simply augmented. The goal of this addition is to streamline pull
+requests to MAGE by a stricter enforcing of rules, in order to avoid human beings from having to
+waste time on pointing out these issues to each other.
+
+If you want to replicate this in your game set up, please following these steps.
+
+1. Copy node_modules/mage/.jscsrc to your project root (and adjust it to your style).
+2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
+3. Add "jscs" and "jscs-jsdoc" to your package.json and install them.
+
+### Don't run the CLI by default
+
+The CLI module does not parse anymore the process arguments by default.
+You must call `mage.cli.run()`.
+
+The path of the CLI module has changed.
+You can now access it at `mage.cli` instead of `mage.core.cli`.
+
+It allows you to run `mocha` and include `mage` in your tests or test code requiring `mage`.
+
+#### Migration
+
+You must add `mage.cli.run();` to `lib/index.js` in your project to run the CLI.
+You should obtain:
+``` javascript
+var mage = require('mage');
+var logger = mage.core.logger.context('game-boot');
+
+mage.cli.run();
+```
+
+### msgStream now works without requiring a MAGE cluster
+
+There was a bug in the MMRP relay which disallow the router to send messages
+to its client if the relay was not connected to another relay.
+
+The router is now able to send message as soon as a client is connected to it.
+
+The msgStream uses MMRP to work, and before it was not possible to send an event
+from the server to a client outside of the `commandCenter`.
+
+You can now create a new `State` object and emit event to a client.
+It's like push notifications in MAGE.
+
+### Bug fixes
+
+* Bootstrapping a new project would abort halfway through (possibly only on recent Node.js versions).
+* When loading "dashboard" without "assets", it would create weird errors. Now it auto-loads "assets".
+* When loading "ident" without "session", it would throw uncaught errors. Now it warns gracefully.
+* Filevault now lists recursively when there is a '/' in the key (path).
+* Filevault now creates necessary sub-folders when a key contains '/'. Empty folders will also get
+  auto purged upon deletion and startup.
+
+### Miscellaneous changes
+
+* The default HTTP binding on new projects is now port 8080, instead of server.sock.
+* Add MMRP some tests and documentation.
+* Add CLI documentation.
+* `mage.getModulePath(modName)` will now throw if the module does not exist, instead of return `null`.
+* `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
+* Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
+* MAGE now runs unit tests for the browser in PhantomJS.
+* Adding broadcast support to the `State` class.
+
+
+## v0.34.0 - Teamwork Cat
 
 ### Official Node 0.10 support
 
