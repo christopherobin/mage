@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.35.0 - King of the Jungle Cat
 
 ### mage.session.isValidSession
 
