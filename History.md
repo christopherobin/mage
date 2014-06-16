@@ -2,6 +2,16 @@
 
 ## vNEXT
 
+### mage.session.isValidSession
+
+The session module now allows you to validate a session stored on the client
+side. This is useful when you want to decide whether you need to redirect the
+end-user to a login screen or to the main application when the user
+reloads the application.
+
+See [./lib/modules/session/Readme.md](./lib/modules/session/Readme.md#isvalidsessionsessionkey-callbackerr-isvalid)
+for the API documentation
+
 ### Code style consistency
 
 Part of the MAGE internal test suite are now a JavaScript code style checker called
@@ -82,6 +92,10 @@ It's like push notifications in MAGE.
 * The default HTTP binding on new projects is now port 8080, instead of server.sock.
 * Add MMRP some tests and documentation.
 * Add CLI documentation.
+* `mage.getModulePath(modName)` will now throw if the module does not exist, instead of return `null`.
+* `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
+* Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
+* MAGE now runs unit tests for the browser in PhantomJS.
 
 
 ## v0.34.0 - Teamwork Cat

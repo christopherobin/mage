@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var meta = require('../mmrp/meta');
+var meta = require('../../lib/msgServer/mmrp/meta');
 
 describe('msgServer', function () {
 	describe('mmrp', function () {

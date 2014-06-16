@@ -12,7 +12,7 @@ traversing the folders in which these subsystems live.
 * [Configuration](../../lib/config)
 * [Helpers](../../lib/helpers)
 * [Logging](../../lib/loggingService)
-* [The "mage" object](../../lib/mage)
+* [MAGE](../../lib/mage)
 * [Loader](../../lib/loader)
 * [Process Manager](../../lib/processManager)
 * [Sampler](../../lib/sampler)
@@ -22,6 +22,6 @@ traversing the folders in which these subsystems live.
 ## Modules
 
 * [Cron Client](../../lib/modules/cronClient)
-* [Sessions](../../lib/modules/session)
 * [Ident](../../lib/modules/ident)
+* [Sessions](../../lib/modules/session)
 * [Time](../../lib/modules/time)
