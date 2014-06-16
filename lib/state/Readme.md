@@ -66,6 +66,14 @@ Emits an event to the given actorId's client.
 * language: A language code that may be given if the data is bound to a single language only.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
 
+### state.broadcast(string path, data, boolean isJson)
+
+Broadcast an event to all the actors.
+
+* path: The event name (or dot separated path).
+* data: Any data you want to send with this event.
+* isJson: If the data is a pre-serialized JSON string, pass `true`.
+
 ### state.emitToActors(array actorIds, string path, data, string language, boolean isJson)
 
 Just like `emit`, but for multiple actors at once. The actorIds argument is an array of actor ID
