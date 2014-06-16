@@ -2,6 +2,24 @@
 
 ## vNEXT
 
+### Loader
+
+The MAGE loader has been rewritten from the ground up. Please read its documentation to fully
+get up to speed with the right way to interact with it. In an nutshell however, this is what
+happened.
+
+* The "page" terminology has been renamed to "package".
+* You no longer have to call `loader.configure(window.mageConfig)`.
+* The weak dependency to MAGE's asset class has been removed.
+* You can use storage engines other than LocalStorage for cache, and it can be turned off..
+* Introduction of the Package class that you can interact with to:
+  - Read and manipulate downloaded content.
+  - Inject HTML and CSS early.
+* A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+* Event arguments changed a bit, so please read:
+* [Full Documentation](./lib/loader/Readme.md)!
+
+
 ## v0.35.0 - King of the Jungle Cat
 
 ### mage.session.isValidSession
@@ -29,22 +47,6 @@ If you want to replicate this in your game set up, please following these steps.
 1. Copy node_modules/mage/.jscsrc to your project root (and adjust it to your style).
 2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
 3. Add "jscs" and "jscs-jsdoc" to your package.json and install them.
-
-### Loader
-
-The MAGE loader has been rewritten from the ground up. Please read its documentation to fully
-get up to speed with the right way to interact with it. In an nutshell however, this is what
-happened.
-
-* The "page" terminology has been renamed to "package".
-* You no longer have to call `loader.configure(window.mageConfig)`.
-* The weak dependency to MAGE's asset class has been removed.
-* You can use storage engines other than LocalStorage for cache.
-* Introduction of the Package class that you can interact with to:
-  - Read and manipulate downloaded content.
-  - Inject HTML and CSS early.
-* A lot of sanity checks have been added to warn you early about bad configuration or API calls.
-* [Full Documentation](./lib/loader/Readme.md)!
 
 ### Don't run the CLI by default
 
