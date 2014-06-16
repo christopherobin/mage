@@ -1,7 +1,8 @@
 /node_modules
+/components
+/test/browser/build
 /plato-report
 /html-report
-/lib-cov
 .swp
 *.swp
 *.session
