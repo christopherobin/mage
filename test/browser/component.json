@@ -1,0 +1,12 @@
+{
+	"name": "browser",
+	"description": "Browser tests",
+	"dependencies": {
+		"visionmedia/mocha": "1.20.1"
+	},
+	"scripts": ["index.js"],
+	"paths": ["./tests", "../../components"],
+	"local": [
+		"test-loader"
+	]
+}

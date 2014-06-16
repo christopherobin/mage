@@ -8,7 +8,7 @@ var logger = {
 	warning: console.warn
 };
 
-var fileVaultMod = require('../vaults/file');
+var fileVaultMod = require('../../lib/archivist/vaults/file');
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
