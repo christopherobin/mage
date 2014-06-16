@@ -29,7 +29,7 @@ Table of Contents
 * [Requirements](./Requirements.md)
 * [How to install MAGE](./Install.md)
 * [Versioning](./Versioning.md)
-* [Contributing to MAGE](./Contributing.md)
+* [Contributing to MAGE](../Contributing.md)
 * [API](./Api.md)
 * [Production](./Production.md)
 * [Recipies](./recipies/Readme.md)
