@@ -29,7 +29,7 @@ describe('commandCenter', function () {
 				{
 					cwd: sandbox,
 					env: process.env,
-					silent: false
+					silent: true
 				});
 			app.on('message', function (message) {
 				if (message.type === 'ready') {
