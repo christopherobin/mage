@@ -80,7 +80,9 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 1);
 					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'string');
+					assert.strictEqual(typeof response.result.response, 'object');
+					assert.strictEqual(typeof response.result.response.userId, 'string');
+					assert.strictEqual(typeof response.result.response.displayName, 'string');
 					assert.strictEqual(typeof response.result.myEvents, 'object');
 					var events = {};
 					response.result.myEvents.map(function (str) {
@@ -136,7 +138,7 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.result, 'object');
 					assert.strictEqual(typeof response.result.response, 'string');
-					assert.strictEqual(JSON.parse(response.result.response), 'test');
+					assert.strictEqual(response.result.response, 'test');
 					done();
 				});
 			});
@@ -156,8 +158,9 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'string');
-					assert.strictEqual(response.result.response, JSON.stringify(['a', 'b', 'c']));
+					assert.strictEqual(typeof response.result.response, 'object');
+					assert.strictEqual(response.result.response.length, 3);
+					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
 					done();
 				});
 			});
