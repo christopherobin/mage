@@ -1,10 +1,5 @@
 developmentMode: true
 
-server:
-    clientHost:
-        bind:
-            file: ../server.sock
-
 archivist:
     vaults:
         memory:
