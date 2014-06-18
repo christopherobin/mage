@@ -1,0 +1,22 @@
+{
+  "name": "sandbox",
+  "description": "",
+  "version": "0.1.0",
+  "repository": "",
+  "author": "",
+  "license": "Private",
+  "scripts": {
+    "start": "make start",
+    "stop": "make stop",
+    "restart": "make restart",
+    "test": "make test"
+  },
+  "main": "game",
+  "engines": {
+    "node": "0.10.28"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

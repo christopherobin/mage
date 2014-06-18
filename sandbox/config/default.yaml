@@ -1,0 +1,18 @@
+developmentMode: true
+
+server:
+    clientHost:
+        bind:
+            file: ../server.sock
+
+archivist:
+    vaults:
+        memory:
+            type: memory
+    listOrder:
+        - memory
+    readOrder:
+        - memory
+    writeOrder:
+        - client
+        - memory
