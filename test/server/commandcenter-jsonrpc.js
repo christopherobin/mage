@@ -80,6 +80,7 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 1);
 					assert.strictEqual(typeof response.result, 'object');
+					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result.response, 'object');
 					assert.strictEqual(typeof response.result.response.userId, 'string');
 					assert.strictEqual(typeof response.result.response.displayName, 'string');
@@ -126,6 +127,18 @@ describe('commandCenter', function () {
 				});
 			});
 
+			it('should send a notification', function (done) {
+				client.request('test.test', {}, null, function (err, response) {
+					if (err) {
+						done(err);
+						return;
+					}
+
+					assert.strictEqual(typeof response, 'undefined');
+					done();
+				});
+			});
+
 			it('should run a command without arguments', function (done) {
 				client.request('test.test', {}, 2, function (err, response) {
 					if (err) {
@@ -136,6 +149,7 @@ describe('commandCenter', function () {
 					assert.strictEqual(typeof response, 'object');
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result, 'object');
 					assert.strictEqual(typeof response.result.response, 'string');
 					assert.strictEqual(response.result.response, 'test');
@@ -157,6 +171,7 @@ describe('commandCenter', function () {
 					assert.strictEqual(typeof response, 'object');
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result, 'object');
 					assert.strictEqual(typeof response.result.response, 'object');
 					assert.strictEqual(response.result.response.length, 3);
@@ -191,10 +206,12 @@ describe('commandCenter', function () {
 						assert.strictEqual([3, 4, 5].indexOf(response.id) >= 0, true);
 						switch (response.id) {
 							case 3:
+								assert.strictEqual(typeof response.error, 'undefined');
 								assert.strictEqual(typeof response.result.response, 'string');
 								assert.strictEqual(response.result.response, 'test');
 								break;
 							case 4:
+								assert.strictEqual(typeof response.error, 'undefined');
 								assert.strictEqual(typeof response.result.response, 'object');
 								assert.strictEqual(response.result.response.length, 3);
 								assert.deepEqual(response.result.response, ['a', 'b', 'c']);
