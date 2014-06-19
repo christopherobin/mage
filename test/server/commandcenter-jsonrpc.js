@@ -127,7 +127,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should run a command without arguments', function (done) {
-				client.request('test.test', [], 2, function (err, response) {
+				client.request('test.test', {}, 2, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -161,6 +161,55 @@ describe('commandCenter', function () {
 					assert.strictEqual(typeof response.result.response, 'object');
 					assert.strictEqual(response.result.response.length, 3);
 					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+					done();
+				});
+			});
+
+			it('should run a Batch', function (done) {
+				var batch = [
+					client.request('test.test', {}, 3),
+					client.request('test.testwithargs', {
+						arg1: 'a',
+						arg2: 'b',
+						arg3: 'c'
+					}, 4),
+					client.request('foobar', {}, 5),      // invalid user command
+					client.request('test.test', {}, null) // notification
+				];
+				client.request(batch, function (err, responses) {
+					if (err) {
+						done(err);
+						return;
+					}
+
+					assert.strictEqual(typeof responses, 'object');
+					assert.strictEqual(responses instanceof Array, true);
+					assert.strictEqual(responses.length, 3);
+					responses.forEach(function (response) {
+						assert.strictEqual(response.jsonrpc, '2.0');
+						assert.strictEqual(typeof response.id, 'number');
+						assert.strictEqual([3, 4, 5].indexOf(response.id) >= 0, true);
+						switch (response.id) {
+							case 3:
+								assert.strictEqual(typeof response.result.response, 'string');
+								assert.strictEqual(response.result.response, 'test');
+								break;
+							case 4:
+								assert.strictEqual(typeof response.result.response, 'object');
+								assert.strictEqual(response.result.response.length, 3);
+								assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+								break;
+							case 5:
+								assert.strictEqual(typeof response.result, 'undefined');
+								assert.strictEqual(typeof response.error, 'object');
+								assert.strictEqual(response.error.code, -32601);
+								assert.strictEqual(response.error.message, 'Method not found');
+								break;
+							default:
+								assert(false, 'Unexpected response');
+								break;
+						}
+					});
 					done();
 				});
 			});
