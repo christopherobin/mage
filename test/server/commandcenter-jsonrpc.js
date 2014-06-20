@@ -178,6 +178,63 @@ describe('commandCenter', function () {
 				});
 			});
 
+			it('should run a command with positional arguments', function (done) {
+				client.request('test.testwithargs', ['a', 'b', 'c'], 2, function (err, response) {
+					if (err) {
+						done(err);
+						return;
+					}
+
+					assert.strictEqual(typeof response, 'object');
+					assert.strictEqual(response.jsonrpc, '2.0');
+					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.error, 'undefined');
+					assert.strictEqual(typeof response.result, 'object');
+					assert.strictEqual(typeof response.result.response, 'object');
+					assert.strictEqual(response.result.response.length, 3);
+					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+					done();
+				});
+			});
+
+			it('should run a command with positional arguments with one missing', function (done) {
+				client.request('test.testwithargs', ['a', 'b'], 2, function (err, response) {
+					if (err) {
+						done(err);
+						return;
+					}
+
+					assert.strictEqual(typeof response, 'object');
+					assert.strictEqual(response.jsonrpc, '2.0');
+					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.error, 'undefined');
+					assert.strictEqual(typeof response.result, 'object');
+					assert.strictEqual(typeof response.result.response, 'object');
+					assert.strictEqual(response.result.response.length, 3);
+					assert.deepEqual(response.result.response, ['a', 'b', null]);
+					done();
+				});
+			});
+
+			it('should run a command with positional arguments with too many args', function (done) {
+				client.request('test.testwithargs', ['a', 'b', 'c', 'd'], 2, function (err, response) {
+					if (err) {
+						done(err);
+						return;
+					}
+
+					assert.strictEqual(typeof response, 'object');
+					assert.strictEqual(response.jsonrpc, '2.0');
+					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.error, 'undefined');
+					assert.strictEqual(typeof response.result, 'object');
+					assert.strictEqual(typeof response.result.response, 'object');
+					assert.strictEqual(response.result.response.length, 3);
+					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+					done();
+				});
+			});
+
 			it('should run a command with named parameters', function (done) {
 				client.request('test.testwithargs', {
 					arg1: 'a',
