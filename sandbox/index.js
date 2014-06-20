@@ -17,7 +17,7 @@ mage.setup(function (err) {
 		var app = new WebApp('test', {
 			access: 'user'
 		});
-		app.getCommandCenter().setup();
+		app.commandCenter.setup();
 		app.exposeOnClientHost();
 		mage.core.msgServer.startClientHost(function (err) {
 			if (err) {
