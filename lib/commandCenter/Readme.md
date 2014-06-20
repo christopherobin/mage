@@ -40,3 +40,9 @@ You should use this header to make a request as an authenticated user.
 To register a new message hook, you should use the `registerMessageHook(type, function)` function.
 It registers a new function to execute on each request, with the header corresponding to the given type.
 To handle the `X-MAGE-FOO` header, you have to register a function for `mage.foo`.
+
+## User commands
+
+A complete example is available in the walkthrough: [Writing modules](../../docs/walkthrough/Modules.md).
+
+`mageSession` is a reserved name and must *NOT* be used as parameter name for your user commands.
