@@ -19,6 +19,11 @@ You must send the following to call the `gift` user command of the `gifting` mod
 {"jsonrpc": "2.0", "method": "gifting.test", "id": 1, "params": {} }
 ```
 
+The parameters can be provided as:
+* an object, where the keys match the names of the parameters specified
+in the `params` property of the user module.
+* an array, in the order of the parameters of the user module.
+
 ## Access from the client
 
 MAGE automatically add functions to your modules to have an easy access to your user commands.
