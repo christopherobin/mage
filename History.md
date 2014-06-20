@@ -2,6 +2,8 @@
 
 ## vNEXT
 
+## v0.35.0 - King of the Jungle Cat
+
 ### mage.session.isValidSession
 
 The session module now allows you to validate a session stored on the client
@@ -80,6 +82,7 @@ It's like push notifications in MAGE.
 * `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
 * Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
 * MAGE now runs unit tests for the browser in PhantomJS.
+* Adding broadcast support to the `State` class.
 
 
 ## v0.34.0 - Teamwork Cat
