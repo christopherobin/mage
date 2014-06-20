@@ -15,7 +15,7 @@ MAGE automatically add functions to your modules to have an easy access to your 
 If you have a `gift` user command a `gifting` module, you can use `mage.gifting.gift()`.
 
 If you want to use directly the command, you have to use the `msgServer` module.
-``` javascript
+```javascript
 var mage = require('mage');
 mage.msgServer.sendCommand('gifting.gift', parameters, callback);
 ```
@@ -25,7 +25,7 @@ mage.msgServer.sendCommand('gifting.gift', parameters, callback);
 It uses the following endpoint: `/<appname>/jsonrpc`.
 
 You must send the following to call the `gift` user command of the `gifting` module.
-```
+```json
 {"jsonrpc": "2.0", "method": "gifting.test", "id": 1, "params": {} }
 ```
 
