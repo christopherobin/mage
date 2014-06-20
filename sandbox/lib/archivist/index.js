@@ -23,11 +23,6 @@ exports.session = {
 	index: ['actorId'],
 	vaults: {
 		// Please add one or more vault references here (they must support key expiration)
-		memory: {},
-		client: {
-			shard: function (value) {
-				return value.index.actorId;
-			}
-		}
+		memory: {}
 	}
 };

@@ -157,6 +157,27 @@ describe('commandCenter', function () {
 				});
 			});
 
+			it('should not update the object after the respond call', function (done) {
+				client.request('test.test-postupdate', {}, 2, function (err, response) {
+					if (err) {
+						done(err);
+						return;
+					}
+
+					assert.strictEqual(typeof response, 'object');
+					assert.strictEqual(response.jsonrpc, '2.0');
+					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.error, 'undefined');
+					assert.strictEqual(typeof response.result, 'object');
+					assert.strictEqual(typeof response.result.response, 'object');
+					assert.deepEqual(response.result.response, {
+						a: 5,
+						b: 6
+					});
+					done();
+				});
+			});
+
 			it('should run a command with named parameters', function (done) {
 				client.request('test.testwithargs', {
 					arg1: 'a',
