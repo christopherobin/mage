@@ -2,6 +2,18 @@
 
 ## vNEXT
 
+### Miscellaneous changes
+
+* Exposed the app's version to the client as mage.appVersion.
+* Changed the app's version default from `"no-version"` to `undefined`.
+* Fixed a bug in the session module which would cause an uncatchable exception if no version has
+  been defined in package.json. Now it alerts properly, and continues without version enforcement as
+  was originally designed.
+* Made window.mageConfig optional for the client side mage module, as is the case with the loader.
+  Since there always tends to be a window.mageConfig object, this change should have no effect. This
+  is just to equalize the two behaviors.
+
+
 ## v0.35.0 - King of the Jungle Cat
 
 ### mage.session.isValidSession
