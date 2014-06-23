@@ -14,6 +14,25 @@ could be a real serious hit on the network when suddenly all those people receiv
 reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
 feature responsibly.
 
+### window.mageConfig
+
+The component builder now emits "mage-config" on the app object, passing it the `window.mageConfig`
+object, which now contains an `appConfig` object which you may use to pass data to the browser.
+
+An example:
+
+```javascript
+app.on('mage-config', function (config) {
+  config.appConfig.viewNames = fs.readdirSync('../www/views');
+});
+```
+
+In the browser, you can access this as:
+
+```javascript
+console.log(mage.appConfig.viewNames);
+```
+
 ### Miscellaneous changes
 
 * Exposed the app's version to the client as `mage.appVersion`.
