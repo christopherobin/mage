@@ -96,6 +96,59 @@ describe('commandCenter', function () {
 					done();
 				});
 			});
+
+			it('should send an error on invalid session key', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.options.headers = {};
+				client.options.headers['X-MAGE-SESSION'] = 'invalidSessionKey';
+
+				client.request('test.test', {}, 2, function (err, response) {
+					assert.strictEqual(typeof response, 'undefined');
+
+					assert.strictEqual(typeof err, 'object');
+					assert.strictEqual(typeof err.message, 'string');
+					var message = JSON.parse(err.message);
+					assert.strictEqual(message.jsonrpc, '2.0');
+					assert.strictEqual(message.id, 2);
+					assert.strictEqual(typeof message.error, 'object');
+					assert.strictEqual(message.error.code, jayson.Server.errors.INTERNAL_ERROR);
+					assert.strictEqual(typeof message.result, 'undefined');
+					done();
+				});
+			});
+
+			it('should send an error for each request in the batch on invalid session key', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.options.headers = {};
+				client.options.headers['X-MAGE-SESSION'] = 'invalidSessionKey';
+
+				var batch = [
+					client.request('test.test', {}, 3),
+					client.request('test.testwithargs', {
+						arg1: 'a',
+						arg2: 'b',
+						arg3: 'c'
+					}, 4),
+					client.request('test.test', {}, 5)
+				];
+
+				client.request(batch, function (err, response) {
+					assert.strictEqual(typeof response, 'undefined');
+					assert.strictEqual(typeof err, 'object');
+					assert.strictEqual(typeof err.message, 'string');
+					var messages = JSON.parse(err.message);
+					messages.forEach(function (message) {
+						assert.strictEqual(message.jsonrpc, '2.0');
+						assert.strictEqual([3, 4, 5].indexOf(message.id) >= 0, true);
+						assert.strictEqual(typeof message.error, 'object');
+						assert.strictEqual(message.error.code, jayson.Server.errors.INTERNAL_ERROR);
+						assert.strictEqual(typeof message.result, 'undefined');
+					});
+					done();
+				});
+			});
 		});
 
 		describe('with session', function () {
