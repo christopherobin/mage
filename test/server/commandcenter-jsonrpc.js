@@ -216,7 +216,7 @@ describe('commandCenter', function () {
 				});
 			});
 
-			it('should run a command with positional arguments with too many args', function (done) {
+			it('should throw an exception if there are too many args', function (done) {
 				client.request('test.testwithargs', ['a', 'b', 'c', 'd'], 2, function (err, response) {
 					if (err) {
 						done(err);
@@ -226,11 +226,9 @@ describe('commandCenter', function () {
 					assert.strictEqual(typeof response, 'object');
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 2);
-					assert.strictEqual(typeof response.error, 'undefined');
-					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'object');
-					assert.strictEqual(response.result.response.length, 3);
-					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+					assert.strictEqual(typeof response.error, 'object');
+					assert.strictEqual(response.error.code, jayson.Server.errors.INVALID_PARAMS);
+					assert.strictEqual(typeof response.result, 'undefined');
 					done();
 				});
 			});
