@@ -1,6 +1,7 @@
 var assert = require('assert');
 var fs = require('fs');
 var http = require('http');
+var urlParse = require('url').parse;
 
 function devNull() {
 	return devNull;
@@ -31,8 +32,8 @@ describe('HTTP server', function () {
 	var filePath = __dirname + '/check.txt';
 	var data = 'foo';
 
-	function get(path, cb) {
-		var req = http.get(url + path, function (res) {
+	function getResponseParser(cb) {
+		return function (res) {
 			var result = '';
 
 			res.setEncoding('utf8');
@@ -48,11 +49,25 @@ describe('HTTP server', function () {
 			res.on('error', function (error) {
 				cb(error);
 			});
-		});
+		};
+	}
 
-		req.on('error', function (error) {
-			cb(error);
-		});
+	function req(method, path, headers, data, cb) {
+		var parsed = urlParse(url + path);
+		var options = {
+			method: method || 'GET',
+			hostname: parsed.hostname,
+			port: parsed.port,
+			path: parsed.path,
+			headers: headers
+		};
+
+		var request = http.request(options, getResponseParser(cb)).on('error', cb);
+		request.end(data || undefined);
+	}
+
+	function get(path, cb) {
+		http.get(url + path, getResponseParser(cb)).on('error', cb);
 	}
 
 	before(function () {
@@ -64,8 +79,16 @@ describe('HTTP server', function () {
 	});
 
 	it('exposes correct URLs', function () {
-		httpServer.expose('http://foo:123/bar/');
+		httpServer.expose();
+		assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
 
+		httpServer.expose(null);
+		assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+
+		httpServer.expose('');
+		assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+
+		httpServer.expose('http://foo:123/bar/');
 		assert.equal(httpServer.getRouteUrl('/hello'), 'http://foo:123/bar/hello');
 
 		httpServer.expose({
@@ -74,7 +97,6 @@ describe('HTTP server', function () {
 			port: 123,
 			path: '/hello/world/'
 		});
-
 		assert.equal(httpServer.getRouteUrl('/yay'), 'https://example.com:123/hello/world/yay');
 	});
 
@@ -137,6 +159,39 @@ describe('HTTP server', function () {
 			assert.ifError(error);
 			assert.equal(res.statusCode, 200);
 			assert.equal(result, 'hello-world');
+			done();
+		});
+	});
+
+	it('configures CORS', function () {
+		httpServer.setCorsConfig({
+			origin: 'http://foo.com',
+			methods: ['options', 'GET', 'PoSt'],
+			credentials: true
+		});
+	});
+
+	it('serves CORS options', function (done) {
+		var headers = {
+			'Access-Control-Request-Headers': 'x-helloworld'
+		};
+
+		req('OPTIONS', '/favicon.ico', headers, null, function (error, result, res) {
+			assert.ifError(error);
+			assert.equal(res.headers['access-control-allow-origin'], 'http://foo.com');
+			assert.equal(res.headers['access-control-allow-methods'], 'OPTIONS, GET, POST');
+			assert.equal(res.headers['access-control-allow-credentials'], 'true');
+			assert.equal(res.headers['access-control-allow-headers'], 'x-helloworld');
+			done();
+		});
+	});
+
+	it('serves files with CORS meta data', function (done) {
+		get('/favicon.ico', function (error, result, res) {
+			assert.ifError(error);
+			assert.equal(res.statusCode, 200);
+			assert.equal(res.headers['access-control-allow-origin'], 'http://foo.com');
+			assert.equal(res.headers['access-control-allow-credentials'], 'true');
 			done();
 		});
 	});
