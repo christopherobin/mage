@@ -24,6 +24,7 @@ feature responsibly.
 * Made `window.mageConfig` optional for the client side mage module, as is the case with the loader.
   Since there always tends to be a window.mageConfig object, this change should have no effect. This
   is just to equalize the two behaviors.
+* The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
 
 
 ## v0.35.0 - King of the Jungle Cat
