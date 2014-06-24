@@ -79,8 +79,16 @@ describe('HTTP server', function () {
 	});
 
 	it('exposes correct URLs', function () {
-		httpServer.expose('http://foo:123/bar/');
+		httpServer.expose();
+		assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
 
+		httpServer.expose(null);
+		assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+
+		httpServer.expose('');
+		assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+
+		httpServer.expose('http://foo:123/bar/');
 		assert.equal(httpServer.getRouteUrl('/hello'), 'http://foo:123/bar/hello');
 
 		httpServer.expose({
@@ -89,7 +97,6 @@ describe('HTTP server', function () {
 			port: 123,
 			path: '/hello/world/'
 		});
-
 		assert.equal(httpServer.getRouteUrl('/yay'), 'https://example.com:123/hello/world/yay');
 	});
 
