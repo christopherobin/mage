@@ -1,5 +1,3 @@
-require('../..');
-
 var assert = require('assert');
 var child = require('child_process');
 var path = require('path');
