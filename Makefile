@@ -102,7 +102,7 @@ test: test-lint test-style test-unit
 report: report-complexity report-coverage
 
 define lintPath
-	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
+	$(BIN)/jshint --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
 endef
 
 test-lint:
