@@ -2,6 +2,43 @@
 
 ## vNEXT
 
+### Archivist data broadcast
+
+The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
+actually a major feature, and now that it's been integrated with Archivist, you will be able to do
+some really sweet things in your dashboards. When your shard-function on your client vault returns
+`"*"`, the data change will be sent to *all* users that are logged in. That is really powerful and
+great for real-time collaboration in your dashboard. But keep in mind that you probably don't want
+to use this in production on systems where you have many thousands of users logged in at once, as it
+could be a real serious hit on the network when suddenly all those people receive events and then
+reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
+feature responsibly.
+
+### Miscellaneous changes
+
+* Exposed the app's version to the client as `mage.appVersion`.
+* Changed the app's version default from `"no-version"` to `undefined`.
+* Fixed a bug in the session module which would cause an uncatchable exception if no version has
+  been defined in package.json. Now it alerts properly, and continues without version enforcement as
+  was originally designed.
+* Made `window.mageConfig` optional for the client side mage module, as is the case with the loader.
+  Since there always tends to be a window.mageConfig object, this change should have no effect. This
+  is just to equalize the two behaviors.
+* The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
+
+
+## v0.35.0 - King of the Jungle Cat
+
+### mage.session.isValidSession
+
+The session module now allows you to validate a session stored on the client
+side. This is useful when you want to decide whether you need to redirect the
+end-user to a login screen or to the main application when the user
+reloads the application.
+
+See [./lib/modules/session/Readme.md](./lib/modules/session/Readme.md#isvalidsessionsessionkey-callbackerr-isvalid)
+for the API documentation
+
 ### Code style consistency
 
 Part of the MAGE internal test suite are now a JavaScript code style checker called
@@ -69,6 +106,8 @@ It's like push notifications in MAGE.
 * `mage.getModulePath(modName)` will now throw if the module does not exist, instead of return `null`.
 * `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
 * Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
+* MAGE now runs unit tests for the browser in PhantomJS.
+* Adding broadcast support to the `State` class.
 
 
 ## v0.34.0 - Teamwork Cat

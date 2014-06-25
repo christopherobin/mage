@@ -49,13 +49,11 @@ function createVault(cb) {
 
 /* BEGIN TESTS */
 
-describe('archivist', function () {
-	describe('Basic Instantiation', function () {
-		it('should not fail', function (done) {
-			createVault(function (fileVault) {
-				assert.ok(fileVault, 'FileVault instantiation failed.');
-				done();
-			});
+describe('File Vault', function () {
+	it('can instantiate', function (done) {
+		createVault(function (fileVault) {
+			assert.ok(fileVault, 'FileVault instantiation failed.');
+			done();
 		});
 	});
 
@@ -69,7 +67,7 @@ describe('archivist', function () {
 			testFileData = createSimpleData();
 		});
 
-		it('should not fail', function (done) {
+		it('can create with "add"', function (done) {
 			createVault(function (fileVault) {
 				fileVault.add(testFilePath, testFileData, function (error) {
 					assert.ifError(error, 'FileVault#add returned an error');
@@ -85,7 +83,7 @@ describe('archivist', function () {
 			});
 		});
 
-		it('should fail if attempting to add twice', function (done) {
+		it('cannot "add" a file twice', function (done) {
 			createVault(function (fileVault) {
 				fileVault.add(testFilePath, testFileData, function (error) {
 					assert.ifError(error, 'The first call to FileVault#add returned an error');
@@ -121,7 +119,7 @@ describe('archivist', function () {
 			fs.writeFileSync(absPath(testFilePath + testFileData.meta.ext), testFileData.content);
 		});
 
-		it('should not fail', function (done) {
+		it('can "get" a file', function (done) {
 			createVault(function (fileVault) {
 				fileVault.get(testFilePath, function (error, data) {
 					assert.ifError(error, 'FileVault#get returned an error');
@@ -150,7 +148,7 @@ describe('archivist', function () {
 			fs.writeFileSync(absPath(testFilePath + testFileDataA.meta.ext), testFileDataA.content);
 		});
 
-		it('should not fail', function (done) {
+		it('can overwrite with "set"', function (done) {
 			createVault(function (fileVault) {
 				fileVault.set(testFilePath, testFileDataB, function (error) {
 					assert.ifError(error, 'FileVault#set returned an error');
@@ -185,7 +183,7 @@ describe('archivist', function () {
 			fs.writeFileSync(absPath(testFilePath2 + testFileData.meta.ext), testFileData.content);
 		});
 
-		it('should not fail', function (done) {
+		it('can "del" a file', function (done) {
 			createVault(function (fileVault) {
 				fileVault.del(testFilePath, function (error) {
 					assert.ifError(error, 'FileVault#del returned an error');
@@ -203,7 +201,7 @@ describe('archivist', function () {
 			});
 		});
 
-		it('non-empty folders should not be purged', function (done) {
+		it('does not purge non-empty folders', function (done) {
 			fs.readdir(tmpPath, function (error, files) {
 				assert.ifError(error, 'fs#readdir returned an error');
 
@@ -217,7 +215,7 @@ describe('archivist', function () {
 			});
 		});
 
-		it('empty folders should be purged', function (done) {
+		it('purges empty folders', function (done) {
 			createVault(function (fileVault) {
 				fileVault.del(testFilePath2, function (error) {
 					assert.ifError(error, 'FileVault#del returned an error');
@@ -269,7 +267,7 @@ describe('archivist', function () {
 			fs.writeFileSync(absPath(testFilePath + testFileData.meta.ext), testFileData.content);
 		});
 
-		it('delete the file with the old extension', function (done) {
+		it('deletes the file with the old extension', function (done) {
 			createVault(function (fileVault) {
 				var oldExtension = testFileData.meta.ext;
 				testFileData.meta.ext = '.banana';
@@ -328,7 +326,7 @@ describe('archivist', function () {
 			async.forEachSeries(testFilePaths, writeVault, done);
 		});
 
-		it('should not fail', function (done) {
+		it('can "scan" all files in a folder', function (done) {
 			createVault(function (fileVault) {
 				function map(file) {
 					var m = file.match(/^test\/data\/([0-9+])$/);
@@ -381,7 +379,7 @@ describe('archivist', function () {
 			fs.writeFileSync(absPath(testFilePath + testFileData.meta.ext), testFileData.content);
 		});
 
-		it('Reading a file that expired does not return data', function (done) {
+		it('does not return data for an expired file', function (done) {
 			createVault(function (fileVault) {
 				fileVault.get(testFilePath, function (error, data) {
 					assert.equal(error, undefined, 'FileVault#get returned an error');
