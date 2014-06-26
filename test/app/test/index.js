@@ -22,8 +22,8 @@ function cleanUp() {
 function before() {
 	cleanUp();
 
+	fs.symlinkSync('../../mage', '../../node_modules/mage', 'dir');
 	fs.symlinkSync('../../node_modules', './node_modules', 'dir');
-	fs.symlinkSync('../../mage', './node_modules/mage', 'dir');
 }
 
 exports.before = before;
