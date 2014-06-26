@@ -5,7 +5,6 @@ test.before();
 var app;
 
 try {
-	console.log(require.resolve('./lib'));
 	app = require('./lib');
 } catch (e) {
 	console.error(e);

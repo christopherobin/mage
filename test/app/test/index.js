@@ -28,6 +28,7 @@ function before() {
 	fs.symlinkSync('../../mage', './node_modules/mage', 'dir');
 
 	console.log(fs.readdirSync('.'));
+	console.log(fs.readdirSync('./node_modules'));
 }
 
 exports.before = before;
