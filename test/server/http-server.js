@@ -92,6 +92,9 @@ describe('HTTP server', function () {
 		});
 
 		it('exposes correct URLs', function () {
+			assert.strictEqual(httpServer.getClientHostBaseUrl(), '');
+			assert.strictEqual(httpServer.getClientHostBaseUrl({ host: 'example.com' }), 'http://example.com');
+
 			httpServer.expose();
 			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
 
@@ -102,6 +105,7 @@ describe('HTTP server', function () {
 			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
 
 			httpServer.expose('http://foo:123/bar/');
+			assert.strictEqual(httpServer.getClientHostBaseUrl(), 'http://foo:123/bar');
 			assert.strictEqual(httpServer.getRouteUrl('/hello'), 'http://foo:123/bar/hello');
 
 			httpServer.expose({
@@ -110,6 +114,8 @@ describe('HTTP server', function () {
 				port: 123,
 				path: '/hello/world/'
 			});
+
+			assert.strictEqual(httpServer.getClientHostBaseUrl(), 'https://example.com:123/hello/world');
 			assert.strictEqual(httpServer.getRouteUrl('/yay'), 'https://example.com:123/hello/world/yay');
 		});
 
@@ -262,6 +268,44 @@ describe('HTTP server', function () {
 			}
 
 			testRoute('proxy', reqTest, resTest);
+		});
+
+		it('tests input types', function () {
+			assert.throws(function () {
+				httpServer.addRoute(5, function () {}, 'simple');
+			});
+
+			assert.throws(function () {
+				httpServer.addRoute('/valid', null, 'simple');
+			});
+
+			assert.throws(function () {
+				httpServer.addRoute('/valid', function () {}, 'unknown type');
+			});
+
+			assert.throws(function () {
+				httpServer.delRoute(5);
+			});
+		});
+
+		it('ignores trailing slashes', function (done) {
+			httpServer.addRoute('/string-overwrite/', function (req, res) {
+				res.end('good');
+			}, 'simple');
+
+			get('/string-overwrite', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(result, 'good');
+
+				get('/string-overwrite/', function (error, result, res) {
+					assert.ifError(error);
+					assert.strictEqual(res.statusCode, 200);
+					assert.strictEqual(result, 'good');
+
+					done();
+				});
+			});
 		});
 
 		it('can register a regex as a route', function (done) {
@@ -432,11 +476,20 @@ describe('HTTP server', function () {
 
 	describe('CORS', function () {
 		it('configures CORS', function () {
-			httpServer.setCorsConfig({
+			var funky = {
 				origin: 'http://foo.com',
 				methods: ['options', 'GET', 'PoSt'],
 				credentials: true
-			});
+			};
+
+			var real = {
+				origin: 'http://foo.com',
+				methods: 'OPTIONS, GET, POST',
+				credentials: true
+			};
+
+			httpServer.setCorsConfig(funky);
+			assert.deepEqual(httpServer.getCorsConfig(), real);
 		});
 
 		it('serves CORS options', function (done) {

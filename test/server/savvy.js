@@ -17,4 +17,8 @@ describe('Savvy', function () {
 		savvy.addRoute(route, function () {}, 'simple');
 		httpServer.delRoute(route);
 	});
+
+	it('exposes itself correctly', function () {
+		assert.ok(savvy.getBaseUrl().match(/\/savvy$/));
+	});
 });
