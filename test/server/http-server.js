@@ -3,7 +3,6 @@ var fs = require('fs');
 var http = require('http');
 var WebSocket = require('ws');
 var pathJoin = require('path').join;
-var pathRelative = require('path').relative;
 var urlParse = require('url').parse;
 
 function devNull() {
@@ -31,8 +30,8 @@ describe('HTTP server', function () {
 	var url;
 	var wsUrl;
 
-	var sockPath = pathRelative(process.cwd(), pathJoin(__dirname, '/test.sock'));
-	var checkTxtPath = __dirname + '/check.txt';
+	var sockPath = pathJoin(__dirname, 'test.sock');
+	var checkTxtPath = pathJoin(__dirname, 'check.txt');
 
 	function getResponseParser(cb) {
 		return function (res) {
