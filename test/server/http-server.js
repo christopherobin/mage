@@ -263,6 +263,76 @@ describe('HTTP server', function () {
 
 			testRoute('proxy', reqTest, resTest);
 		});
+
+		it('can register a regex as a route', function (done) {
+			var route = /^\/regex-route(\/|$)/;
+			httpServer.addRoute(route, function (req, res) {
+				res.end('done');
+			}, 'simple');
+
+			get('/regex-route', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(result, 'done');
+				done();
+			});
+		});
+
+		it('can remove a regex route', function (done) {
+			httpServer.delRoute(/^\/regex-route(\/|$)/);
+
+			get('/regex-route', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('can overwrite a string route', function (done) {
+			httpServer.addRoute('/string-overwrite', function () {
+				throw new Error('This route handler should never have run');
+			}, 'simple');
+
+			httpServer.addRoute('/string-overwrite', function (req, res) {
+				res.end('good');
+			}, 'simple');
+
+			get('/string-overwrite', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(result, 'good');
+				done();
+			});
+		});
+
+		it('can remove a string route', function (done) {
+			httpServer.delRoute('/string-overwrite');
+
+			get('/string-overwrite', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('can overwrite a regex route', function (done) {
+			httpServer.addRoute(/^\/regex-overwrite(\/|$)/, function () {
+				throw new Error('This route handler should never have run');
+			}, 'simple');
+
+			httpServer.addRoute(/^\/regex-overwrite(\/|$)/, function (req, res) {
+				res.end('good');
+			}, 'simple');
+
+			get('/regex-overwrite', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(result, 'good');
+				done();
+			});
+		});
+
+
 	});
 
 
