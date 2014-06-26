@@ -1,0 +1,23 @@
+var assert = require('assert');
+var http = require('http');
+var processManager = require('../../lib/processManager');
+var httpServer = require('../../lib/msgServer/transports/http');
+
+var savvy = require('../../lib/savvy');
+
+describe('Savvy', function () {
+	var route = /^\/savvy\/test/;
+
+	it('only accepts routes inside the Savvy namespace', function () {
+		assert.throws(function () {
+			savvy.addRoute('/hello/world', function () {}, 'simple');
+		});
+
+		assert.throws(function () {
+			savvy.addRoute(/^hello/, function () {}, 'simple');
+		});
+
+		savvy.addRoute(route, function () {}, 'simple');
+		httpServer.delRoute(route);
+	});
+});

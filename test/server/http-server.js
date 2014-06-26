@@ -33,7 +33,6 @@ describe('HTTP server', function () {
 
 	var sockPath = pathRelative(process.cwd(), pathJoin(__dirname, '/test.sock'));
 	var checkTxtPath = __dirname + '/check.txt';
-	var data = 'foo';
 
 	function getResponseParser(cb) {
 		return function (res) {
@@ -75,7 +74,7 @@ describe('HTTP server', function () {
 
 
 	before(function () {
-		httpServer = require('../../lib/msgServer/transports/http/index.js');
+		httpServer = require('../../lib/msgServer/transports/http');
 		httpServer.initialize(logger);
 	});
 
@@ -302,11 +301,11 @@ describe('HTTP server', function () {
 		});
 
 		it('serves check.txt when it exists', function (done) {
-			fs.writeFileSync(checkTxtPath, data);
+			fs.writeFileSync(checkTxtPath, 'hello world');
 
 			get('/check.txt', function (error, result, res) {
 				assert.ifError(error);
-				assert.strictEqual(data, result);
+				assert.strictEqual('hello world', result);
 				assert.strictEqual(res.statusCode, 200);
 				done();
 			});
