@@ -5,12 +5,6 @@ test.before();
 var app;
 
 try {
-	console.log(require.resolve('mage'));
-} catch (e) {
-
-}
-
-try {
 	console.log(require.resolve('./lib'));
 	app = require('./lib');
 } catch (e) {
