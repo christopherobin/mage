@@ -2,6 +2,8 @@ var assert = require('assert');
 var fs = require('fs');
 var http = require('http');
 var WebSocket = require('ws');
+var pathJoin = require('path').join;
+var pathRelative = require('path').relative;
 var urlParse = require('url').parse;
 
 function devNull() {
@@ -29,7 +31,7 @@ describe('HTTP server', function () {
 	var url;
 	var wsUrl;
 
-	var sockPath = __dirname + '/test.sock';
+	var sockPath = pathRelative(process.cwd(), pathJoin(__dirname, '/test.sock'));
 	var checkTxtPath = __dirname + '/check.txt';
 	var data = 'foo';
 
