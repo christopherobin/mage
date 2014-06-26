@@ -333,7 +333,7 @@ describe('HTTP server', function () {
 			});
 		});
 
-		it('enables and serves a custom favicon', function (done) {
+		it('can serve a custom favicon', function (done) {
 			var buff = new Buffer('hello-world');
 
 			httpServer.setFavicon(buff);
