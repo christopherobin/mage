@@ -1,8 +1,5 @@
 var assert = require('assert');
-var http = require('http');
-var processManager = require('../../lib/processManager');
 var httpServer = require('../../lib/msgServer/transports/http');
-
 var savvy = require('../../lib/savvy');
 
 describe('Savvy', function () {

@@ -115,7 +115,7 @@ describe('HTTP server', function () {
 		});
 
 		it('listens on a socket file', function (done) {
-			httpServer.listen(sockPath, function (error, address) {
+			httpServer.listen({ file: sockPath }, function (error, address) {
 				assert.ifError(error);
 				assert.ok(address);
 				assert.ok(fs.existsSync(sockPath));
@@ -125,7 +125,7 @@ describe('HTTP server', function () {
 		});
 
 		it('listens on a port', function (done) {
-			httpServer.listen(port, host, function (error, address) {
+			httpServer.listen({ port: port, host: host }, function (error, address) {
 				assert.ifError(error);
 				assert.ok(address);
 				assert.ok(!fs.existsSync(sockPath));
@@ -318,6 +318,18 @@ describe('HTTP server', function () {
 			get('/favicon.ico', function (error, result, res) {
 				assert.ifError(error);
 				assert.strictEqual(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('can serve a built-in favicon', function (done) {
+			httpServer.enableDefaultFavicon();
+
+			get('/favicon.ico', function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.statusCode, 200);
+				assert.ok(result);
+				assert.ok(result.length);
 				done();
 			});
 		});
