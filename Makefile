@@ -1,8 +1,8 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
+TEST_APP = ./test/app
 TEST_BROWSER = ./test/browser
 TEST_SERVER = ./test/server
-TEST_APP = ./test/app
 TEST_PHANTOM_RUNNER = ./test/mocha-phantom-runner
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
