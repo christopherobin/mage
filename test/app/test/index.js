@@ -32,6 +32,8 @@ function after() {
 	cleanUp();
 }
 
+exports.after = after;
+
 exports.start = function (app) {
 	app.mage.on('shutdown', after);
 
