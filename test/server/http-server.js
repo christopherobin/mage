@@ -336,6 +336,18 @@ describe('HTTP server', function () {
 		it('can serve a custom favicon', function (done) {
 			var buff = new Buffer('hello-world');
 
+			assert.throws(function () {
+				httpServer.setFavicon();
+			});
+
+			assert.throws(function () {
+				httpServer.setFavicon('no non-Buffer types');
+			});
+
+			assert.throws(function () {
+				httpServer.setFavicon(true);
+			});
+
 			httpServer.setFavicon(buff);
 
 			get('/favicon.ico', function (error, result, res) {

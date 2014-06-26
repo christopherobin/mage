@@ -11,8 +11,7 @@ and the sampler subsystems.
 * `getBaseUrl()`
 * `addRoute(pathMatch, handler, type)`
 
-The base URL is configuration driven, and can be resolved with the `getBaseUrl` function. All routes
-sit on subpaths immediately on top of the Savvy base URL.
+The base URL is configuration driven, and can be resolved with the `getBaseUrl` function.
 
 `addRoute` is identical to the `addRoute` method of the MAGE HTTP server, except that it will make
 sure you are not registering a route outside of the `/savvy/` URL space. Also, when calling this on
