@@ -93,16 +93,16 @@ describe('HTTP server', function () {
 
 		it('exposes correct URLs', function () {
 			httpServer.expose();
-			assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
 
 			httpServer.expose(null);
-			assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
 
 			httpServer.expose('');
-			assert.equal(httpServer.getRouteUrl('/hello'), '/hello');
+			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
 
 			httpServer.expose('http://foo:123/bar/');
-			assert.equal(httpServer.getRouteUrl('/hello'), 'http://foo:123/bar/hello');
+			assert.strictEqual(httpServer.getRouteUrl('/hello'), 'http://foo:123/bar/hello');
 
 			httpServer.expose({
 				protocol: 'https',
@@ -110,7 +110,7 @@ describe('HTTP server', function () {
 				port: 123,
 				path: '/hello/world/'
 			});
-			assert.equal(httpServer.getRouteUrl('/yay'), 'https://example.com:123/hello/world/yay');
+			assert.strictEqual(httpServer.getRouteUrl('/yay'), 'https://example.com:123/hello/world/yay');
 		});
 
 		it('listens on a socket file', function (done) {
@@ -186,15 +186,15 @@ describe('HTTP server', function () {
 				assert.ok(res && typeof res === 'object');
 				assert.ok(path && typeof path === 'string');
 				assert.ok(query && typeof query === 'object');
-				assert.equal(query.a, '1');
-				assert.equal(query.b, '2');
+				assert.strictEqual(query.a, '1');
+				assert.strictEqual(query.b, '2');
 				assert.ok(urlInfo && typeof urlInfo === 'object');
 				res.end();
 			}
 
 			function resTest(error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.statusCode, 200);
+				assert.strictEqual(res.statusCode, 200);
 				done();
 			}
 
@@ -206,16 +206,16 @@ describe('HTTP server', function () {
 				assert.ok(req && typeof req === 'object');
 				assert.ok(path && typeof path === 'string');
 				assert.ok(query && typeof query === 'object');
-				assert.equal(query.a, '1');
-				assert.equal(query.b, '2');
+				assert.strictEqual(query.a, '1');
+				assert.strictEqual(query.b, '2');
 				assert.ok(cb && typeof cb === 'function');
 				cb(200, 'Done!', { 'content-type': 'text/plain' });
 			}
 
 			function resTest(error, result, res) {
 				assert.ifError(error);
-				assert.equal(result, 'Done!');
-				assert.equal(res.statusCode, 200);
+				assert.strictEqual(result, 'Done!');
+				assert.strictEqual(res.statusCode, 200);
 				done();
 			}
 
@@ -229,7 +229,7 @@ describe('HTTP server', function () {
 				assert.ok(urlInfo && typeof urlInfo === 'object');
 
 				client.on('message', function (msg) {
-					assert.equal(msg, 'hello world');
+					assert.strictEqual(msg, 'hello world');
 					received = true;
 					client.close();
 				});
@@ -238,7 +238,7 @@ describe('HTTP server', function () {
 			function resTest(ws) {
 				ws.send('hello world');
 				ws.on('close', function () {
-					assert.equal(received, true);
+					assert.strictEqual(received, true);
 					done();
 				});
 			}
@@ -256,8 +256,8 @@ describe('HTTP server', function () {
 
 			function resTest(error, result, res) {
 				assert.ifError(error);
-				assert.equal(result, 'GET /route-test/proxy?a=1&b=2');
-				assert.equal(res.statusCode, 200);
+				assert.strictEqual(result, 'GET /route-test/proxy?a=1&b=2');
+				assert.strictEqual(res.statusCode, 200);
 				done();
 			}
 
@@ -282,7 +282,7 @@ describe('HTTP server', function () {
 		it('does not serve check.txt by default', function (done) {
 			get('/check.txt', function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.statusCode, 404);
+				assert.strictEqual(res.statusCode, 404);
 				done();
 			});
 		});
@@ -294,7 +294,7 @@ describe('HTTP server', function () {
 		it('still yields a 404 without check.txt', function (done) {
 			get('/check.txt', function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.statusCode, 404);
+				assert.strictEqual(res.statusCode, 404);
 				done();
 			});
 		});
@@ -304,8 +304,8 @@ describe('HTTP server', function () {
 
 			get('/check.txt', function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(data, result);
-				assert.equal(res.statusCode, 200);
+				assert.strictEqual(data, result);
+				assert.strictEqual(res.statusCode, 200);
 				done();
 			});
 		});
@@ -316,7 +316,7 @@ describe('HTTP server', function () {
 		it('serves no favicon by default', function (done) {
 			get('/favicon.ico', function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.statusCode, 404);
+				assert.strictEqual(res.statusCode, 404);
 				done();
 			});
 		});
@@ -328,8 +328,8 @@ describe('HTTP server', function () {
 
 			get('/favicon.ico', function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.statusCode, 200);
-				assert.equal(result, 'hello-world');
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(result, 'hello-world');
 				done();
 			});
 		});
@@ -352,10 +352,10 @@ describe('HTTP server', function () {
 
 			req('OPTIONS', '/favicon.ico', headers, null, function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.headers['access-control-allow-origin'], 'http://foo.com');
-				assert.equal(res.headers['access-control-allow-methods'], 'OPTIONS, GET, POST');
-				assert.equal(res.headers['access-control-allow-credentials'], 'true');
-				assert.equal(res.headers['access-control-allow-headers'], 'x-helloworld');
+				assert.strictEqual(res.headers['access-control-allow-origin'], 'http://foo.com');
+				assert.strictEqual(res.headers['access-control-allow-methods'], 'OPTIONS, GET, POST');
+				assert.strictEqual(res.headers['access-control-allow-credentials'], 'true');
+				assert.strictEqual(res.headers['access-control-allow-headers'], 'x-helloworld');
 				done();
 			});
 		});
@@ -363,9 +363,9 @@ describe('HTTP server', function () {
 		it('serves files with CORS meta data', function (done) {
 			get('/favicon.ico', function (error, result, res) {
 				assert.ifError(error);
-				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['access-control-allow-origin'], 'http://foo.com');
-				assert.equal(res.headers['access-control-allow-credentials'], 'true');
+				assert.strictEqual(res.statusCode, 200);
+				assert.strictEqual(res.headers['access-control-allow-origin'], 'http://foo.com');
+				assert.strictEqual(res.headers['access-control-allow-credentials'], 'true');
 				done();
 			});
 		});
@@ -377,7 +377,7 @@ describe('HTTP server', function () {
 			httpServer.close(function () {
 				get('/favicon.ico', function (error) {
 					assert.ok(error);
-					assert.equal(error.code, 'ECONNREFUSED');
+					assert.strictEqual(error.code, 'ECONNREFUSED');
 					done();
 				});
 			});
