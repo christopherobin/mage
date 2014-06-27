@@ -7,6 +7,12 @@
 		"component/inherit": "0.0.2"
 	},
 	"scripts": [
-		"index.js"
+		"index.js",
+		"mime.js",
+		"http.js",
+		"Package.js",
+		"LoadError.js",
+		"caches/Void.js",
+		"caches/LocalStorage.js"
 	]
 }
