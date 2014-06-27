@@ -132,18 +132,18 @@ describe('msgServer', function () {
 					assert.strictEqual(new meta.Meta(packet[3]).dataPosition,
 						1);
 
-					if (++msgReceived === 2) {
+					if (++msgReceived === 4) {
 						done();
 					}
 				}
 
 				for (i = 0; i < 3; ++i) {
+					relay[i].on('message', onMessage);
 					for (var j = 0; j < 3; ++j) {
 						if (i !== j) {
 							relay[i].connect(relay[j].router.getsockopt('last_endpoint'));
 						}
 					}
-					relay[i].on('message', onMessage);
 					client[i].connect(relay[i].router.getsockopt('last_endpoint'));
 				}
 
@@ -157,6 +157,14 @@ describe('msgServer', function () {
 					metadata);
 				client[0].send(
 					[ identity + ':relay:2' ],
+					msg,
+					metadata);
+				client[1].send(
+					[ identity + ':relay:0' ],
+					msg,
+					metadata);
+				client[2].send(
+					[ identity + ':relay:0' ],
 					msg,
 					metadata);
 			});
