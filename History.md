@@ -25,6 +25,25 @@ own.
 See the [HTTP Server documentation](lib/msgServer/transports/http/Readme.md) and
 [Savvy documentation](lib/savvy/Readme.md) for more information about the new APIs.
 
+### window.mageConfig
+
+The component builder now emits "mage-config" on the app object, passing it the `window.mageConfig`
+object, which now contains an `appConfig` object which you may use to pass data to the browser.
+
+An example:
+
+```javascript
+app.on('mage-config', function (config) {
+  config.appConfig.viewNames = fs.readdirSync('../www/views');
+});
+```
+
+In the browser, you can access this as:
+
+```javascript
+console.log(mage.appConfig.viewNames);
+```
+
 ### Miscellaneous changes
 
 * Exposed the app's version to the client as `mage.appVersion`.
