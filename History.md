@@ -14,6 +14,37 @@ could be a real serious hit on the network when suddenly all those people receiv
 reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
 feature responsibly.
 
+### HTTP server
+
+The HTTP server has now its dedicated library and was extracted from the `msgServer` library.
+
+The `msgServer` is now the only one to manage the events, and the `httpServer` only contains the RPC system.
+As a result the `httpServer` no longer send any events through the user command response.
+
+To be able to setup the `msgStream` the `session:key` event was removed and you got the session key in the response of the `ident.login` user command.
+
+#### Migration
+
+* the following methods have moved from `msgserver` to `httpserver` on the client:
+  * `setCmdMode()`
+  * `registerCommandHook()`
+  * `transformUpload()`
+  * `transformEmbeddedUploads()`
+  * `sendCommand()`
+  * `resend()`
+  * `discard()`
+  * `queue()`
+  * `piggyback()`
+  * `simulateTransportError()`
+  * `setupCommandSystem()`
+* the following methods have moved from `msgserver` to `httpserver` on the server:
+  * `startClientHost()`
+* The value returned by `ident.login` user command has changed.
+  Please read the [ident module documentation](./lib/modules/ident/Readme.md).
+* `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
+* `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
+
+
 ### Miscellaneous changes
 
 * Exposed the app's version to the client as `mage.appVersion`.
