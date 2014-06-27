@@ -55,7 +55,7 @@ To be able to setup the `msgStream` the `session:key` event was removed and you 
 
 #### Migration
 
-* the following methods have moved from `msgserver` to `httpserver` on the client:
+* the following methods have moved from `msgServer` to `httpServer` on the client:
   * `setCmdMode()`
   * `registerCommandHook()`
   * `transformUpload()`
@@ -67,12 +67,13 @@ To be able to setup the `msgStream` the `session:key` event was removed and you 
   * `piggyback()`
   * `simulateTransportError()`
   * `setupCommandSystem()`
-* the following methods have moved from `msgserver` to `httpserver` on the server:
+* the following methods have moved from `msgServer` to `httpServer` on the server:
   * `startClientHost()`
 * The value returned by `ident.login` user command has changed.
   Please read the [ident module documentation](./lib/modules/ident/Readme.md).
 * `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
 * `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
+* `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
 
 ### Miscellaneous changes
 
