@@ -36,6 +36,7 @@ See the [HTTP Server documentation](lib/msgServer/transports/http/Readme.md) and
   Since there always tends to be a window.mageConfig object, this change should have no effect. This
   is just to equalize the two behaviors.
 * The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
+* Sampler not yet having samples ready no longer logs a massive warning.
 
 ### Bug fixes
 
