@@ -1,6 +1,9 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
-LIBCOV = ./lib-cov
+TEST_APP = ./test/app
+TEST_BROWSER = ./test/browser
+TEST_SERVER = ./test/server
+TEST_PHANTOM_RUNNER = ./test/mocha-phantom-runner
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -12,13 +15,14 @@ define helpStarting
 	@echo "Getting started:"
 	@echo
 	@echo "  make help              Prints this help."
-	@echo "  make deps              Installs all dependencies (shortcut for deps-npm)."
+	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-component)."
 	@echo
 	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
+	@echo "  make deps-component    Downloads and installs all component dependencies."
 	@echo
 endef
 
-.PHONY: help build deps deps-npm start stop
+.PHONY: help build deps deps-npm deps-component start stop
 
 help:
 	@echo
@@ -36,11 +40,14 @@ start:
 stop:
 	@echo "MAGE has nothing to stop."
 
-deps: deps-npm
+deps: deps-npm deps-component
 
 deps-npm:
 	mkdir -p node_modules
 	npm install
+
+deps-component:
+	$(BIN)/component-install -r https://raw.githubusercontent.com
 
 
 # DEVELOPMENT
@@ -96,7 +103,7 @@ test: test-lint test-style test-unit
 report: report-complexity report-coverage
 
 define lintPath
-	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
+	$(BIN)/jshint --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
 endef
 
 test-lint:
@@ -134,19 +141,27 @@ else
 endif
 
 test-unit:
-	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
-	$(BIN)/mocha -R spec --recursive $(shell find $(LIB) -type d -name test)
+	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
+
+	@echo
+	@echo Building browser tests
+	@rm -rf "$(TEST_BROWSER)/build"
+	@cd $(TEST_BROWSER); $(CURDIR)/$(BIN)/component-build
+
+	@echo
+	@echo Running browser tests
+	@echo
+	$(BIN)/phantomjs ./test/browser/phantom-runner.js
+
+	@cd $(TEST_APP); node .
+
 
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
-instrument:
-	rm -rf "$(LIBCOV)"
-	$(BIN)/istanbul instrument --output $(LIBCOV) --no-compact --variable global.__coverage__ $(LIB)
-
-report-coverage: instrument
-	$(BIN)/mocha -R mocha-istanbul --recursive $(shell find $(LIBCOV) -type d -name test)
+report-coverage:
+	$(BIN)/istanbul cover $(BIN)/_mocha --report html --dir $(COVERAGE_REPORT) -- -R spec --recursive $(TEST_SERVER)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
 
 
@@ -168,8 +183,8 @@ clean: clean-deps clean-report
 
 clean-deps:
 	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
+	rm -rf "$(TEST_BROWSER)/components"
 
 clean-report:
-	rm -rf "$(LIBCOV)"
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"

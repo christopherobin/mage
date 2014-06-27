@@ -37,6 +37,19 @@ state.close();
 
 For more information, please read the [State API documentation](../../lib/state/Readme.md).
 
+### Sending a broadcast event
+
+You can send an event to all the users who are currently connected to the application.
+
+```javascript
+var gift = {
+	itemType: 'goldcoin',
+	amount: 100,
+	sender: 'Alice'
+};
+
+state.broadcast('gift.received', gift);
+```
 
 ## Receiving the event
 
