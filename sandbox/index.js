@@ -19,14 +19,14 @@ mage.setup(function (err) {
 		});
 		app.commandCenter.setup();
 		app.exposeOnClientHost();
-		mage.core.msgServer.startClientHost(function (err) {
+		mage.core.httpServer.startClientHost(function (err) {
 			if (err) {
 				process.send({ type: 'error', error: err });
 				return;
 			}
 			process.send({
 				type: 'ready',
-				address: mage.core.msgServer.getHttpServer().server.address()
+				address: mage.core.httpServer.server.address()
 			});
 		});
 	});

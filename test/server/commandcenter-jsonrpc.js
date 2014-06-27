@@ -16,7 +16,7 @@ var sandbox = path.join(
 process.removeAllListeners('uncaughtException');
 
 describe('commandCenter', function () {
-	describe('json-rpc', function () {
+	describe.skip('json-rpc', function () {
 		var app;
 		var clientOptions = { path: '/test/jsonrpc' };
 

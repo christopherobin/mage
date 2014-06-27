@@ -114,47 +114,6 @@ describe('msgServer', function () {
 				client.send(packet);
 			});
 
-			it('should forward the message if it is not the recipient', function (done) {
-				var packetData = 'some data';
-
-				var client = zmq.createSocket('dealer');
-
-				var relay = new Relay(identity);
-				relay.bind('tcp://127.0.0.1:*');
-				relay.on('request', function (sender, data, returnPath) {
-					assert.deepEqual(sender, []);
-					assert.strictEqual(data.toString(), packetData);
-					assert.deepEqual(returnPath, []);
-					relay.close();
-					done();
-				});
-
-				client.connect(relay.router.getsockopt('last_endpoint'));
-
-				var packet = createPacket('someone else', packetData);
-				client.send(packet);
-			});
-
-			it('should forward the message if it is not the recipient', function (done) {
-				var packetData = 'some data';
-
-				var client = zmq.createSocket('dealer');
-
-				var relay = new Relay(identity);
-				relay.bind('tcp://127.0.0.1:*');
-				relay.on('request', function (sender, data, returnPath) {
-					assert.strictEqual(data.toString(), packetData);
-					assert.notStrictEqual(returnPath, []);
-					relay.close();
-					done();
-				});
-
-				client.connect(relay.router.getsockopt('last_endpoint'));
-
-				var metadata = new meta.Meta(null, null, meta.FLAGS.REPLY_EXPECTED);
-				var packet = createPacket('someone else', packetData, metadata);
-				client.send(packet);
-			});
 		});
 	});
 });
