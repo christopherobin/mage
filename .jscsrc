@@ -1,7 +1,6 @@
 {
 	"requireCurlyBraces": ["if", "else", "for", "while", "do", "try", "catch", "finally"],
 	"requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "finally"],
-	"disallowKeywordsOnNewLine": ["else", "catch", "finally"],
 	"requireSpaceBeforeBlockStatements": true,
 	"requireParenthesesAroundIIFE": true,
 	"requireSpacesInConditionalExpression": true,
@@ -13,18 +12,18 @@
 		"beforeOpeningCurlyBrace": true
 	},
 	"requireBlocksOnNewline": true,
+	"disallowPaddingNewlinesInBlocks": true,
 	"disallowEmptyBlocks": true,
 	"requireSpacesInsideObjectBrackets": "all",
+	"disallowSpacesInsideArrayBrackets": true,
+	"disallowSpacesInsideParentheses": true,
 	"disallowQuotedKeysInObjects": true,
 	"disallowSpaceAfterObjectKeys": true,
 	"requireCommaBeforeLineBreak": true,
-	"requireOperatorBeforeLineBreak": ["?", "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
-	"disallowLeftStickedOperators": ["?", "+", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
-	"requireRightStickedOperators": ["!"],
-	"disallowRightStickedOperators": ["?", "+", "/", "*", ":", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
-	"requireLeftStickedOperators": [","],
-	"disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-", "~", "!"],
-	"disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
+	"requireOperatorBeforeLineBreak": true,
+	"disallowSpaceAfterPrefixUnaryOperators": true,
+	"disallowSpaceBeforePostfixUnaryOperators": true,
+	"disallowSpaceBeforeBinaryOperators": [","],
 	"requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
 	"requireSpaceAfterBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
 	"requireCamelCaseOrUpperCaseIdentifiers": true,
@@ -35,10 +34,15 @@
 		"mark": "'",
 		"escape": false
 	},
+	"validateIndentation": "\t",
 	"disallowMixedSpacesAndTabs": "smart",
 	"disallowTrailingWhitespace": true,
 	"disallowTrailingComma": true,
-	"maximumLineLength": 120,
+	"disallowKeywordsOnNewLine": ["else", "catch", "finally"],
+	"maximumLineLength": {
+		"value": 120,
+		"allowUrlComments": true
+	},
 	"requireCapitalizedConstructors": true,
 	"safeContextKeyword": ["that"],
 	"requireDotNotation": true,
@@ -48,6 +52,7 @@
 		"checkRedundantParams": true,
 		"requireParamTypes": true
 	},
+	"requireSpaceAfterLineComment": true,
 	"additionalRules": [
 		"node_modules/jscs-jsdoc/lib/rules/*.js"
 	],
