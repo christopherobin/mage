@@ -1,15 +1,14 @@
 var assert = require('assert');
 
-describe('MAGE Page Loader', function () {
-
+describe('Package Loader', function () {
 	var loader = require('loader');
 	var Package = loader.Package;
 
-	it('Exposes the Package class', function () {
+	it('exposes the Package class', function () {
 		assert(Package);
 	});
 
-	it('Configures the loader', function () {
+	it('configures the loader', function () {
 		loader.configure({
 			appName: 'test-app',
 			appVariants: {
@@ -19,47 +18,47 @@ describe('MAGE Page Loader', function () {
 		});
 	});
 
-	it('Can load packages after configuration', function () {
+	it('allows to load packages after configuration', function () {
 		loader.assertPackageIsLoadable('mypackage');
 	});
 
-	it('Can generate a download URL for a package', function () {
+	it('generates a download URL for a package', function () {
 		assert.equal(loader.getPackageUrl('mypackage').indexOf('/app/test-app/mypackage?'), 0);
 	});
 
-	it('Allows language change', function () {
+	it('allows language change', function () {
 		loader.setLanguage('nl');
 	});
 
-	it('Does not allow unknown languages', function () {
+	it('does not allow unknown languages', function () {
 		assert.throws(function () {
 			loader.setLanguage('fr');
 		});
 	});
 
-	it('Does not allow non-string languages', function () {
+	it('does not allow non-string languages', function () {
 		assert.throws(function () {
 			loader.setLanguage(true);
 		});
 	});
 
-	it('Allows density change', function () {
+	it('allows density change', function () {
 		loader.setDensity(2);
 	});
 
-	it('Does not allow unknown densities', function () {
+	it('does not allow unknown densities', function () {
 		assert.throws(function () {
 			loader.setDensity(10);
 		});
 	});
 
-	it('Does not allow non-number densities', function () {
+	it('does not allow non-number densities', function () {
 		assert.throws(function () {
 			loader.setDensity('foo');
 		});
 	});
 
-	it('Can create Package objects', function () {
+	it('can create Package objects', function () {
 		new Package('mypackage');
 	});
 
@@ -70,7 +69,7 @@ describe('MAGE Page Loader', function () {
 	var htmlParent = document.createElement('div');
 	var cssParent = document.createElement('div');
 
-	it('Can parse package data', function () {
+	it('can parse package data', function () {
 		var data = [
 			'Delimiter: ' + testDelimiter,
 			'',
@@ -121,25 +120,25 @@ describe('MAGE Page Loader', function () {
 		assert.equal(window.mypackageTestValue, 123);
 	});
 
-	it('Allows custom injection points', function () {
+	it('allows custom injection points', function () {
 		var pkg = loader.getPackage('mypackage');
 		pkg.parentElements['text/html'] = htmlParent;
 		pkg.parentElements['text/css'] = cssParent;
 	});
 
-	it('Can inject CSS into the registered parent', function () {
+	it('can inject CSS into the registered parent', function () {
 		var elm = loader.getPackage('mypackage').injectCss();
 		assert.equal(elm.parentNode, cssParent);
 		assert.equal(elm.innerText, testCss);
 	});
 
-	it('Can inject HTML into the registered parent', function () {
+	it('can inject HTML into the registered parent', function () {
 		var elm = loader.injectHtml('mypackage');
 		assert.equal(elm.parentNode, htmlParent);
 		assert.equal(elm.innerHTML, testHtml);
 	});
 
-	it('Emits display events', function () {
+	it('emits display events', function () {
 		var pkg = loader.getPackage('mypackage');
 		var elm = pkg.getHtml();
 		var events = 0;
@@ -161,7 +160,7 @@ describe('MAGE Page Loader', function () {
 		assert.equal(events, 2);
 	});
 
-	it('Can destroy a package', function () {
+	it('can destroy a package', function () {
 		var pkg = loader.getPackage('mypackage');
 		pkg.destroy();
 
