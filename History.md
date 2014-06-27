@@ -14,6 +14,17 @@ could be a real serious hit on the network when suddenly all those people receiv
 reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
 feature responsibly.
 
+### HTTP Server and Savvy
+
+The MAGE built-in HTTP server has seen some changes. For one, it now has WebSocket and Proxy
+support. That means that you can add routes for those two types. Also, unlike before, the HTTP
+server is now always instantiated, regardless of the process running in master or worker mode. The
+reason for this is that Savvy has been rebuilt to use the HTTP server, rather than implementing its
+own.
+
+See the [HTTP Server documentation](lib/msgServer/transports/http/Readme.md) and
+[Savvy documentation](lib/savvy/Readme.md) for more information about the new APIs.
+
 ### window.mageConfig
 
 The component builder now emits "mage-config" on the app object, passing it the `window.mageConfig`
@@ -44,6 +55,11 @@ console.log(mage.appConfig.viewNames);
   Since there always tends to be a window.mageConfig object, this change should have no effect. This
   is just to equalize the two behaviors.
 * The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
+* Sampler not yet having samples ready no longer logs a massive warning.
+
+### Bug fixes
+
+* The WebSocket logger was not reporting any logs from the worker processes.
 
 
 ## v0.35.0 - King of the Jungle Cat
