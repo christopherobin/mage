@@ -87,7 +87,7 @@ dev-githooks:
 	node $(SCRIPTS)/githooks.js
 
 dev-autocomplete:
-	node . completion --filename $(COMPLETION_FILENAME) --bash_completion ~/.bash_completion --save
+	node . completion --filename "$(COMPLETION_FILENAME)" --bash_completion ~/.bash_completion --save
 	@echo
 	@echo Tab completion is now installed for this project.
 	@echo Please restart your shell or enter:
