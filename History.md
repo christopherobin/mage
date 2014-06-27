@@ -44,6 +44,13 @@ In the browser, you can access this as:
 console.log(mage.appConfig.viewNames);
 ```
 
+#### Bash auto completion
+
+MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
+project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
+copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
+section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+
 ### Miscellaneous changes
 
 * Exposed the app's version to the client as `mage.appVersion`.
@@ -90,34 +97,26 @@ If you want to replicate this in your game set up, please following these steps.
 2. Copy the "test-style" Makefile target into your own Makefile (don't forget to add it to .PHONY).
 3. Add "jscs" and "jscs-jsdoc" to your package.json and install them.
 
-### CLI
+### Don't run the CLI by default
 
-A number of changes have happened with how MAGE deals with the command line.
+The CLI module does not parse anymore the process arguments by default.
+You must call `mage.cli.run()`.
 
-* The CLI module no longer parses the process arguments by default. You must call `mage.cli.run()`.
-* The CLI module is now accessible at `mage.cli` instead of `mage.core.cli`.
-* It now allows you to run `mocha` and include `mage` in your tests or test code requiring `mage`.
-* MAGE now provides bash auto-completion for all arguments, even for the ones you create yourself.
+The path of the CLI module has changed.
+You can now access it at `mage.cli` instead of `mage.core.cli`.
+
+It allows you to run `mocha` and include `mage` in your tests or test code requiring `mage`.
 
 #### Migration
 
 You must add `mage.cli.run();` to `lib/index.js` in your project to run the CLI.
-
 You should obtain:
-
-```javascript
+``` javascript
 var mage = require('mage');
 var logger = mage.core.logger.context('game-boot');
 
 mage.cli.run();
 ```
-
-#### Enabling bash auto completion
-
-On a newly bootstrapped project, simply run `make dev` to setup git hooks and bash auto completion.
-Existing projects should copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`,
-and in particular the section under `# DEVELOPMENT`. Then run `make dev` to set it up for your
-environment.
 
 ### msgStream now works without requiring a MAGE cluster
 
@@ -144,8 +143,8 @@ It's like push notifications in MAGE.
 ### Miscellaneous changes
 
 * The default HTTP binding on new projects is now port 8080, instead of server.sock.
-* Added unit tests for MMRP and Service Discovery.
-* Adedd documentation for Walkthrough, Mage, CLI, State, MMRP.
+* Add MMRP some tests and documentation.
+* Add CLI documentation.
 * `mage.getModulePath(modName)` will now throw if the module does not exist, instead of return `null`.
 * `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
 * Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
