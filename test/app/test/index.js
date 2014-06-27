@@ -119,7 +119,7 @@ exports.start = function (app) {
 
 		armBomb(stepName);
 
-		var address = app.mage.core.msgServer.getHttpServer().server.address();
+		var address = app.mage.core.httpServer.server.address();
 
 		integration(address, function (error) {
 			if (error) {

@@ -1,5 +1,5 @@
 var assert = require('assert');
-var httpServer = require('../../lib/msgServer/transports/http');
+var httpServer = require('../../lib/httpServer/transports/http');
 var savvy = require('../../lib/savvy');
 
 describe('Savvy', function () {
