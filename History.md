@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### SQLite3 Vault
+
+Archivist has been enriched with support for an SQLite3 vault through the
+[sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
+[SQLite3 vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
+
 ### Archivist data broadcast
 
 The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
