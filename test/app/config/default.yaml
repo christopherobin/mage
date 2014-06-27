@@ -1,0 +1,18 @@
+server:
+    clientHost:
+        bind:
+            file: null
+            port: 0
+        expose: null
+    cluster: false
+
+archivist:
+    vaults:
+        volatileVault:
+            type: memory
+    listOrder:
+        - volatileVault
+    writeOrder:
+        - volatileVault
+    readOrder:
+        - volatileVault

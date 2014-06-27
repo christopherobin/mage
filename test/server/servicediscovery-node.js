@@ -1,5 +1,5 @@
 var assert = require('assert');
-var ServiceNode = require('../node').ServiceNode;
+var ServiceNode = require('../../lib/serviceDiscovery/node').ServiceNode;
 
 describe('serviceDiscovery', function () {
 	describe('ServiceNode', function () {
