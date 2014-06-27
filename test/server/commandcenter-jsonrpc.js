@@ -16,7 +16,7 @@ var sandbox = path.join(
 process.removeAllListeners('uncaughtException');
 
 describe('commandCenter', function () {
-	describe.skip('json-rpc', function () {
+	describe('json-rpc', function () {
 		var app;
 		var clientOptions = { path: '/test/jsonrpc' };
 
@@ -79,18 +79,12 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.id, 1);
 					assert.strictEqual(typeof response.result, 'object');
 					assert.strictEqual(typeof response.error, 'undefined');
-					assert.strictEqual(typeof response.result.response, 'object');
-					assert.strictEqual(typeof response.result.response.userId, 'string');
-					assert.strictEqual(typeof response.result.response.displayName, 'string');
-					assert.strictEqual(typeof response.result.myEvents, 'object');
-					var events = {};
-					response.result.myEvents.map(function (str) {
-						var obj = JSON.parse(str);
-						events[obj[0]] = obj[1];
-					});
-					assert.strictEqual(Object.keys(events).length >= 1, true);
-					assert.strictEqual(typeof events['session:set'], 'object');
-					assert.strictEqual(typeof events['session:set'].key, 'string');
+					assert.strictEqual(typeof response.result.user, 'object');
+					assert.strictEqual(typeof response.result.user.userId, 'string');
+					assert.strictEqual(typeof response.result.user.displayName, 'string');
+					assert.strictEqual(typeof response.result.session, 'object');
+					assert.strictEqual(typeof response.result.session.key, 'string');
+					assert.strictEqual(typeof response.result.session.actorId, 'string');
 					done();
 				});
 			});
@@ -165,14 +159,8 @@ describe('commandCenter', function () {
 						return done(err);
 					}
 
-					var events = {};
-					response.result.myEvents.map(function (str) {
-						var obj = JSON.parse(str);
-						events[obj[0]] = obj[1];
-					});
-
 					client.options.headers = {};
-					client.options.headers['X-MAGE-SESSION'] = events['session:set'].key;
+					client.options.headers['X-MAGE-SESSION'] = response.result.session.key;
 
 					done();
 				});
@@ -201,9 +189,8 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.error, 'undefined');
-					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'string');
-					assert.strictEqual(response.result.response, 'test');
+					assert.strictEqual(typeof response.result, 'string');
+					assert.strictEqual(response.result, 'test');
 					done();
 				});
 			});
@@ -220,8 +207,7 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'object');
-					assert.deepEqual(response.result.response, {
+					assert.deepEqual(response.result, {
 						a: 5,
 						b: 6
 					});
@@ -241,9 +227,8 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'object');
-					assert.strictEqual(response.result.response.length, 3);
-					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+					assert.strictEqual(response.result.length, 3);
+					assert.deepEqual(response.result, ['a', 'b', 'c']);
 					done();
 				});
 			});
@@ -260,9 +245,8 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'object');
-					assert.strictEqual(response.result.response.length, 3);
-					assert.deepEqual(response.result.response, ['a', 'b', null]);
+					assert.strictEqual(response.result.length, 3);
+					assert.deepEqual(response.result, ['a', 'b', null]);
 					done();
 				});
 			});
@@ -300,9 +284,8 @@ describe('commandCenter', function () {
 					assert.strictEqual(response.id, 2);
 					assert.strictEqual(typeof response.error, 'undefined');
 					assert.strictEqual(typeof response.result, 'object');
-					assert.strictEqual(typeof response.result.response, 'object');
-					assert.strictEqual(response.result.response.length, 3);
-					assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+					assert.strictEqual(response.result.length, 3);
+					assert.deepEqual(response.result, ['a', 'b', 'c']);
 					done();
 				});
 			});
@@ -334,14 +317,14 @@ describe('commandCenter', function () {
 						switch (response.id) {
 							case 3:
 								assert.strictEqual(typeof response.error, 'undefined');
-								assert.strictEqual(typeof response.result.response, 'string');
-								assert.strictEqual(response.result.response, 'test');
+								assert.strictEqual(typeof response.result, 'string');
+								assert.strictEqual(response.result, 'test');
 								break;
 							case 4:
 								assert.strictEqual(typeof response.error, 'undefined');
-								assert.strictEqual(typeof response.result.response, 'object');
-								assert.strictEqual(response.result.response.length, 3);
-								assert.deepEqual(response.result.response, ['a', 'b', 'c']);
+								assert.strictEqual(typeof response.result, 'object');
+								assert.strictEqual(response.result.length, 3);
+								assert.deepEqual(response.result, ['a', 'b', 'c']);
 								break;
 							case 5:
 								assert.strictEqual(typeof response.result, 'undefined');
