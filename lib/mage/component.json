@@ -6,7 +6,8 @@
 		"component/inherit": "0.0.2"
 	},
 	"local": [
-		"msgServer"
+		"msgServer",
+		"httpServer"
 	],
 	"paths": [
 		"../"

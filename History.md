@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### SQLite3 Vault
+
+Archivist has been enriched with support for an SQLite3 vault through the
+[sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
+[SQLite3 vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
+
 ### Archivist data broadcast
 
 The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
@@ -13,6 +19,17 @@ to use this in production on systems where you have many thousands of users logg
 could be a real serious hit on the network when suddenly all those people receive events and then
 reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
 feature responsibly.
+
+### HTTP Server and Savvy
+
+The MAGE built-in HTTP server has seen some changes. For one, it now has WebSocket and Proxy
+support. That means that you can add routes for those two types. Also, unlike before, the HTTP
+server is now always instantiated, regardless of the process running in master or worker mode. The
+reason for this is that Savvy has been rebuilt to use the HTTP server, rather than implementing its
+own.
+
+See the [HTTP Server documentation](lib/msgServer/transports/http/Readme.md) and
+[Savvy documentation](lib/savvy/Readme.md) for more information about the new APIs.
 
 ### window.mageConfig
 
@@ -33,6 +50,37 @@ In the browser, you can access this as:
 console.log(mage.appConfig.viewNames);
 ```
 
+### HTTP server
+
+The HTTP server has now its dedicated library and was extracted from the `msgServer` library.
+
+The `msgServer` is now the only one to manage the events, and the `httpServer` only contains the RPC system.
+As a result the `httpServer` no longer send any events through the user command response.
+
+To be able to setup the `msgStream` the `session:key` event was removed and you got the session key in the response of the `ident.login` user command.
+
+#### Migration
+
+* the following methods have moved from `msgServer` to `httpServer` on the client:
+  * `setCmdMode()`
+  * `registerCommandHook()`
+  * `transformUpload()`
+  * `transformEmbeddedUploads()`
+  * `sendCommand()`
+  * `resend()`
+  * `discard()`
+  * `queue()`
+  * `piggyback()`
+  * `simulateTransportError()`
+  * `setupCommandSystem()`
+* the following methods have moved from `msgServer` to `httpServer` on the server:
+  * `startClientHost()`
+* The value returned by `ident.login` user command has changed.
+  Please read the [ident module documentation](./lib/modules/ident/Readme.md).
+* `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
+* `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
+* `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
+
 ### Miscellaneous changes
 
 * Exposed the app's version to the client as `mage.appVersion`.
@@ -44,6 +92,11 @@ console.log(mage.appConfig.viewNames);
   Since there always tends to be a window.mageConfig object, this change should have no effect. This
   is just to equalize the two behaviors.
 * The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
+* Sampler not yet having samples ready no longer logs a massive warning.
+
+### Bug fixes
+
+* The WebSocket logger was not reporting any logs from the worker processes.
 
 
 ## v0.35.0 - King of the Jungle Cat
