@@ -1,7 +1,8 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
-TEST_SERVER = ./test/server
+TEST_APP = ./test/app
 TEST_BROWSER = ./test/browser
+TEST_SERVER = ./test/server
 TEST_PHANTOM_RUNNER = ./test/mocha-phantom-runner
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
@@ -151,6 +152,9 @@ test-unit:
 	@echo Running browser tests
 	@echo
 	$(BIN)/phantomjs ./test/browser/phantom-runner.js
+
+	@cd $(TEST_APP); node .
+
 
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
