@@ -100,6 +100,8 @@ describe('msgServer', function () {
 			});
 
 			it('cluster with three relays', function (done) {
+				this.timeout(5000);
+
 				var client = [], relay = [];
 				var i;
 
@@ -130,7 +132,7 @@ describe('msgServer', function () {
 					assert.strictEqual(new meta.Meta(packet[3]).dataPosition,
 						1);
 
-					if (++msgReceived === 4) {
+					if (++msgReceived === 2) {
 						done();
 					}
 				}
@@ -155,14 +157,6 @@ describe('msgServer', function () {
 					metadata);
 				client[0].send(
 					[ identity + ':relay:2' ],
-					msg,
-					metadata);
-				client[1].send(
-					[ identity + ':relay:0' ],
-					msg,
-					metadata);
-				client[2].send(
-					[ identity + ':relay:0' ],
 					msg,
 					metadata);
 			});
