@@ -79,7 +79,7 @@ an `eventManager` has been added on the client to be able to get all the events 
 * `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
 * `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
 * `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
-* `msgStream.on()` is now `eventManager.on()`.
+* `msgServer.on()` is now `eventManager.on()`.
 
 ### Miscellaneous changes
 
