@@ -113,12 +113,9 @@ To be able to setup the `msgStream` the `session:key` event was removed and you 
 
 ### Bug fixes
 
-<<<<<<< HEAD
 * The WebSocket logger was not reporting any logs from the worker processes.
 * MAGE will no longer crash if you try to login without a username.
 
-=======
->>>>>>> 44174fe7549f4614377a595961d93a16c1d3b572
 ## v0.35.0 - King of the Jungle Cat
 
 ### mage.session.isValidSession
