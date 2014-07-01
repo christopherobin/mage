@@ -153,7 +153,7 @@ test-unit:
 	@echo
 	$(BIN)/phantomjs ./test/browser/phantom-runner.js
 
-	@cd $(TEST_APP); node .
+	@cd $(TEST_APP); node develop
 
 
 report-complexity:

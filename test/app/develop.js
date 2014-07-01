@@ -12,4 +12,4 @@ try {
 	process.exit(1);
 }
 
-app.setup(app.start);
+test.start(app);
