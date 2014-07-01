@@ -47,7 +47,8 @@ deps-npm:
 	npm install
 
 deps-component:
-	$(BIN)/component-install -r https://raw.githubusercontent.com
+	mkdir -p components
+	@cd test/app; node . install-components
 
 
 # DEVELOPMENT

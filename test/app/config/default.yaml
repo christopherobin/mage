@@ -1,4 +1,6 @@
 apps:
+    dev:
+        access: admin
     test:
         access: admin
 
@@ -12,6 +14,8 @@ archivist:
         - volatileVault
     writeOrder:
         - volatileVault
+
+developmentMode: true
 
 module:
     ident:

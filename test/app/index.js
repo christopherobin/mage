@@ -2,14 +2,16 @@ var test = require('./test');
 
 test.before();
 
-var app;
+var project;
 
 try {
-	app = require('./lib');
+	project = require('./lib');
 } catch (e) {
 	test.after();
 	console.error('Error requiring app:', e);
 	process.exit(1);
 }
 
-app.setup(app.start);
+project.mage.on('shutdown', test.after);
+
+project.setup(project.start);

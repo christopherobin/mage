@@ -10,6 +10,9 @@
 		"../../../../..",
 		"../../../.."
 	],
+	"templates": [
+		"page.html"
+	],
 	"scripts": [
 		"index.js"
 	]
