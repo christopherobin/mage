@@ -2,7 +2,6 @@
 	"name": "eventManager",
 	"description": "An event manager for MAGE.",
 	"scripts": [
-		"client.js"
-	],
-	"main": "client.js"
+		"index.js"
+	]
 }
