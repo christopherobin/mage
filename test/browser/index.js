@@ -1,6 +1,7 @@
 // Test directory
 
 var tests = [
+	'test-eventManager',
 	'test-loader'
 ];
 
