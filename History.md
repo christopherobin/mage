@@ -97,7 +97,7 @@ To be able to setup the `msgStream` the `session:key` event was removed and you 
 ### Bug fixes
 
 * The WebSocket logger was not reporting any logs from the worker processes.
-
+* MAGE will no longer crash if you try to login without a username.
 
 ## v0.35.0 - King of the Jungle Cat
 
