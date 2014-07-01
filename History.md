@@ -56,7 +56,8 @@ The HTTP server has now its dedicated library and was extracted from the `msgSer
 
 As events can come from the `httpServer` with user command responses
 or from the `msgServer` with the message stream,
-an `eventManager` has been added on the client to be able to get all the events in one place.
+an `eventManager` has been added on the client to handle all the events in one place.
+`httpServer` and `msgServer` no longer inherits from `EventEmitter`.
 
 #### Migration
 
