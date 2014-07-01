@@ -70,6 +70,7 @@ window.describe('MAGE Integration Tests', function () {
 		assert('Hello.');
 	});
 
+	require('testLoader');
 	require('./tests/ident');
 });
 

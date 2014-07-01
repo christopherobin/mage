@@ -26,7 +26,5 @@ module:
 server:
     clientHost:
         bind:
-            file: null
-            port: 0
-        expose: null
+            port: 9990
     cluster: false
