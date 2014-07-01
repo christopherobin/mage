@@ -1,5 +1,5 @@
 {
-	"name": "test-eventManager",
+	"name": "testEventManager",
 	"dependencies": {
 		"timoxley/assert": "0.0.1"
 	},

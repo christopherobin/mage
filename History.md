@@ -98,7 +98,7 @@ an `eventManager` has been added on the client to handle all the events in one p
 ### Bug fixes
 
 * The WebSocket logger was not reporting any logs from the worker processes.
-
+* MAGE will no longer crash if you try to login without a username.
 
 ## v0.35.0 - King of the Jungle Cat
 

@@ -144,16 +144,9 @@ test-unit:
 	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
 
 	@echo
-	@echo Building browser tests
-	@rm -rf "$(TEST_BROWSER)/build"
-	@cd $(TEST_BROWSER); $(CURDIR)/$(BIN)/component-build
-
+	@echo Running integration tests
 	@echo
-	@echo Running browser tests
-	@echo
-	$(BIN)/phantomjs ./test/browser/phantom-runner.js
-
-	@cd $(TEST_APP); node .
+	@cd $(TEST_APP); NODE_ENV="$(NODE_ENV),unit-tests" node integration
 
 
 report-complexity:
