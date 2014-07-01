@@ -1,0 +1,7 @@
+{
+	"name": "eventManager",
+	"description": "An event manager for MAGE.",
+	"scripts": [
+		"index.js"
+	]
+}
