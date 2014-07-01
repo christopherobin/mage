@@ -2,6 +2,7 @@ var mage = require('mage');
 
 var mageModules = [
 	'archivist',
+	'dashboard',
 	'ident',
 	'session',
 	'time'
