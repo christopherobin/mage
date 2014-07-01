@@ -1,8 +1,11 @@
 {
 	"paths": [
-		"test"
+		"lib",
+		"lib/modules",
+		"test/app/www"
 	],
 	"local": [
-		"browser"
+		"mage",
+		"test"
 	]
 }

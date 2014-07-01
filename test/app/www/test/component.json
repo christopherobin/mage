@@ -1,0 +1,33 @@
+{
+	"name": "test",
+	"dependencies": {
+		"timoxley/assert": "0.0.1",
+		"visionmedia/mocha": "1.20.1"
+	},
+	"local": [
+		"mage",
+		"assets",
+
+		"archivist",
+		"ident",
+		"session",
+		"time",
+
+		"user",
+
+		"testLoader"
+	],
+	"scripts": [
+		"index.js",
+		"tests/ident.js"
+	],
+	"paths": [
+		"../../node_modules/mage/lib",
+		"../../node_modules/mage/lib/modules",
+		"../../lib/modules",
+		"tests"
+	],
+	"styles": [
+		"style.css"
+	]
+}
