@@ -51,4 +51,15 @@ window.describe('Ident', function () {
 			done();
 		});
 	});
+
+	it('User information should be accessible under mage.ident.user', function (done) {
+		mage.user.login('new', password, function (error) {
+			assert.ifError(error);
+
+			assert.strictEqual(typeof mage.ident.user.userId, 'string');
+			assert.strictEqual(typeof mage.ident.user.displayName, 'string');
+
+			done();
+		});
+	});
 });
