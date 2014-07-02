@@ -1,3 +1,5 @@
+process.chdir(__dirname);
+
 var test = require('./test');
 
 test.before();
