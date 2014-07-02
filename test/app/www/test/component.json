@@ -13,6 +13,9 @@
 		"session",
 		"time",
 
+		"tomes",
+
+		"inventory",
 		"user",
 
 		"eventManager",
@@ -20,12 +23,14 @@
 	],
 	"scripts": [
 		"index.js",
+		"tests/archivist.js",
 		"tests/ident.js"
 	],
 	"paths": [
 		"../../node_modules/mage/lib",
 		"../../node_modules/mage/lib/modules",
 		"../../lib/modules",
+		"../../node_modules",
 		"tests"
 	],
 	"styles": [

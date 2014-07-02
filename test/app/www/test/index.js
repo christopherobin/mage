@@ -72,6 +72,7 @@ window.describe('MAGE Integration Tests', function () {
 
 	require('eventManager');
 	require('testLoader');
+	require('./tests/archivist');
 	require('./tests/ident');
 });
 
