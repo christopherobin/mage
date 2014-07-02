@@ -16,3 +16,15 @@ exports.user = {
 		volatileVault: {}
 	}
 };
+
+exports.inventory = {
+	index: ['userId'],
+	vaults: {
+		client: {
+			shard: function () {
+				return true;
+			}
+		},
+		volatileVault: {}
+	}
+};

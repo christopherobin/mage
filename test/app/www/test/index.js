@@ -62,6 +62,7 @@ mage.useModules(require,
 	'session',
 	'time',
 
+	'inventory',
 	'user'
 );
 
@@ -70,7 +71,9 @@ window.describe('MAGE Integration Tests', function () {
 		assert('Hello.');
 	});
 
+	require('eventManager');
 	require('testLoader');
+	require('./tests/archivist');
 	require('./tests/ident');
 });
 

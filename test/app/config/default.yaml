@@ -13,6 +13,7 @@ archivist:
     readOrder:
         - volatileVault
     writeOrder:
+        - client
         - volatileVault
 
 developmentMode: true

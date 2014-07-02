@@ -13,6 +13,7 @@ mage.useModules(mageModules);
 mage.addModulesPath('./lib/modules');
 
 var projectModules = [
+	'inventory',
 	'user'
 ];
 
