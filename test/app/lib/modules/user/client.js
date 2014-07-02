@@ -2,9 +2,9 @@ var mage = require('mage');
 
 var tUser = {};
 
-exports.login = function (userId, password, cb) {
-	function login(userId) {
-		mage.ident.login('testEngine', { username: userId, password: password }, null, function (error) {
+exports.login = function (username, password, cb) {
+	function login(username) {
+		mage.ident.login('testEngine', { username: username, password: password }, null, function (error) {
 			if (error) {
 				return cb(error);
 			}
@@ -13,16 +13,16 @@ exports.login = function (userId, password, cb) {
 		});
 	}
 
-	if (userId !== 'new') {
-		return login(userId);
+	if (username !== 'new') {
+		return login(username);
 	}
 
-	mage.user.register(password, function (error, userId) {
+	mage.user.register(password, function (error, username) {
 		if (error) {
 			return cb(error);
 		}
 
-		login(userId);
+		login(username);
 	});
 };
 
