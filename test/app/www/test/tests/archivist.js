@@ -79,7 +79,7 @@ describe('archivist', function () {
 
 	describe('cached value', function () {
 		it('get', function (done) {
-			var userId = mage.ident.user.user.userId;
+			var userId = mage.ident.user.userId;
 			mage.archivist.get('user', { userId: userId }, {}, function (error, tUser1) {
 				assert.ifError(error);
 
@@ -93,7 +93,7 @@ describe('archivist', function () {
 		});
 
 		it('mget', function (done) {
-			var userId = mage.ident.user.user.userId;
+			var userId = mage.ident.user.userId;
 
 			var query = {
 				user: {
