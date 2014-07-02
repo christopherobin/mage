@@ -1,24 +1,21 @@
 {
 	"name": "test",
 	"dependencies": {
+		"caolan/async": "*",
 		"timoxley/assert": "0.0.1",
 		"visionmedia/mocha": "1.20.1"
 	},
 	"local": [
 		"mage",
-		"assets",
 
 		"archivist",
 		"ident",
 		"session",
 		"time",
 
-		"tomes",
-
-		"inventory",
 		"user",
 
-		"eventManager",
+		"testEventManager",
 		"testLoader"
 	],
 	"scripts": [
@@ -30,7 +27,6 @@
 		"../../node_modules/mage/lib",
 		"../../node_modules/mage/lib/modules",
 		"../../lib/modules",
-		"../../node_modules",
 		"tests"
 	],
 	"styles": [

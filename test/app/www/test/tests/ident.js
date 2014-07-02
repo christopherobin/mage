@@ -1,7 +1,7 @@
 var assert = require('assert');
 var mage = require('mage');
 
-window.describe('Ident', function () {
+describe('Ident', function () {
 	var password = 'password';
 
 	it('Cannot login without a username', function (done) {

@@ -1,129 +1,128 @@
 var assert = require('assert');
 var mage = require('mage');
-var Tome = require('tomes').Tome;
 
-window.describe('archivist', function () {
+describe('archivist', function () {
 	before(function (done) {
-		mage.user.login('new', 'password', function (error) {
-			assert.ifError(error);
-
-			done();
-		});
+		mage.user.login('new', 'password', done);
 	});
 
-	window.describe('mget result style', function () {
+	describe('mget', function () {
+		var scratchData = {
+			a: 'a',
+			b: 'b',
+			c: 'c',
+			d: 'd',
+			e: 'e',
+			f: 'f',
+			g: 'g',
+			h: 'h',
+			i: 'i',
+			j: 'j'
+		};
+
+		var scratchKeys = Object.keys(scratchData);
+
+		beforeEach(function (done) {
+			for (var key in scratchData) {
+				mage.archivist.set('scratch', { key: key }, scratchData[key]);
+			}
+
+			mage.archivist.distribute(done);
+		});
+
 		it('Array style', function (done) {
 			var query = [];
-			var expectedResult = [];
-			for (var i = 0; i < 5; ++i) {
+
+			for (var i = 0; i < scratchKeys.length; i += 1) {
 				query.push({
-					topic: 'inventory',
-					index: { userId: 'user' + i }
-				});
-				expectedResult.push({
-					money: 50 + i,
-					items: {}
+					topic: 'scratch',
+					index: { key: scratchKeys[i] }
 				});
 			}
-			mage.archivist.mget(query, {}, function (error, multiData) {
+
+			mage.archivist.mget(query, {}, function (error, data) {
 				assert.ifError(error);
-				assert.strictEqual(Array.isArray(multiData), true);
-				assert.strictEqual(multiData.length, 5);
-				assert.deepEqual(Tome.unTome(multiData), expectedResult);
+
+				assert(Array.isArray(data));
+
+				for (var i = 0; i < query.length; i += 1) {
+					var key = query[i].index.key;
+
+					assert.equal(data[i], scratchData[key]);
+				}
+
 				done();
 			});
 		});
 
 		it('Object style', function (done) {
 			var query = {};
-			var expectedResult = {};
-			for (var i = 0; i < 5; ++i) {
-				query['key' + i] = {
-					topic: 'inventory',
-					index: { userId: 'user' + i }
-				};
-				expectedResult['key' + i] = {
-					money: 50 + i,
-					items: {}
+
+			for (var key in scratchData) {
+				query[key] = {
+					topic: 'scratch',
+					index: { key: key }
 				};
 			}
-			mage.archivist.mget(query, {}, function (error, multiData) {
+
+			mage.archivist.mget(query, {}, function (error, data) {
 				assert.ifError(error);
-				assert.strictEqual(typeof multiData, 'object');
-				assert.deepEqual(Tome.unTome(multiData), expectedResult);
+
+				for (var key in scratchData) {
+					assert(data[key], scratchData[key]);
+				}
+
 				done();
 			});
 		});
 	});
 
-	window.describe('cached value', function () {
+	describe('cached value', function () {
 		it('get', function (done) {
-			mage.archivist.get('inventory', {
-				userId: 'user0'
-			}, {}, function (error, data) {
+			var userId = mage.ident.user.user.userId;
+			mage.archivist.get('user', { userId: userId }, {}, function (error, tUser1) {
 				assert.ifError(error);
 
-				// Add a listener which is attached to the cached value and shouldn't be removed
-				function listener() { }
-				data.on('readable', listener);
-
-				mage.archivist.get('inventory', {
-					userId: 'user0'
-				}, {}, function (error, data) {
+				mage.archivist.get('user', { userId: userId }, {}, function (error, tUser2) {
 					assert.ifError(error);
-					assert.strictEqual(data.listeners('readable').length, 2);
-					data.off('readable', listener);
+					assert.strictEqual(tUser1, tUser2);
+
 					done();
 				});
 			});
 		});
 
 		it('mget', function (done) {
-			var query = [];
-			for (var i = 0; i < 5; ++i) {
-				query.push({
-					topic: 'inventory',
-					index: { userId: 'user' + i }
-				});
-			}
-			mage.archivist.mget(query, {}, function (error, multiData) {
+			var userId = mage.ident.user.user.userId;
+
+			var query = {
+				user: {
+					topic: 'user',
+					index: { userId: userId }
+				}
+			};
+
+			mage.archivist.mget(query, {}, function (error, data1) {
 				assert.ifError(error);
 
-				function listener() { }
-				multiData.forEach(function (data) {
-					// Add a listener which is attached to the cached value and shouldn't be removed
-					data.on('readable', listener);
-				});
-
-				mage.archivist.mget(query, {}, function (error, multiData) {
+				mage.archivist.mget(query, {}, function (error, data2) {
 					assert.ifError(error);
-					multiData.forEach(function (data) {
-						assert.strictEqual(data.listeners('readable').length, 2);
-						data.off('readable', listener);
-					});
+					assert.strictEqual(data1.user, data2.user);
+
 					done();
 				});
 			});
 		});
 	});
 
-	window.describe('events order', function () {
-		it('events should not come after the end of the user command', function (done) {
-			mage.archivist.get('inventory', {
-				userId: 'user0'
-			}, {}, function (error, data) {
+	describe('events order', function () {
+		it('Data changes are applied before the usercommand callback is called', function (done) {
+			mage.user.setName('Johnny Test', function (error) {
 				assert.ifError(error);
 
-				var money = data.money + 10;
+				assert.equal(mage.user.name, 'Johnny Test');
 
-				mage.inventory.give('user0', 10, function (error, response) {
-					assert.ifError(error);
-
-					assert.strictEqual(response, null);
-					assert.strictEqual(data.money.valueOf(), money);
-
-					done();
-				});
+				done();
 			});
 		});
 	});
