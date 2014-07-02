@@ -3,15 +3,15 @@ var mage = require('mage');
 var Tome = require('tomes').Tome;
 
 window.describe('archivist', function () {
-	window.describe('mget result style', function () {
-		before(function (done) {
-			mage.user.login('new', 'password', function (error) {
-				assert.ifError(error);
+	before(function (done) {
+		mage.user.login('new', 'password', function (error) {
+			assert.ifError(error);
 
-				done();
-			});
+			done();
 		});
+	});
 
+	window.describe('mget result style', function () {
 		it('Array style', function (done) {
 			var query = [];
 			var expectedResult = [];
@@ -107,15 +107,7 @@ window.describe('archivist', function () {
 		});
 	});
 
-	window.describe.only('events order', function () {
-		before(function (done) {
-			mage.user.login('new', 'password', function (error) {
-				assert.ifError(error);
-
-				done();
-			});
-		});
-
+	window.describe('events order', function () {
 		it('events should not come after the end of the user command', function (done) {
 			mage.archivist.get('inventory', {
 				userId: 'user0'
