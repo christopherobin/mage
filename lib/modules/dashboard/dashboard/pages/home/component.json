@@ -1,9 +1,15 @@
 {
 	"name": "home",
 	"description": "Home page for the MAGE dashboard.",
-	"local": ["mage"],
+	"local": [
+		"mage",
+		"loader"
+	],
 	"paths": [
 		"../../../../.."
+	],
+	"templates": [
+		"page.html"
 	],
 	"scripts": [
 		"index.js"

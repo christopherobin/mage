@@ -23,7 +23,7 @@ describe('Package Loader', function () {
 	});
 
 	it('generates a download URL for a package', function () {
-		assert.equal(loader.getPackageUrl('mypackage').indexOf('/app/test-app/mypackage?'), 0);
+		assert.ok(loader.getPackageUrl('mypackage').indexOf('/app/test-app/mypackage?') !== -1);
 	});
 
 	it('allows language change', function () {

@@ -1,17 +1,17 @@
+process.chdir(__dirname);
+
 var test = require('./test');
 
 test.before();
 
-var project;
+var app;
 
 try {
-	project = require('./lib');
+	app = require('./lib');
 } catch (e) {
 	test.after();
 	console.error('Error requiring app:', e);
 	process.exit(1);
 }
 
-project.mage.on('shutdown', test.after);
-
-project.setup(project.start);
+test.start(app);

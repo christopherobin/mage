@@ -1,9 +1,7 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
 TEST_APP = ./test/app
-TEST_BROWSER = ./test/browser
 TEST_SERVER = ./test/server
-TEST_PHANTOM_RUNNER = ./test/mocha-phantom-runner
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -47,7 +45,8 @@ deps-npm:
 	npm install
 
 deps-component:
-	$(BIN)/component-install -r https://raw.githubusercontent.com
+	mkdir -p components
+	@cd test/app; node . install-components
 
 
 # DEVELOPMENT
@@ -144,16 +143,9 @@ test-unit:
 	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
 
 	@echo
-	@echo Building browser tests
-	@rm -rf "$(TEST_BROWSER)/build"
-	@cd $(TEST_BROWSER); $(CURDIR)/$(BIN)/component-build
-
+	@echo Running integration tests
 	@echo
-	@echo Running browser tests
-	@echo
-	$(BIN)/phantomjs ./test/browser/phantom-runner.js
-
-	@cd $(TEST_APP); node .
+	@cd $(TEST_APP); NODE_ENV="$(NODE_ENV),unit-tests" node integration
 
 
 report-complexity:
@@ -161,7 +153,9 @@ report-complexity:
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 report-coverage:
-	$(BIN)/istanbul cover $(BIN)/_mocha --report html --dir $(COVERAGE_REPORT) -- -R spec --recursive $(TEST_SERVER)
+	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_APP)/integration.js --dir $(COVERAGE_REPORT)/app
+	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/server -- -R spec --recursive $(TEST_SERVER)
+	$(BIN)/istanbul report html --root $(COVERAGE_REPORT) --dir $(COVERAGE_REPORT)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
 
 
@@ -183,7 +177,6 @@ clean: clean-deps clean-report
 
 clean-deps:
 	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
-	rm -rf "$(TEST_BROWSER)/components"
 
 clean-report:
 	rm -rf "$(COVERAGE_REPORT)"

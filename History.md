@@ -25,6 +25,23 @@ Archivist has been enriched with support for an SQLite3 vault through the
 [sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
 [SQLite3 vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
 
+### component.json, templates and HTML file loading
+
+MAGE now loads HTML files listed in the `templates` array of
+your component.json. This has the following impact:
+
+1. Your HTML files will **no longer be automatically loaded**
+2. You need to inject the content of the templates yourself, like so:
+
+```javascript
+var dom = loader.renderPage('myPage');
+dom.innerHTML = require('./index.html');
+```
+
+This gives you more control on templating from HTML files,
+but also mean that you can now use and create component
+with templates in them.
+
 ### Archivist data broadcast
 
 The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
@@ -114,7 +131,7 @@ To be able to setup the `msgStream` the `session:key` event was removed and you 
 ### Bug fixes
 
 * The WebSocket logger was not reporting any logs from the worker processes.
-
+* MAGE will no longer crash if you try to login without a username.
 
 ## v0.35.0 - King of the Jungle Cat
 
