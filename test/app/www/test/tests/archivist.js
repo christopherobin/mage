@@ -106,4 +106,33 @@ window.describe('archivist', function () {
 			});
 		});
 	});
+
+	window.describe.only('events order', function () {
+		before(function (done) {
+			mage.user.login('new', 'password', function (error) {
+				assert.ifError(error);
+
+				done();
+			});
+		});
+
+		it('events should not come after the end of the user command', function (done) {
+			mage.archivist.get('inventory', {
+				userId: 'user0'
+			}, {}, function (error, data) {
+				assert.ifError(error);
+
+				var money = data.money + 10;
+
+				mage.inventory.give('user0', 10, function (error, response) {
+					assert.ifError(error);
+
+					assert.strictEqual(response, null);
+					assert.strictEqual(data.money.valueOf(), money);
+
+					done();
+				});
+			});
+		});
+	});
 });

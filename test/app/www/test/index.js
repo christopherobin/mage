@@ -62,6 +62,7 @@ mage.useModules(require,
 	'session',
 	'time',
 
+	'inventory',
 	'user'
 );
 
