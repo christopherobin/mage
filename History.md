@@ -101,6 +101,16 @@ an `eventManager` has been added on the client to handle all the events in one p
 * `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
 * `msgServer.on()` is now `eventManager.on()`.
 
+### JSON-RPC
+
+You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
+A new endpoint, `/<appname>/jsonrpc`, was added to each application.
+Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have more information.
+
+### API changes
+
+* `State.respondJson()` is no longer available. You must use `State.respond()`.
+
 ### Miscellaneous changes
 
 * Exposed the app's version to the client as `mage.appVersion`.
