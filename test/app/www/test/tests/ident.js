@@ -1,7 +1,7 @@
 var assert = require('assert');
 var mage = require('mage');
 
-window.describe('Ident', function () {
+describe('Ident', function () {
 	var password = 'password';
 
 	it('Cannot login without a username', function (done) {
@@ -47,6 +47,17 @@ window.describe('Ident', function () {
 	it('Can create a user and login with it using login', function (done) {
 		mage.user.login('new', password, function (error) {
 			assert.ifError(error);
+
+			done();
+		});
+	});
+
+	it('User information should be accessible under mage.ident.user', function (done) {
+		mage.user.login('new', password, function (error) {
+			assert.ifError(error);
+
+			assert.strictEqual(typeof mage.ident.user.userId, 'string');
+			assert.strictEqual(typeof mage.ident.user.displayName, 'string');
 
 			done();
 		});

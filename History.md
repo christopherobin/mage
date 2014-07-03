@@ -84,14 +84,14 @@ In the browser, you can access this as:
 console.log(mage.appConfig.viewNames);
 ```
 
-### HTTP server
+### HTTP server and Event Manager
 
 The HTTP server has now its dedicated library and was extracted from the `msgServer` library.
 
-The `msgServer` is now the only one to manage the events, and the `httpServer` only contains the RPC system.
-As a result the `httpServer` no longer send any events through the user command response.
-
-To be able to setup the `msgStream` the `session:key` event was removed and you got the session key in the response of the `ident.login` user command.
+As events can come from the `httpServer` with user command responses
+or from the `msgServer` with the message stream,
+an `eventManager` has been added on the client to handle all the events in one place.
+`httpServer` and `msgServer` no longer inherits from `EventEmitter`.
 
 #### Migration
 
@@ -114,6 +114,7 @@ To be able to setup the `msgStream` the `session:key` event was removed and you 
 * `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
 * `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
 * `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
+* `msgServer.on()` is now `eventManager.on()`.
 
 ### Miscellaneous changes
 
