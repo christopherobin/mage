@@ -3,6 +3,7 @@ var fs = require('fs');
 
 var Bomb = require('./bomb');
 var integration = require('./integration');
+var mocha = require('./mocha');
 
 function unlink(path) {
 	try {
@@ -116,10 +117,31 @@ exports.start = function (project) {
 		});
 	}
 
+	function projectMocha(cb) {
+		var stepName = 'mocha';
+
+		bomb.arm(stepName);
+
+		// backwards compatibility
+		var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
+		var address = httpServer.server.address();
+
+		mocha(address, function (error) {
+			if (error) {
+				return cb(error);
+			}
+
+			bomb.disarm(stepName);
+
+			cb();
+		});
+	}
+
 	async.series([
 		projectSetup,
 		projectStart,
-		projectIntegration
+		projectIntegration,
+		projectMocha
 	], function (error) {
 		if (error) {
 			console.error(error);

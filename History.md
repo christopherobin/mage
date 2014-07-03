@@ -2,6 +2,17 @@
 
 ## vNEXT
 
+### JSON-RPC
+
+You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
+A new endpoint, `/<appname>/jsonrpc`, was added to each application.
+Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have more information.
+
+### API changes
+
+* `State.respondJson()` is no longer available. You must use `State.respond()`.
+
+
 ## v0.36.0 - Y U No Fit Cat
 
 ### SQLite3 Vault
