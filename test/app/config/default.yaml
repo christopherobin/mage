@@ -1,0 +1,35 @@
+apps:
+    dev:
+        access: admin
+    test:
+        access: admin
+
+archivist:
+    vaults:
+        volatileVault:
+            type: memory
+    listOrder:
+        - volatileVault
+    readOrder:
+        - volatileVault
+    writeOrder:
+        - client
+        - volatileVault
+
+developmentMode: true
+
+module:
+    ident:
+        engines:
+            testEngine:
+                type: userpass
+                access: admin
+                config:
+                    topic: userCreds
+                    hash: sha1
+
+server:
+    clientHost:
+        bind:
+            port: 9990
+    cluster: false

@@ -1,5 +1,122 @@
 # Release history
 
+## v0.36.0 - Y U No Fit Cat
+
+### SQLite3 Vault
+
+Archivist has been enriched with support for an SQLite3 vault through the
+[sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
+[SQLite3 vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
+
+### component.json, templates and HTML file loading
+
+MAGE now loads HTML files listed in the `templates` array of
+your component.json. This has the following impact:
+
+1. Your HTML files will **no longer be automatically loaded**
+2. You need to inject the content of the templates yourself, like so:
+
+```javascript
+var dom = loader.renderPage('myPage');
+dom.innerHTML = require('./index.html');
+```
+
+This gives you more control on templating from HTML files,
+but also mean that you can now use and create component
+with templates in them.
+
+### Archivist data broadcast
+
+The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
+actually a major feature, and now that it's been integrated with Archivist, you will be able to do
+some really sweet things in your dashboards. When your shard-function on your client vault returns
+`"*"`, the data change will be sent to *all* users that are logged in. That is really powerful and
+great for real-time collaboration in your dashboard. But keep in mind that you probably don't want
+to use this in production on systems where you have many thousands of users logged in at once, as it
+could be a real serious hit on the network when suddenly all those people receive events and then
+reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
+feature responsibly.
+
+### HTTP Server and Savvy
+
+The MAGE built-in HTTP server has seen some changes. For one, it now has WebSocket and Proxy
+support. That means that you can add routes for those two types. Also, unlike before, the HTTP
+server is now always instantiated, regardless of the process running in master or worker mode. The
+reason for this is that Savvy has been rebuilt to use the HTTP server, rather than implementing its
+own.
+
+See the [HTTP Server documentation](lib/msgServer/transports/http/Readme.md) and
+[Savvy documentation](lib/savvy/Readme.md) for more information about the new APIs.
+
+### window.mageConfig
+
+The component builder now emits "mage-config" on the app object, passing it the `window.mageConfig`
+object, which now contains an `appConfig` object which you may use to pass data to the browser.
+
+An example:
+
+```javascript
+app.on('mage-config', function (config) {
+  config.appConfig.viewNames = fs.readdirSync('../www/views');
+});
+```
+
+In the browser, you can access this as:
+
+```javascript
+console.log(mage.appConfig.viewNames);
+```
+
+### HTTP server and Event Manager
+
+The HTTP server has now its dedicated library and was extracted from the `msgServer` library.
+
+As events can come from the `httpServer` with user command responses
+or from the `msgServer` with the message stream,
+an `eventManager` has been added on the client to handle all the events in one place.
+`httpServer` and `msgServer` no longer inherits from `EventEmitter`.
+
+#### Migration
+
+* the following methods have moved from `msgServer` to `httpServer` on the client:
+  * `setCmdMode()`
+  * `registerCommandHook()`
+  * `transformUpload()`
+  * `transformEmbeddedUploads()`
+  * `sendCommand()`
+  * `resend()`
+  * `discard()`
+  * `queue()`
+  * `piggyback()`
+  * `simulateTransportError()`
+  * `setupCommandSystem()`
+* the following methods have moved from `msgServer` to `httpServer` on the server:
+  * `startClientHost()`
+* The value returned by `ident.login` user command has changed.
+  Please read the [ident module documentation](./lib/modules/ident/Readme.md).
+* `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
+* `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
+* `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
+* `msgServer.on()` is now `eventManager.on()`.
+
+### Miscellaneous changes
+
+* Exposed the app's version to the client as `mage.appVersion`.
+* Changed the app's version default from `"no-version"` to `undefined`.
+* Fixed a bug in the session module which would cause an uncatchable exception if no version has
+  been defined in package.json. Now it alerts properly, and continues without version enforcement as
+  was originally designed.
+* Made `window.mageConfig` optional for the client side mage module, as is the case with the loader.
+  Since there always tends to be a window.mageConfig object, this change should have no effect. This
+  is just to equalize the two behaviors.
+* The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
+* Sampler not yet having samples ready no longer logs a massive warning.
+
+### Bug fixes
+
+* The WebSocket logger was not reporting any logs from the worker processes.
+* MAGE will no longer crash if you try to login without a username.
+
 ## v0.35.0 - King of the Jungle Cat
 
 ### mage.session.isValidSession

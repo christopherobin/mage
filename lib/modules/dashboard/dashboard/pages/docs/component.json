@@ -1,12 +1,18 @@
 {
 	"name": "docs",
 	"description": "Documentation page",
-	"local": ["mage"],
+	"local": [
+		"mage",
+		"loader"
+	],
 	"paths": [
 		"../../../../.."
 	],
 	"styles": [
 		"styles.css"
+	],
+	"templates": [
+		"page.html"
 	],
 	"scripts": [
 		"index.js"
