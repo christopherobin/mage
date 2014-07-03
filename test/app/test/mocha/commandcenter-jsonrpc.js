@@ -1,62 +1,15 @@
 var assert = require('assert');
-var child = require('child_process');
-var path = require('path');
 
 var jayson = require('jayson');
 
-var sandbox = path.join(
-	__dirname,
-	'..',
-	'..',
-	'sandbox'
-);
-
-// Remove the listeners added by MAGE
-// Mocha should handle all the exceptions
-process.removeAllListeners('uncaughtException');
-
 describe('commandCenter', function () {
 	describe('json-rpc', function () {
-		var app;
 		var clientOptions = { path: '/test/jsonrpc' };
 
 		before(function (done) {
-			app = child.fork(
-				sandbox,
-				{
-					cwd: sandbox,
-					env: process.env,
-					silent: true
-				});
-			app.on('message', function (message) {
-				if (message.type === 'ready') {
-					var address = message.address;
-					if (typeof address === 'string') {
-						clientOptions.socketPath = address;
-					} else if (address.port) {
-						clientOptions.port = address.port;
-					}
-					done();
-				}
-				if (message.type === 'error') {
-					done(message.error);
-				}
-			});
-			app.on('error', function (error) {
-				console.error(error);
-			});
-			app.on('exit', function (code, signal) {
-				if (code !== null && code !== 0) {
-					console.log('Server exited with the following code:', code);
-				}
-				if (signal !== null) {
-					console.log('Server stopped after receiveing the following signal:', signal);
-				}
-			});
-		});
-
-		after(function (done) {
-			app.kill('SIGTERM');
+			var address = JSON.parse(process.env.MAGE_APP_ADDRESS);
+			clientOptions.hostname = address.hostname;
+			clientOptions.port = address.port;
 			done();
 		});
 
