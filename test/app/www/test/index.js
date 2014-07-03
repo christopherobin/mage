@@ -14,6 +14,8 @@ function phantomMsg(obj) {
 	console.log('__PHANTOM__:' + JSON.stringify(obj));
 }
 
+window.phantomMsg = phantomMsg;
+
 function runTests() {
 	var indent = '';
 	var runner = mocha.run();

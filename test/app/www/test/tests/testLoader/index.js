@@ -4,13 +4,17 @@ describe('Package Loader', function () {
 	var loader = require('loader');
 	var Package = loader.Package;
 
+	afterEach(function () {
+		loader.removeAllListeners();
+	});
+
 	it('exposes the Package class', function () {
 		assert(Package);
 	});
 
 	it('configures the loader', function () {
 		loader.configure({
-			appName: 'test-app',
+			appName: 'test',
 			appVariants: {
 				languages: ['nl', 'en'],
 				densities: [1, 2]
@@ -19,11 +23,12 @@ describe('Package Loader', function () {
 	});
 
 	it('allows to load packages after configuration', function () {
-		loader.assertPackageIsLoadable('mypackage');
+		loader.assertPackageIsLoadable('myInlinePackage');
+		loader.assertPackageIsLoadable('package');
 	});
 
 	it('generates a download URL for a package', function () {
-		assert.ok(loader.getPackageUrl('mypackage').indexOf('/app/test-app/mypackage?') !== -1);
+		assert.ok(loader.getPackageUrl('myInlinePackage').indexOf('/app/test/myInlinePackage?') !== -1);
 	});
 
 	it('allows language change', function () {
@@ -59,17 +64,17 @@ describe('Package Loader', function () {
 	});
 
 	it('can create Package objects', function () {
-		new Package('mypackage');
+		new Package('myInlinePackage');
 	});
 
 	var testDelimiter = '--foobar--';
 	var testHtml = '<div>\n  <h1>foo bar</h1>\n</div>';
-	var testCss = 'BODY {\n  background: #eee;\n}';
-	var testJs = 'window.mypackageTestValue = 123;';
+	var testCss = 'BODY {\n  background: rgb(253, 254, 255);\n}';
+	var testJs = 'window.myInlinePackageTestValue = 123;';
 	var htmlParent = document.createElement('div');
 	var cssParent = document.createElement('div');
 
-	it('can parse package data', function () {
+	it('can parse package data and run the JavaScript', function () {
 		var data = [
 			'Delimiter: ' + testDelimiter,
 			'',
@@ -78,7 +83,7 @@ describe('Package Loader', function () {
 			'text/javascript\n' + testJs
 		].join('\n');
 
-		var pkg = new Package('mypackage');
+		var pkg = new Package('myInlinePackage');
 		pkg.parse(data);
 
 		assert.equal(testHtml, pkg.content['text/html'][0]);
@@ -87,63 +92,84 @@ describe('Package Loader', function () {
 
 		// ensure JS has not run yet
 
-		assert.equal(window.mypackageTestValue, undefined);
+		assert.equal(window.myInlinePackageTestValue, undefined);
 		var events = 0;
 
-		loader.on('mypackage.parsed', function (parsedPkg) {
+		loader.on('myInlinePackage.parsed', function (parsedPkg) {
 			assert.equal(parsedPkg, pkg);
-			assert.equal(window.mypackageTestValue, undefined);
+			assert.equal(window.myInlinePackageTestValue, undefined);
 			events += 1;
 		});
 
 		loader.on('parsed', function (parsedPkg) {
 			assert.equal(parsedPkg, pkg);
-			assert.equal(window.mypackageTestValue, undefined);
+			assert.equal(window.myInlinePackageTestValue, undefined);
 			events += 1;
 		});
 
-		loader.on('mypackage.loaded', function (loadedPkg) {
+		loader.on('myInlinePackage.loaded', function (loadedPkg) {
 			assert.equal(loadedPkg, pkg);
-			assert.equal(window.mypackageTestValue, 123);
+			assert.equal(window.myInlinePackageTestValue, 123);
 			events += 1;
 		});
 
 		loader.on('loaded', function (loadedPkg) {
 			assert.equal(loadedPkg, pkg);
-			assert.equal(window.mypackageTestValue, 123);
+			assert.equal(window.myInlinePackageTestValue, 123);
 			events += 1;
 		});
 
 		loader.registerPackage(pkg);
 
 		assert.equal(events, 4);
-		assert.equal(window.mypackageTestValue, 123);
+		assert.equal(window.myInlinePackageTestValue, 123);
+	});
+
+	it('can inject HTML/CSS into the default parent elements', function () {
+		var pkg = loader.getPackage('myInlinePackage');
+
+		pkg.injectCss();
+		pkg.injectHtml();
+
+		// check that the style got applied
+
+		var color = getComputedStyle(document.body)['background-color'];
+		assert.equal(color, 'rgb(253, 254, 255)');
+	});
+
+	it('can eject HTML/CSS from their current parents', function () {
+		var elm;
+		var pkg = loader.getPackage('myInlinePackage');
+
+		elm = pkg.ejectCss();
+		assert(!elm.parentNode);
+
+		elm = pkg.ejectHtml();
+		assert(!elm.parentNode);
 	});
 
 	it('allows custom injection points', function () {
-		var pkg = loader.getPackage('mypackage');
+		var pkg = loader.getPackage('myInlinePackage');
 		pkg.parentElements['text/html'] = htmlParent;
 		pkg.parentElements['text/css'] = cssParent;
 	});
 
-	it('can inject CSS into the registered parent', function () {
-		var elm = loader.getPackage('mypackage').injectCss();
+	it('can inject HTML/CSS into the registered parents', function () {
+		var elm = loader.getPackage('myInlinePackage').injectCss();
 		assert.equal(elm.parentNode, cssParent);
 		assert.equal(elm.innerText, testCss);
-	});
 
-	it('can inject HTML into the registered parent', function () {
-		var elm = loader.injectHtml('mypackage');
+		elm = loader.injectHtml('myInlinePackage');
 		assert.equal(elm.parentNode, htmlParent);
 		assert.equal(elm.innerHTML, testHtml);
 	});
 
 	it('emits display events', function () {
-		var pkg = loader.getPackage('mypackage');
+		var pkg = loader.getPackage('myInlinePackage');
 		var elm = pkg.getHtml();
 		var events = 0;
 
-		loader.on('mypackage.display', function (dispElm, dispPkg) {
+		loader.on('myInlinePackage.display', function (dispElm, dispPkg) {
 			assert.equal(dispElm, elm);
 			assert.equal(dispPkg, pkg);
 			events += 1;
@@ -155,16 +181,62 @@ describe('Package Loader', function () {
 			events += 1;
 		});
 
-		var displayedElm = loader.displayPackage('mypackage');
+		var displayedElm = loader.displayPackage('myInlinePackage');
 		assert.equal(displayedElm, elm);
 		assert.equal(events, 2);
 	});
 
 	it('can destroy a package', function () {
-		var pkg = loader.getPackage('mypackage');
+		var pkg = loader.getPackage('myInlinePackage');
 		pkg.destroy();
 
 		assert.equal(htmlParent.firstChild, null);
 		assert.equal(cssParent.firstChild, null);
+	});
+
+	it('cannot download a package in an incompatible client config', function (done) {
+		assert.equal(loader.connectionState, 'online');
+
+		loader.on('error', function (error) {
+			assert.ok(error);
+			assert.equal(error.isRetrying, true);
+
+			done();
+		});
+
+		loader.loadPackage('mypackage', function () {
+			throw new Error('Download should not have succeeded');
+		});
+	});
+
+	it('can download a package in the right client config', function (done) {
+		loader.setLanguage('en');
+		loader.setDensity(1);
+
+		loader.on('warning', function (warning) {
+			throw warning;
+		});
+
+		loader.on('error', function (error) {
+			throw error;
+		});
+
+		loader.on('offline', function (error) {
+			throw error;
+		});
+
+		loader.on('maintenance', function (error) {
+			throw error;
+		});
+
+		loader.loadPackage('mypackage', function (error, pkg) {
+			assert.ifError(error);
+			assert.ok(pkg);
+			window.require('mypackage');
+			assert.equal(window.mypackageTestValue, 456);
+			assert(pkg.getCss());
+			pkg.destroy();
+			done();
+		});
 	});
 });

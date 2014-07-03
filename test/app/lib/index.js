@@ -21,6 +21,8 @@ mage.useModules(projectModules);
 function createTest(app) {
 	var testPage = app.addIndexPage('loader', './www/test/');
 	testPage.routes.push('/test');
+
+	testPage.registerComponent('mypackage', './www/test/mypackage', { assetMap: true });
 }
 
 function mageSetup(cb) {
