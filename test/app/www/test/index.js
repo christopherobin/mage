@@ -70,9 +70,13 @@ window.describe('MAGE Integration Tests', function () {
 		assert('Hello.');
 	});
 
+	require('testEventManager');
 	require('testLoader');
+	require('./tests/archivist');
 	require('./tests/ident');
 });
+
+mage.httpServer.cmdMode = 'free';
 
 mage.setup(function (error) {
 	if (error) {

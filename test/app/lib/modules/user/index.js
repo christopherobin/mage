@@ -2,10 +2,13 @@ var mage = require('mage');
 var Tome = require('tomes').Tome;
 var uuid = require('node-uuid');
 
+exports.setName = require('./name').set;
+
 function createUser(state, userId) {
 	var newUser = {
 		id: userId,
-		lastLogin: mage.time.now()
+		lastLogin: mage.time.now(),
+		name: ''
 	};
 
 	var tUser = Tome.conjure(newUser);
@@ -28,7 +31,7 @@ function login(tUser) {
 }
 
 function loginHook(state, engineName, doc, cb) {
-	var userId = doc.username;
+	var userId = doc.userId;
 
 	get(state, userId, function (error, tUser) {
 		if (error) {
@@ -42,23 +45,23 @@ function loginHook(state, engineName, doc, cb) {
 }
 
 exports.create = function (state, password, cb) {
-	var userId = uuid.v4();
-
 	var credentials = {
-		username: userId,
+		username: uuid.v4(),
 		password: password
 	};
 
 	var engine = mage.ident.getEngine('testEngine');
 
-	engine.createUser(state, credentials, null, function (error) {
+	engine.createUser(state, credentials, null, function (error, doc) {
 		if (error) {
 			return cb(error);
 		}
 
+		var userId = doc.userId;
+
 		createUser(state, userId);
 
-		cb(null, userId);
+		cb(null, credentials.username);
 	});
 };
 
