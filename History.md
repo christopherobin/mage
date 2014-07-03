@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.36.0 - Y U No Fit Cat
 
 ### SQLite3 Vault
 
