@@ -12,6 +12,10 @@ Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have m
 
 * `State.respondJson()` is no longer available. You must use `State.respond()`.
 
+### Bug fixes
+
+* If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+
 
 ## v0.36.0 - Y U No Fit Cat
 
