@@ -40,3 +40,17 @@ exports.scratch = {
 		volatileVault: {}
 	}
 };
+
+exports.ucResponseMeta = {
+	index: ['session'],
+	vaults: {
+		volatileVault: {}
+	}
+};
+
+exports.ucResponseData = {
+	index: ['session'],
+	vaults: {
+		volatileVault: {}
+	}
+};

@@ -72,8 +72,9 @@ window.describe('MAGE Integration Tests', function () {
 
 	require('testEventManager');
 	require('testLoader');
-	require('./tests/archivist');
+	require('./tests/session');
 	require('./tests/ident');
+	require('./tests/archivist');
 });
 
 mage.httpServer.cmdMode = 'free';
