@@ -13,6 +13,7 @@ Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have m
 * `State.respondJson()` is no longer available. You must use `State.respond()`.
 * The `userpass` ident engine no longer uses state.error internally. If you use the module instead
 of the usercommands, you'll need to deal with the errors yourself.
+* Added `ident.restoreSession` to the ident module, see [the documentation](./lib/modules/ident/Readme.md) for details.
 
 ### Bug fixes
 
