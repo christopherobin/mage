@@ -2,6 +2,14 @@ var assert = require('assert');
 var mage = require('mage');
 
 describe('Session module', function () {
+	before(function (done) {
+		if (!mage.session.getKey()) {
+			return done();
+		}
+
+		mage.session.logout(done);
+	});
+
 	it('anonymous login', function (done) {
 		assert.strictEqual(mage.httpServer.cmdHooks.length, 0);
 
