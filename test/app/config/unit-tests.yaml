@@ -1,3 +1,7 @@
+logging:
+    server:
+        terminal: null
+
 server:
     clientHost:
         bind:
