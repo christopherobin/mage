@@ -68,4 +68,24 @@ describe('Ident', function () {
 			});
 		});
 	});
+
+	it('Create a new user, login, then restoreSession', function (done) {
+		mage.user.register(password, function (error, username) {
+			assert.ifError(error);
+			assert(username, 'no username');
+
+			mage.user.login(username, password, function (error, results) {
+				assert.ifError(error);
+
+				var sessionKey = results.sessionKey;
+
+				mage.ident.restoreSession('testEngine', sessionKey, function (error, results) {
+					assert.ifError(error);
+					assert(results);
+
+					done();
+				});
+			});
+		});
+	});
 });
