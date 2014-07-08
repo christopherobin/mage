@@ -59,7 +59,7 @@ describe('Session module', function () {
 			});
 		});
 
-		var num = Math.round(Math.random() * 10000);
+		var num = 12345;
 
 		it('can login as a random actor ID', function (done) {
 			mage.session.loginAsActor(num, 'admin', function (error) {
@@ -77,7 +77,7 @@ describe('Session module', function () {
 			});
 		});
 
-		it('can reassign a session to a random actor ID', function (done) {
+		it('can reassign a session to another random actor ID', function (done) {
 			mage.session.reassignSession(null, num + 1, function (error) {
 				assert.ifError(error);
 				assert.strictEqual(String(num + 1), mage.session.getActorId());
