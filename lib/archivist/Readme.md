@@ -10,7 +10,7 @@ all through a simple unified API, regardless of which data stores you use.
 ### Schema Migration
 
 Schema Migration between versions is well supported out of the box. Please read the
-[documentation](./SchemaMigrations.md).
+[documentation](./Migrations.md).
 
 
 ### Redundant storage
