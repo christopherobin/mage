@@ -52,7 +52,23 @@ exports.ban = function (state, username, cb) {
 
 		doc.data.banned = true;
 
-		engine.updateUser(state, userId, doc, cb);
+		engine.updateUser(state, userId, doc, function (error) {
+			if (error) {
+				return cb(error);
+			}
+
+			mage.session.getActorSession(state, userId, function (error, session) {
+				if (error) {
+					return cb(error);
+				}
+
+				if (session) {
+					session.expire(state);
+				}
+
+				cb();
+			});
+		});
 	});
 };
 
