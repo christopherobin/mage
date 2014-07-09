@@ -79,9 +79,8 @@ describe('Ident module', function () {
 
 				var sessionKey = results.sessionKey;
 
-				mage.ident.restoreSession('testEngine', sessionKey, function (error, results) {
+				mage.ident.restoreSession('testEngine', sessionKey, function (error) {
 					assert.ifError(error);
-					assert(results);
 
 					done();
 				});

@@ -27,28 +27,30 @@ describe('commandCenter', function () {
 						return done(err);
 					}
 
-
 					assert.strictEqual(typeof response, 'object');
 					assert.strictEqual(response.jsonrpc, '2.0');
 					assert.strictEqual(response.id, 1);
-					assert.strictEqual(typeof response.result, 'object');
+
 					assert.strictEqual(typeof response.error, 'undefined');
+
+					assert.strictEqual(typeof response.result, 'object');
 					assert.strictEqual(typeof response.result.response, 'object');
-					assert.strictEqual(typeof response.result.response.user, 'object');
-					assert.strictEqual(typeof response.result.response.user.userId, 'string');
-					assert.strictEqual(typeof response.result.response.user.displayName, 'string');
-					assert.strictEqual(typeof response.result.response.session, 'object');
-					assert.strictEqual(typeof response.result.response.session.key, 'string');
-					assert.strictEqual(typeof response.result.response.session.actorId, 'string');
+					assert.strictEqual(typeof response.result.response.key, 'string');
+					assert.strictEqual(typeof response.result.response.actorId, 'string');
+					assert.strictEqual(typeof response.result.response.meta, 'object');
+
 					assert.strictEqual(typeof response.result.myEvents, 'object');
+
 					var events = {};
 					response.result.myEvents.map(function (str) {
 						var obj = JSON.parse(str);
 						events[obj[0]] = obj[1];
 					});
+
 					assert.strictEqual(Object.keys(events).length >= 1, true);
-					assert.strictEqual(typeof events['session:set'], 'object');
-					assert.strictEqual(typeof events['session:set'].key, 'string');
+					assert.strictEqual(typeof events['session.set'], 'object');
+					assert.strictEqual(typeof events['session.set'].key, 'string');
+
 					done();
 				});
 			});
@@ -130,7 +132,7 @@ describe('commandCenter', function () {
 					});
 
 					client.options.headers = {};
-					client.options.headers['X-MAGE-SESSION'] = events['session:set'].key;
+					client.options.headers['X-MAGE-SESSION'] = events['session.set'].key;
 
 					done();
 				});

@@ -117,7 +117,7 @@ exports.login = function (state, username, password, cb) {
 		password: password
 	};
 
-	mage.ident.login(state, IDENT_ENGINE, credentials, null, function (error, user, session) {
+	mage.ident.login(state, IDENT_ENGINE, credentials, null, function (error, session) {
 		if (error) {
 			return cb(error);
 		}
@@ -133,7 +133,8 @@ exports.login = function (state, username, password, cb) {
 
 			var result = {
 				sessionKey: session.getFullKey(),
-				userId: userId
+				userId: userId,
+				meta: session.meta
 			};
 
 			cb(null, result);
