@@ -11,7 +11,9 @@ var mocha = window.mocha;
 mocha.setup('bdd');
 
 function phantomMsg(obj) {
-	console.log('__PHANTOM__:' + JSON.stringify(obj));
+	if (window.hasOwnProperty('_phantom')) {
+		console.log('__PHANTOM__:' + JSON.stringify(obj));
+	}
 }
 
 function runTests() {

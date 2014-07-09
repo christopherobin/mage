@@ -14,7 +14,7 @@ module.exports = function (address, cb) {
 
 	var childArgs = ['-R', 'spec', '--recursive', path.resolve(pathToTests)];
 
-	console.log('executing', binPath, childArgs);
+	console.log('executing', binPath, childArgs.join(' '));
 
 	childProcess.execFile(binPath, childArgs, options, function (error, stdout) {
 		console.log(stdout);

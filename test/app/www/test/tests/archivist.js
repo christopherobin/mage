@@ -3,7 +3,14 @@ var mage = require('mage');
 
 describe('archivist', function () {
 	before(function (done) {
-		mage.user.login('new', 'password', done);
+		var password = 'password';
+
+		mage.user.register(password, function (error, username) {
+			assert.ifError(error);
+			assert(username);
+
+			mage.user.login(username, password, done);
+		});
 	});
 
 	describe('mget', function () {
@@ -79,7 +86,8 @@ describe('archivist', function () {
 
 	describe('cached value', function () {
 		it('get', function (done) {
-			var userId = mage.ident.user.userId;
+			var userId = mage.user.id;
+
 			mage.archivist.get('user', { userId: userId }, {}, function (error, tUser1) {
 				assert.ifError(error);
 
@@ -93,7 +101,7 @@ describe('archivist', function () {
 		});
 
 		it('mget', function (done) {
-			var userId = mage.ident.user.userId;
+			var userId = mage.user.id;
 
 			var query = {
 				user: {
