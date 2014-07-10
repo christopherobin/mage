@@ -10,10 +10,26 @@ Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have m
 
 ### Session Improvements
 
-Added `ident.restoreSession` to the ident module, see [the documentation](./lib/modules/ident/Readme.md) for details.
-
 We have simplified logging in and logging out, just listen for `session` events `set` and `unset`
-on the eventManager.
+on the eventManager. `session.restore` has been added to the session module, see
+[the documentation](./lib/modules/session/Readme.md) for details.
+
+`isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
+
+`session.register` is no longer an asyncronous function and returns a session object when called.
+**If you were handling your own session registration, this is a breaking change and will require an
+update to your code.**
+
+`session.resolve` now returns an error if it cannot resolve a session instead of no error and no
+session.
+
+### Message Server Improvements
+
+Message Server automatically starts the message stream when a session is established and aborts it
+when the session is closed. You can now abort and start the message stream yourself by calling
+`msgServer.abort()` and `msgServer.start()`.
+
+We have also removed the sessionKey from the Message Server object.
 
 ### API changes
 

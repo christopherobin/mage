@@ -58,13 +58,13 @@ exports.ban = function (state, username, cb) {
 			}
 
 			mage.session.getActorSession(state, userId, function (error, session) {
-				if (error) {
+				if (error === 'noSession') {
+					return cb();
+				} else if (error) {
 					return cb(error);
 				}
 
-				if (session) {
-					session.expire(state);
-				}
+				session.expire(state);
 
 				cb();
 			});

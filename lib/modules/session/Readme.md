@@ -6,16 +6,14 @@ Session management.
 User Commands
 --------------
 
-### isValidSession(sessionKey, callback(err, isValid))
+### isValid(sessionKey, callback(err))
 
 #### Description
 
-Check if a session key still exists in the session
-datastore. This can be useful in combination with
-the [ident module](../ident) if you wish to persist
-sessions on the client (using cookies or local storage),
-and you want to check the validity of the stored session
-key when the user returns to the application
+Check if a session key still exists in the session datastore. This can be useful in combination
+with the [ident module](../ident) if you wish to persist sessions on the client (using cookies or
+local storage), and you want to check the validity of the stored session key when the user returns
+to the application.
 
 #### Arguments
 
@@ -24,8 +22,7 @@ key when the user returns to the application
 
 The callback function will be passed the following arguments:
 
-* **err** (Error): An error object. Will be null if no error occured.
-* **isValid** (boolean): Will be `true` if the session is valid, `false` if it is not
+* **err** (Error): An error object. Will be null if the session is valid.
 
 #### Example
 
@@ -38,8 +35,8 @@ var mage = require('mage');
 var storeKey = 'sessionKey'
 var sessionKey = localStorage.getItem(storeKey);
 
-mage.session.isValidSession(sessionKey, function (err, isValid) {
-	if (!isValid) {
+mage.session.isValid(sessionKey, function (err) {
+	if (err) {
 		mage.logger.debug('Stored session key is invalid', sessionKey);
 		localStorage.removeItem(storeKey);
 	} else {
@@ -54,9 +51,27 @@ mage.session.isValidSession(sessionKey, function (err, isValid) {
 // the session key locally whenever it gets
 // set
 //
-mage.eventManager.on('session.set', function (path, info) {
-	var key = info.key;
-	mage.logger.debug('Saving session key locally', key);
-	localStorage.setItem(storeKey, key);
+mage.eventManager.on('session.set', function (path, session) {
+	var sessionKey = session.key;
+	mage.logger.debug('Saving session key locally', sessionKey);
+	localStorage.setItem(SESSION_KEY, sessionKey);
 });
 ```
+
+### session.restore(sessionKey, callback)
+
+You can restore a session as long as it has not expired by calling session.restore with your
+session key.
+
+#### Arguments
+
+* **sessionKey** (String): A session key (see [mage.session.getKey()](./client.js#L35)).
+* **callback** (Function): A function to call back when the session has been restored.
+
+The callback function will be passed the following arguments:
+
+* **err** (Error): An error object. Will be null if the session is restored successfully.
+
+### session.logout(callback)
+
+You can logout of your existing session causing it to immediately expire.
