@@ -54,7 +54,8 @@ mage.session.isValidSession(sessionKey, function (err, isValid) {
 // the session key locally whenever it gets
 // set
 //
-mage.session.on('sessionKey.set', function (key) {
+mage.eventManager.on('session.set', function (path, info) {
+	var key = info.key;
 	mage.logger.debug('Saving session key locally', key);
 	localStorage.setItem(storeKey, key);
 });

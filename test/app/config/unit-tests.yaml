@@ -1,6 +1,7 @@
 logging:
     server:
-        terminal: null
+        terminal:
+            config: {}
 
 server:
     clientHost:

@@ -69,7 +69,7 @@ mage.ident.getEngines(function (error, engines) {
 });
 ```
 
-#### ident.login(engineName, credentials, options)
+#### ident.login(engineName, credentials, options, callback)
 
 To login from a browser you would just need to call the following.
 
@@ -117,6 +117,11 @@ The second parameter of the callback function contains the following object:
   }
 }
 ```
+
+#### ident.restoreSession(engineName, sessionKey, callback)
+
+You can restore a session as long as it has not expired by calling ident.restoreSession with the
+name of the engine, and your session key. Similar to login it returns your user doc.
 
 ### Server API
 

@@ -6,7 +6,7 @@ describe('Ident module', function () {
 
 	it('Cannot login without a username', function (done) {
 		mage.user.login(null, null, function (error, result) {
-			assert.equal(error, 'ident');
+			assert.equal(error, 'invalidUsername');
 			assert.equal(result, undefined);
 
 			done();
@@ -15,7 +15,7 @@ describe('Ident module', function () {
 
 	it('Cannot login without a password', function (done) {
 		mage.user.login('username', null, function (error, result) {
-			assert.equal(error, 'ident');
+			assert.equal(error, 'invalidPassword');
 			assert.equal(result, undefined);
 
 			done();
@@ -23,20 +23,20 @@ describe('Ident module', function () {
 	});
 
 	it('Cannot login with made up credentials', function (done) {
-		mage.user.login('unitId', 'password', function (error, result) {
-			assert.equal(error, 'ident');
+		mage.user.login('invalidUserId', 'password', function (error, result) {
+			assert.equal(error, 'invalidUserId');
 			assert.equal(result, undefined);
 
 			done();
 		});
 	});
 
-	it('Can create a new user and login with it using register and login separately', function (done) {
-		mage.user.register(password, function (error, unitId) {
+	it('Can create a new user and login with it', function (done) {
+		mage.user.register(password, function (error, username) {
 			assert.ifError(error);
-			assert(unitId);
+			assert(username, 'no username');
 
-			mage.user.login(unitId, password, function (error) {
+			mage.user.login(username, password, function (error) {
 				assert.ifError(error);
 
 				done();
@@ -44,22 +44,47 @@ describe('Ident module', function () {
 		});
 	});
 
-	it('Can create a user and login with it using login', function (done) {
-		mage.user.login('new', password, function (error) {
+	it('Create a new user, ban them, they cannot login anymore', function (done) {
+		mage.user.register(password, function (error, username) {
 			assert.ifError(error);
+			assert(username);
 
-			done();
+			mage.user.ban(username, function (error) {
+				assert.ifError(error);
+
+				mage.user.login(username, password, function (error) {
+					assert.equal(error, 'banned');
+
+					mage.user.unban(username, function (error) {
+						assert.ifError(error);
+
+						mage.user.login(username, password, function (error) {
+							assert.ifError(error);
+
+							done();
+						});
+					});
+				});
+			});
 		});
 	});
 
-	it('User information should be accessible under mage.ident.user', function (done) {
-		mage.user.login('new', password, function (error) {
+	it('Create a new user, login, then restoreSession', function (done) {
+		mage.user.register(password, function (error, username) {
 			assert.ifError(error);
+			assert(username, 'no username');
 
-			assert.strictEqual(typeof mage.ident.user.userId, 'string');
-			assert.strictEqual(typeof mage.ident.user.displayName, 'string');
+			mage.user.login(username, password, function (error, results) {
+				assert.ifError(error);
 
-			done();
+				var sessionKey = results.sessionKey;
+
+				mage.ident.restoreSession('testEngine', sessionKey, function (error) {
+					assert.ifError(error);
+
+					done();
+				});
+			});
 		});
 	});
 });

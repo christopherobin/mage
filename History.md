@@ -8,9 +8,22 @@ You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
 A new endpoint, `/<appname>/jsonrpc`, was added to each application.
 Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have more information.
 
+### Session Improvements
+
+Added `ident.restoreSession` to the ident module, see [the documentation](./lib/modules/ident/Readme.md) for details.
+
+We have simplified logging in and logging out, just listen for `session` events `set` and `unset`
+on the eventManager.
+
 ### API changes
 
 * `State.respondJson()` is no longer available. You must use `State.respond()`.
+* The `userpass` ident engine no longer uses state.error internally. If you use the module instead
+of the usercommands, you'll need to deal with the errors yourself.
+* Archivist usercommands: `rawGet`, `rawMGet` and `rawList` can now be executed while anonymous
+giving you the ability to query data without being logged in.
+* `ident.login` now simply returns the same session data that you get with session.set. User data
+can be found in the meta property and is automatically populated on `mage.ident.user`.
 
 ### Bug fixes
 
