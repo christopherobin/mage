@@ -11,7 +11,9 @@ var mocha = window.mocha;
 mocha.setup('bdd');
 
 function phantomMsg(obj) {
-	console.log('__PHANTOM__:' + JSON.stringify(obj));
+	if (window.hasOwnProperty('_phantom')) {
+		console.log('__PHANTOM__:' + JSON.stringify(obj));
+	}
 }
 
 window.phantomMsg = phantomMsg;
@@ -76,6 +78,7 @@ window.describe('MAGE Integration Tests', function () {
 	require('testLoader');
 	require('./tests/archivist');
 	require('./tests/ident');
+	require('./tests/session');
 });
 
 mage.httpServer.cmdMode = 'free';
