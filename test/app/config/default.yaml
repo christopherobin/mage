@@ -25,7 +25,7 @@ module:
                 type: userpass
                 access: admin
                 config:
-                    topic: userCreds
+                    topic: testEngine
                     hash: sha1
 
 server:

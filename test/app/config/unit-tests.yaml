@@ -1,7 +1,8 @@
 logging:
     server:
         terminal:
-            config: {}
+            channels:
+                - ">=debug"
 
 server:
     clientHost:

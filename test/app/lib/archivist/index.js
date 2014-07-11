@@ -1,3 +1,10 @@
+exports.ident = {
+	index: ['userId'],
+	vaults: {
+		volatileVault: {}
+	}
+};
+
 exports.session = {
 	index: ['actorId'],
 	vaults: {
@@ -22,8 +29,8 @@ exports.user = {
 	}
 };
 
-exports.userCreds = {
-	index: ['userId'],
+exports.testEngine = {
+	index: ['username'],
 	vaults: {
 		volatileVault: {}
 	}

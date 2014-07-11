@@ -6,14 +6,6 @@ exports.setName = require('./name').set;
 
 var IDENT_ENGINE = 'testEngine';
 
-function banCheck(state, engineName, doc, cb) {
-	if (doc.data.banned) {
-		return cb('banned');
-	}
-
-	cb();
-}
-
 function createUser(state, userId) {
 	var newUser = {
 		id: userId,
@@ -40,74 +32,25 @@ function loggedIn(tUser) {
 	tUser.lastLogin.assign(mage.time.now());
 }
 
-exports.ban = function (state, username, cb) {
-	var engine = mage.ident.getEngine(IDENT_ENGINE);
-
-	var userId = engine.usernameToUserId(username);
-
-	engine.getUser(state, userId, function (error, doc) {
-		if (error) {
-			return cb(error);
-		}
-
-		doc.data.banned = true;
-
-		engine.updateUser(state, userId, doc, function (error) {
-			if (error) {
-				return cb(error);
-			}
-
-			mage.session.getActorSession(state, userId, function (error, session) {
-				if (error === 'noSession') {
-					return cb();
-				}
-
-				if (error) {
-					return cb(error);
-				}
-
-				session.expire(state);
-
-				cb();
-			});
-		});
-	});
-};
-
-exports.unban = function (state, username, cb) {
-	var engine = mage.ident.getEngine(IDENT_ENGINE);
-
-	var userId = engine.usernameToUserId(username);
-
-	engine.getUser(state, userId, function (error, doc) {
-		if (error) {
-			return cb(error);
-		}
-
-		delete doc.data.banned;
-
-		engine.updateUser(state, userId, doc, cb);
-	});
-};
-
 exports.create = function (state, password, cb) {
+	var username = uuid.v4();
+
 	var credentials = {
-		username: uuid.v4(),
+		username: username,
 		password: password
 	};
 
 	var engine = mage.ident.getEngine(IDENT_ENGINE);
 
-	engine.createUser(state, credentials, null, function (error, doc) {
+	engine.createUser(state, credentials, username, function (error, userId) {
 		if (error) {
+			mage.logger.error('failed to create user in the engine');
 			return cb(error);
 		}
 
-		var userId = doc.userId;
-
 		createUser(state, userId);
 
-		cb(null, credentials.username);
+		cb(null, userId);
 	});
 };
 
@@ -119,8 +62,11 @@ exports.login = function (state, username, password, cb) {
 		password: password
 	};
 
-	mage.ident.login(state, IDENT_ENGINE, credentials, null, function (error, session) {
+	mage.logger.debug('Attempting to login as: ' + username);
+
+	mage.ident.login(state, IDENT_ENGINE, credentials, function (error, session) {
 		if (error) {
+			mage.logger.error('Failed to login in ident: ' + error);
 			return cb(error);
 		}
 
@@ -134,18 +80,12 @@ exports.login = function (state, username, password, cb) {
 			loggedIn(tUser);
 
 			var result = {
+				meta: session.meta,
 				sessionKey: session.getFullKey(),
-				userId: userId,
-				meta: session.meta
+				userId: userId
 			};
 
 			cb(null, result);
 		});
 	});
-};
-
-exports.setup = function (state, cb) {
-	mage.ident.registerPostLoginHook(IDENT_ENGINE, banCheck);
-
-	cb();
 };

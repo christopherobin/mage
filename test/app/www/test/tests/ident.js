@@ -36,8 +36,8 @@ describe('Ident module', function () {
 	});
 
 	it('Cannot login with made up credentials', function (done) {
-		mage.user.login('invalidUserId', 'password', function (error, result) {
-			assert.equal(error, 'invalidUserId');
+		mage.user.login('invalidUsername', 'password', function (error, result) {
+			assert.equal(error, 'invalidUsername');
 			assert.equal(result, undefined);
 
 			done();
@@ -62,7 +62,7 @@ describe('Ident module', function () {
 			assert.ifError(error);
 			assert(username);
 
-			mage.user.ban(username, function (error) {
+			mage.user.ban(username, 'testing', function (error) {
 				assert.ifError(error);
 
 				mage.user.login(username, password, function (error) {

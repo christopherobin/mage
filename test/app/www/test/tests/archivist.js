@@ -76,7 +76,7 @@ describe('archivist', function () {
 				assert.ifError(error);
 
 				for (var key in scratchData) {
-					assert(data[key], scratchData[key]);
+					assert.equal(data[key], scratchData[key], 'no match');
 				}
 
 				done();
