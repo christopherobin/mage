@@ -16,7 +16,7 @@ on the eventManager. `session.restore` has been added to the session module, see
 
 `isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
 
-`session.register` is no longer an asyncronous function and returns a session object when called.
+`session.register` is no longer an asynchronous function and returns a session object when called.
 **If you were handling your own session registration, this is a breaking change and will require an
 update to your code.**
 

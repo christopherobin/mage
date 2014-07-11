@@ -22,7 +22,7 @@ to the application.
 
 The callback function will be passed the following arguments:
 
-* **err** (Error): An error object. Will be null if the session is valid.
+* **err** (String): An error string. Will be null if the session is valid.
 
 #### Example
 
@@ -70,7 +70,7 @@ session key.
 
 The callback function will be passed the following arguments:
 
-* **err** (Error): An error object. Will be null if the session is restored successfully.
+* **err** (String): An error string. Will be null if the session is restored successfully.
 
 ### session.logout(callback)
 
