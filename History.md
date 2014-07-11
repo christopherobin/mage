@@ -28,6 +28,8 @@ can be found in the meta property and is automatically populated on `mage.ident.
 ### Bug fixes
 
 * If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+* Aggressive archivist usage tests were not testing the index correctly.
+* archivist.list could throw errors, which should always go through the callback instead.
 
 
 ## v0.36.0 - Y U No Fit Cat
