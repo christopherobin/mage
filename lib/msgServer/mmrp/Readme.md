@@ -23,7 +23,7 @@ M: MAGE master / MMRP relay
 W: MAGE worker / MMRP client
 ```
 
-Each MAGE master will instanciate an MMRP relay, and each worker an MMRP client.
+Each MAGE master will instantiate an MMRP relay, and each worker an MMRP client.
 
 When the `comm` module of the `msgServer` will send a message,
 the MMRP client will send the message to its MMRP relay.

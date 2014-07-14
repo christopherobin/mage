@@ -23,9 +23,9 @@ describe('Session module', function () {
 	it('isValidSession', function (done) {
 		assert(mage.session.getKey());
 
-		mage.session.isValidSession(mage.session.getKey(), function (error, isValid) {
+		mage.session.isValid(mage.session.getKey(), function (error) {
 			assert.ifError(error);
-			assert(isValid);
+
 			done();
 		});
 	});
@@ -70,7 +70,7 @@ describe('Session module', function () {
 		});
 
 		it('cannot reassign a session to a falsy actor ID', function (done) {
-			mage.session.reassignSession(null, null, function (error) {
+			mage.session.reassign(null, null, function (error) {
 				assert(error);
 				assert.strictEqual(String(num), mage.session.getActorId());
 				done();
@@ -78,7 +78,7 @@ describe('Session module', function () {
 		});
 
 		it('can reassign a session to another random actor ID', function (done) {
-			mage.session.reassignSession(null, num + 1, function (error) {
+			mage.session.reassign(null, num + 1, function (error) {
 				assert.ifError(error);
 				assert.strictEqual(String(num + 1), mage.session.getActorId());
 				done();
@@ -88,9 +88,9 @@ describe('Session module', function () {
 		it('is still a valid session', function (done) {
 			assert(mage.session.getKey());
 
-			mage.session.isValidSession(mage.session.getKey(), function (error, isValid) {
+			mage.session.isValid(mage.session.getKey(), function (error) {
 				assert.ifError(error);
-				assert(isValid);
+
 				assert.strictEqual(String(num + 1), mage.session.getActorId());
 				done();
 			});
