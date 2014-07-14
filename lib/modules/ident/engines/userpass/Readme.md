@@ -68,6 +68,14 @@ var credentials = {
 	password: 'f00b4r'
 };
 
+// `user` is optional but here are the possible values
+var user = {
+	displayName: 'the name that is gonna be displayed (default is credentials.username)',
+	data: {
+		property: 'Any data you need to store about your user'
+	}
+};
+
 engine.createUser(state, credentials, user, function (error, user) { /* .. */ });
 ```
 
