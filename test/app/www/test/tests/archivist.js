@@ -84,6 +84,38 @@ describe('archivist', function () {
 		});
 	});
 
+	describe('list', function () {
+		it('fails bad input', function (done) {
+			mage.archivist.list('user', { userId: {} }, {}, function (error, results) {
+				assert(error);
+				assert(!results);
+
+				mage.archivist.list('user', { userId: false }, {}, function (error, results) {
+					assert(error);
+					assert(!results);
+
+					done();
+				});
+			});
+		});
+
+		it('fails unknown index keys', function (done) {
+			mage.archivist.list('user', { foo: 'bar' }, {}, function (error, results) {
+				assert(error);
+				assert(!results);
+				done();
+			});
+		});
+
+		it('can list', function (done) {
+			mage.archivist.list('user', {}, {}, function (error, results) {
+				assert.ifError(error);
+				assert(results.length);
+				done();
+			});
+		});
+	});
+
 	describe('cached value', function () {
 		it('get', function (done) {
 			var userId = mage.user.id;

@@ -41,9 +41,18 @@ giving you the ability to query data without being logged in.
 * `ident.login` now simply returns the same session data that you get with session.set. User data
 can be found in the meta property and is automatically populated on `mage.ident.user`.
 
+#### Bash auto completion
+
+MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
+project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
+copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
+section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+
 ### Bug fixes
 
 * If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+* Aggressive archivist usage tests were not testing the index correctly.
+* archivist.list could throw errors, which should always go through the callback instead.
 
 
 ## v0.36.0 - Y U No Fit Cat
@@ -144,6 +153,7 @@ an `eventManager` has been added on the client to handle all the events in one p
 * `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
 * `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
 * `msgServer.on()` is now `eventManager.on()`.
+
 
 ### Miscellaneous changes
 
