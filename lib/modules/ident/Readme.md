@@ -59,6 +59,8 @@ No credentials will ever be included in this object.
 
 ### Client API
 
+#### ident.getEngines()
+
 If you need to detect which engines have been exposed by the ident module, please run:
 
 ```javascript
@@ -67,13 +69,15 @@ mage.ident.getEngines(function (error, engines) {
 });
 ```
 
+#### ident.login(engineName, credentials, options, callback)
+
 To login from a browser you would just need to call the following.
 
 ```javascript
 // Credentials to send to the auth engine.
 
 var credentials = {
-	userId: window.prompt('What is your username?'),
+	username: window.prompt('What is your username?'),
 	password: window.prompt('What is your password?')
 };
 
@@ -86,7 +90,7 @@ var options = {
 
 // you use the `check` method to login and pass it the name of the engine as you have configured it.
 
-mage.ident.login('userlogin', credentials, options, function (error, user) {
+mage.ident.login('userpass', credentials, options, function (error, data) {
 	if (error) {
 		return window.alert(error);
 	}
@@ -97,6 +101,27 @@ mage.ident.login('userlogin', credentials, options, function (error, user) {
 
 After a successful login, the ident module will expose a property called `mage.ident.user`,
 containing your user object (see the chapter above on "User objects").
+It will also set the session key.
+
+The second parameter of the callback function contains the following object:
+```json
+{
+  "user": {
+    "userId": "string",      // unique identifier within the realm of the engine
+    "displayName": "string", // a name used to represent the user, not required to be unique
+    "data": {}
+  },
+  "session": {
+    "key": "string",         // The session key
+    "actorId": "string"      // The actorId assigned to this session
+  }
+}
+```
+
+#### ident.restoreSession(engineName, sessionKey, callback)
+
+You can restore a session as long as it has not expired by calling ident.restoreSession with the
+name of the engine, and your session key. Similar to login it returns your user doc.
 
 ### Server API
 

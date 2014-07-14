@@ -1,0 +1,12 @@
+{
+	"name": "httpServer",
+	"description": "The HTTP server.",
+	"dependencies": {
+		"Wizcorp/cachepuncher": "0.1.2"
+	},
+	"scripts": [
+		"client.js",
+		"transports/http/client.js"
+	],
+	"main": "client.js"
+}

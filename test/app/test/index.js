@@ -1,20 +1,19 @@
 var async = require('async');
 var fs = require('fs');
 
+var Bomb = require('./bomb');
 var integration = require('./integration');
-
-var DEFAULT_DURATION = 10000;
-var durations = {};
+var mocha = require('./mocha');
 
 function unlink(path) {
 	try {
 		fs.unlinkSync(path);
 	} catch (e) {
-
 	}
 }
 
 function cleanUp() {
+	unlink('./components');
 	unlink('./node_modules/mage');
 	unlink('./node_modules');
 }
@@ -22,6 +21,7 @@ function cleanUp() {
 function before() {
 	cleanUp();
 
+	fs.symlinkSync('../../components', './components', 'dir');
 	fs.symlinkSync('../../node_modules', './node_modules', 'dir');
 	fs.symlinkSync('../', './node_modules/mage', 'dir');
 }
@@ -34,58 +34,41 @@ function after() {
 
 exports.after = after;
 
-exports.start = function (app) {
-	app.mage.on('shutdown', after);
+exports.start = function (project) {
+	project.mage.on('shutdown', after);
 
 	function exit(exitCode) {
 		console.log('Exiting with code:', exitCode);
 
 		cleanUp();
 
-		app.quit(exitCode);
+		project.quit(exitCode);
 
 		process.exit(exitCode);
 	}
 
-	var bomb = { start: Date.now() };
+	var bomb = new Bomb();
 
-	function explode(name) {
-		name = name || bomb.name;
-		console.error(name, 'exploded.');
-
+	bomb.on('exploded', function (name, msec) {
+		console.error(name, 'failed after', msec, 'msec');
 		exit(1);
-	}
+	});
 
-	function armBomb(name) {
-		clearTimeout(bomb.fuse);
+	bomb.on('disarmed', function (name, msec) {
+		console.log(name, 'completed in', msec, 'msec');
+	});
 
-		bomb.duration = durations[name] || DEFAULT_DURATION;
-		bomb.name = name;
-		bomb.start = Date.now();
-
-		bomb.fuse = setTimeout(explode, bomb.duration);
-	}
-
-	function disarmBomb(name) {
-		if (bomb.name !== name) {
-			return explode(name);
-		}
-
-		clearTimeout(bomb.fuse);
-		console.log(name, 'completed in', Date.now() - bomb.start, 'msec');
-	}
-
-	function appSetup(cb) {
+	function projectSetup(cb) {
 		var stepName = 'setup';
 
-		armBomb(stepName);
+		bomb.arm(stepName);
 
-		app.setup(function (error, apps) {
+		project.setup(function (error, apps) {
 			if (error) {
 				return cb(error);
 			}
 
-			disarmBomb(stepName);
+			bomb.disarm(stepName);
 
 			// setting 'prebuild' to true tells MAGE to build the app during the
 			// start phase instead of on every http request.
@@ -98,45 +81,72 @@ exports.start = function (app) {
 		});
 	}
 
-	function appStart(cb) {
+	function projectStart(cb) {
 		var stepName = 'start';
 
-		armBomb(stepName);
+		bomb.arm(stepName);
 
-		app.start(function (error) {
+		project.start(function (error) {
 			if (error) {
 				return cb(error);
 			}
 
-			disarmBomb(stepName);
+			bomb.disarm(stepName);
 
 			cb();
 		});
 	}
 
-	function appIntegration(cb) {
+	function projectIntegration(cb) {
 		var stepName = 'integration';
 
-		armBomb(stepName);
+		bomb.arm(stepName);
 
-		var address = app.mage.core.msgServer.getHttpServer().server.address();
+		// backwards compatibility
+		var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
+		var address = httpServer.server.address();
 
 		integration(address, function (error) {
 			if (error) {
 				return cb(error);
 			}
 
-			disarmBomb(stepName);
+			bomb.disarm(stepName);
+
+			cb();
+		});
+	}
+
+	function projectMocha(cb) {
+		var stepName = 'mocha';
+
+		bomb.arm(stepName);
+
+		// backwards compatibility
+		var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
+		var address = httpServer.server.address();
+
+		mocha(address, function (error) {
+			if (error) {
+				return cb(error);
+			}
+
+			bomb.disarm(stepName);
 
 			cb();
 		});
 	}
 
 	async.series([
-		appSetup,
-		appStart,
-		appIntegration
+		projectSetup,
+		projectStart,
+		projectIntegration,
+		projectMocha
 	], function (error) {
+		if (error) {
+			console.error(error);
+		}
+
 		var exitCode = error ? 1 : 0;
 
 		exit(exitCode);

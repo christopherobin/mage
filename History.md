@@ -2,6 +2,68 @@
 
 ## vNEXT
 
+### JSON-RPC
+
+You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
+A new endpoint, `/<appname>/jsonrpc`, was added to each application.
+Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have more information.
+
+### Session Improvements
+
+Added `ident.restoreSession` to the ident module, see [the documentation](./lib/modules/ident/Readme.md) for details.
+
+We have simplified logging in and logging out, just listen for `session` events `set` and `unset`
+on the eventManager.
+
+### API changes
+
+* `State.respondJson()` is no longer available. You must use `State.respond()`.
+* The `userpass` ident engine no longer uses state.error internally. If you use the module instead
+of the usercommands, you'll need to deal with the errors yourself.
+* Archivist usercommands: `rawGet`, `rawMGet` and `rawList` can now be executed while anonymous
+giving you the ability to query data without being logged in.
+* `ident.login` now simply returns the same session data that you get with session.set. User data
+can be found in the meta property and is automatically populated on `mage.ident.user`.
+
+#### Bash auto completion
+
+MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
+project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
+copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
+section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+
+### Bug fixes
+
+* If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+* Aggressive archivist usage tests were not testing the index correctly.
+* archivist.list could throw errors, which should always go through the callback instead.
+
+
+## v0.36.0 - Y U No Fit Cat
+
+### SQLite3 Vault
+
+Archivist has been enriched with support for an SQLite3 vault through the
+[sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
+[SQLite3 vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
+
+### component.json, templates and HTML file loading
+
+MAGE now loads HTML files listed in the `templates` array of
+your component.json. This has the following impact:
+
+1. Your HTML files will **no longer be automatically loaded**
+2. You need to inject the content of the templates yourself, like so:
+
+```javascript
+var dom = loader.renderPage('myPage');
+dom.innerHTML = require('./index.html');
+```
+
+This gives you more control on templating from HTML files,
+but also mean that you can now use and create component
+with templates in them.
+
 ### Archivist data broadcast
 
 The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
@@ -44,12 +106,38 @@ In the browser, you can access this as:
 console.log(mage.appConfig.viewNames);
 ```
 
-#### Bash auto completion
+### HTTP server and Event Manager
 
-MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
-project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
-copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
-section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+The HTTP server has now its dedicated library and was extracted from the `msgServer` library.
+
+As events can come from the `httpServer` with user command responses
+or from the `msgServer` with the message stream,
+an `eventManager` has been added on the client to handle all the events in one place.
+`httpServer` and `msgServer` no longer inherits from `EventEmitter`.
+
+#### Migration
+
+* the following methods have moved from `msgServer` to `httpServer` on the client:
+  * `setCmdMode()`
+  * `registerCommandHook()`
+  * `transformUpload()`
+  * `transformEmbeddedUploads()`
+  * `sendCommand()`
+  * `resend()`
+  * `discard()`
+  * `queue()`
+  * `piggyback()`
+  * `simulateTransportError()`
+  * `setupCommandSystem()`
+* the following methods have moved from `msgServer` to `httpServer` on the server:
+  * `startClientHost()`
+* The value returned by `ident.login` user command has changed.
+  Please read the [ident module documentation](./lib/modules/ident/Readme.md).
+* `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
+* `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
+* `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
+* `msgServer.on()` is now `eventManager.on()`.
+
 
 ### Miscellaneous changes
 
@@ -67,7 +155,7 @@ section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environ
 ### Bug fixes
 
 * The WebSocket logger was not reporting any logs from the worker processes.
-
+* MAGE will no longer crash if you try to login without a username.
 
 ## v0.35.0 - King of the Jungle Cat
 

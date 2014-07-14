@@ -1,10 +1,36 @@
 var mage = require('mage');
 
+var mageModules = [
+	'archivist',
+	'dashboard',
+	'ident',
+	'session',
+	'time'
+];
+
+mage.useModules(mageModules);
+
+mage.addModulesPath('./lib/modules');
+
+var projectModules = [
+	'test',
+	'user'
+];
+
+mage.useModules(projectModules);
+
+function createTest(app) {
+	var testPage = app.addIndexPage('loader', './www/test/');
+	testPage.routes.push('/test');
+}
+
 function mageSetup(cb) {
-	mage.setup(function (error) {
+	mage.setup(function (error, apps) {
 		if (error) {
 			return cb(error);
 		}
+
+		createTest(apps.test);
 
 		cb();
 	});
@@ -16,7 +42,7 @@ function mageStart(cb) {
 
 exports.mage = mage;
 
-// We can setup the game with this.
+// We can setup the project with this.
 
 exports.setup = function (cb) {
 	if (mage.cli) { // Backward compatibility
@@ -25,13 +51,13 @@ exports.setup = function (cb) {
 	mageSetup(cb);
 };
 
-// We can start the game with this.
+// We can start the project with this.
 
 exports.start = function (cb) {
 	mageStart(cb);
 };
 
-// We can quit the game with this.
+// We can quit the project with this.
 
 exports.quit = function (exitCode) {
 	mage.quit(exitCode);

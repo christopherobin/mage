@@ -24,28 +24,28 @@ mage.useModules(require,
 
 
 function setupErrorHandlers() {
-	mage.msgServer.on('io.error.auth', function () {
+	mage.eventManager.on('io.error.auth', function () {
 		// We are trying to do something on the server that we are not allowed to do.
 		// Should we re-authenticate?
 
 		mage.logger.debug('Authentication error');
 	});
 
-	mage.msgServer.on('io.error.busy', function () {
+	mage.eventManager.on('io.error.busy', function () {
 		// You can't run two user commands in parallel, in order to protect ourselves from race
 		// conditions on our servers and databases.
 
 		mage.logger.error('IO busy error');
 	});
 
-	mage.msgServer.on('io.error.network', function () {
+	mage.eventManager.on('io.error.network', function () {
 		// We could not complete the user command call to the server due to a network glitch,
 		// let's retry in 4 seconds.
 
 		window.setTimeout(function () {
 			mage.logger.verbose('Resending...');
 
-			mage.msgServer.resend();
+			mage.httpServer.resend();
 		}, 4000);
 	});
 }

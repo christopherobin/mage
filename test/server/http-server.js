@@ -73,7 +73,7 @@ describe('HTTP server', function () {
 
 
 	before(function () {
-		httpServer = require('../../lib/msgServer/transports/http');
+		httpServer = require('../../lib/httpServer/transports/http');
 		httpServer.initialize(logger);
 	});
 
@@ -92,8 +92,8 @@ describe('HTTP server', function () {
 		});
 
 		it('exposes correct URLs', function () {
-			assert.strictEqual(httpServer.getClientHostBaseUrl(), '');
-			assert.strictEqual(httpServer.getClientHostBaseUrl({ host: 'example.com' }), 'http://example.com');
+			assert.strictEqual(httpServer.getBaseUrl(), '');
+			assert.strictEqual(httpServer.getBaseUrl({ host: 'example.com' }), 'http://example.com');
 
 			httpServer.expose();
 			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
@@ -105,7 +105,7 @@ describe('HTTP server', function () {
 			assert.strictEqual(httpServer.getRouteUrl('/hello'), '/hello');
 
 			httpServer.expose('http://foo:123/bar/');
-			assert.strictEqual(httpServer.getClientHostBaseUrl(), 'http://foo:123/bar');
+			assert.strictEqual(httpServer.getBaseUrl(), 'http://foo:123/bar');
 			assert.strictEqual(httpServer.getRouteUrl('/hello'), 'http://foo:123/bar/hello');
 
 			httpServer.expose({
@@ -115,7 +115,7 @@ describe('HTTP server', function () {
 				path: '/hello/world/'
 			});
 
-			assert.strictEqual(httpServer.getClientHostBaseUrl(), 'https://example.com:123/hello/world');
+			assert.strictEqual(httpServer.getBaseUrl(), 'https://example.com:123/hello/world');
 			assert.strictEqual(httpServer.getRouteUrl('/yay'), 'https://example.com:123/hello/world/yay');
 		});
 
