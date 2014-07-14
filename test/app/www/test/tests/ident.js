@@ -4,6 +4,19 @@ var mage = require('mage');
 describe('Ident module', function () {
 	var password = 'password';
 
+	before(function (done) {
+		mage.user.register(password, function (error, admin) {
+			assert.ifError(error);
+			assert(admin);
+
+			mage.user.login(admin, password, function (error) {
+				assert.ifError(error);
+
+				done();
+			});
+		});
+	});
+
 	it('Cannot login without a username', function (done) {
 		mage.user.login(null, null, function (error, result) {
 			assert.equal(error, 'invalidUsername');
@@ -79,7 +92,7 @@ describe('Ident module', function () {
 
 				var sessionKey = results.sessionKey;
 
-				mage.ident.restoreSession('testEngine', sessionKey, function (error) {
+				mage.session.restore(sessionKey, function (error) {
 					assert.ifError(error);
 
 					done();
