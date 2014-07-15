@@ -51,6 +51,11 @@ project, simply run `make dev` to setup git hooks and bash auto completion. Exis
 copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
 section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
 
+### Miscellaneous Changes
+
+* The warning log for long running http requests now ignores requests that start with /msgstream
+* The warning log for unzipping gzipped content has been demoted to a debug log.
+
 ### Bug fixes
 
 * If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
