@@ -11,6 +11,9 @@
 		"../../../../dashboard/dashboard/pages/postlogin/ui",
 		"../../../engines/userpass/dashboard"
 	],
+	"templates": [
+		"page.html"
+	],
 	"scripts": [
 		"index.js"
 	]

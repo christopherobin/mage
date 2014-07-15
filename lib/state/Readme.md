@@ -66,6 +66,14 @@ Emits an event to the given actorId's client.
 * language: A language code that may be given if the data is bound to a single language only.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
 
+### state.broadcast(string path, data, boolean isJson)
+
+Broadcast an event to all the actors.
+
+* path: The event name (or dot separated path).
+* data: Any data you want to send with this event.
+* isJson: If the data is a pre-serialized JSON string, pass `true`.
+
 ### state.emitToActors(array actorIds, string path, data, string language, boolean isJson)
 
 Just like `emit`, but for multiple actors at once. The actorIds argument is an array of actor ID
@@ -82,12 +90,6 @@ argument.
 ### state.respond(data)
 
 This is the response that will be sent to the actor's client-side callback as the second argument.
-This only has meaning if the state originated in the command center.
-
-### state.respondJson(string data)
-
-This is the response that will be sent to the actor's client-side callback as the second argument.
-Use this variation of the respond function when your response is already JSON serialized.
 This only has meaning if the state originated in the command center.
 
 ### state.close(Function callback)

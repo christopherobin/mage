@@ -3,6 +3,7 @@
 	"description": "Page that holds some crucial libraries (UI) that are needed once logged in.",
 	"local": [
 		"mage",
+		"loader",
 		"Router",
 		"Sidebar",
 		"clipboard",
@@ -14,6 +15,9 @@
 	"paths": [
 		"../../../../..",
 		"ui"
+	],
+	"templates": [
+		"page.html"
 	],
 	"scripts": [
 		"index.js"

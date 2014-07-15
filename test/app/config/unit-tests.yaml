@@ -1,0 +1,12 @@
+logging:
+    server:
+        terminal:
+            config: {}
+
+server:
+    clientHost:
+        bind:
+            file: null
+            port: 0
+        expose: null
+    cluster: false

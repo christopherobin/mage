@@ -2,6 +2,179 @@
 
 ## vNEXT
 
+### JSON-RPC
+
+You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
+A new endpoint, `/<appname>/jsonrpc`, was added to each application.
+Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have more information.
+
+### Session Improvements
+
+We have simplified logging in and logging out, just listen for `session` events `set` and `unset`
+on the eventManager. `session.restore` has been added to the session module, see
+[the documentation](./lib/modules/session/Readme.md) for details.
+
+`isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
+
+`session.register` is no longer an asynchronous function and returns a session object when called.
+**If you were handling your own session registration, this is a breaking change and will require an
+update to your code.**
+
+`session.resolve` now returns an error if it cannot resolve a session instead of no error and no
+session.
+
+### Message Server Improvements
+
+Message Server automatically starts the message stream when a session is established and aborts it
+when the session is closed. You can now abort and start the message stream yourself by calling
+`msgServer.abort()` and `msgServer.start()`.
+
+We have also removed the sessionKey from the Message Server object.
+
+### API changes
+
+* `State.respondJson()` is no longer available. You must use `State.respond()`.
+* The `userpass` ident engine no longer uses state.error internally. If you use the module instead
+of the usercommands, you'll need to deal with the errors yourself.
+* Archivist usercommands: `rawGet`, `rawMGet` and `rawList` can now be executed while anonymous
+giving you the ability to query data without being logged in.
+* `ident.login` now simply returns the same session data that you get with session.set. User data
+can be found in the meta property and is automatically populated on `mage.ident.user`.
+
+#### Bash auto completion
+
+MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
+project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
+copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
+section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+
+### Bug fixes
+
+* If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+* Aggressive archivist usage tests were not testing the index correctly.
+* archivist.list could throw errors, which should always go through the callback instead.
+
+
+## v0.36.0 - Y U No Fit Cat
+
+### SQLite3 Vault
+
+Archivist has been enriched with support for an SQLite3 vault through the
+[sqlite3](https://www.npmjs.org/package/sqlite3) module. Read the
+[SQLite3 vault documentation](./lib/archivist/vaults/sqlite/Readme.md) for more information.
+
+### component.json, templates and HTML file loading
+
+MAGE now loads HTML files listed in the `templates` array of
+your component.json. This has the following impact:
+
+1. Your HTML files will **no longer be automatically loaded**
+2. You need to inject the content of the templates yourself, like so:
+
+```javascript
+var dom = loader.renderPage('myPage');
+dom.innerHTML = require('./index.html');
+```
+
+This gives you more control on templating from HTML files,
+but also mean that you can now use and create component
+with templates in them.
+
+### Archivist data broadcast
+
+The previous MAGE release notes had a small footnote mentioning "broadcast support". This is
+actually a major feature, and now that it's been integrated with Archivist, you will be able to do
+some really sweet things in your dashboards. When your shard-function on your client vault returns
+`"*"`, the data change will be sent to *all* users that are logged in. That is really powerful and
+great for real-time collaboration in your dashboard. But keep in mind that you probably don't want
+to use this in production on systems where you have many thousands of users logged in at once, as it
+could be a real serious hit on the network when suddenly all those people receive events and then
+reconnect to receive the next batch (the very nature of long-polling). So please use the broadcast
+feature responsibly.
+
+### HTTP Server and Savvy
+
+The MAGE built-in HTTP server has seen some changes. For one, it now has WebSocket and Proxy
+support. That means that you can add routes for those two types. Also, unlike before, the HTTP
+server is now always instantiated, regardless of the process running in master or worker mode. The
+reason for this is that Savvy has been rebuilt to use the HTTP server, rather than implementing its
+own.
+
+See the [HTTP Server documentation](lib/msgServer/transports/http/Readme.md) and
+[Savvy documentation](lib/savvy/Readme.md) for more information about the new APIs.
+
+### window.mageConfig
+
+The component builder now emits "mage-config" on the app object, passing it the `window.mageConfig`
+object, which now contains an `appConfig` object which you may use to pass data to the browser.
+
+An example:
+
+```javascript
+app.on('mage-config', function (config) {
+  config.appConfig.viewNames = fs.readdirSync('../www/views');
+});
+```
+
+In the browser, you can access this as:
+
+```javascript
+console.log(mage.appConfig.viewNames);
+```
+
+### HTTP server and Event Manager
+
+The HTTP server has now its dedicated library and was extracted from the `msgServer` library.
+
+As events can come from the `httpServer` with user command responses
+or from the `msgServer` with the message stream,
+an `eventManager` has been added on the client to handle all the events in one place.
+`httpServer` and `msgServer` no longer inherits from `EventEmitter`.
+
+#### Migration
+
+* the following methods have moved from `msgServer` to `httpServer` on the client:
+  * `setCmdMode()`
+  * `registerCommandHook()`
+  * `transformUpload()`
+  * `transformEmbeddedUploads()`
+  * `sendCommand()`
+  * `resend()`
+  * `discard()`
+  * `queue()`
+  * `piggyback()`
+  * `simulateTransportError()`
+  * `setupCommandSystem()`
+* the following methods have moved from `msgServer` to `httpServer` on the server:
+  * `startClientHost()`
+* The value returned by `ident.login` user command has changed.
+  Please read the [ident module documentation](./lib/modules/ident/Readme.md).
+* `mage.core.msgServer.getHttpServer()` is now `mage.core.httpServer`.
+* `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
+* `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
+* `msgServer.on()` is now `eventManager.on()`.
+
+
+### Miscellaneous changes
+
+* Exposed the app's version to the client as `mage.appVersion`.
+* Changed the app's version default from `"no-version"` to `undefined`.
+* Fixed a bug in the session module which would cause an uncatchable exception if no version has
+  been defined in package.json. Now it alerts properly, and continues without version enforcement as
+  was originally designed.
+* Made `window.mageConfig` optional for the client side mage module, as is the case with the loader.
+  Since there always tends to be a window.mageConfig object, this change should have no effect. This
+  is just to equalize the two behaviors.
+* The HTTP server now auto-registers "/check.txt" to serve that file from your project's root.
+* Sampler not yet having samples ready no longer logs a massive warning.
+
+### Bug fixes
+
+* The WebSocket logger was not reporting any logs from the worker processes.
+* MAGE will no longer crash if you try to login without a username.
+
+## v0.35.0 - King of the Jungle Cat
+
 ### mage.session.isValidSession
 
 The session module now allows you to validate a session stored on the client
@@ -79,6 +252,8 @@ It's like push notifications in MAGE.
 * `mage.getModulePath(modName)` will now throw if the module does not exist, instead of return `null`.
 * `ServiceNode.getIp()` now accepts a new optional arguments to filter the addresses returned by the Service Discovery module.
 * Add the `server.mmrp.network` option to be able to filter the addresses used to connect to the MMRP relays.
+* MAGE now runs unit tests for the browser in PhantomJS.
+* Adding broadcast support to the `State` class.
 
 
 ## v0.34.0 - Teamwork Cat

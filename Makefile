@@ -1,7 +1,7 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
+TEST_APP = ./test/app
 TEST_SERVER = ./test/server
-TEST_BROWSER = ./test/browser
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -13,13 +13,14 @@ define helpStarting
 	@echo "Getting started:"
 	@echo
 	@echo "  make help              Prints this help."
-	@echo "  make deps              Installs all dependencies (shortcut for deps-npm)."
+	@echo "  make deps              Installs all dependencies (shortcut for deps-npm, deps-component)."
 	@echo
 	@echo "  make deps-npm          Downloads and installs all NPM dependencies."
+	@echo "  make deps-component    Downloads and installs all component dependencies."
 	@echo
 endef
 
-.PHONY: help build deps deps-npm start stop
+.PHONY: help build deps deps-npm deps-component start stop
 
 help:
 	@echo
@@ -37,11 +38,15 @@ start:
 stop:
 	@echo "MAGE has nothing to stop."
 
-deps: deps-npm
+deps: deps-npm deps-component
 
 deps-npm:
 	mkdir -p node_modules
 	npm install
+
+deps-component:
+	mkdir -p components
+	@cd test/app; node . install-components
 
 
 # DEVELOPMENT
@@ -97,7 +102,7 @@ test: test-lint test-style test-unit
 report: report-complexity report-coverage
 
 define lintPath
-	$(BIN)/jshint --config .jshintrc --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
+	$(BIN)/jshint --extra-ext .json --reporter $(SCRIPTS)/lib/humanJshintReporter.js "$1"
 endef
 
 test-lint:
@@ -137,12 +142,20 @@ endif
 test-unit:
 	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
 
+	@echo
+	@echo Running integration tests
+	@echo
+	@cd $(TEST_APP); NODE_ENV="$(NODE_ENV),unit-tests" node integration
+
+
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 report-coverage:
-	$(BIN)/istanbul cover $(BIN)/_mocha --report html --dir $(COVERAGE_REPORT) -- -R spec --recursive $(TEST_SERVER)
+	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_APP)/integration.js --dir $(COVERAGE_REPORT)/app
+	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/server -- -R spec --recursive $(TEST_SERVER)
+	$(BIN)/istanbul report html --root $(COVERAGE_REPORT) --dir $(COVERAGE_REPORT)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
 
 
