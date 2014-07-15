@@ -14,14 +14,17 @@ We have simplified logging in and logging out, just listen for `session` events 
 on the eventManager. `session.restore` has been added to the session module, see
 [the documentation](./lib/modules/session/Readme.md) for details.
 
-`isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
-
 `session.register` is no longer an asynchronous function and returns a session object when called.
 **If you were handling your own session registration, this is a breaking change and will require an
 update to your code.**
 
-`session.resolve` now returns an error if it cannot resolve a session instead of no error and no
-session.
+User commands `isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
+
+* `session.resolve` now returns an error if it cannot resolve a session instead of no error and no
+  session.
+* Unreasonably low session TTL is now a warning, not a fatal emergency.
+* That does mean integer configuration is no longer allowed, it must be "30s" for example.
+* We no longer expose mage.session.keyLength.
 
 ### Message Server Improvements
 
@@ -35,11 +38,11 @@ We have also removed the sessionKey from the Message Server object.
 
 * `State.respondJson()` is no longer available. You must use `State.respond()`.
 * The `userpass` ident engine no longer uses state.error internally. If you use the module instead
-of the usercommands, you'll need to deal with the errors yourself.
+  of the usercommands, you'll need to deal with the errors yourself.
 * Archivist usercommands: `rawGet`, `rawMGet` and `rawList` can now be executed while anonymous
-giving you the ability to query data without being logged in.
+  giving you the ability to query data without being logged in.
 * `ident.login` now simply returns the same session data that you get with session.set. User data
-can be found in the meta property and is automatically populated on `mage.ident.user`.
+  can be found in the meta property and is automatically populated on `mage.ident.user`.
 
 #### Bash auto completion
 
