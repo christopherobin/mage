@@ -55,6 +55,7 @@ section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environ
 
 * The warning log for long running http requests now ignores requests that start with /msgstream
 * The warning log for unzipping gzipped content has been demoted to a debug log.
+* You can now do a heapdump on the master process.
 
 ### Bug fixes
 
