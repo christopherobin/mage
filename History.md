@@ -62,6 +62,8 @@ section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environ
 * Aggressive archivist usage tests were not testing the index correctly.
 * archivist.list could throw errors, which should always go through the callback instead.
 * The elasticsearch vault now logs an error during setup if it has an error.
+* MAGE will no longer exit without logging anything when a module returns an error during setup.
+  You may get duplicate logs in some cases, but it's better than getting no logs.
 
 
 ## v0.36.0 - Y U No Fit Cat
