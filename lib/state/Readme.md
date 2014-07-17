@@ -92,12 +92,6 @@ argument.
 This is the response that will be sent to the actor's client-side callback as the second argument.
 This only has meaning if the state originated in the command center.
 
-### state.respondJson(string data)
-
-This is the response that will be sent to the actor's client-side callback as the second argument.
-Use this variation of the respond function when your response is already JSON serialized.
-This only has meaning if the state originated in the command center.
-
 ### state.close(Function callback)
 
 Call this when you're done with the state object. All archivist mutations will now be distributed to

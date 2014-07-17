@@ -18,3 +18,4 @@ vagrant_ansible_inventory_*
 .vagrant
 Vagrantfile
 check.txt
+.digest-cache.json

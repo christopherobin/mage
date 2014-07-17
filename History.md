@@ -1,5 +1,72 @@
 # Release history
 
+## v0.37.0 - Summer Cat
+
+### JSON-RPC
+
+You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
+A new endpoint, `/<appname>/jsonrpc`, was added to each application.
+Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have more information.
+
+### Session Improvements
+
+We have simplified logging in and logging out, just listen for `session` events `set` and `unset`
+on the eventManager. `session.restore` has been added to the session module, see
+[the documentation](./lib/modules/session/Readme.md) for details.
+
+`session.register` is no longer an asynchronous function and returns a session object when called.
+**If you were handling your own session registration, this is a breaking change and will require an
+update to your code.**
+
+User commands `isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
+
+* `session.resolve` now returns an error if it cannot resolve a session instead of no error and no
+  session.
+* Unreasonably low session TTL is now a warning, not a fatal emergency.
+* That does mean integer configuration is no longer allowed, it must be "30s" for example.
+* We no longer expose mage.session.keyLength.
+
+### Message Server Improvements
+
+Message Server automatically starts the message stream when a session is established and aborts it
+when the session is closed. You can now abort and start the message stream yourself by calling
+`msgServer.abort()` and `msgServer.start()`.
+
+We have also removed the sessionKey from the Message Server object.
+
+### API changes
+
+* `State.respondJson()` is no longer available. You must use `State.respond()`.
+* The `userpass` ident engine no longer uses state.error internally. If you use the module instead
+  of the usercommands, you'll need to deal with the errors yourself.
+* Archivist usercommands: `rawGet`, `rawMGet` and `rawList` can now be executed while anonymous
+  giving you the ability to query data without being logged in.
+* `ident.login` now simply returns the same session data that you get with session.set. User data
+  can be found in the meta property and is automatically populated on `mage.ident.user`.
+
+#### Bash auto completion
+
+MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
+project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
+copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
+section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+
+### Miscellaneous Changes
+
+* The warning log for long running http requests now ignores requests that start with /msgstream
+* The warning log for unzipping gzipped content has been demoted to a debug log.
+* You can now do a heapdump on the master process.
+
+### Bug fixes
+
+* If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+* Aggressive archivist usage tests were not testing the index correctly.
+* archivist.list could throw errors, which should always go through the callback instead.
+* The elasticsearch vault now logs an error during setup if it has an error.
+* MAGE will no longer exit without logging anything when a module returns an error during setup.
+  You may get duplicate logs in some cases, but it's better than getting no logs.
+
+
 ## v0.36.0 - Y U No Fit Cat
 
 ### SQLite3 Vault
@@ -98,6 +165,7 @@ an `eventManager` has been added on the client to handle all the events in one p
 * `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
 * `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
 * `msgServer.on()` is now `eventManager.on()`.
+
 
 ### Miscellaneous changes
 
