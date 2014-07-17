@@ -2,6 +2,8 @@
 
 ## vNEXT
 
+## v0.37.0 - Summer Cat
+
 ### JSON-RPC
 
 You can now talk to your MAGE application by using JSON-RPC protocol over HTTP.
