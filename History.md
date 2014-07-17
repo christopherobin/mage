@@ -1,5 +1,7 @@
 # Release history
 
+## vNEXT
+
 ## v0.37.0 - Summer Cat
 
 ### JSON-RPC
