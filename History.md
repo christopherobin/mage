@@ -2,6 +2,12 @@
 
 ## vNEXT
 
+### Dependency updates
+
+| dependency        | from    | to      | changes   |
+|-------------------|---------|---------|-----------|
+| node              | 0.10.28 | 0.10.29 | [Release notes](http://blog.nodejs.org/2014/06/16/openssl-and-breaking-utf-8-change/) |
+
 ## v0.37.0 - Summer Cat
 
 ### JSON-RPC
