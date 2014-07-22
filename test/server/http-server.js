@@ -1,9 +1,10 @@
 var assert = require('assert');
-var fs = require('fs');
 var http = require('http');
 var WebSocket = require('ws');
 var pathJoin = require('path').join;
 var urlParse = require('url').parse;
+var fs = require('fs');
+
 
 function devNull() {
 	return devNull;
@@ -375,8 +376,6 @@ describe('HTTP server', function () {
 				done();
 			});
 		});
-
-
 	});
 
 
