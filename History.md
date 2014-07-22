@@ -2,11 +2,17 @@
 
 ## vNEXT
 
+## v0.37.1 - Bird on Head Cat
+
 ### Dependency updates
 
 | dependency        | from    | to      | changes   |
 |-------------------|---------|---------|-----------|
 | node              | 0.10.28 | 0.10.29 | [Release notes](http://blog.nodejs.org/2014/06/16/openssl-and-breaking-utf-8-change/) |
+
+### Miscellaneous Changes
+
+* We have added more logs when encountering parse errors in `httpBatchHandler`.
 
 ## v0.37.0 - Summer Cat
 
