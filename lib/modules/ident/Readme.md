@@ -69,7 +69,7 @@ mage.ident.getEngines(function (error, engines) {
 });
 ```
 
-#### ident.login(engineName, credentials, options)
+#### ident.login(engineName, credentials, options, callback)
 
 To login from a browser you would just need to call the following.
 

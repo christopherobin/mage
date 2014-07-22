@@ -4,6 +4,16 @@ var uuid = require('node-uuid');
 
 exports.setName = require('./name').set;
 
+var IDENT_ENGINE = 'testEngine';
+
+function banCheck(state, engineName, doc, cb) {
+	if (doc.data.banned) {
+		return cb('banned');
+	}
+
+	cb();
+}
+
 function createUser(state, userId) {
 	var newUser = {
 		id: userId,
@@ -26,23 +36,59 @@ function get(state, userId, cb) {
 	});
 }
 
-function login(tUser) {
+function loggedIn(tUser) {
 	tUser.lastLogin.assign(mage.time.now());
 }
 
-function loginHook(state, engineName, doc, cb) {
-	var userId = doc.userId;
+exports.ban = function (state, username, cb) {
+	var engine = mage.ident.getEngine(IDENT_ENGINE);
 
-	get(state, userId, function (error, tUser) {
+	var userId = engine.usernameToUserId(username);
+
+	engine.getUser(state, userId, function (error, doc) {
 		if (error) {
 			return cb(error);
 		}
 
-		login(tUser);
+		doc.data.banned = true;
 
-		cb();
+		engine.updateUser(state, userId, doc, function (error) {
+			if (error) {
+				return cb(error);
+			}
+
+			mage.session.getActorSession(state, userId, function (error, session) {
+				if (error === 'noSession') {
+					return cb();
+				}
+
+				if (error) {
+					return cb(error);
+				}
+
+				session.expire(state);
+
+				cb();
+			});
+		});
 	});
-}
+};
+
+exports.unban = function (state, username, cb) {
+	var engine = mage.ident.getEngine(IDENT_ENGINE);
+
+	var userId = engine.usernameToUserId(username);
+
+	engine.getUser(state, userId, function (error, doc) {
+		if (error) {
+			return cb(error);
+		}
+
+		delete doc.data.banned;
+
+		engine.updateUser(state, userId, doc, cb);
+	});
+};
 
 exports.create = function (state, password, cb) {
 	var credentials = {
@@ -50,7 +96,7 @@ exports.create = function (state, password, cb) {
 		password: password
 	};
 
-	var engine = mage.ident.getEngine('testEngine');
+	var engine = mage.ident.getEngine(IDENT_ENGINE);
 
 	engine.createUser(state, credentials, null, function (error, doc) {
 		if (error) {
@@ -67,8 +113,39 @@ exports.create = function (state, password, cb) {
 
 exports.get = get;
 
+exports.login = function (state, username, password, cb) {
+	var credentials = {
+		username: username,
+		password: password
+	};
+
+	mage.ident.login(state, IDENT_ENGINE, credentials, null, function (error, session) {
+		if (error) {
+			return cb(error);
+		}
+
+		var userId = session.actorId;
+
+		get(state, userId, function (error, tUser) {
+			if (error) {
+				return cb(error);
+			}
+
+			loggedIn(tUser);
+
+			var result = {
+				sessionKey: session.getFullKey(),
+				userId: userId,
+				meta: session.meta
+			};
+
+			cb(null, result);
+		});
+	});
+};
+
 exports.setup = function (state, cb) {
-	mage.ident.registerPostLoginHook('testEngine', loginHook);
+	mage.ident.registerPostLoginHook(IDENT_ENGINE, banCheck);
 
 	cb();
 };

@@ -21,7 +21,8 @@
 	"scripts": [
 		"index.js",
 		"tests/archivist.js",
-		"tests/ident.js"
+		"tests/ident.js",
+		"tests/session.js"
 	],
 	"paths": [
 		"../../node_modules/mage/lib",
