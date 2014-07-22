@@ -8,6 +8,16 @@
 |-------------------|---------|---------|-----------|
 | node              | 0.10.28 | 0.10.29 | [Release notes](http://blog.nodejs.org/2014/06/16/openssl-and-breaking-utf-8-change/) |
 
+### Miscellaneous changes
+
+* The message stream protocol is now documented.
+* Small performance improvement in message propagation in MMRP.
+
+### Bug fixes
+
+* When using short-polling, MMRP's broadcast feature did not work.
+
+
 ## v0.37.0 - Summer Cat
 
 ### JSON-RPC

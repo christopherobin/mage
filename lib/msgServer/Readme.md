@@ -1,7 +1,6 @@
 # Message Server
 
-The message server is in charge of event propagation through the system, and the hosting of the
-HTTP server.
+The message server is in charge of event propagation through the system.
 
 ## MMRP
 
@@ -9,3 +8,75 @@ The message server uses the MMRP protocol to ensure communication between
 the different instances of node.
 
 See the [MMRP documentation](./mmrp/Readme.md).
+
+# Message stream
+
+The messages emitted by the server inevitably make their way to the client.
+
+## The protocol
+
+The serialization protocol used by the message stream is the same regardless of the transport type
+used. A single package of messages is formatted in JSON as follows:
+
+```json
+{
+  "1": ["some.event.name"],
+  "2": ["eventname", {"any":"data"}]
+}
+```
+
+The key represents the message ID, which increments by 1 for each message emitted. Messages must be
+processed in order of message ID. The content of the message is an array of 1 or 2 elements.
+
+The first element is a string that represents the type of the message. This may be used as the event
+name in a client-side event emitter. The optional second element is the real payload of the message.
+
+## Transport types
+
+There are currently two transport types that allow message retrieval and confirmation.
+
+### HTTP short-polling
+
+With short-polling, the endpoint for message retrieval becomes:
+
+```
+GET http://domain/msgstream?sessionKey=abc&transport=shortpolling
+```
+
+Always be sure to pass the active session key for this user. Without it, no messages can be
+delivered. If messages are available, they will be returned in the format described in
+"The protocol", with content-type `application/json` and HTTP status code `200`. If no messages are
+available, HTTP status code `204` will be returned without a response body.
+
+### HTTP long-polling
+
+With long-polling, the endpoint for message retrieval becomes:
+
+```
+GET http://domain/msgstream?sessionKey=abc&transport=longpolling
+```
+
+Always be sure to pass the active session key for this user. Without it, no messages can be
+delivered. If messages are available, they will be returned in the format described in
+"The protocol", with content-type `application/json` and HTTP status code `200`. This is no
+different from short-polling. If there are no messages available however, the connection will hang
+and wait for messages to arrive. The moment messages are ready for delivery, the HTTP request will
+return with HTTP status code `200` and content-type `application/json`.
+
+In order to reliably detect clients unavailability, the server will periodically send a heartbeat
+message to the client. It is up to the client to detect this, and reconnect with the server. A
+heartbeat message's full response body is `HB` (for HeartBeat), and the content-type is `text/plain`.
+
+## Confirming message receipts
+
+Because networks (especially mobile) are not always reliable, MAGE will keep all messages on the
+server until the client actively reports successful delivery. This is done per message ID.
+Regardless of transport, the message IDs you want to confirm are to be sent back in the URL's query
+string named `confirmIds` and comma separated, as follows:
+
+```
+GET http://domain/msgstream?transport=longpolling&confirmIds=1,2,3
+```
+
+The confirmation can simply be part of the next poll-request and don't have to be an independent
+request just for the sake of confirmation.
