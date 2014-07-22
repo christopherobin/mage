@@ -10,15 +10,9 @@ var logger = {
 };
 
 var mage = require('../../lib/mage');
-var vaultValueLib = require('../../lib/archivist/vaultValue');
-var configuration = require('../../lib/archivist/configuration');
 var mysqlVaultMod = require('../../lib/archivist/vaults/mysql');
 var async = require('async');
 var assert = require('assert');
-
-
-//
-vaultValueLib.setup(logger);
 
 
 function createVault(cb) {
@@ -84,16 +78,6 @@ function dropDatabase(mysqlVault, cb) {
 }
 
 
-function registerTopic(topicName, index) {
-	configuration.registerTopicConfig(topicName, {
-		index: index,
-		vaults: {
-			mysql: {}
-		}
-	});
-}
-
-
 /* BEGIN TESTS */
 
 describe('MySQL Vault', function () {
@@ -135,6 +119,7 @@ describe('MySQL Vault', function () {
 
 
 	/*
+	// TODO: This needs to be moved into an integration test instead
 	describe('Archivist operations', function () {
 		var mysqlVault, state;
 		var testTopic = 'testTable';
