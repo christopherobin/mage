@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.37.1 - Bird on Head Cat
 
 ### Dependency updates
 
