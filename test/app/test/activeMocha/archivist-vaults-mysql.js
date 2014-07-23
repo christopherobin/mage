@@ -52,39 +52,80 @@ function dropDatabase(mysqlVault, cb) {
 /* BEGIN TESTS */
 
 describe('MySQL Vault', function () {
-	var state, mysqlVault;
-
+	var state = null;
+	var mysqlVault = null;
 	var mysqlVaultName = 'mysqlVault';
-	var testTopic = 'mysqlBinaryTopic';
 
-	var index = { id: '1' };
-	var binaryBuffer = new Buffer('sdfsdgdsfgsdfgsdg');
+	describe('Databases & tables', function () {
+		var testTopic = 'testTable';
 
-	before(function (done) {
-		state = new mage.core.State();
-		mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
+		before(function () {
+			state = new mage.core.State();
+			mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
+		});
 
-		createDatabase(mysqlVault, function () {
+		it('can create a database', function (done) {
+			createDatabase(mysqlVault, done);
+		});
+
+		it('can create a table', function (done) {
 			createTable(mysqlVault, testTopic, { id: 'VARCHAR(64)' }, 'TEXT', done);
 		});
-	});
 
-	it('can successfully write binary data', function (done) {
-		state.archivist.set(testTopic, index, binaryBuffer, 'application/octet-stream', 'live');
-		state.archivist.distribute(function (error) {
-			assert.ifError(error, 'MySQLVault#distribute returned an error');
-			state.archivist.get(testTopic, index, {}, function (error, getData) {
-				assert.ifError(error, 'MySQLVault#get returned an error');
-				assert.deepEqual(getData, binaryBuffer, 'Write/Read equality mismatch');
+		it('can drop a table', function (done) {
+			dropTable(mysqlVault, testTopic, done);
+		});
+
+		it('can drop a database', function (done) {
+			dropDatabase(mysqlVault, done);
+		});
+
+		after(function (done) {
+			state.close(function () {
+				mysqlVault = null;
+				state = null;
+
 				done();
 			});
 		});
 	});
 
-	after(function (done) {
-		dropTable(mysqlVault, testTopic, function () {
-			dropDatabase(mysqlVault, function () {
-				state.close(done);
+	describe('Get/Set Operations', function () {
+		var testTopic = 'mysqlBinaryTopic';
+		var index = { id: '1' };
+		var binaryBuffer = new Buffer('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBAQIBAQECAgICAgQDAgICAgUEBA', 'base64');
+
+		before(function (done) {
+			state = new mage.core.State();
+			mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
+
+			createDatabase(mysqlVault, function () {
+				createTable(mysqlVault, testTopic, { id: 'VARCHAR(64)' }, 'BLOB', done);
+			});
+		});
+
+		it('can successfully write binary data', function (done) {
+			state.archivist.set(testTopic, index, binaryBuffer, 'application/octet-stream', 'live');
+			state.archivist.distribute(function (error) {
+				assert.ifError(error, 'MySQLVault#distribute returned an error');
+				state.archivist.get(testTopic, index, null, function (error, getData) {
+					assert.ifError(error, 'MySQLVault#get returned an error');
+					assert.deepEqual(getData, binaryBuffer, 'Write/Read equality mismatch');
+					done();
+				});
+			});
+		});
+
+		after(function (done) {
+			dropTable(mysqlVault, testTopic, function () {
+				dropDatabase(mysqlVault, function () {
+					state.close(function () {
+						mysqlVault = null;
+						state = null;
+
+						done();
+					});
+				});
 			});
 		});
 	});
