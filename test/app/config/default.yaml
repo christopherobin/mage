@@ -10,11 +10,14 @@ archivist:
             type: memory
     listOrder:
         - volatileVault
+        - mysqlVault
     readOrder:
         - volatileVault
+        - mysqlVault
     writeOrder:
         - client
         - volatileVault
+        - mysqlVault
 
 developmentMode: true
 

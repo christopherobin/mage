@@ -56,7 +56,7 @@ exports.ucResponseData = {
 };
 
 
-exports.binaryTopic = {
+exports.mysqlBinaryTopic = {
 	index: ['id'],
 	readOptions: {
 		mediaTypes: ['application/octet-stream'],
@@ -64,6 +64,6 @@ exports.binaryTopic = {
 		optional: false
 	},
 	vaults: {
-		mysql: {}
+		mysqlVault: {}
 	}
 };

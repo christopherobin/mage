@@ -9,7 +9,7 @@ var logger = {
 	warning: console.warn
 };
 
-var mage = require('../../lib/mage');
+require('../../'); // register mage in codependency
 var mysqlVaultMod = require('../../lib/archivist/vaults/mysql');
 var async = require('async');
 var assert = require('assert');
@@ -116,54 +116,4 @@ describe('MySQL Vault', function () {
 			});
 		});
 	});
-
-
-	/*
-	// TODO: This needs to be moved into an integration test instead
-	describe('Archivist operations', function () {
-		var mysqlVault, state;
-		var testTopic = 'testTable';
-
-		beforeEach(function (done) {
-			createVault(function (_mysqlVault) {
-				mysqlVault = _mysqlVault;
-				createDatabase(mysqlVault, function () {
-					// I need to recreate the vault due to a race condition
-					createVault(function (_mysqlVault) {
-						mysqlVault = _mysqlVault;
-						createTable(mysqlVault, testTopic, { id: 'VARCHAR(64)' }, 'BLOB', function () {
-							registerTopic(testTopic, ['id']);
-							state = new mage.core.State();
-							state.archivist.privateVaults['mysqlVault'] = mysqlVault;
-							done();
-						});
-					});
-				});
-			});
-		});
-
-		it('can write binary data', function (done) {
-			var index = { id: '1' };
-			var binaryBuffer = new Buffer('');
-
-			state.archivist.set(testTopic, index, binaryBuffer, 'application/octet-stream', 'live');
-			state.archivist.distribute(function (error) {
-				assert.ifError(error, 'MySQLVault#distribute returned an error');
-				state.archivist.get(testTopic, index, {}, function (error, getData) {
-					assert.ifError(error, 'MySQLVault#get returned an error');
-					assert.deepEqual(getData, binaryBuffer, 'Write/Read equality mismatch');
-					done();
-				});
-			});
-		});
-
-		afterEach(function (done) {
-			dropTable(mysqlVault, testTopic, function () {
-				dropDatabase(mysqlVault, function () {
-					state.close(done);
-				});
-			});
-		});
-	});
-	*/
 });
