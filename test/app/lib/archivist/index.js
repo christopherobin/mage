@@ -54,3 +54,16 @@ exports.ucResponseData = {
 		volatileVault: {}
 	}
 };
+
+
+exports.mysqlBinaryTopic = {
+	index: ['id'],
+	readOptions: {
+		mediaTypes: ['application/octet-stream'],
+		encodings: ['live'],
+		optional: false
+	},
+	vaults: {
+		mysqlVault: {}
+	}
+};
