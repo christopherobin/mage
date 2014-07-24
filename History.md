@@ -2,6 +2,13 @@
 
 ## vNEXT
 
+### MySQL vault improvements and unit tests
+
+After discovering a bug with the way binary data was encoded, unit tests were written to prevent this in future. Whilst
+writing these unit tests we also discovered that there was an issue with the way the databases were created and dropped.
+
+We also added some additional helper functions for the creation and dropping of tables.
+
 ### Dependency updates
 
 | dependency        | from    | to      | changes   |

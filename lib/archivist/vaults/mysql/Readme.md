@@ -61,8 +61,21 @@ drop the entire database.
 
 ## Schema migrations
 
-Archivist allows for [schema migrations](../../SchemaMigrations.md), and the MySQL vault supports
+Archivist allows for [migrations](../../Migrations.md), and the MySQL vault supports
 this.
+
+
+## Helper function
+
+Currently we have the following helper functions for MySQL database management:
+ * `createDatabase(cb)`: This is used by `archivist-create` to create configured databases. You rarely need to call this
+   yourself.
+ * `dropDatabase(cb)`:  This is used by `archivist-drop` to destroy configured databases. You rarely need to call this
+   yourself.
+ * `createTable(tableName, columns, cb)`: This can be used to create tables inside migration scripts as outlined in the
+   [migrations](../../Migrations.md) document.
+ * `dropTable(tableName, cb)`: This can be used to drop tables inside migration scripts as outlined in the
+   [migrations](../../Migrations.md) document.
 
 
 ## How to set up your MySQL tables
