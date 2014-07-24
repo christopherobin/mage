@@ -65,7 +65,7 @@ Archivist allows for [migrations](../../Migrations.md), and the MySQL vault supp
 this.
 
 
-## Helper function
+## Helper functions
 
 Currently we have the following helper functions for MySQL database management:
  * `createDatabase(cb)`: This is used by `archivist-create` to create configured databases. You rarely need to call this
