@@ -1,4 +1,6 @@
 var mage = require('mage');
+var requirePeer = require('codependency').get('mage');
+var mysql = requirePeer('mysql');
 var assert = require('assert');
 
 
@@ -12,18 +14,19 @@ function createDatabase(mysqlVault, cb) {
 
 function createTable(mysqlVault, tableName, indexes, valueType, cb) {
 	var indexString = '';
-	for (var indexName in indexes) {
-		if (indexes.hasOwnProperty(indexName)) {
-			indexString += '  ' + indexName + ' ' + indexes[indexName] + ' NOT NULL,\n';
-		}
+	var indexNames = [];
+	for (var i = 0; i < indexes.length; i += 1) {
+		var index = indexes[i];
+		indexNames.push(index.name);
+		indexString += '  ' + mysql.escapeId(index.name) + ' ' + index.type + ' NOT NULL,\n';
 	}
 
 	var sql =
-		'CREATE TABLE IF NOT EXISTS `' + tableName + '` (\n' +
+		'CREATE TABLE IF NOT EXISTS ' + mysql.escapeId(tableName) + ' (\n' +
 		indexString +
 		'  value ' + valueType + ' NOT NULL,\n' +
 		'  mediaType VARCHAR(255) NOT NULL,\n' +
-		'  PRIMARY KEY (' + Object.keys(indexes).join(', ') + ')\n' +
+		'  PRIMARY KEY (' + indexNames.join(', ') + ')\n' +
 		') ENGINE=InnoDB';
 
 	mysqlVault.pool.query(sql, null, function (error) {
@@ -34,7 +37,7 @@ function createTable(mysqlVault, tableName, indexes, valueType, cb) {
 
 
 function dropTable(mysqlVault, tableName, cb) {
-	mysqlVault.pool.query('DROP TABLE `' + tableName + '`', null, function (error) {
+	mysqlVault.pool.query('DROP TABLE ' + mysql.escapeId(tableName), null, function (error) {
 		assert.ifError(error, 'MySQLVault#dropTable returned an error');
 		return cb();
 	});
@@ -69,7 +72,7 @@ describe('MySQL Vault', function () {
 		});
 
 		it('can create a table', function (done) {
-			createTable(mysqlVault, testTopic, { id: 'VARCHAR(64)' }, 'TEXT', done);
+			createTable(mysqlVault, testTopic, [{ name: 'id', type: 'VARCHAR(64)' }], 'TEXT', done);
 		});
 
 		it('can drop a table', function (done) {
@@ -100,7 +103,7 @@ describe('MySQL Vault', function () {
 			mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
 
 			createDatabase(mysqlVault, function () {
-				createTable(mysqlVault, testTopic, { id: 'VARCHAR(64)' }, 'BLOB', done);
+				createTable(mysqlVault, testTopic, [{ name: 'id', type: 'VARCHAR(64)' }], 'BLOB', done);
 			});
 		});
 
