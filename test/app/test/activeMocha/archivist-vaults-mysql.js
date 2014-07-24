@@ -11,7 +11,12 @@ function createDatabase(mysqlVault, cb) {
 
 
 function createTable(mysqlVault, tableName, indexes, valueType, cb) {
-	mysqlVault.createTable(tableName, indexes, valueType, function (error) {
+	var columns = indexes.concat([
+		{ name: 'value', type: valueType + ' NOT NULL' },
+		{ name: 'mediaType', type: 'VARCHAR(255) NOT NULL' }
+	]);
+
+	mysqlVault.createTable(tableName, columns, function (error) {
 		assert.ifError(error, 'MySQLVault#createTable returned an error');
 		return cb();
 	});
@@ -43,6 +48,7 @@ describe('MySQL Vault', function () {
 
 	describe('Databases & tables', function () {
 		var testTopic = 'testTable';
+		var indexColumns = [{ name: 'id', type: 'VARCHAR(64) NOT NULL', pk: true }];
 
 		before(function (done) {
 			state = new mage.core.State();
@@ -57,7 +63,7 @@ describe('MySQL Vault', function () {
 		});
 
 		it('can create a table', function (done) {
-			createTable(mysqlVault, testTopic, [{ name: 'id', type: 'VARCHAR(64) NOT NULL' }], 'TEXT', done);
+			createTable(mysqlVault, testTopic, indexColumns, 'TEXT', done);
 		});
 
 		it('can drop a table', function (done) {
@@ -82,13 +88,14 @@ describe('MySQL Vault', function () {
 		var testTopic = 'mysqlBinaryTopic';
 		var index = { id: '1' };
 		var binaryBuffer = new Buffer('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBAQIBAQECAgICAgQDAgICAgUEBA', 'base64');
+		var indexColumns = [{ name: 'id', type: 'VARCHAR(64) NOT NULL', pk: true }];
 
 		before(function (done) {
 			state = new mage.core.State();
 			mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
 
 			createDatabase(mysqlVault, function () {
-				createTable(mysqlVault, testTopic, [{ name: 'id', type: 'VARCHAR(64) NOT NULL' }], 'BLOB', done);
+				createTable(mysqlVault, testTopic, indexColumns, 'BLOB', done);
 			});
 		});
 
