@@ -16,18 +16,7 @@ function createTable(mysqlVault, tableName, indexes, valueType, cb) {
 		{ name: 'mediaType', type: 'VARCHAR(255) NOT NULL' }
 	]);
 
-	mysqlVault.createTable(tableName, columns, function (error) {
-		assert.ifError(error, 'MySQLVault#createTable returned an error');
-		return cb();
-	});
-}
-
-
-function dropTable(mysqlVault, tableName, cb) {
-	mysqlVault.dropTable(tableName, function (error) {
-		assert.ifError(error, 'MySQLVault#dropTable returned an error');
-		return cb();
-	});
+	mysqlVault.createTable(tableName, columns, cb);
 }
 
 
@@ -63,23 +52,53 @@ describe('MySQL Vault', function () {
 		});
 
 		it('can create a table', function (done) {
-			createTable(mysqlVault, testTopic, indexColumns, 'TEXT', done);
+			createTable(mysqlVault, testTopic, indexColumns, 'TEXT', function (error) {
+				assert.ifError(error, 'MySQLVault#createTable returned an error');
+				done();
+			});
 		});
 
 		it('can drop a table', function (done) {
-			dropTable(mysqlVault, testTopic, done);
+			mysqlVault.dropTable(testTopic, function (error) {
+				assert.ifError(error, 'MySQLVault#dropTable returned an error');
+				done();
+			});
 		});
 
 		it('can drop a database', function (done) {
 			dropDatabase(mysqlVault, done);
 		});
 
-		after(function (done) {
-			state.close(function () {
-				mysqlVault = null;
-				state = null;
+		it('can\'t create a table if it already exists', function (done) {
+			createDatabase(mysqlVault, function () {
+				createTable(mysqlVault, testTopic, indexColumns, 'TEXT', function (error) {
+					assert.ifError(error, 'MySQLVault#createTable returned an error');
+					createTable(mysqlVault, testTopic, indexColumns, 'TEXT', function (error) {
+						assert(error, 'MySQLVault#createTable should\'ve returned an error');
+						done();
+					});
+				});
+			});
+		});
 
-				done();
+		it('can\'t drop a table if it doesn\'t exist', function (done) {
+			mysqlVault.dropTable(testTopic, function (error) {
+				assert.ifError(error, 'MySQLVault#dropTable returned an error');
+				mysqlVault.dropTable(testTopic, function (error) {
+					assert(error, 'MySQLVault#dropTable should\'ve returned an error');
+					done();
+				});
+			});
+		});
+
+		after(function (done) {
+			dropDatabase(mysqlVault, function () {
+				state.close(function () {
+					mysqlVault = null;
+					state = null;
+
+					done();
+				});
 			});
 		});
 	});
@@ -112,7 +131,7 @@ describe('MySQL Vault', function () {
 		});
 
 		after(function (done) {
-			dropTable(mysqlVault, testTopic, function () {
+			mysqlVault.dropTable(testTopic, function () {
 				dropDatabase(mysqlVault, function () {
 					state.close(function () {
 						mysqlVault = null;
