@@ -22,7 +22,7 @@ function createTable(mysqlVault, tableName, indexes, valueType, cb) {
 	}
 
 	var sql =
-		'CREATE TABLE IF NOT EXISTS ' + mysql.escapeId(tableName) + ' (\n' +
+		'CREATE TABLE ' + mysql.escapeId(tableName) + ' (\n' +
 		indexString +
 		'  value ' + valueType + ' NOT NULL,\n' +
 		'  mediaType VARCHAR(255) NOT NULL,\n' +
@@ -62,9 +62,12 @@ describe('MySQL Vault', function () {
 	describe('Databases & tables', function () {
 		var testTopic = 'testTable';
 
-		before(function () {
+		before(function (done) {
 			state = new mage.core.State();
 			mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
+
+			// Drop database before starting
+			dropDatabase(mysqlVault, done);
 		});
 
 		it('can create a database', function (done) {
