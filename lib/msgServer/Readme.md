@@ -16,20 +16,33 @@ The messages emitted by the server inevitably make their way to the client.
 ## The protocol
 
 The serialization protocol used by the message stream is the same regardless of the transport type
-used. A single package of messages is formatted in JSON as follows:
+used. Packages of messages are formatted in JSON as follows:
 
 ```json
 {
-  "1": ["some.event.name"],
-  "2": ["eventname", {"any":"data"}]
+  "1": [
+    ["some.event.name"],
+    ["another.event", { "some": "data" }]
+  ],
+  "2": [
+    ["eventname", {"any":"data"}]
+  ]
 }
 ```
 
-The key represents the message ID, which increments by 1 for each message emitted. Messages must be
-processed in order of message ID. The content of the message is an array of 1 or 2 elements.
+The key represents the message pack ID, which increments by 1 for each batch of messages emitted.
+Messages must be processed in order of message ID and the array order in which they occur. The
+content of the message is an array of 1 or 2 elements.
 
 The first element is a string that represents the type of the message. This may be used as the event
 name in a client-side event emitter. The optional second element is the real payload of the message.
+
+A common convention is for event names to be dot-separated. A client may choose to implement the
+emission of an event in chunks from most-relevant to least-relevant. For example, the event
+`shop.purchase` with data `{ "item": "boots" }` may be emitted twice.
+
+1. `shop.purchase` with data `{ "item": "boots" }`
+2. `shop` with data `{ "item": "boots" }`
 
 ## Transport types
 
