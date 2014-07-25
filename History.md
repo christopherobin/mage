@@ -2,6 +2,15 @@
 
 ## vNEXT
 
+### Miscellaneous changes
+
+* The message stream protocol is now documented.
+* Small performance improvement in message propagation in MMRP.
+
+### Bug fixes
+
+* When using short-polling, MMRP's broadcast feature did not work.
+
 ### MySQL vault improvements and unit tests
 
 After discovering and fixing a bug with the way binary data was encoded, unit tests were written to prevent this in
@@ -22,6 +31,7 @@ Lastly we added some additional helper functions for the creation and dropping o
 ### Miscellaneous Changes
 
 * We have added more logs when encountering parse errors in `httpBatchHandler`.
+
 
 ## v0.37.0 - Summer Cat
 
