@@ -76,9 +76,10 @@ different from short-polling. If there are no messages available however, the co
 and wait for messages to arrive. The moment messages are ready for delivery, the HTTP request will
 return with HTTP status code `200` and content-type `application/json`.
 
-In order to reliably detect clients unavailability, the server will periodically send a heartbeat
-message to the client. It is up to the client to detect this, and reconnect with the server. A
-heartbeat message's full response body is `HB` (for HeartBeat), and the content-type is `text/plain`.
+In order to reliably detect clients unavailability, the server will periodically close the
+connection to the client. It is up to the client to detect this, and reconnect with the server to
+make its presence known. The disconnect will happen with HTTP status code `204` and does not carry a
+response body.
 
 ## Confirming message receipts
 
