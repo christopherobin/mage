@@ -4,8 +4,8 @@ The message server is in charge of event propagation through the system.
 
 ## MMRP
 
-The message server uses the MMRP protocol to ensure communication between
-the different instances of node.
+The message server uses the MMRP protocol to ensure communication between the different MAGE
+instances on the network.
 
 See the [MMRP documentation](./mmrp/Readme.md).
 
@@ -25,7 +25,7 @@ used. Packages of messages are formatted in JSON as follows:
     ["another.event", { "some": "data" }]
   ],
   "2": [
-    ["eventname", {"any":"data"}]
+    ["eventname", { "any": "data" }]
   ]
 }
 ```
@@ -91,5 +91,5 @@ string named `confirmIds` and comma separated, as follows:
 GET http://domain/msgstream?transport=longpolling&confirmIds=1,2,3
 ```
 
-The confirmation can simply be part of the next poll-request and don't have to be an independent
+The confirmation can simply be part of the next poll-request and should not be an independent HTTP
 request just for the sake of confirmation.
