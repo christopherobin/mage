@@ -11,6 +11,14 @@
 
 * When using short-polling, MMRP's broadcast feature did not work.
 
+### MySQL vault improvements and unit tests
+
+After discovering and fixing a bug with the way binary data was encoded, unit tests were written to prevent this in
+future. Whilst writing these unit tests we also discovered that there was an issue with the way the databases were
+created and dropped which is also now fixed.
+
+Lastly we added some additional helper functions for the creation and dropping of tables.
+
 
 ## v0.37.1 - Bird on Head Cat
 

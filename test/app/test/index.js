@@ -4,6 +4,7 @@ var fs = require('fs');
 var Bomb = require('./bomb');
 var integration = require('./integration');
 var mocha = require('./mocha');
+var activeMocha = require('./activeMocha');
 
 function unlink(path) {
 	try {
@@ -137,11 +138,28 @@ exports.start = function (project) {
 		});
 	}
 
+	function projectActiveMocha(cb) {
+		var stepName = 'activeMocha';
+
+		bomb.arm(stepName);
+
+		activeMocha(function (error) {
+			if (error) {
+				return cb(error);
+			}
+
+			bomb.disarm(stepName);
+
+			cb();
+		});
+	}
+
 	async.series([
 		projectSetup,
 		projectStart,
 		projectIntegration,
-		projectMocha
+		projectMocha,
+		projectActiveMocha
 	], function (error) {
 		if (error) {
 			console.error(error);

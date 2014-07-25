@@ -1,0 +1,6 @@
+archivist:
+    vaults:
+        mysqlVault:
+            type: mysql
+            config:
+                url: "mysql://root:aeriscloud@localhost/mage_unit_tests"
