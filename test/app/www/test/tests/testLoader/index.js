@@ -22,13 +22,13 @@ describe('Package Loader', function () {
 		});
 	});
 
-	it('allows to load packages after configuration', function () {
-		loader.assertPackageIsLoadable('myInlinePackage');
-		loader.assertPackageIsLoadable('package');
+	it('generates a package request for a package', function () {
+		assert.ok(loader.createPackageRequest('myInlinePackage'));
 	});
 
 	it('generates a download URL for a package', function () {
-		assert.ok(loader.getPackageUrl('myInlinePackage').indexOf('/app/test/myInlinePackage?') !== -1);
+		var req = loader.createPackageRequest('myInlinePackage');
+		assert.ok(loader.getPackageUrl(req).indexOf('/app/test/myInlinePackage?') !== -1);
 	});
 
 	it('allows language change', function () {
@@ -64,7 +64,7 @@ describe('Package Loader', function () {
 	});
 
 	it('can create Package objects', function () {
-		new Package('myInlinePackage');
+		new Package(loader.createPackageRequest('myInlinePackage'));
 	});
 
 	var testDelimiter = '--foobar--';
@@ -83,7 +83,8 @@ describe('Package Loader', function () {
 			'text/javascript\n' + testJs
 		].join('\n');
 
-		var pkg = new Package('myInlinePackage');
+		var req = loader.createPackageRequest('myInlinePackage');
+		var pkg = new Package(req);
 		pkg.parse(data);
 
 		assert.equal(testHtml, pkg.content['text/html'][0]);
@@ -195,17 +196,29 @@ describe('Package Loader', function () {
 	});
 
 	it('cannot download a package in an incompatible client config', function (done) {
+		loader.clientConfig.language = 100;
+
 		assert.equal(loader.connectionState, 'online');
+
+		var count = 0;
 
 		loader.on('error', function (error) {
 			assert.ok(error);
-			assert.equal(error.isRetrying, true);
+			assert.strictEqual(error.isRetrying, false);
+			count += 1;
 
-			done();
+			if (count === 2) {
+				done();
+			}
 		});
 
-		loader.loadPackage('mypackage', function () {
-			throw new Error('Download should not have succeeded');
+		loader.loadPackage('mypackage', function (error) {
+			assert.ok(error);
+			count += 1;
+
+			if (count === 2) {
+				done();
+			}
 		});
 	});
 
