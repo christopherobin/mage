@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.37.2 - Splat Cat
 
 ### MMRP
 
