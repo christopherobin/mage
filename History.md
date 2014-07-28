@@ -4,20 +4,58 @@
 
 ### Loader
 
-The MAGE loader has been rewritten from the ground up. Please read its documentation to fully
-get up to speed with the right way to interact with it. In an nutshell however, this is what
-happened.
+The MAGE loader has been rewritten from the ground up. Please read its documentation to fully get up
+to speed with the right way to interact with it. In an nutshell however, this is what happened.
 
 * The "page" terminology has been renamed to "package".
 * You no longer have to call `loader.configure(window.mageConfig)`.
 * The weak dependency to MAGE's asset class has been removed.
-* You can implement storage engines other than LocalStorage for cache, and it can be turned off.
+* You can implement storage engines other than LocalStorage for cache.
+* Package cache can be turned off altogether.
 * Introduction of the `Package` class that you can interact with to:
   - Read and manipulate downloaded content.
   - Inject HTML and CSS early.
 * A lot of sanity checks have been added to warn you early about bad configuration or API calls.
 * Event arguments changed a bit, so please read:
 * [Full Documentation](./lib/loader/Readme.md)!
+
+
+## v0.37.2 - Splat Cat
+
+### MMRP
+
+* The message stream protocol has been documented.
+* Small performance improvement in message propagation in MMRP.
+* Fixed: When using short-polling, MMRP's broadcast feature did not work.
+* Fixed: v0.37.0 introduced a bug where events were being delivered never (or late) to the browser.
+
+### MySQL vault improvements and unit tests
+
+After discovering and fixing a bug with the way binary data was encoded, unit tests were written to
+prevent this in future. Whilst writing these unit tests we also discovered that there was an issue
+with the way the databases were created and dropped which has now become more robust.
+
+Lastly we added some additional helper functions for the creation and dropping of tables.
+
+### Bug fixes
+
+* The bootstrapped app was no longer displaying HTML correctly.
+
+
+## v0.37.1 - Bird on Head Cat
+
+### Dependency updates
+
+| dependency        | from    | to      | changes   |
+|-------------------|---------|---------|-----------|
+| node              | 0.10.28 | 0.10.29 | [Release notes](http://blog.nodejs.org/2014/06/16/openssl-and-breaking-utf-8-change/) |
+
+### Miscellaneous Changes
+
+* We have added more logs when encountering parse errors in `httpBatchHandler`.
+
+
+## v0.37.0 - Summer Cat
 
 ### JSON-RPC
 
@@ -27,24 +65,61 @@ Read the [Command Center documentation](./lib/commandCenter/Readme.md) to have m
 
 ### Session Improvements
 
-Added `ident.restoreSession` to the ident module, see [the documentation](./lib/modules/ident/Readme.md) for details.
-
 We have simplified logging in and logging out, just listen for `session` events `set` and `unset`
-on the eventManager.
+on the eventManager. `session.restore` has been added to the session module, see
+[the documentation](./lib/modules/session/Readme.md) for details.
+
+`session.register` is no longer an asynchronous function and returns a session object when called.
+**If you were handling your own session registration, this is a breaking change and will require an
+update to your code.**
+
+User commands `isValidSession` and `reassignSession` have been renamed to `isValid` and `reassign`.
+
+* `session.resolve` now returns an error if it cannot resolve a session instead of no error and no
+  session.
+* Unreasonably low session TTL is now a warning, not a fatal emergency.
+* That does mean integer configuration is no longer allowed, it must be "30s" for example.
+* We no longer expose mage.session.keyLength.
+
+### Message Server Improvements
+
+Message Server automatically starts the message stream when a session is established and aborts it
+when the session is closed. You can now abort and start the message stream yourself by calling
+`msgServer.abort()` and `msgServer.start()`.
+
+We have also removed the sessionKey from the Message Server object.
 
 ### API changes
 
 * `State.respondJson()` is no longer available. You must use `State.respond()`.
 * The `userpass` ident engine no longer uses state.error internally. If you use the module instead
-of the usercommands, you'll need to deal with the errors yourself.
+  of the usercommands, you'll need to deal with the errors yourself.
 * Archivist usercommands: `rawGet`, `rawMGet` and `rawList` can now be executed while anonymous
-giving you the ability to query data without being logged in.
+  giving you the ability to query data without being logged in.
 * `ident.login` now simply returns the same session data that you get with session.set. User data
-can be found in the meta property and is automatically populated on `mage.ident.user`.
+  can be found in the meta property and is automatically populated on `mage.ident.user`.
+
+#### Bash auto completion
+
+MAGE now auto-completes your command line (when you hit the tab-key). On a newly bootstrapped
+project, simply run `make dev` to setup git hooks and bash auto completion. Existing projects should
+copy the `Makefile` from `mage/scripts/templates/create-project/Makefile`, and in particular the
+section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environment.
+
+### Miscellaneous Changes
+
+* The warning log for long running http requests now ignores requests that start with /msgstream
+* The warning log for unzipping gzipped content has been demoted to a debug log.
+* You can now do a heapdump on the master process.
 
 ### Bug fixes
 
 * If the file logger failed to create a write stream, it would prevent MAGE from shutting down.
+* Aggressive archivist usage tests were not testing the index correctly.
+* archivist.list could throw errors, which should always go through the callback instead.
+* The elasticsearch vault now logs an error during setup if it has an error.
+* MAGE will no longer exit without logging anything when a module returns an error during setup.
+  You may get duplicate logs in some cases, but it's better than getting no logs.
 
 
 ## v0.36.0 - Y U No Fit Cat
@@ -145,6 +220,7 @@ an `eventManager` has been added on the client to handle all the events in one p
 * `mage.core.msgServer.getClientHost()` is now `mage.core.httpServer`.
 * `httpServer.getClientHostBaseUrl()` is now `httpServer.getBaseUrl()`.
 * `msgServer.on()` is now `eventManager.on()`.
+
 
 ### Miscellaneous changes
 
