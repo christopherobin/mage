@@ -16,6 +16,7 @@ to speed with the right way to interact with it. In an nutshell however, this is
   - Read and manipulate downloaded content.
   - Inject HTML and CSS early.
 * A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+* You can re-download a package after a language change to update assets and stylesheets at runtime.
 * Event arguments changed a bit, so please read:
 * [Full Documentation](./lib/loader/Readme.md)!
 
