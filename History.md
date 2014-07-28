@@ -2,22 +2,24 @@
 
 ## vNEXT
 
-### Miscellaneous changes
+### MMRP
 
-* The message stream protocol is now documented.
+* The message stream protocol has been documented.
 * Small performance improvement in message propagation in MMRP.
-
-### Bug fixes
-
-* When using short-polling, MMRP's broadcast feature did not work.
+* Fixed: When using short-polling, MMRP's broadcast feature did not work.
+* Fixed: v0.37.0 introduced a bug where events were being delivered never (or late) to the browser.
 
 ### MySQL vault improvements and unit tests
 
-After discovering and fixing a bug with the way binary data was encoded, unit tests were written to prevent this in
-future. Whilst writing these unit tests we also discovered that there was an issue with the way the databases were
-created and dropped which is also now fixed.
+After discovering and fixing a bug with the way binary data was encoded, unit tests were written to
+prevent this in future. Whilst writing these unit tests we also discovered that there was an issue
+with the way the databases were created and dropped which has now become more robust.
 
 Lastly we added some additional helper functions for the creation and dropping of tables.
+
+### Bug fixes
+
+* The bootstrapped app was no longer displaying HTML correctly.
 
 
 ## v0.37.1 - Bird on Head Cat
