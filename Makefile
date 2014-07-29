@@ -1,7 +1,7 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
-TEST_APP = ./test/app
-TEST_SERVER = ./test/server
+TEST_UNIT = ./test/unit
+TEST_INTEGRATION = ./test/integration
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -46,7 +46,7 @@ deps-npm:
 
 deps-component:
 	mkdir -p components
-	@cd test/app; node . install-components
+	@cd $(TEST_INTEGRATION); node . install-components
 
 
 # DEVELOPMENT
@@ -73,12 +73,13 @@ dev-githooks:
 define helpQuality
 	@echo "Quality:"
 	@echo
-	@echo "  make test              Runs all tests (shortcut for test-lint and test-unit)."
+	@echo "  make test              Runs all tests (shortcut for test-lint, test-style, test-unit and test-integration)."
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
 	@echo "  make test-lint         Lints every JavaScript and JSON file in the project."
 	@echo "  make test-style        Tests code style on every JavaScript and JSON file in the project."
-	@echo "  make test-unit         Runs every unit test."
+	@echo "  make test-unit         Runs all unit tests."
+	@echo "  make test-integration  Runs all integration test."
 	@echo "  make report-complexity Creates a Plato code complexity report."
 	@echo "  make report-coverage   Creates a unit test coverage report."
 	@echo
@@ -88,17 +89,9 @@ define helpQuality
 	@echo
 endef
 
-.PHONY: lint lint-all test report test-lint test-style test-unit report-complexity report-coverage
+.PHONY: test report test-lint test-style test-unit test-integration report-complexity report-coverage
 
-# lint is deprecated
-lint: test-lint
-	@echo ">>> Warning: The make lint target has been deprecated, please change it to 'test-lint'."
-
-# lint-all is deprecated
-lint-all: test-lint
-	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'test-lint'."
-
-test: test-lint test-style test-unit
+test: test-lint test-style test-unit test-integration
 report: report-complexity report-coverage
 
 define lintPath
@@ -140,12 +133,12 @@ else
 endif
 
 test-unit:
-	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
+	$(BIN)/mocha -R spec --recursive $(TEST_UNIT)
 
-	@echo
+test-integration:
 	@echo Running integration tests
 	@echo
-	@cd $(TEST_APP); NODE_ENV="$(NODE_ENV),unit-tests" node integration
+	NODE_ENV="$(NODE_ENV),unit-tests" node $(TEST_INTEGRATION) autorun
 
 
 report-complexity:
@@ -153,8 +146,13 @@ report-complexity:
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 report-coverage:
-	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_APP)/integration.js --dir $(COVERAGE_REPORT)/app
-	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/server -- -R spec --recursive $(TEST_SERVER)
+	# unit tests
+	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/unit -- -R spec --recursive $(TEST_UNIT)
+
+	# integration tests
+	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_INTEGRATION) --dir $(COVERAGE_REPORT)/integration
+
+	# aggregate results
 	$(BIN)/istanbul report html --root $(COVERAGE_REPORT) --dir $(COVERAGE_REPORT)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
 
