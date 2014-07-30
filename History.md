@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.37.3 - Mad Cat
 
 ### Miscellaneous Changes
 
