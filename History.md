@@ -5,6 +5,8 @@
 ### Miscellaneous Changes
 
 * The web client's Asset.getContents function now allows the callback to come as the first argument.
+* Bumped node-mysql peer dependency version to ~2.4.1
++ Bumped node-mysql dev dependency to version 2.4.1 for unit tests
 
 ### Bug fixes
 
