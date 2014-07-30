@@ -1,0 +1,19 @@
+{
+	"name": "test",
+	"dependencies": {
+		"timoxley/assert": "0.0.1",
+		"visionmedia/mocha": "1.20.1"
+	},
+	"local": [
+		"browser"
+	],
+	"scripts": [
+		"index.js"
+	],
+	"paths": [
+		"../../test/tests"
+	],
+	"styles": [
+		"style.css"
+	]
+}
