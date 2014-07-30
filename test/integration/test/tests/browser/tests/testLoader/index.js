@@ -106,21 +106,13 @@ describe('MAGE Package Loader', function () {
 			events += 1;
 		});
 
-		loader.on('myInlinePackage.loaded', function (loadedPkg) {
-			assert.equal(loadedPkg, pkg);
-			assert.equal(window.myInlinePackageTestValue, 123);
-			events += 1;
-		});
-
-		loader.on('loaded', function (loadedPkg) {
-			assert.equal(loadedPkg, pkg);
-			assert.equal(window.myInlinePackageTestValue, 123);
-			events += 1;
-		});
-
 		loader.registerPackage(pkg);
 
-		assert.equal(events, 4);
+		assert.equal(events, 2);
+		assert.strictEqual(window.myInlinePackageTestValue, undefined);
+
+		pkg.runJs();
+
 		assert.equal(window.myInlinePackageTestValue, 123);
 	});
 
