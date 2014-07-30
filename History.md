@@ -2,6 +2,10 @@
 
 ## vNEXT
 
+### Miscellaneous Changes
+
+* The web client's Asset.getContents function now allows the callback to come as the first argument.
+
 ### Bug fixes
 
 * A recent refactoring of the browser-side XHR wrapper became too strict about content-types,
