@@ -1,5 +1,19 @@
 # Release history
 
+## v0.37.3 - Mad Cat
+
+### Miscellaneous Changes
+
+* The web client's Asset.getContents function now allows the callback to come as the first argument.
+* Bumped node-mysql peer dependency version to ~2.4.1
++ Bumped node-mysql dev dependency to version 2.4.1 for unit tests
+
+### Bug fixes
+
+* A recent refactoring of the browser-side XHR wrapper became too strict about content-types,
+  preventing obscure (missing mime-magic on servers) types not to be readable anymore (ie: gettext).
+
+
 ## v0.37.2 - Splat Cat
 
 ### MMRP
