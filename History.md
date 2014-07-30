@@ -20,6 +20,12 @@ to speed with the right way to interact with it. In an nutshell however, this is
 * Event arguments changed a bit, so please read:
 * [Full Documentation](./lib/loader/Readme.md)!
 
+### Peer Dependency updates
+
+| peer dependency   | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
+
 
 ## v0.37.3 - Mad Cat
 
