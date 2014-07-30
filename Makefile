@@ -150,7 +150,7 @@ report-coverage:
 	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/unit -- -R spec --recursive $(TEST_UNIT)
 
 	# integration tests
-	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_INTEGRATION) --dir $(COVERAGE_REPORT)/integration
+	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_INTEGRATION) --dir $(COVERAGE_REPORT)/integration -- autorun
 
 	# aggregate results
 	$(BIN)/istanbul report html --root $(COVERAGE_REPORT) --dir $(COVERAGE_REPORT)
