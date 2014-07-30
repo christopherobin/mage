@@ -3,6 +3,12 @@
 This folder represents an application that is aimed specifically at running integration tests
 against the MAGE codebase.
 
+## Running tests
+
+You can run either `node .` to host the integration suite and have browsers connect to the web-app.
+Alternatively, run `node . autorun` to run the full test suite (including server tests) and report
+the results.
+
 ## Structure
 
 ### /config
