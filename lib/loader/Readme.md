@@ -220,7 +220,7 @@ In the case of a fatal error, there is very little you can do besides inform the
 are the following:
 
 - The loader has not been adequately configured to download packages.
-- You have already loaded a package by this name.
+- The JavaScript in this package failed to execute.
 - This browser does not support XMLHttpRequest.
 - This browser does not support CORS requests (if your configuration requires it).
 
