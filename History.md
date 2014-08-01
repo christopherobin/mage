@@ -7,7 +7,8 @@
 If a session is expired or has been bumped out by logging into another device, the access level will
 now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
 Authentication errors are now always returned in your user callback, but at the same time, an
-`"io.error.auth.*"` error will be emitted on `mage.eventManager`.
+`"io.error.auth.*"` error will be emitted on `mage.eventManager`. Also, whenever `io.error.auth` is
+emitted, the client will be forced to forget about the now invalid session key.
 
 ### Peer Dependency updates
 
