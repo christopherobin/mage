@@ -16,7 +16,7 @@ network can access this metadata!
 To use service discovery, configuration is mandatory. Due to the nature of cloud based solutions such as Amazon EC2,
 mDNS will fail to work correctly and you will need to setup an alternative. For now the only alternative is zookeeper.
 
-The mDNS configuration is as follows:
+The `mDNS` configuration is as follows:
 
 ```yaml
 server:
@@ -26,7 +26,7 @@ server:
             description: "UniqueIdOnTheNetwork" # optional
 ```
 
-The zookeeper configuration is as follows:
+The `zookeeper` configuration is as follows:
 
 ```yaml
 server:
@@ -36,12 +36,22 @@ server:
             hosts: "192.168.1.12:2181,192.168.3.18:2181,etc..."
 ```
 
+The `single` configuration is as follows:
+
+```yaml
+server:
+    serviceDiscovery:
+        engine: single
+```
+
 ## Engines
 
- - [mdns](engines/mdns/Readme.md), announce on the local network using udp broadcasts/multicasts, useful for development
+ - [mdns](engines/mdns/Readme.md), announces on the local network using udp broadcasts/multicasts, useful for development
     purposes.
  - [zookeeper](engines/zookeeper/Readme.md), uses zookeeper to store the network topology, allowing usage in specific
     environments where servers cannot be located on the same local network (Amazon and Cloud providers for example).
+ - [single](engines/single/Readme.md), uses the memory to share services inside the same process.
+    You should use it, if you don't use the cluster mode and you have only one server.
 
 ## API
 
