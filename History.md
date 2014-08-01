@@ -2,11 +2,19 @@
 
 ## vNEXT
 
+### Authentication
+
+If a session is expired or has been bumped out by logging into another device, the access level will
+now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
+Authentication errors are now always returned in your user callback, but at the same time, an
+`"io.error.auth.*"` error will be emitted on `mage.eventManager`.
+
 ### Peer Dependency updates
 
 | peer dependency   | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
+
 
 ## v0.37.3 - Mad Cat
 
