@@ -9,7 +9,8 @@ cluster.setupMaster({
 
 cluster.fork();
 
-var messenger = require('../../lib/processMessenger');
+var Messenger = require('../../lib/processMessenger');
+var messenger = new Messenger('test');
 
 describe('processMessenger', function () {
 	it('master broadcast/worker echo', function (done) {
@@ -25,7 +26,7 @@ describe('processMessenger', function () {
 		var obj = { somekey: 'some value' };
 
 		var received = 0;
-		messenger.on('test.test1', function (data) {
+		messenger.on('test1', function (data) {
 			received++;
 			assert.deepEqual(data, obj);
 			if (received === numberOfWorkers) {
@@ -33,7 +34,7 @@ describe('processMessenger', function () {
 			}
 		});
 
-		messenger.broadcast('test.test1', obj);
+		messenger.broadcast('test1', obj);
 	});
 
 	it('master can not send messages to parent', function (done) {
@@ -49,10 +50,10 @@ describe('processMessenger', function () {
 	it('worker can not broadcast', function (done) {
 		cluster.fork();
 
-		messenger.on('test.test3.ok', function () {
+		messenger.on('test3.ok', function () {
 			done();
 		});
 
-		messenger.broadcast('test.test3.try');
+		messenger.broadcast('test3.try');
 	});
 });
