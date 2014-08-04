@@ -26,6 +26,15 @@ exports.appNames = [];
 
 
 function createTest(app) {
+	app.assetMap.setup({
+		cacheability: {
+			img: ['.', 0]
+		},
+		profiles: {}
+	});
+
+	app.assetMap.addFolder('./assets');
+
 	var testPage = app.addIndexPage('loader', './www/test/');
 	testPage.registerComponent('mypackage', './www/test/mypackage', { assetMap: true });
 	testPage.registerComponent('unbuildablepackage', './www/test/unbuildablepackage');

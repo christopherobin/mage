@@ -34,13 +34,13 @@ describe('MAGE Package Loader', function () {
 		loader.configure({
 			appName: 'test',
 			appVariants: {
-				languages: ['en', 'nl'],
+				languages: ['en', 'nl', 'ja'],
 				densities: [1, 2]
 			}
 		});
 
 		assert.strictEqual(loader.appName, 'test');
-		assert.deepEqual(loader.languages, ['en', 'nl']);
+		assert.deepEqual(loader.languages, ['en', 'nl', 'ja']);
 		assert.strictEqual(loader.clientConfig.language, 'en');
 		assert.deepEqual(loader.densities, [1, 2]);
 		assert.strictEqual(loader.clientConfig.density, 1);
@@ -243,28 +243,71 @@ describe('MAGE Package Loader', function () {
 		loader.setDensity(1);
 
 		loader.on('warning', function (warning) {
-			throw new Error('Warning was emitted');
+			throw new Error('Warning was emitted: ' + JSON.stringify(warning));
 		});
 
 		loader.on('error', function (error) {
-			throw new Error('Error was emitted');
+			throw new Error('Error was emitted: ' + JSON.stringify(error));
 		});
 
 		loader.on('offline', function (error) {
-			throw new Error('Offline was emitted');
+			throw new Error('Offline was emitted: ' + JSON.stringify(error));
 		});
 
 		loader.on('maintenance', function (error) {
-			throw new Error('Maintenance was emitted');
+			throw new Error('Maintenance was emitted: ' + JSON.stringify(error));
 		});
 
 		loader.loadPackage('mypackage', function (error, pkg) {
 			assert.ifError(error);
 			assert.ok(pkg);
+
+			// test if JS executed
 			window.require('mypackage');
-			assert.equal(window.mypackageTestValue, 456);
+
+			// test CSS element
 			assert(pkg.getCss());
-			pkg.destroy();
+
+			// test asset map
+			var assetMap = pkg.claimAllContent('text/assetmap');
+			assert(assetMap.indexOf('"foo/warrior":["/en/foo/warrior.gif","fdf09c4b",null]') !== -1);
+
+			done();
+		});
+	});
+
+	it('can re-download a package with a new client config', function (done) {
+		// tests issue #689, #724
+
+		loader.setLanguage('ja');
+
+		loader.on('warning', function (warning) {
+			throw new Error('Warning was emitted: ' + JSON.stringify(warning));
+		});
+
+		loader.on('error', function (error) {
+			throw new Error('Error was emitted: ' + JSON.stringify(error));
+		});
+
+		loader.on('offline', function (error) {
+			throw new Error('Offline was emitted: ' + JSON.stringify(error));
+		});
+
+		loader.on('maintenance', function (error) {
+			throw new Error('Maintenance was emitted: ' + JSON.stringify(error));
+		});
+
+		loader.loadPackage('mypackage', function (error, pkg) {
+			assert.ifError(error);
+			assert.ok(pkg);
+
+			// test CSS element
+			assert(pkg.getCss());
+
+			// test asset map
+			var assetMap = pkg.claimAllContent('text/assetmap');
+			assert(assetMap.indexOf('"foo/warrior":["/ja/foo/warrior.gif","34c446d9",null]') !== -1);
+
 			done();
 		});
 	});
@@ -290,11 +333,11 @@ describe('MAGE Package Loader', function () {
 		});
 
 		loader.on('offline', function (error) {
-			throw new Error('Offline was emitted');
+			throw new Error('Offline was emitted: ' + JSON.stringify(error));
 		});
 
 		loader.on('maintenance', function (error) {
-			throw new Error('Maintenance was emitted');
+			throw new Error('Maintenance was emitted: ' + JSON.stringify(error));
 		});
 
 		loader.on('error', count);

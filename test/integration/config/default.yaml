@@ -3,6 +3,9 @@ apps:
         access: admin
     test:
         access: admin
+        delivery:
+            clientConfigs:
+                languages: [en, ja]
 
 archivist:
     vaults:
