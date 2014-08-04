@@ -7,6 +7,6 @@ server:
     clientHost:
         bind:
             file: null
-            port: 0
+            port: 9990
         expose: null
     cluster: false

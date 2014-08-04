@@ -10,14 +10,40 @@ describe('MAGE Package Loader', function () {
 		assert(Package);
 	});
 
+	it('is configured automatically', function () {
+		// tests issue #598
+
+		assert(loader.appName);
+		assert(loader.clientConfig);
+		assert(loader.clientConfig.language);
+		assert(loader.clientConfig.density);
+		assert(loader.clientConfig.screen);
+		assert(loader.languages);
+		assert(loader.languages.length);
+		assert(loader.densities);
+		assert(loader.densities.length);
+	});
+
 	it('configures the loader', function () {
+		// test if a language that is not allowed will automatically unregister as we pass a new set
+		// of languages that does not contain it ("de").
+
+		loader.clientConfig.language = 'de';
+		loader.clientConfig.density = 4;
+
 		loader.configure({
 			appName: 'test',
 			appVariants: {
-				languages: ['nl', 'en'],
+				languages: ['en', 'nl'],
 				densities: [1, 2]
 			}
 		});
+
+		assert.strictEqual(loader.appName, 'test');
+		assert.deepEqual(loader.languages, ['en', 'nl']);
+		assert.strictEqual(loader.clientConfig.language, 'en');
+		assert.deepEqual(loader.densities, [1, 2]);
+		assert.strictEqual(loader.clientConfig.density, 1);
 	});
 
 	it('generates a package request for a package', function () {
@@ -217,19 +243,19 @@ describe('MAGE Package Loader', function () {
 		loader.setDensity(1);
 
 		loader.on('warning', function (warning) {
-			throw warning;
+			throw new Error('Warning was emitted');
 		});
 
 		loader.on('error', function (error) {
-			throw error;
+			throw new Error('Error was emitted');
 		});
 
 		loader.on('offline', function (error) {
-			throw error;
+			throw new Error('Offline was emitted');
 		});
 
 		loader.on('maintenance', function (error) {
-			throw error;
+			throw new Error('Maintenance was emitted');
 		});
 
 		loader.loadPackage('mypackage', function (error, pkg) {
@@ -241,5 +267,38 @@ describe('MAGE Package Loader', function () {
 			pkg.destroy();
 			done();
 		});
+	});
+
+	it('handles internal server errors', function (done) {
+		// tests issue #623
+
+		var counter = 0;
+
+		function count(error) {
+			assert(error);
+			assert(!error.isRetrying);
+
+			counter += 1;
+
+			if (counter === 2) {
+				done();
+			}
+		}
+
+		loader.on('warning', function (warning) {
+			throw new Error('Warning was emitted: ' + JSON.stringify(warning));
+		});
+
+		loader.on('offline', function (error) {
+			throw new Error('Offline was emitted');
+		});
+
+		loader.on('maintenance', function (error) {
+			throw new Error('Maintenance was emitted');
+		});
+
+		loader.on('error', count);
+
+		loader.loadPackage('unbuildablepackage', count);
 	});
 });

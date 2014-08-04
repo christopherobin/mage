@@ -28,6 +28,7 @@ exports.appNames = [];
 function createTest(app) {
 	var testPage = app.addIndexPage('loader', './www/test/');
 	testPage.registerComponent('mypackage', './www/test/mypackage', { assetMap: true });
+	testPage.registerComponent('unbuildablepackage', './www/test/unbuildablepackage');
 	testPage.routes.push('/test');
 	testPage.routes.push('/');
 }
