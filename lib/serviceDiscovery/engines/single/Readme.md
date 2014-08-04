@@ -4,7 +4,7 @@ This engine allows you to have a fake service discovery engine, to have the
 service discovery library available when you are using only one server.
 
 The services are stored directly in memory.
-In cluster mode, it uses the [process messenger](../../../processManager/messenger.js)
+In cluster mode, it uses the [process messenger](../../../processMessenger)
 to exchange messages between master and workers.
 
 
