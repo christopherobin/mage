@@ -312,6 +312,65 @@ describe('MAGE Package Loader', function () {
 		});
 	});
 
+	it('allows custom cache engines', function (done) {
+		// tests issue #486
+
+		var actions = [];
+
+		function FakeCache() {
+		}
+
+		FakeCache.test = function () {
+			return true;
+		};
+
+		FakeCache.prototype.getMetaData = function (pkgRequest, cb) {
+			actions.push('getMetaData');
+			cb();
+		};
+
+		FakeCache.prototype.getData = function (pkgRequest, cb) {
+			actions.push('getData');
+			cb(new Error('Data not in void cache'));
+		};
+
+		FakeCache.prototype.set = function (pkgRequest, metaData, data, cb) {
+			actions.push('set');
+			cb();
+		};
+
+		FakeCache.prototype.del = function (pkgRequest, cb) {
+			actions.push('del');
+			cb();
+		};
+
+		loader.setCacheStorage(FakeCache);
+
+		loader.on('warning', function (warning) {
+			throw new Error('Warning was emitted: ' + JSON.stringify(warning));
+		});
+
+		loader.on('error', function (error) {
+			throw new Error('Error was emitted: ' + JSON.stringify(error));
+		});
+
+		loader.on('offline', function (error) {
+			throw new Error('Offline was emitted: ' + JSON.stringify(error));
+		});
+
+		loader.on('maintenance', function (error) {
+			throw new Error('Maintenance was emitted: ' + JSON.stringify(error));
+		});
+
+		loader.loadPackage('mypackage', function (error, pkg) {
+			assert.ifError(error);
+			assert.ok(pkg);
+			assert.deepEqual(actions, ['getMetaData', 'set']);
+
+			done();
+		});
+	});
+
 	it('handles internal server errors', function (done) {
 		// tests issue #623
 
