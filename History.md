@@ -10,6 +10,10 @@ Authentication errors are now always returned in your user callback, but at the 
 `"io.error.auth.*"` error will be emitted on `mage.eventManager`. Also, whenever `io.error.auth` is
 emitted, the client will be forced to forget about the now invalid session key.
 
+If the server (or a proxy in between) returns an HTTP 403 response to a user command, it's no longer
+considered session expiration as before, but a network issue instead. This is useful for example
+when connecting over a VPN and losing your connection (issue #755).
+
 ### Peer Dependency updates
 
 | peer dependency   | from   | to     | changes   |
