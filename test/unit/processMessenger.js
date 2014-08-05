@@ -1,12 +1,12 @@
 var assert = require('assert');
 var cluster = require('cluster');
 
-
-
+// Use a custom script for the workers instead of running mocha
 cluster.setupMaster({
 	exec: __dirname + '/processMessenger-worker.js'
 });
 
+// Run a worker before instantiating the messenger
 cluster.fork();
 
 var Messenger = require('../../lib/processMessenger');
@@ -14,10 +14,6 @@ var messenger = new Messenger('test');
 
 describe('processMessenger', function () {
 	it('master broadcast/worker echo', function (done) {
-		if (cluster.isWorker) {
-			return;
-		}
-
 		var numberOfWorkers = 3;
 		for (var i = 0; i < numberOfWorkers; ++i) {
 			cluster.fork();
