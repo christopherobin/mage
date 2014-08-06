@@ -33,10 +33,43 @@ describe('processMessenger', function () {
 		messenger.broadcast('test1', obj);
 	});
 
+	it('master can send message to its workers', function (done) {
+		var worker = cluster.fork();
+
+		messenger.on('test2', function (data, from) {
+			assert.strictEqual(from, worker.id);
+			done();
+		});
+
+		messenger.send(worker.id, 'test2');
+	});
+
 	it('master can not send messages to parent', function (done) {
 		assert.throws(
 			function () {
-				messenger.send('test.test2');
+				messenger.send('master', 'test2');
+			},
+			Error
+		);
+		done();
+	});
+
+	it('send require a destination', function (done) {
+		assert.throws(
+			function () {
+				messenger.send(null, 'test2');
+			},
+			Error
+		);
+		done();
+	});
+
+	it('send require a message', function (done) {
+		var worker = cluster.fork();
+
+		assert.throws(
+			function () {
+				messenger.send(worker.id, null);
 			},
 			Error
 		);

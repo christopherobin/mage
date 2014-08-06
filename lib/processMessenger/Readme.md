@@ -14,22 +14,29 @@ It will use the given `namespace` to prefix all the messages internally.
 This method allows you to send a message to all the workers of your cluster.
 It can be used only from the master process.
 
-### messenger.send(string message, object data)
+### messenger.send([string|number] destination, string message, object data)
 
-This method allows you to send a message from one worker to the master process.
-It can be used only from a worker.
+This method allows you to send a message from one worker to the master process,
+or from the master process to one worker.
+
+`destination` must be the string `master` to send a message to the master,
+or the worker id to send a message to a worker.
 
 ## Events
 
-You will receive events with the name of the messages sent.
+You will receive events with the name of the messages sent,
+and the id of the worker or the string `master` which indicates the sender.
 
 ```javascript
 // On the master
 var Messenger = require('processMessenger');
 var messenger = new Messenger('namespace');
 
-messenger.on('event', function (data) {
-    messenger.broadcast('event', data);
+messenger.on('eventName', function (data, from) {
+    // broadcast
+    messenger.broadcast('eventName', data);
+    // reply
+    messenger.send(form, 'eventName', data);
 });
 ```
 
@@ -38,8 +45,8 @@ messenger.on('event', function (data) {
 var Messenger = require('processMessenger');
 var messenger = new Messenger('namespace');
 
-messenger.on('event', function (data) {
-    console.log('event received:', data);
+messenger.on('eventName', function (data, from) {
+    console.log('eventName received:', data);
 });
-messenger.send('event', {});
+messenger.send('master', 'eventName', {});
 ```
