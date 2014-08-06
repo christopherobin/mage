@@ -55,6 +55,7 @@ function setupErrorHandlers() {
 
 var pkg = mageLoader.getPackage('landing');
 pkg.addHtml(require('./page.html'));
+pkg.injectHtml();
 
 done(1);
 
@@ -66,7 +67,7 @@ mage.setup(function () {
 
 	// once our modules' needs have been satisfied, show this screen
 
-	pkg.showHtml();
+	mageLoader.displayPackage('landing');
 	done(4);
 
 	// download the rest of the app
@@ -84,6 +85,8 @@ mage.setup(function () {
 
 		var btn = document.getElementById('navToMain');
 		btn.onclick = function () {
+			mageLoader.displayPackage('main');
+
 			window.require('main');
 		};
 

@@ -15,23 +15,13 @@ loader.loadPackage('landing', function () {
 
 // Handle the various states that the loader can be in.
 
-loader.on('maintenance', function (msg, mimetype) {
+loader.on('maintenance', function (error) {
 	// The server is reporting that we are undergoing maintenance.
 	// The loader will keep on trying in the background and once the maintenance status disappears,
 	// the bootup process will continue automatically.
 
-	// msg: the content of the response
-	// mimetype: the content-type header of msg
-
-	// small hack: assign mimetype to itself so JSLint won't complain
-
-	mimetype = mimetype;
-
-	if (!msg) {
-		msg = 'We are currently undergoing maintenance, please try again soon. We thank you for your patience.';
-	}
-
-	window.alert(msg);
+	window.alert('We are currently undergoing maintenance.');
+	console.error(error);
 });
 
 loader.on('online', function () {
