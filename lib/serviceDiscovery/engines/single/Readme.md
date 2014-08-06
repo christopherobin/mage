@@ -10,4 +10,4 @@ to exchange messages between master and workers.
 
 ## Limitations
 
-* It works only if you have one server.
+* It works only if you have no more than one server.
