@@ -52,4 +52,14 @@ describe('processMessenger', function () {
 
 		messenger.broadcast('test3.try');
 	});
+
+	it('the namespace should be a string', function (done) {
+		assert.throws(
+			function () {
+				var messenger2 = new Messenger({ test: 1 });
+			},
+			Error
+		);
+		done();
+	});
 });
