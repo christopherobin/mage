@@ -21,7 +21,7 @@ It can be used only from a worker.
 
 ## Events
 
-Your will receive events with the name of the messages sent.
+You will receive events with the name of the messages sent.
 
 ```javascript
 // On the master

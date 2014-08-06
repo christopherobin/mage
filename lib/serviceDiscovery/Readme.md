@@ -50,8 +50,8 @@ server:
     purposes.
  - [zookeeper](engines/zookeeper/Readme.md), uses zookeeper to store the network topology, allowing usage in specific
     environments where servers cannot be located on the same local network (Amazon and Cloud providers for example).
- - [single](engines/single/Readme.md), uses the memory to share services inside the same process.
-    You should use it, if you don't use the cluster mode and you have only one server.
+ - [single](engines/single/Readme.md), uses the memory and inter-process communication to share services inside a cluster.
+    You should use it, if you have only one server. It supports both cluster and non-cluster mode.
 
 ## API
 
