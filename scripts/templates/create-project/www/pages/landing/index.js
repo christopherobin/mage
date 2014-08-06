@@ -53,8 +53,9 @@ function setupErrorHandlers() {
 
 // Set up all loaded modules. This will allow these modules to hit the server once to sync up.
 
-var page = mageLoader.renderPage('landing');
-page.innerHTML = require('./page.html');
+var pkg = mageLoader.getPackage('landing');
+pkg.addHtml(require('./page.html'));
+
 done(1);
 
 setupErrorHandlers();
@@ -65,27 +66,27 @@ mage.setup(function () {
 
 	// once our modules' needs have been satisfied, show this screen
 
-	mageLoader.displayPage('landing');
+	pkg.showHtml();
 	done(4);
 
-	// download the rest of the game
+	// download the rest of the app
 
-	mageLoader.loadPage('main');
+	mageLoader.loadPackage('main', function (error) {
+		if (error) {
+			console.error('Fatal error while downloading "main" package:', error);
+			return;
+		}
+
+		done(5);
+
+		// Once the main page becomes available, we can run its JavaScript code by calling
+		// window.require() on it.
+
+		var btn = document.getElementById('navToMain');
+		btn.onclick = function () {
+			window.require('main');
+		};
+
+		done(6);
+	});
 });
-
-
-// Commence downloading and execution of the "main" page.
-
-mageLoader.once('main.loaded', function () {
-	done(5);
-
-	// Once the main page becomes available, we can run its code by calling window.require() on it.
-
-	var btn = document.getElementById('navToMain');
-	btn.onclick = function () {
-		window.require('main');
-	};
-
-	done(6);
-});
-
