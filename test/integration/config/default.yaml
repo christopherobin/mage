@@ -1,0 +1,38 @@
+apps:
+    dev:
+        access: admin
+    test:
+        access: admin
+
+archivist:
+    vaults:
+        volatileVault:
+            type: memory
+    listOrder:
+        - volatileVault
+        - mysqlVault
+    readOrder:
+        - volatileVault
+        - mysqlVault
+    writeOrder:
+        - client
+        - volatileVault
+        - mysqlVault
+
+developmentMode: true
+
+module:
+    ident:
+        engines:
+            testEngine:
+                type: userpass
+                access: admin
+                config:
+                    topic: testEngine
+                    hash: sha1
+
+server:
+    clientHost:
+        bind:
+            port: 9990
+    cluster: false

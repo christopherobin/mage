@@ -53,7 +53,8 @@ function setupErrorHandlers() {
 
 // Set up all loaded modules. This will allow these modules to hit the server once to sync up.
 
-mageLoader.renderPage('landing');
+var page = mageLoader.renderPage('landing');
+page.innerHTML = require('./page.html');
 done(1);
 
 setupErrorHandlers();

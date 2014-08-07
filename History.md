@@ -2,6 +2,48 @@
 
 ## vNEXT
 
+### Peer Dependency updates
+
+| peer dependency   | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
+
+## v0.37.3 - Mad Cat
+
+### Miscellaneous Changes
+
+* The web client's Asset.getContents function now allows the callback to come as the first argument.
+* Bumped node-mysql peer dependency version to ~2.4.1
+* Bumped node-mysql dev dependency to version 2.4.1 for unit tests
+
+### Bug fixes
+
+* A recent refactoring of the browser-side XHR wrapper became too strict about content-types,
+  preventing obscure (missing mime-magic on servers) types not to be readable anymore (ie: gettext).
+
+
+## v0.37.2 - Splat Cat
+
+### MMRP
+
+* The message stream protocol has been documented.
+* Small performance improvement in message propagation in MMRP.
+* Fixed: When using short-polling, MMRP's broadcast feature did not work.
+* Fixed: v0.37.0 introduced a bug where events were being delivered never (or late) to the browser.
+
+### MySQL vault improvements and unit tests
+
+After discovering and fixing a bug with the way binary data was encoded, unit tests were written to
+prevent this in future. Whilst writing these unit tests we also discovered that there was an issue
+with the way the databases were created and dropped which has now become more robust.
+
+Lastly we added some additional helper functions for the creation and dropping of tables.
+
+### Bug fixes
+
+* The bootstrapped app was no longer displaying HTML correctly.
+
+
 ## v0.37.1 - Bird on Head Cat
 
 ### Dependency updates
@@ -13,6 +55,7 @@
 ### Miscellaneous Changes
 
 * We have added more logs when encountering parse errors in `httpBatchHandler`.
+
 
 ## v0.37.0 - Summer Cat
 

@@ -7,6 +7,9 @@
 	"paths": [
 		"../../../node_modules/mage/lib"
 	],
+	"templates": [
+		"page.html"
+	],
 	"scripts": [
 		"index.js"
 	],
