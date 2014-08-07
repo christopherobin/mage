@@ -8,6 +8,12 @@
 |-------------------|--------|--------|-----------|
 | elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
 
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
+
 ## v0.37.3 - Mad Cat
 
 ### Miscellaneous Changes
