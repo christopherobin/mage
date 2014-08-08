@@ -6,9 +6,12 @@
 
 If a session is expired or has been bumped out by logging into another device, the access level will
 now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
-Authentication errors are now always returned in your user callback, but at the same time, an
-`"io.error.auth.*"` error will be emitted on `mage.eventManager`. Also, whenever `io.error.auth` is
-emitted, the client will be forced to forget about the now invalid session key.
+You will receive an `auth` error in your user command callback. Additionally, mage will
+send a session.unset event to notify the client that their session is no longer valid.
+
+`"io.error.auth"` will no longer be emitted on `mage.eventManager`. You should listen for
+`session.unset` on mage.eventManager, the data in the event indicates the reason for your session
+to be unset.
 
 If the server (or a proxy in between) returns an HTTP 403 response to a user command, it's no longer
 considered session expiration as before, but a network issue instead. This is useful for example
