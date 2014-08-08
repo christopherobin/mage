@@ -11,8 +11,11 @@ It will use the given `namespace` to prefix all the messages internally.
 
 ### messenger.broadcast(string message, object data)
 
-This method allows you to send a message to all the workers of your cluster.
-It can be used only from the master process.
+This method allows you to send a message to all the workers and the master of your cluster.
+When the master send a broadcast message, all the workers will receive an event,
+but not the master.
+When a worker send a broadcast message, the master and all the workers,
+including the sender, will receive an event.
 
 ### messenger.send([string|number] destination, string message, object data)
 

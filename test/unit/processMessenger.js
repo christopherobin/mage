@@ -76,14 +76,14 @@ describe('processMessenger', function () {
 		done();
 	});
 
-	it('worker can not broadcast', function (done) {
-		cluster.fork();
-
-		messenger.on('test3.ok', function () {
-			done();
-		});
-
-		messenger.broadcast('test3.try');
+	it('the namespace is required', function (done) {
+		assert.throws(
+			function () {
+				var messenger2 = new Messenger();
+			},
+			Error
+		);
+		done();
 	});
 
 	it('the namespace should be a string', function (done) {
@@ -99,16 +99,46 @@ describe('processMessenger', function () {
 	it('worker-to-worker communication', function (done) {
 		messenger.on('test4.ok', function (data) {
 			assert.deepEqual(data.data, { data: 'test' });
-			assert.strictEqual(data.from, 9);
+			assert.strictEqual(data.from, 8);
 			done();
 		});
 		cluster.fork();
-		messenger.on('test4.worker8.ok', function (data, from) {
-			assert.strictEqual(from, 8);
+		messenger.on('test4.worker7.ok', function (data, from) {
+			assert.strictEqual(from, 7);
 			cluster.fork();
 		});
-		messenger.on('test4.worker9.ok', function (data, from) {
-			assert.strictEqual(from, 9);
+		messenger.on('test4.worker8.ok', function (data, from) {
+			assert.strictEqual(from, 8);
 		});
+	});
+
+	it('worker broadcast', function (done) {
+		var received = 0;
+		messenger.on('test5.worker9.ok', function () {
+			if (++received == 2) {
+				done();
+			}
+		});
+
+		messenger.on('test5.ok', function () {
+			if (++received == 2) {
+				done();
+			}
+		});
+
+		messenger.on('test5.worker9.ready', function () {
+			cluster.fork();
+		});
+		cluster.fork();
+	});
+
+	it('ignore message from another namespace', function (done) {
+		var messenger2 = new Messenger('test-othernamespace');
+		var worker = cluster.fork();
+		messenger2.send(worker.id, 'test6.nok');
+		messenger.on('test6.nok', function () {
+			done(new Error('Should not receive a message from another namespace.'));
+		});
+		setTimeout(done, 1000);
 	});
 });
