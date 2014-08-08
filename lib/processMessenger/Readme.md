@@ -16,8 +16,7 @@ It can be used only from the master process.
 
 ### messenger.send([string|number] destination, string message, object data)
 
-This method allows you to send a message from one worker to the master process,
-or from the master process to one worker.
+This method allows you to send a message between master and workers.
 
 `destination` must be the string `master` to send a message to the master,
 or the worker id to send a message to a worker.

@@ -95,4 +95,20 @@ describe('processMessenger', function () {
 		);
 		done();
 	});
+
+	it('worker-to-worker communication', function (done) {
+		messenger.on('test4.ok', function (data) {
+			assert.deepEqual(data.data, { data: 'test' });
+			assert.strictEqual(data.from, 9);
+			done();
+		});
+		cluster.fork();
+		messenger.on('test4.worker8.ok', function (data, from) {
+			assert.strictEqual(from, 8);
+			cluster.fork();
+		});
+		messenger.on('test4.worker9.ok', function (data, from) {
+			assert.strictEqual(from, 9);
+		});
+	});
 });

@@ -36,9 +36,7 @@ describe('commandCenter', function () {
 				var cmdParams = ['1', '2', '4', '5'];
 				try {
 					var paramList = commandCenter.buildParamList(cmdInfoModParams, cmdParams);
-					console.log(paramList);
 				} catch (err) {
-					console.log('here');
 					assert.strictEqual(err.message, 'Too many parameters provided.');
 					return done();
 				}
