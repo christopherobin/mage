@@ -14,20 +14,11 @@ describe('Session module', function () {
 	});
 
 	it('anonymous login', function (done) {
-		assert.strictEqual(mage.httpServer.cmdHooks.length, 0);
+		assert(!mage.session.getKey());
 
 		mage.session.loginAnonymous('admin', function (error) {
 			assert.ifError(error);
-			assert.strictEqual(mage.httpServer.cmdHooks.length, 1);
-			done();
-		});
-	});
-
-	it('isValidSession', function (done) {
-		assert(mage.session.getKey());
-
-		mage.session.isValid(mage.session.getKey(), function (error) {
-			assert.ifError(error);
+			assert(mage.session.getKey());
 
 			done();
 		});
@@ -38,9 +29,12 @@ describe('Session module', function () {
 	});
 
 	it('can log out', function (done) {
+		assert(mage.session.getKey());
+
 		mage.session.logout(function (error) {
 			assert.ifError(error);
-			assert.strictEqual(mage.httpServer.cmdHooks.length, 0);
+			assert(!mage.session.getKey());
+
 			done();
 		});
 	});
@@ -62,12 +56,14 @@ describe('Session module', function () {
 			});
 		});
 
-		var num = 12345;
+		var actorId1 = '12345';
+		var actorId2 = '67890';
 
 		it('can login as a random actor ID', function (done) {
-			mage.session.loginAsActor(num, 'admin', function (error) {
+			mage.session.loginAsActor(actorId1, 'admin', function (error) {
 				assert.ifError(error);
-				assert.strictEqual(String(num), mage.session.getActorId());
+				assert.strictEqual(actorId1, mage.session.getActorId());
+
 				done();
 			});
 		});
@@ -75,26 +71,26 @@ describe('Session module', function () {
 		it('cannot reassign a session to a falsy actor ID', function (done) {
 			mage.session.reassign(null, null, function (error) {
 				assert(error);
-				assert.strictEqual(String(num), mage.session.getActorId());
+				assert.strictEqual(actorId1, mage.session.getActorId());
+
+				done();
+			});
+		});
+
+		it('cannot reassign a sesssion from an actorId that doesn\'t have a session yet', function (done) {
+			mage.session.reassign(actorId2, actorId2, function (error) {
+				assert.equal(error, 'invalidSession');
+				assert.strictEqual(actorId1, mage.session.getActorId());
+
 				done();
 			});
 		});
 
 		it('can reassign a session to another random actor ID', function (done) {
-			mage.session.reassign(null, num + 1, function (error) {
+			mage.session.reassign(null, actorId2, function (error) {
 				assert.ifError(error);
-				assert.strictEqual(String(num + 1), mage.session.getActorId());
-				done();
-			});
-		});
+				assert.strictEqual(actorId2, mage.session.getActorId());
 
-		it('is still a valid session', function (done) {
-			assert(mage.session.getKey());
-
-			mage.session.isValid(mage.session.getKey(), function (error) {
-				assert.ifError(error);
-
-				assert.strictEqual(String(num + 1), mage.session.getActorId());
 				done();
 			});
 		});
