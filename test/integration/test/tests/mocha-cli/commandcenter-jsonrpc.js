@@ -62,16 +62,14 @@ describe('commandCenter', function () {
 				client.options.headers['X-MAGE-SESSION'] = 'invalidSessionKey';
 
 				client.request('test.test', {}, 2, function (err, response) {
-					assert.strictEqual(typeof response, 'undefined');
+					assert.ifError(err);
 
-					assert.strictEqual(typeof err, 'object');
-					assert.strictEqual(typeof err.message, 'string');
-					var message = JSON.parse(err.message);
-					assert.strictEqual(message.jsonrpc, '2.0');
-					assert.strictEqual(message.id, 2);
-					assert.strictEqual(typeof message.error, 'object');
-					assert.strictEqual(message.error.code, jayson.Server.errors.INTERNAL_ERROR);
-					assert.strictEqual(typeof message.result, 'undefined');
+					assert.strictEqual(typeof response, 'object');
+					assert.strictEqual(response.jsonrpc, '2.0');
+					assert.strictEqual(response.id, 2);
+					assert.strictEqual(typeof response.result, 'object');
+					assert.strictEqual(response.result.errorCode, 'auth');
+
 					done();
 				});
 			});
@@ -92,18 +90,21 @@ describe('commandCenter', function () {
 					client.request('test.test', {}, 5)
 				];
 
-				client.request(batch, function (err, response) {
-					assert.strictEqual(typeof response, 'undefined');
-					assert.strictEqual(typeof err, 'object');
-					assert.strictEqual(typeof err.message, 'string');
-					var messages = JSON.parse(err.message);
-					messages.forEach(function (message) {
-						assert.strictEqual(message.jsonrpc, '2.0');
-						assert.strictEqual([3, 4, 5].indexOf(message.id) >= 0, true);
-						assert.strictEqual(typeof message.error, 'object');
-						assert.strictEqual(message.error.code, jayson.Server.errors.INTERNAL_ERROR);
-						assert.strictEqual(typeof message.result, 'undefined');
-					});
+				client.request(batch, function (err, responses) {
+					assert.ifError(err);
+
+					assert(Array.isArray(responses));
+					assert.equal(responses.length, 3);
+
+					for (var i = 0; i < responses.length; i += 1) {
+						var response = responses[i];
+
+						assert.strictEqual(response.jsonrpc, '2.0');
+						assert.strictEqual(i + 3, response.id);
+						assert.strictEqual(typeof response.result, 'object');
+						assert.strictEqual(response.result.errorCode, 'auth');
+					}
+
 					done();
 				});
 			});
