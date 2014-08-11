@@ -15,7 +15,7 @@ This method allows you to send a message to all the workers and the master of yo
 When the master send a broadcast message, all the workers will receive an event,
 but not the master.
 When a worker send a broadcast message, the master and all the workers,
-including the sender, will receive an event.
+except the sender, will receive an event.
 
 ### messenger.send([string|number] destination, string message, object data)
 
@@ -34,11 +34,11 @@ and the id of the worker or the string `master` which indicates the sender.
 var Messenger = require('processMessenger');
 var messenger = new Messenger('namespace');
 
-messenger.on('eventName', function (data, from) {
+messenger.on('message', function (data, from) {
     // broadcast
-    messenger.broadcast('eventName', data);
+    messenger.broadcast('message', data);
     // reply
-    messenger.send(form, 'eventName', data);
+    messenger.send(from, 'message', data);
 });
 ```
 
@@ -47,8 +47,8 @@ messenger.on('eventName', function (data, from) {
 var Messenger = require('processMessenger');
 var messenger = new Messenger('namespace');
 
-messenger.on('eventName', function (data, from) {
-    console.log('eventName received:', data);
+messenger.on('message', function (data, from) {
+    console.log('message received:', data);
 });
-messenger.send('master', 'eventName', {});
+messenger.send('master', 'message', {});
 ```
