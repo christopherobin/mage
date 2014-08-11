@@ -11,7 +11,7 @@ send a session.unset event to notify the client that their session is no longer 
 
 `"io.error.auth"` will no longer be emitted on `mage.eventManager`. You should listen for
 `session.unset` on mage.eventManager, the data in the event indicates the reason for your session
-to be unset.
+to be unset. See [the session documentation](./lib/modules/session/Readme.md) for example code.
 
 If the server (or a proxy in between) returns an HTTP 403 response to a user command, it's no longer
 considered session expiration as before, but a network issue instead. This is useful for example
