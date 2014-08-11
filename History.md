@@ -30,6 +30,14 @@ when connecting over a VPN and losing your connection (issue #755).
 | tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
 
 
+## v0.37.4 - Fat Cat
+
+#### Archivist
+
+Added context to the error logs when archivist encounters an error. You will now be able to see the
+topic, index, vault name, and operation when an error occurs.
+
+
 ## v0.37.3 - Mad Cat
 
 ### Miscellaneous Changes
