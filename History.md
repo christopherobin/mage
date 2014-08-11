@@ -1,5 +1,12 @@
 # Release history
 
+## v0.37.4 - Fat Cat
+
+#### Archivist
+
+Added context to the error logs when archivist encounters an error. You will now be able to see the
+topic, index, vault name, and operation when an error occurs.
+
 ## v0.37.3 - Mad Cat
 
 ### Miscellaneous Changes
