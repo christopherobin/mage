@@ -4,18 +4,19 @@
 
 ### Authentication
 
-If a session is expired or has been bumped out by logging into another device, the access level will
-now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
-You will receive an `auth` error in your user command callback. Additionally, mage will
-send a session.unset event to notify the client that their session is no longer valid.
+If a session is expired or has been bumped out by logging into another device, the access level
+will now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
+You will receive an `auth` error in your user command callback. Also, MAGE will automatically
+send a `session.unset` event to notify the client that their session is no longer valid. That event
+will contain the reason why the session was unset.
 
 `"io.error.auth"` will no longer be emitted on `mage.eventManager`. You should listen for
 `session.unset` on mage.eventManager, the data in the event indicates the reason for your session
 to be unset. See [the session documentation](./lib/modules/session/Readme.md) for example code.
 
-If the server (or a proxy in between) returns an HTTP 403 response to a user command, it's no longer
-considered session expiration as before, but a network issue instead. This is useful for example
-when connecting over a VPN and losing your connection (issue #755).
+MAGE no longer returns 401 or 403 in response to a user command that cannot be executed because
+the user does not have the correct access privileges or an invalid session. This is useful when
+connecting over a VPN and losing your connection (issue #755).
 
 ### Peer Dependency updates
 
