@@ -2,6 +2,22 @@
 
 ## vNEXT
 
+### Authentication
+
+If a session is expired or has been bumped out by logging into another device, the access level
+will now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
+You will receive an `auth` error in your user command callback. Also, MAGE will automatically
+send a `session.unset` event to notify the client that their session is no longer valid. That event
+will contain the reason why the session was unset.
+
+`"io.error.auth"` will no longer be emitted on `mage.eventManager`. You should listen for
+`session.unset` on mage.eventManager, the data in the event indicates the reason for your session
+to be unset. See [the session documentation](./lib/modules/session/Readme.md) for example code.
+
+MAGE no longer returns 401 or 403 in response to a user command that cannot be executed because
+the user does not have the correct access privileges or an invalid session. This is useful when
+connecting over a VPN and losing your connection (issue #755).
+
 ### Process Messenger
 
 A new module allows you to communicate directly between your workers and the master
@@ -24,6 +40,21 @@ Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more
 | peer dependency   | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
+
+
+## v0.37.4 - Fat Cat
+
+#### Archivist
+
+Added context to the error logs when archivist encounters an error. You will now be able to see the
+topic, index, vault name, and operation when an error occurs.
+
 
 ## v0.37.3 - Mad Cat
 
