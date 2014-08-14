@@ -35,15 +35,14 @@ var mage = require('mage');
 var storeKey = 'sessionKey'
 var sessionKey = localStorage.getItem(storeKey);
 
-mage.session.isValid(sessionKey, function (err) {
-	if (err) {
-		mage.logger.debug('Stored session key is invalid', sessionKey);
-		localStorage.removeItem(storeKey);
-	} else {
-		mage.logger.debug('Stored session key is valid', sessionKey);
-		mage.session.setSessionKey(sessionKey);
-	}
-});
+if (sessionKey) {
+	mage.session.restore(sessionKey, function (err) {
+		if (err) {
+			mage.logger.debug('Stored session key is invalid', sessionKey);
+			localStorage.removeItem(storeKey);
+		}
+	});
+}
 
 //
 // In general, you will have this piece of code
@@ -55,6 +54,14 @@ mage.eventManager.on('session.set', function (path, session) {
 	var sessionKey = session.key;
 	mage.logger.debug('Saving session key locally', sessionKey);
 	localStorage.setItem(SESSION_KEY, sessionKey);
+});
+
+//
+// And delete the session key when it expires
+//
+mage.eventManager.on('session.unset', function (path, reason) {
+	mage.logger.debug('Deleting local copy of session key because:', reason);
+	localStorage.removeItem(SESSION_KEY);
 });
 ```
 
