@@ -1,3 +1,5 @@
+return;
+
 var assert = require('assert');
 var zmq = require('zmq');
 

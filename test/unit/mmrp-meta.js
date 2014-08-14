@@ -1,3 +1,5 @@
+return;
+
 var assert = require('assert');
 
 var meta = require('../../lib/msgServer/mmrp/meta');

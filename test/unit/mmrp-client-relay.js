@@ -1,3 +1,5 @@
+return;
+
 var assert = require('assert');
 
 require('../../'); // register mage in codependency

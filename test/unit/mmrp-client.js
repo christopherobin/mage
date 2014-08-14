@@ -2,35 +2,49 @@ var assert = require('assert');
 var zmq = require('zmq');
 
 require('../..'); // register mage in codependency
-var meta = require('../../lib/msgServer/mmrp/meta');
-var Client = require('../../lib/msgServer/mmrp/client').Client;
+var mmrp = require('../../lib/msgServer/mmrp');
+var Envelope = mmrp.Envelope;
 
 var identity = require('os').hostname();
 
 describe('msgServer', function () {
 	describe('mmrp', function () {
-		describe('Client', function () {
-			it('constructs the object', function (done) {
-				var client = new Client(identity);
-				assert.strictEqual(typeof client.socket, 'object');
-				assert.strictEqual(client.socket.type, 'dealer');
-				assert.strictEqual(client.identity, identity);
-				assert.strictEqual(client.allowSend, false);
-				assert.strictEqual(client.badSendReported, false);
+		it('sets up', function () {
+			mmrp.setup({ host: '127.0.0.1', port: '*' });
+		});
+
+		it('should connect to a fake peer', function (done) {
+			// create peer
+
+			var router = zmq.createSocket('router');
+			router.bindSync('tcp://127.0.0.1:*');
+			var uri = router.getsockopt('last_endpoint');
+
+			router.on('message', function (sender) {
+				var args = [].slice.call(arguments, 1); // slice off the sender
+
+				var received = Envelope.fromArgs(args);
+				console.log('RECEIVED:', received);
+
+				router.close();
+
+				// disconnect
+				mmrp.relayDown(uri);
+
 				done();
 			});
 
-			it('should connect to the router', function (done) {
-				var router = zmq.createSocket('router');
-				router.bindSync('tcp://127.0.0.1:*');
-				router.on('message', function () {
-					router.close();
-					done();
-				});
+			// announce peer
+			mmrp.relayUp(uri);
 
-				var client = new Client(identity);
-				client.connect(router.getsockopt('last_endpoint'));
-			});
+			// send envelope
+			var sent = new Envelope('test', 'ABC', [mmrp.getRouterIdentity(), uri]);
+			console.log('SENT:', sent);
+			mmrp.send(sent);
+		});
+
+
+/*
 
 			it('should format the message', function (done) {
 				var data = 'some data';
@@ -54,5 +68,6 @@ describe('msgServer', function () {
 				client.send(identity, data);
 			});
 		});
+*/
 	});
 });
