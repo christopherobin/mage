@@ -6,6 +6,7 @@
 		"component/inherit": "0.0.2"
 	},
 	"local": [
+		"loader",
 		"msgServer",
 		"httpServer",
 		"eventManager"
