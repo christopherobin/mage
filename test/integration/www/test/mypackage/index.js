@@ -1,0 +1,1 @@
+window.mypackageTestValue = 456;

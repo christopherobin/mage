@@ -130,7 +130,10 @@ exports.start = function (project) {
 			}
 
 			if (!project.autorun) {
-				console.log('Waiting for requests');
+				var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
+				var address = httpServer.server.address();
+
+				console.log('Waiting for requests at http://' + address.address + ':' + address.port + '/app/test');
 				return;
 			}
 
