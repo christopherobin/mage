@@ -65,6 +65,11 @@ Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more
 |-------------------|--------|--------|-----------|
 | tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
 
+### Bug Fixes
+
+* Optional reads were still using "eventy" methods to delete values from the client vault. Now
+  Archivist client will delete the value when it gets an empty response for a topic.
+
 
 ## v0.37.4 - Fat Cat
 
