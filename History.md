@@ -65,6 +65,10 @@ Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more
 |-------------------|--------|--------|-----------|
 | tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
 
+### Miscellaneous Changes
+
+* Updated the loggingService to properly handle writing tomes in log entries.
+
 ### Bug Fixes
 
 * Optional reads were still using "eventy" methods to delete values from the client vault. Now
