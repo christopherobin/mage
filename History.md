@@ -50,6 +50,23 @@ MAGE no longer returns 401 or 403 in response to a user command that cannot be e
 the user does not have the correct access privileges or an invalid session. This is useful when
 connecting over a VPN and losing your connection (issue #755).
 
+### Process Messenger
+
+A new module allows you to communicate directly between your workers and the master
+without using any dependency.
+You can use it to broadcast messages to all the workers of your cluster.
+
+Read the [documentation](lib/processMessenger/Readme.md) for more information.
+
+### Single-server engine for the service discovery module
+
+In the case where you have only one server, you can use the single engine instead of
+mdns or zookeeper to handle the service discovery.
+
+It uses the new Process Messenger, and doesn't require any other dependency.
+
+Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more information.
+
 ### Peer Dependency updates
 
 | peer dependency   | from   | to     | changes   |
@@ -61,6 +78,11 @@ connecting over a VPN and losing your connection (issue #755).
 | dependency        | from   | to     | changes   |
 |-------------------|--------|--------|-----------|
 | tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
+
+### Bug Fixes
+
+* Optional reads were still using "eventy" methods to delete values from the client vault. Now
+  Archivist client will delete the value when it gets an empty response for a topic.
 
 
 ## v0.37.4 - Fat Cat
