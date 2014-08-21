@@ -2,6 +2,24 @@
 
 ## vNEXT
 
+### Loader
+
+The MAGE loader has been rewritten from the ground up. Please read its documentation to fully get up
+to speed with the right way to interact with it. In an nutshell however, this is what happened.
+
+* The "page" terminology has been renamed to "package".
+* You no longer have to call `loader.configure(window.mageConfig)`.
+* The weak dependency to MAGE's asset class has been removed.
+* You can implement storage engines other than LocalStorage for cache.
+* Package cache can be turned off altogether.
+* Introduction of the `Package` class that you can interact with to:
+  - Read and manipulate downloaded content.
+  - Inject HTML and CSS early.
+* A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+* You can re-download a package after a language change to update assets and stylesheets at runtime.
+* Event arguments changed a bit, so please read:
+* [Full Documentation](./lib/loader/Readme.md)!
+
 ### Authentication
 
 If a session is expired or has been bumped out by logging into another device, the access level
@@ -18,6 +36,23 @@ MAGE no longer returns 401 or 403 in response to a user command that cannot be e
 the user does not have the correct access privileges or an invalid session. This is useful when
 connecting over a VPN and losing your connection (issue #755).
 
+### Process Messenger
+
+A new module allows you to communicate directly between your workers and the master
+without using any dependency.
+You can use it to broadcast messages to all the workers of your cluster.
+
+Read the [documentation](lib/processMessenger/Readme.md) for more information.
+
+### Single-server engine for the service discovery module
+
+In the case where you have only one server, you can use the single engine instead of
+mdns or zookeeper to handle the service discovery.
+
+It uses the new Process Messenger, and doesn't require any other dependency.
+
+Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more information.
+
 ### Peer Dependency updates
 
 | peer dependency   | from   | to     | changes   |
@@ -33,6 +68,12 @@ connecting over a VPN and losing your connection (issue #755).
 ### Miscellaneous Changes
 
 * Updated the loggingService to properly handle writing tomes in log entries.
+
+### Bug Fixes
+
+* Optional reads were still using "eventy" methods to delete values from the client vault. Now
+  Archivist client will delete the value when it gets an empty response for a topic.
+
 
 ## v0.37.4 - Fat Cat
 

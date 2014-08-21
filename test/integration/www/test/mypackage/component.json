@@ -1,0 +1,6 @@
+{
+	"name": "mypackage",
+	"description": "Package used to test the MAGE loader",
+	"scripts": ["index.js"],
+	"styles": ["style.css"]
+}
