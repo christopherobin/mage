@@ -30,6 +30,9 @@ connecting over a VPN and losing your connection (issue #755).
 |-------------------|--------|--------|-----------|
 | tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
 
+### Miscellaneous Changes
+
+* Updated the loggingService to properly handle writing tomes in log entries.
 
 ## v0.37.4 - Fat Cat
 
