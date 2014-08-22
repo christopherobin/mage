@@ -2,9 +2,9 @@ var assert = require('assert');
 var zmq = require('zmq');
 
 require('../..'); // register mage in codependency
-var mmrplib = require('../../lib/msgServer/mmrp');
-var MMRP = mmrplib.MMRP;
-var Envelope = mmrplib.Envelope;
+var mmrp = require('../../lib/msgServer/mmrp');
+var MmrpNode = mmrp.MmrpNode;
+var Envelope = mmrp.Envelope;
 
 var identity = require('os').hostname();
 
@@ -35,7 +35,7 @@ function createCounter(n, test, cb) {
 }
 
 
-describe('mmrp', function () {
+describe('MmrpNode', function () {
 	describe('single node network', function () {
 		function createNetwork(relayCount) {
 			relayCount = relayCount || 5;
@@ -43,7 +43,7 @@ describe('mmrp', function () {
 			var relays = [];
 
 			for (var i = 1; i <= relayCount; i += 1) {
-				relays.push(new MMRP('both', { host: '127.0.0.1', port: '*' }, 'cluster' + i));
+				relays.push(new MmrpNode('both', { host: '127.0.0.1', port: '*' }, 'cluster' + i));
 			}
 
 			return relays;
@@ -62,21 +62,21 @@ describe('mmrp', function () {
 			var count = createCounter(expected, function () {
 				// make sure all connections make sense
 
-				relays.forEach(function (mmrp) {
-					assert.equal(Object.keys(mmrp.relays).length, connectionsPerRelay);
-					assert.equal(Object.keys(mmrp.clients).length, 0);
+				relays.forEach(function (relay) {
+					assert.equal(Object.keys(relay.relays).length, connectionsPerRelay);
+					assert.equal(Object.keys(relay.clients).length, 0);
 				});
 
 				cb();
 			});
 
-			relays.forEach(function (mmrp) {
-				mmrp.on('handshake', count);
+			relays.forEach(function (relay) {
+				relay.on('handshake', count);
 			});
 
-			relays.forEach(function (mmrp) {
+			relays.forEach(function (relay) {
 				relays.forEach(function (peer) {
-					mmrp.relayUp(peer.routerUri, peer.clusterId);
+					relay.relayUp(peer.routerUri, peer.clusterId);
 				});
 			});
 		}
@@ -101,7 +101,7 @@ describe('mmrp', function () {
 				var b = relays[1];
 
 				b.on('delivery.hello', function (envelope) {
-					assert.strictEqual(envelope.message.toString(), 'world');
+					assert.strictEqual(envelope.messages[0].toString(), 'world');
 					destroyNetwork(relays);
 					done();
 				});
@@ -116,7 +116,7 @@ describe('mmrp', function () {
 				var expected = relays.length - 1;
 
 				function test(envelope) {
-					assert.strictEqual(envelope.message.toString(), 'cruel world');
+					assert.strictEqual(envelope.messages[0].toString(), 'cruel world');
 				}
 
 				var count = createCounter(expected, test, function () {
@@ -125,12 +125,12 @@ describe('mmrp', function () {
 				});
 
 				for (var i = 0; i < relays.length; i += 1) {
-					var mmrp = relays[i];
+					var relay = relays[i];
 
 					if (i === 0) {
-						mmrp.broadcast(new Envelope('bye', 'cruel world'));
+						relay.broadcast(new Envelope('bye', 'cruel world'));
 					} else {
-						mmrp.on('delivery.bye', count);
+						relay.on('delivery.bye', count);
 					}
 				}
 			});
@@ -155,11 +155,11 @@ describe('mmrp', function () {
 			for (i = 0; i < relayCount; i += 1) {
 				var clusterId = 'cluster' + (i + 1);
 
-				result.relays.push(new MMRP('relay', { host: '127.0.0.1', port: '*' }, clusterId));
+				result.relays.push(new MmrpNode('relay', { host: '127.0.0.1', port: '*' }, clusterId));
 				result.clients[i] = [];
 
 				for (j = 0; j < clientCount; j += 1) {
-					result.clients[i].push(new MMRP('client', { host: '127.0.0.1', port: '*' }, clusterId));
+					result.clients[i].push(new MmrpNode('client', { host: '127.0.0.1', port: '*' }, clusterId));
 				}
 			}
 
@@ -234,7 +234,7 @@ describe('mmrp', function () {
 		});
 
 		it('can send from one client to another', function (done) {
-			// even though we won't use MMRP this way (we use a store as a middle-man), this should
+			// even though we won't use MmrpNode this way (we use a store as a middle-man), this should
 			// still work
 
 			var network = createNetwork();
@@ -249,7 +249,7 @@ describe('mmrp', function () {
 				network.clients[0][0].send(new Envelope('alltheway', 'hello', route));
 				network.clients[2][0].on('delivery.alltheway', function (envelope) {
 					assert(envelope);
-					assert.strictEqual(String(envelope.message), 'hello');
+					assert.strictEqual(envelope.messages[0].toString(), 'hello');
 
 					destroyNetwork(network);
 					done();
@@ -257,7 +257,7 @@ describe('mmrp', function () {
 			});
 		});
 
-		it('can broadcast', function (done) {
+		it('can broadcast from a client', function (done) {
 			var network = createNetwork();
 			announceNetwork(network, function () {
 				var expected = network.relayCount + network.relayCount * network.clientsPerRelay;
@@ -277,6 +277,29 @@ describe('mmrp', function () {
 				});
 
 				network.clients[0][0].broadcast(new Envelope('allofyou', 'hi!'));
+			});
+		});
+
+		it('can broadcast from a relay', function (done) {
+			var network = createNetwork();
+			announceNetwork(network, function () {
+				var expected = network.relayCount + network.relayCount * network.clientsPerRelay;
+
+				var count = createCounter(expected, function () {
+					destroyNetwork(network);
+
+					done();
+				});
+
+				network.relays.forEach(function (relay, index) {
+					relay.on('delivery.allofyou', count);
+
+					network.clients[index].forEach(function (client) {
+						client.on('delivery.allofyou', count);
+					});
+				});
+
+				network.relays[0].broadcast(new Envelope('allofyou', 'hi!'));
 			});
 		});
 	});
