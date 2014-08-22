@@ -153,6 +153,7 @@ the server:
 
 * terminal: log to the console
 * file: write to log files on disk
+* syslog: write to syslog through UDP
 * graylog: www.graylog2.com
 * loggly: www.loggly.com
 * websocket: streams the log on a [Savvy](../savvy/Readme.md) websocket
@@ -208,6 +209,23 @@ logging:
                     "error.log": ">=warning"
 ```
 
+### Server: Syslog
+
+```yaml
+logging:
+    server:
+        syslog:
+            channels: [">=debug"]
+            config:
+                host: localhost          # host to connect to (IP or hostname)
+                port: 514                # UDP port to connect to
+                appName: myGame
+                facility: 1              # see syslog documentation
+                format:
+                    multiLine: true      # allow newline characters
+                    indent: 2            # indentation when serializing data in multiLine mode
+```
+
 ### Server: Graylog
 
 ```yaml
@@ -220,6 +238,10 @@ logging:
                     - { host: "192.168.100.85", port: 12201 }
                     - { host: "192.168.100.86", port: 12201 }
                 facility: Application identifier
+                format:
+                    multiLine: true      # allow newline characters
+                    embedDetails: false  # embed log details into the message
+                    embedData: false     # embed data into the message
 ```
 
 ### Server: Loggly
