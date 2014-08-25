@@ -32,7 +32,7 @@ if the recipient is not one of its attached clients.
 If one of the relay detects that the recipient is one of its attached clients,
 it will forward the message to the client.
 
-This protocol is implemented in the [msgServer/comm](../comm.js) module.
+This protocol is implemented in the [msgServer](../index.js) module.
 
 ## Relay
 

@@ -1,5 +1,94 @@
 # Release history
 
+## v0.38.0 - Bonk Cat
+
+### Loader
+
+The MAGE loader has been rewritten from the ground up. Please read its documentation to fully get up
+to speed with the right way to interact with it. In an nutshell however, this is what happened.
+
+* The "page" terminology has been renamed to "package".
+* You no longer have to call `loader.configure(window.mageConfig)`.
+* The weak dependency to MAGE's asset class has been removed.
+* You can implement storage engines other than LocalStorage for cache.
+* Package cache can be turned off altogether.
+* Introduction of the `Package` class that you can interact with to:
+  - Read and manipulate downloaded content.
+  - Inject HTML and CSS early.
+* A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+* You can re-download a package after a language change to update assets and stylesheets at runtime.
+* Event arguments changed a bit, so please read:
+* [Full Documentation](./lib/loader/Readme.md)!
+
+### Authentication
+
+If a session is expired or has been bumped out by logging into another device, the access level
+will now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
+You will receive an `auth` error in your user command callback. Also, MAGE will automatically
+send a `session.unset` event to notify the client that their session is no longer valid. That event
+will contain the reason why the session was unset.
+
+`"io.error.auth"` will no longer be emitted on `mage.eventManager`. You should listen for
+`session.unset` on mage.eventManager, the data in the event indicates the reason for your session
+to be unset. See [the session documentation](./lib/modules/session/Readme.md) for example code.
+
+MAGE no longer returns 401 or 403 in response to a user command that cannot be executed because
+the user does not have the correct access privileges or an invalid session. This is useful when
+connecting over a VPN and losing your connection (issue #755).
+
+### Process Messenger
+
+A new module allows you to communicate directly between your workers and the master
+without using any dependency.
+You can use it to broadcast messages to all the workers of your cluster.
+
+Read the [documentation](lib/processMessenger/Readme.md) for more information.
+
+### Single-server engine for the service discovery module
+
+In the case where you have only one server, you can use the single engine instead of
+mdns or zookeeper to handle the service discovery.
+
+It uses the new Process Messenger, and doesn't require any other dependency.
+
+Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more information.
+
+### Logging
+
+A new writer has been added: Syslog over UDP. You can use this to log to your own syslog daemon (if
+it's set up to accept messages over UDP) or syslog daemons on other hosts.
+
+The Graylog writer has some new options to format your log entries to your liking. The Graylog
+messages now also contain the process role and logger contexts.
+
+Stack traces are no longer stored in the `details` field of a log entry, but have been moved into
+the data section. We also strip the root path of the project from the stack, to make it a bit more
+friendly to read.
+
+For more information about configuration, please refer to the [documentation](./lib/loggingService/Readme.md).
+
+### Peer Dependency updates
+
+| peer dependency   | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
+
+### Miscellaneous Changes
+
+* Updated the loggingService to properly handle writing tomes in log entries.
+
+### Bug Fixes
+
+* Optional reads were still using "eventy" methods to delete values from the client vault. Now
+  Archivist client will delete the value when it gets an empty response for a topic.
+
+
 ## v0.37.4 - Fat Cat
 
 #### Archivist
@@ -7,13 +96,14 @@
 Added context to the error logs when archivist encounters an error. You will now be able to see the
 topic, index, vault name, and operation when an error occurs.
 
+
 ## v0.37.3 - Mad Cat
 
 ### Miscellaneous Changes
 
 * The web client's Asset.getContents function now allows the callback to come as the first argument.
 * Bumped node-mysql peer dependency version to ~2.4.1
-+ Bumped node-mysql dev dependency to version 2.4.1 for unit tests
+* Bumped node-mysql dev dependency to version 2.4.1 for unit tests
 
 ### Bug fixes
 

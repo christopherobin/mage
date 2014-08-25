@@ -1,0 +1,19 @@
+{
+	"name": "browser",
+	"description": "Browser integration tests",
+	"paths": [
+		"./tests",
+		"../../../../../lib"
+	],
+	"local": [
+		"mage",
+		"testEventManager",
+		"testLoader",
+		"testArchivist",
+		"testIdent",
+		"testSession"
+	],
+	"scripts": [
+		"index.js"
+	]
+}
