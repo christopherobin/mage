@@ -7,8 +7,7 @@
 	},
 	"scripts": [
 		"client.js",
-		"msgStream/transports/longpolling/client.js",
-		"msgStream/transports/shortpolling/client.js"
+		"msgStream/transports/http-polling/client.js"
 	],
 	"main": "client.js"
 }
