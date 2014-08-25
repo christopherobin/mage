@@ -35,7 +35,7 @@ function createCounter(n, test, cb) {
 }
 
 
-describe('MmrpNode', function () {
+describe('MMRP', function () {
 	describe('single node network', function () {
 		function createNetwork(relayCount) {
 			relayCount = relayCount || 5;
@@ -240,16 +240,38 @@ describe('MmrpNode', function () {
 			var network = createNetwork();
 			announceNetwork(network, function () {
 				var route = [
-					// TODO: replace clusterId with dealer identity
-					network.relays[0].dealer.getsockopt(zmq.ZMQ_IDENTITY),
-					network.relays[2].dealer.getsockopt(zmq.ZMQ_IDENTITY),
-					network.clients[2][0].dealer.getsockopt(zmq.ZMQ_IDENTITY)
+					network.relays[0].identity,
+					network.relays[2].identity,
+					network.clients[2][0].identity
 				];
 
 				network.clients[0][0].send(new Envelope('alltheway', 'hello', route));
 				network.clients[2][0].on('delivery.alltheway', function (envelope) {
 					assert(envelope);
 					assert.strictEqual(envelope.messages[0].toString(), 'hello');
+
+					destroyNetwork(network);
+					done();
+				});
+			});
+		});
+
+		it('can send many buffers at once', function (done) {
+			var network = createNetwork();
+			announceNetwork(network, function () {
+				var route = [
+					network.relays[0].identity,
+					network.relays[2].identity,
+					network.clients[2][0].identity
+				];
+
+				var message = [new Buffer('hello'), new Buffer('there'), new Buffer([1, 2, 3])];
+
+				network.clients[0][0].send(new Envelope('alltheway', message, route));
+				network.clients[2][0].on('delivery.alltheway', function (envelope) {
+					assert(envelope);
+					assert.equal(envelope.messages.length, 3);
+					assert.deepEqual(envelope.messages, message);
 
 					destroyNetwork(network);
 					done();
