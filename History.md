@@ -3,6 +3,11 @@
 
 ## vNEXT
 
+### Bug Fixes
+
+* Fixed an issue with the loader not properly handling errors with xhr creation
+* Moved the CORS handling to after the `xhr.open` call, it was causing phantomjs to explode.
+
 
 ## v0.38.0 - Bonk Cat
 
