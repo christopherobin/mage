@@ -1,5 +1,4 @@
 var assert = require('assert');
-var zmq = require('zmq');
 
 require('../..'); // register mage in codependency
 var mmrp = require('../../lib/msgServer/mmrp');

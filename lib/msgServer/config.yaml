@@ -1,0 +1,5 @@
+msgStream:
+    route: "/msgstream"
+    transports:
+        longpolling:
+            heartbeat: 60
