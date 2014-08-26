@@ -1,6 +1,10 @@
 # Release history
 
+
 ## vNEXT
+
+
+## v0.38.0 - Bonk Cat
 
 ### Loader
 
@@ -52,6 +56,20 @@ mdns or zookeeper to handle the service discovery.
 It uses the new Process Messenger, and doesn't require any other dependency.
 
 Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more information.
+
+### Logging
+
+A new writer has been added: Syslog over UDP. You can use this to log to your own syslog daemon (if
+it's set up to accept messages over UDP) or syslog daemons on other hosts.
+
+The Graylog writer has some new options to format your log entries to your liking. The Graylog
+messages now also contain the process role and logger contexts.
+
+Stack traces are no longer stored in the `details` field of a log entry, but have been moved into
+the data section. We also strip the root path of the project from the stack, to make it a bit more
+friendly to read.
+
+For more information about configuration, please refer to the [documentation](./lib/loggingService/Readme.md).
 
 ### Peer Dependency updates
 
