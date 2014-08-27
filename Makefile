@@ -184,7 +184,7 @@ branch := develop
 user := Wizcorp
 repo_path = ./tmp/$(repo)
 
-test-game:
+test-app:
 ifndef repo
 	@echo "Please specify a repository name to test against using repo=[github repo name]" && exit 1
 endif
