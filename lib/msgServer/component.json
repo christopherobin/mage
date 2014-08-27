@@ -7,6 +7,7 @@
 	},
 	"scripts": [
 		"client.js",
+		"msgStream/transports/websocket/client.js",
 		"msgStream/transports/http-polling/client.js"
 	],
 	"main": "client.js"
