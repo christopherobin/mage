@@ -1,6 +1,17 @@
 # Release history
 
 
+## v0.38.2 - Relax Cat
+
+### Bug Fixes
+
+* When loader fails to store data in localStorage, it will not store the meta data as well.
+
+### Miscellaneous Changes
+
+* Warn when loader fails to store data in localStorage.
+
+
 ## v0.38.1 - Bread Box Cat
 
 ### Bug Fixes
