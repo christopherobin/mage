@@ -179,3 +179,67 @@ clean-deps:
 clean-report:
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
+
+branch := develop
+user := Wizcorp
+repo_path = ./tmp/$(repo)
+
+test-game:
+ifndef repo
+	@echo "Please specify a repository name to test against using repo=[github repo name]" && exit 1
+endif
+#
+# We make a temporary directory if it
+# does not already exist
+#
+	mkdir -p ./tmp
+
+#
+# If the currently cloned repo is not from the same source, we
+# blow it up and start fresh to make sure we test exactly what the
+# remote branch holds
+#
+	if pushd $(repo_path) && ! git remote -v | grep $(user); then popd && rm -rf $(repo_path); fi
+
+#
+# If the repository wasn't cloned yet, we clone it
+#
+	[ ! -d $(repo_path) ] && cd ./tmp && git clone git@github.com:$(user)/$(repo).git || true
+
+#
+# We:
+#
+# 	* Checkout package.json (to make sure no uncommitted changes are left; see below)
+# 	* Checkout the branch we wish to test
+# 	* Pull the latest updates for that branch
+#
+	cd $(repo_path) && git checkout package.json && git checkout $(branch) && git pull origin $(branch)
+
+#
+# We:
+#
+#   * Remove MAGE dependency from package.json
+#   * Install node dependencies
+#   * Symlink to MAGE (or update the symlink if it exists)
+#   * Rebuild MAGE for the current platform
+#
+	cd $(repo_path) \
+		&& make clean \
+		&& npm rm --save mage \
+		&& $(MAKE) deps-npm \
+		&& rm -rf ./node_modules/mage \
+		&& ln -sf ../../../ ./node_modules/mage \
+		&& npm rebuild
+
+#
+# We complete the setup process
+#
+	cd $(repo_path) && $(MAKE) deps-component
+
+	if grep '^build:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) build; fi
+	if grep '^datastores:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) datastores; fi
+
+#
+# We run the tests
+#
+	cd $(repo_path) && make test
