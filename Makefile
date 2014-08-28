@@ -190,7 +190,10 @@ ifndef repo
 endif
 
 app-check-repo-path:
-	@[ ! -d $(repo_path) ] && echo 'Please run `make app-build repo=$(repo)` first' && exit 1 || true
+	@[ ! -d $(repo_path) ] \
+		&& echo 'Please run `make app-update repo=$(repo)$(shell [ "$(user)" != "Wizcorp" ] && echo " user=$(user)")` first' \
+		&& exit 1 \
+		|| true
 
 app-update: app-check-repo
 #
