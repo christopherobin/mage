@@ -11,6 +11,20 @@
 
 ## v0.38.0 - Bonk Cat
 
+### Identification
+
+The ident module has undergone a radical change to turn it into a feature you will want to use in
+your application. The main change is that the ident module requires it's own topic called `ident`
+where it stores MAGE users. Users can login to their account through any supported ident engine.
+Currently MAGE has support for userpass, ldap and anonymous logins, but we now have a framework
+that will allow us to easily add new engines at will. Imagine giving your users the power to login
+to their account with their github, facebook, gmail, and twitter accounts. Soon, my mages, soon.
+
+Ident now has support for banning and unbanning users based on the new MAGE userId. Call
+`mage.ident.ban` with their `userId` and optionally a reason for their ban. They will be logged out
+immediately. Unban them by calling `mage.ident.unban` with their `userId` and they'll be able to
+login again.
+
 ### Loader
 
 The MAGE loader has been rewritten from the ground up. Please read its documentation to fully get up
@@ -170,6 +184,7 @@ on the eventManager. `session.restore` has been added to the session module, see
 [the documentation](./lib/modules/session/Readme.md) for details.
 
 `session.register` is no longer an asynchronous function and returns a session object when called.
+
 **If you were handling your own session registration, this is a breaking change and will require an
 update to your code.**
 

@@ -69,7 +69,7 @@ mage.ident.getEngines(function (error, engines) {
 });
 ```
 
-#### ident.login(engineName, credentials, options, callback)
+#### ident.login(engineName, credentials, callback)
 
 To login from a browser you would just need to call the following.
 
@@ -81,16 +81,9 @@ var credentials = {
 	password: window.prompt('What is your password?')
 };
 
-// The options object only contains parameters that can be used in development mode.
+// you use the `login` method to login and pass it the name of the engine as you have configured it.
 
-var options = {
-	access: 'admin',     // choose a specific access level (optional, default: admin)
-	userId: someUsersId  // login as someone else (optional)
-};
-
-// you use the `check` method to login and pass it the name of the engine as you have configured it.
-
-mage.ident.login('userpass', credentials, options, function (error, data) {
+mage.ident.login('userpass', credentials, function (error, data) {
 	if (error) {
 		return window.alert(error);
 	}
