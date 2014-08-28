@@ -24,9 +24,9 @@ content of the message is an array of 1 or 2 elements.
 The first element is a string that represents the type of the message. This may be used as the event
 name in a client-side event emitter. The optional second element is the real payload of the message.
 
-A common convention is for event names to be dot-separated. A client may choose to implement the
-emission of an event in chunks from most-relevant to least-relevant. For example, the event
-`shop.purchase` with data `{ "item": "boots" }` may be emitted twice.
+Message types may be dot-separated. A client may choose to implement delivery of messages through
+the emission of an event in chunks from most-relevant to least-relevant. For example, the message of
+type `shop.purchase` with data `{ "item": "boots" }` may be emitted twice:
 
 1. `shop.purchase` with data `{ "item": "boots" }`
 2. `shop` with data `{ "item": "boots" }`

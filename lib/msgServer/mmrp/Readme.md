@@ -3,8 +3,10 @@
 ## General concept
 
 MMRP (MAGE Message Relay Protocol) is the messaging layer between node instances. It is used to
-ensure communication between multiple MAGE instances and between the different node processes run by
+enable communication between multiple MAGE instances and between the different node processes run by
 MAGE. In the end, it allows messages to flow from one user to another.
+
+Imagine a network set up like the following, where 3 servers each host a process-cluster.
 
 ```
  Cluster 1                Cluster 2                Cluster 3
@@ -28,8 +30,9 @@ W: MAGE worker / MMRP client
 ```
 
 Each MAGE master will instantiate an MMRP relay, and each worker an MMRP client. If MAGE is running
-in single-node mode, it will instantiate both. Through this topology, messages can be sent between
-all processes (or nodes) in the MAGE network.
+in single-node mode (that is, the cluster consists of only a single process), it will instantiate
+MMRP as both a relay and as a client. Through this topology, messages can be sent between all
+processes (or nodes) in the MAGE network.
 
 MMRP depends on [service discovery](../../serviceDiscovery/Readme.md) to announce relays on the
 network to each process. The protocol and library used to communicate between processes is
