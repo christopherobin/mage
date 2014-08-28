@@ -1,5 +1,12 @@
 # Release history
 
+## vNEXT
+
+### Bug Fixes
+
+* The built in mage favicon now runs on instantiation instead of before start so that you can
+  actually supply your own favicon in the setup phase.
+
 
 ## v0.38.2 - Relax Cat
 

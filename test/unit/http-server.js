@@ -425,17 +425,7 @@ describe('HTTP server', function () {
 
 
 	describe('Favicon', function () {
-		it('serves no favicon by default', function (done) {
-			get('/favicon.ico', function (error, result, res) {
-				assert.ifError(error);
-				assert.strictEqual(res.statusCode, 404);
-				done();
-			});
-		});
-
-		it('can serve a built-in favicon', function (done) {
-			httpServer.enableDefaultFavicon();
-
+		it('serves a built in favicon by default', function (done) {
 			get('/favicon.ico', function (error, result, res) {
 				assert.ifError(error);
 				assert.strictEqual(res.statusCode, 200);
