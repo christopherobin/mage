@@ -182,29 +182,21 @@ clean-report:
 
 branch := develop
 user := Wizcorp
-repo_path = ./tmp/$(repo)
+repo_path = ./tmp/$(user)-$(repo)
 
-test-app:
+app-check-repo:
 ifndef repo
 	@echo "Please specify a repository name to test against using repo=[github repo name]" && exit 1
 endif
-#
-# We make a temporary directory if it
-# does not already exist
-#
-	mkdir -p ./tmp
 
-#
-# If the currently cloned repo is not from the same source, we
-# blow it up and start fresh to make sure we test exactly what the
-# remote branch holds
-#
-	if pushd $(repo_path) && ! git remote -v | grep $(user); then popd && rm -rf $(repo_path); fi
+app-check-repo-path:
+	@[ ! -d $(repo_path) ] && echo 'Please run `make app-build repo=$(repo)` first' && exit 1 || true
 
+app-update: app-check-repo
 #
 # If the repository wasn't cloned yet, we clone it
 #
-	[ ! -d $(repo_path) ] && cd ./tmp && git clone git@github.com:$(user)/$(repo).git || true
+	[ ! -d $(repo_path) ] && git clone git@github.com:$(user)/$(repo).git $(repo_path) || true
 
 #
 # We:
@@ -215,6 +207,7 @@ endif
 #
 	cd $(repo_path) && git checkout package.json && git checkout $(branch) && git pull origin $(branch)
 
+app-build: app-check-repo app-check-repo-path
 #
 # We:
 #
@@ -242,4 +235,8 @@ endif
 #
 # We run the tests
 #
+app-test: app-check-repo app-check-repo-path
 	cd $(repo_path) && make test
+
+app-run: app-check-repo app-check-repo-path
+	cd $(repo_path) && node .

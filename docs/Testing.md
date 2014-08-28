@@ -57,7 +57,7 @@ to do so regularly). To test your local copy of MAGE against a given application
 run the following from your MAGE project directory:
 
 ```bash
-make test-app repo=someproject
+make app-update app-build app-test repo=someproject
 ```
 
 This will clone the project locally, build it and run
@@ -67,12 +67,29 @@ By default, this will run the develop branch of the project.
 To pick a different branch, run:
 
 ```bash
-make test-app repo=someproject branch=someBranch
+make app-update app-build app-test repo=someproject branch=someBranch
 ```
 
-Finally, by default, this will clone the project from Wizcorp's blessed
+By default, this will clone the project from Wizcorp's blessed
 repository. To test the code from a different user on GitHub, run:
 
 ```bash
-make test-app repo=someproject user=someUser
+make app-update app-build app-test repo=someproject user=someUser
 ```
+
+Of course, you can remove `app-update` if you do not want to pull updates, and you do not
+need `app-build` on every run either if your build is still good. So
+most of the time, you will end up with:
+
+```bash
+make app-test repo=someproject
+```
+
+Finally, there might be some cases where you will want to play with the game
+instead of just running the test suite against it. Simply run:
+
+```bash
+make app-run repo=someproject
+```
+
+And you should be good to go!

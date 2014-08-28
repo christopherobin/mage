@@ -16,3 +16,4 @@
 npm-debug.log
 .digest-cache.json
 test/integration/config/*
+check.txt
