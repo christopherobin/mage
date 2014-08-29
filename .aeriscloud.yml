@@ -47,7 +47,7 @@ extra_roles:
 # To see what environments are available:
 #
 # ```bash
-# gameinfra vagrant list
+# aeriscloud vagrant status
 # ```
 #
 # Each infrastructure can be configured:
