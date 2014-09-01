@@ -4,8 +4,7 @@
 
 ### Bug Fixes
 
-* The built in mage favicon now runs on instantiation instead of before start so that you can
-  actually supply your own favicon in the setup phase.
+* The built in mage favicon will no longer overwrite the favicon you set.
 
 
 ## v0.38.2 - Relax Cat
