@@ -5,7 +5,7 @@
 ### Traditional HTTP caching
 
 All the pages we serve now respond with a last-modified HTTP header, allowing browsers and platforms
-to make decisions about caching. When an if-modified-since request headers is sent, we tell the
+to make decisions about caching. When an if-modified-since request header is sent, we allow the
 client to use the cached version.
 
 
