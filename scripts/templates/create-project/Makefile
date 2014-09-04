@@ -149,6 +149,33 @@ test-unit:
 	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
 	$(BIN)/mocha -R spec --recursive $(TEST)
 
+#
+# Variables for test-mage
+#
+mage_repo := %MAGE_REPO%
+branch := develop
+CURRENT_MAGE_VERSION = $(shell grep '    "mage": ' package.json | cut -d'"' -f4)
+
+test-mage: clean
+#
+# We swap the MAGE version
+#
+	npm rm --save mage
+	npm install --save $(mage_repo)#$(branch)
+
+#
+# We make all, then run the tests. Finally,
+# we cleanup the MAGE version you wanted to test,
+# re-install the one you are currently using, and
+# finally exit with the test command's exit code
+# (0 = success >0 = fail)
+#
+	$(MAKE) all test; \
+	status=$$?; \
+	npm rm --save mage; \
+	npm install --save $(CURRENT_MAGE_VERSION); \
+	exit $$status
+
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
