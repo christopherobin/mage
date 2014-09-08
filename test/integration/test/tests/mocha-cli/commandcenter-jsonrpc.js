@@ -8,7 +8,7 @@ describe('commandCenter', function () {
 
 		before(function (done) {
 			var address = JSON.parse(process.env.MAGE_APP_ADDRESS);
-			clientOptions.hostname = address.hostname;
+			clientOptions.hostname = address.address;
 			clientOptions.port = address.port;
 			done();
 		});
