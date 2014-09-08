@@ -12,7 +12,8 @@ client to use the cached version.
 ### Bug Fixes
 
 * The built in mage favicon will no longer overwrite the favicon you set.
-
+* CronClient now sets up a client vault so that data changes will be distributed to connected
+  clients.
 
 ## v0.38.2 - Relax Cat
 
