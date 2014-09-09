@@ -9,6 +9,12 @@ All the pages we serve now respond with a last-modified HTTP header, allowing br
 to make decisions about caching. When an if-modified-since request header is sent, we allow the
 client to use the cached version.
 
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.29  | 0.10.31  | [Release notes](http://blog.nodejs.org/2014/08/19/node-v0-10-31-stable/) |
+
 ### Bug Fixes
 
 * The built in mage favicon will no longer overwrite the favicon you set.
