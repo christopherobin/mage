@@ -149,6 +149,33 @@ test-unit:
 	@echo Please note: Always make sure your tests point to files in $(LIBCOV), *not* $(LIB)
 	$(BIN)/mocha -R spec --recursive $(TEST)
 
+#
+# Variables for test-mage
+#
+mage_repo := %MAGE_REPO%
+branch := develop
+CURRENT_MAGE_VERSION = $(shell grep '    "mage": ' package.json | cut -d'"' -f4)
+
+test-mage: clean
+#
+# We swap the MAGE version
+#
+	npm rm --save mage
+	npm install --save $(mage_repo)#$(branch)
+
+#
+# We make all, then run the tests. Finally,
+# we cleanup the MAGE version you wanted to test,
+# re-install the one you are currently using, and
+# finally exit with the test command's exit code
+# (0 = success >0 = fail)
+#
+	$(MAKE) all test; \
+	status=$$?; \
+	npm rm --save mage; \
+	npm install --save $(CURRENT_MAGE_VERSION); \
+	exit $$status
+
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
@@ -211,10 +238,10 @@ endef
 clean: clean-build clean-deps clean-report
 
 clean-build:
-# If the app cannot be started (eg, if clean already happened) this will fail, but it should not be fatal.
-	@if [ -d "node_modules/mage" ]; then echo "Removing builds"; node . build --clean; else echo "Cannot remove builds without MAGE installed (skipping)"; fi
+	@git ls-files build --error-unmatch > /dev/null 2>&1 && echo "Not removing build from repo" || echo "Removing build" && rm -rf build
 
 clean-deps:
+	@[ -d ./node_modules ] && [ -d ./node_modules/mage ] && echo "Making sure your MAGE app is not running" && $(MAKE) stop
 	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
 	@git ls-files components --error-unmatch > /dev/null 2>&1 && echo "Not removing components from repo" || echo "Removing components" && rm -rf components
 
