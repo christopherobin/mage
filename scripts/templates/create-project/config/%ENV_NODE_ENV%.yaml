@@ -86,6 +86,7 @@ archivist:
 
     # When doing "list" operations, we will attempt each mentioned vault until successful
     listOrder:
+        - memory
         - file
 
     # When doing "get" operations, we will attempt each mentioned vault until successful

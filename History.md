@@ -3,6 +3,9 @@
 
 ## vNEXT - ??? Cat
 
+### Bug Fixes
+
+* Added the required `ident` topic to the template app.
 
 ## v0.39.0 - Necktie Cats
 

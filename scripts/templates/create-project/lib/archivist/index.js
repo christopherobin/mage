@@ -31,3 +31,11 @@ exports.session = {
 		}
 	}
 };
+
+exports.ident = {
+	index: ['userId'],
+	vaults: {
+		// Please add one or more vault references here (they must support list, set and get)
+		memory: {}
+	}
+};
