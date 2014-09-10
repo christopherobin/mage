@@ -5,7 +5,8 @@ var logger = {
 	verbose: devNull,
 	alert: console.error,
 	error: console.error,
-	notice: console.log,
+	info: devNull,
+	notice: devNull,
 	warning: console.warn
 };
 
