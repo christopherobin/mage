@@ -3,6 +3,12 @@
 
 ## vNEXT - ??? Cat
 
+### FileVault
+
+The filevault now logs the durations of scans and notifies you when meta file reads take longer
+than 100 msecs. Additionally, all async operations in filevault run in parallel with a limit of
+20 simultaneous reads.
+
 
 ## v0.39.0 - Necktie Cats
 
