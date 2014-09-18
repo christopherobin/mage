@@ -5,7 +5,6 @@
 		"../../../../.."
 	],
 	"local": [
-		"mage",
 		"loader"
 	],
 	"templates": [

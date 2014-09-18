@@ -14,6 +14,9 @@
 		"../../../node_modules/mage/lib",
 		"../../../node_modules/mage/lib/modules"
 	],
+	"templates": [
+		"page.html"
+	],
 	"scripts": [
 		"index.js"
 	],

@@ -1,0 +1,6 @@
+{
+	"name": "testSession",
+	"scripts": ["index.js"],
+	"paths": ["../../../../../node_modules/mage/lib/modules"],
+	"local": ["session"]
+}

@@ -1,3 +1,2 @@
-var mageLoader = require('loader');
-
-mageLoader.displayPage('main');
+var pkg = require('loader').getPackage('main');
+pkg.addHtml(require('./page.html'));

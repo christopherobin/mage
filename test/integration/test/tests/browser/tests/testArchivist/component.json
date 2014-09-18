@@ -1,0 +1,13 @@
+{
+	"name": "testArchivist",
+	"scripts": ["index.js"],
+	"paths": [
+		"../../../../../lib/modules",
+		"../../../../../node_modules/mage/lib/modules"
+	],
+	"local": [
+		"archivist",
+		"session",
+		"user"
+	]
+}

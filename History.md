@@ -1,6 +1,214 @@
 # Release history
 
-## vNEXT
+## vNEXT - ??? Cat
+
+### Bug Fixes
+
+* The ZooKeeper client was failing too easily during announcements.
+
+
+
+## v0.39.0 - Necktie Cats
+
+### Identification
+
+The ident module has undergone a radical change to turn it into a feature you will want to use in
+your application. The main change is that the ident module requires it's own topic called `ident`
+where it stores MAGE users. Users can login to their account through any supported ident engine.
+Currently MAGE has support for userpass, ldap and anonymous logins, but we now have a framework
+that will allow us to easily add new engines at will. Imagine giving your users the power to login
+to their account with their github, facebook, gmail, and twitter accounts. Soon, my mages, soon.
+
+Ident now has support for banning and unbanning users based on the new MAGE userId. Call
+`mage.ident.ban` with their `userId` and optionally a reason for their ban. They will be logged out
+immediately. Unban them by calling `mage.ident.unban` with their `userId` and they'll be able to
+login again.
+
+### Traditional HTTP caching
+
+All the pages we serve now respond with a last-modified HTTP header, allowing browsers and platforms
+to make decisions about caching. When an if-modified-since request header is sent, we allow the
+client to use the cached version.
+
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.29  | 0.10.31  | [Release notes](http://blog.nodejs.org/2014/08/19/node-v0-10-31-stable/) |
+
+### Bug Fixes
+
+* The built in mage favicon will no longer overwrite the favicon you set.
+* CronClient now sets up a client vault so that data changes will be distributed to connected
+  clients.
+
+
+## v0.38.2 - Relax Cat
+
+### Bug Fixes
+
+* When loader fails to store data in localStorage, it will not store the meta data as well.
+
+### Miscellaneous Changes
+
+* Warn when loader fails to store data in localStorage.
+
+
+## v0.38.1 - Bread Box Cat
+
+### Bug Fixes
+
+* Fixed an issue with the loader not properly handling errors with xhr creation
+* Moved the CORS handling to after the `xhr.open` call, it was causing phantomjs to explode.
+
+
+## v0.38.0 - Bonk Cat
+
+### Loader
+
+The MAGE loader has been rewritten from the ground up. Please read its documentation to fully get up
+to speed with the right way to interact with it. In an nutshell however, this is what happened.
+
+* The "page" terminology has been renamed to "package".
+* You no longer have to call `loader.configure(window.mageConfig)`.
+* The weak dependency to MAGE's asset class has been removed.
+* You can implement storage engines other than LocalStorage for cache.
+* Package cache can be turned off altogether.
+* Introduction of the `Package` class that you can interact with to:
+  - Read and manipulate downloaded content.
+  - Inject HTML and CSS early.
+* A lot of sanity checks have been added to warn you early about bad configuration or API calls.
+* You can re-download a package after a language change to update assets and stylesheets at runtime.
+* Event arguments changed a bit, so please read:
+* [Full Documentation](./lib/loader/Readme.md)!
+
+### Authentication
+
+If a session is expired or has been bumped out by logging into another device, the access level
+will now be automatically lowered to "anonymous", allowing user commands like "login" to succeed.
+You will receive an `auth` error in your user command callback. Also, MAGE will automatically
+send a `session.unset` event to notify the client that their session is no longer valid. That event
+will contain the reason why the session was unset.
+
+`"io.error.auth"` will no longer be emitted on `mage.eventManager`. You should listen for
+`session.unset` on mage.eventManager, the data in the event indicates the reason for your session
+to be unset. See [the session documentation](./lib/modules/session/Readme.md) for example code.
+
+MAGE no longer returns 401 or 403 in response to a user command that cannot be executed because
+the user does not have the correct access privileges or an invalid session. This is useful when
+connecting over a VPN and losing your connection (issue #755).
+
+### Process Messenger
+
+A new module allows you to communicate directly between your workers and the master
+without using any dependency.
+You can use it to broadcast messages to all the workers of your cluster.
+
+Read the [documentation](lib/processMessenger/Readme.md) for more information.
+
+### Single-server engine for the service discovery module
+
+In the case where you have only one server, you can use the single engine instead of
+mdns or zookeeper to handle the service discovery.
+
+It uses the new Process Messenger, and doesn't require any other dependency.
+
+Read the [documentation](lib/serviceDiscovery/engines/single/Readme.md) for more information.
+
+### Logging
+
+A new writer has been added: Syslog over UDP. You can use this to log to your own syslog daemon (if
+it's set up to accept messages over UDP) or syslog daemons on other hosts.
+
+The Graylog writer has some new options to format your log entries to your liking. The Graylog
+messages now also contain the process role and logger contexts.
+
+Stack traces are no longer stored in the `details` field of a log entry, but have been moved into
+the data section. We also strip the root path of the project from the stack, to make it a bit more
+friendly to read.
+
+For more information about configuration, please refer to the [documentation](./lib/loggingService/Readme.md).
+
+### Peer Dependency updates
+
+| peer dependency   | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| elasticsearch     | 0.3.12 | ~0.4.4 | [Release notes](https://github.com/ncb000gt/node-es/releases) |
+
+### Dependency updates
+
+| dependency        | from   | to     | changes   |
+|-------------------|--------|--------|-----------|
+| tabalot           | 0.4.0  | 0.7.2  | [Release notes](https://github.com/mafintosh/tabalot/compare/v0.4.0...v0.7.2) |
+
+### Miscellaneous Changes
+
+* Updated the loggingService to properly handle writing tomes in log entries.
+
+### Bug Fixes
+
+* Optional reads were still using "eventy" methods to delete values from the client vault. Now
+  Archivist client will delete the value when it gets an empty response for a topic.
+
+
+## v0.37.4 - Fat Cat
+
+#### Archivist
+
+Added context to the error logs when archivist encounters an error. You will now be able to see the
+topic, index, vault name, and operation when an error occurs.
+
+
+## v0.37.3 - Mad Cat
+
+### Miscellaneous Changes
+
+* The web client's Asset.getContents function now allows the callback to come as the first argument.
+* Bumped node-mysql peer dependency version to ~2.4.1
+* Bumped node-mysql dev dependency to version 2.4.1 for unit tests
+
+### Bug fixes
+
+* A recent refactoring of the browser-side XHR wrapper became too strict about content-types,
+  preventing obscure (missing mime-magic on servers) types not to be readable anymore (ie: gettext).
+
+
+## v0.37.2 - Splat Cat
+
+### MMRP
+
+* The message stream protocol has been documented.
+* Small performance improvement in message propagation in MMRP.
+* Fixed: When using short-polling, MMRP's broadcast feature did not work.
+* Fixed: v0.37.0 introduced a bug where events were being delivered never (or late) to the browser.
+
+### MySQL vault improvements and unit tests
+
+After discovering and fixing a bug with the way binary data was encoded, unit tests were written to
+prevent this in future. Whilst writing these unit tests we also discovered that there was an issue
+with the way the databases were created and dropped which has now become more robust.
+
+Lastly we added some additional helper functions for the creation and dropping of tables.
+
+### Bug fixes
+
+* The bootstrapped app was no longer displaying HTML correctly.
+
+
+## v0.37.1 - Bird on Head Cat
+
+### Dependency updates
+
+| dependency        | from    | to      | changes   |
+|-------------------|---------|---------|-----------|
+| node              | 0.10.28 | 0.10.29 | [Release notes](http://blog.nodejs.org/2014/06/16/openssl-and-breaking-utf-8-change/) |
+
+### Miscellaneous Changes
+
+* We have added more logs when encountering parse errors in `httpBatchHandler`.
+
+
+## v0.37.0 - Summer Cat
 
 ### JSON-RPC
 
@@ -15,6 +223,7 @@ on the eventManager. `session.restore` has been added to the session module, see
 [the documentation](./lib/modules/session/Readme.md) for details.
 
 `session.register` is no longer an asynchronous function and returns a session object when called.
+
 **If you were handling your own session registration, this is a breaking change and will require an
 update to your code.**
 
@@ -55,6 +264,7 @@ section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environ
 
 * The warning log for long running http requests now ignores requests that start with /msgstream
 * The warning log for unzipping gzipped content has been demoted to a debug log.
+* You can now do a heapdump on the master process.
 
 ### Bug fixes
 
@@ -62,7 +272,8 @@ section under `# DEVELOPMENT`. Then run `make dev` to set it up for your environ
 * Aggressive archivist usage tests were not testing the index correctly.
 * archivist.list could throw errors, which should always go through the callback instead.
 * The elasticsearch vault now logs an error during setup if it has an error.
-* The ZooKeeper client was failing too easily during announcements.
+* MAGE will no longer exit without logging anything when a module returns an error during setup.
+  You may get duplicate logs in some cases, but it's better than getting no logs.
 
 
 ## v0.36.0 - Y U No Fit Cat

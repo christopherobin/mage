@@ -1,7 +1,7 @@
 BIN = ./node_modules/.bin
 LIB = ./lib
-TEST_APP = ./test/app
-TEST_SERVER = ./test/server
+TEST_UNIT = ./test/unit
+TEST_INTEGRATION = ./test/integration
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
@@ -46,7 +46,7 @@ deps-npm:
 
 deps-component:
 	mkdir -p components
-	@cd test/app; node . install-components
+	@cd $(TEST_INTEGRATION); node . install-components
 
 
 # DEVELOPMENT
@@ -73,12 +73,13 @@ dev-githooks:
 define helpQuality
 	@echo "Quality:"
 	@echo
-	@echo "  make test              Runs all tests (shortcut for test-lint and test-unit)."
+	@echo "  make test              Runs all tests (shortcut for test-lint, test-style, test-unit and test-integration)."
 	@echo "  make report            Creates all reports (shortcut for report-complexity and report-coverage)."
 	@echo
 	@echo "  make test-lint         Lints every JavaScript and JSON file in the project."
 	@echo "  make test-style        Tests code style on every JavaScript and JSON file in the project."
-	@echo "  make test-unit         Runs every unit test."
+	@echo "  make test-unit         Runs all unit tests."
+	@echo "  make test-integration  Runs all integration test."
 	@echo "  make report-complexity Creates a Plato code complexity report."
 	@echo "  make report-coverage   Creates a unit test coverage report."
 	@echo
@@ -88,17 +89,9 @@ define helpQuality
 	@echo
 endef
 
-.PHONY: lint lint-all test report test-lint test-style test-unit report-complexity report-coverage
+.PHONY: test report test-lint test-style test-unit test-integration report-complexity report-coverage
 
-# lint is deprecated
-lint: test-lint
-	@echo ">>> Warning: The make lint target has been deprecated, please change it to 'test-lint'."
-
-# lint-all is deprecated
-lint-all: test-lint
-	@echo ">>> Warning: The make lint-all target has been deprecated, please change it to 'test-lint'."
-
-test: test-lint test-style test-unit
+test: test-lint test-style test-unit test-integration
 report: report-complexity report-coverage
 
 define lintPath
@@ -140,12 +133,12 @@ else
 endif
 
 test-unit:
-	$(BIN)/mocha -R spec --recursive $(TEST_SERVER)
+	$(BIN)/mocha -R spec --recursive $(TEST_UNIT)
 
-	@echo
+test-integration:
 	@echo Running integration tests
 	@echo
-	@cd $(TEST_APP); NODE_ENV="$(NODE_ENV),unit-tests" node integration
+	NODE_ENV="$(NODE_ENV),unit-tests" node $(TEST_INTEGRATION) autorun
 
 
 report-complexity:
@@ -153,8 +146,13 @@ report-complexity:
 	@echo Open $(COMPLEXITY_REPORT)/index.html in your browser
 
 report-coverage:
-	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_APP)/integration.js --dir $(COVERAGE_REPORT)/app
-	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/server -- -R spec --recursive $(TEST_SERVER)
+	# unit tests
+	$(BIN)/istanbul cover $(BIN)/_mocha --dir $(COVERAGE_REPORT)/unit -- -R spec --recursive $(TEST_UNIT)
+
+	# integration tests
+	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/istanbul cover $(TEST_INTEGRATION) --dir $(COVERAGE_REPORT)/integration -- autorun
+
+	# aggregate results
 	$(BIN)/istanbul report html --root $(COVERAGE_REPORT) --dir $(COVERAGE_REPORT)
 	@echo Open $(COVERAGE_REPORT)/index.html in your browser
 
@@ -181,3 +179,67 @@ clean-deps:
 clean-report:
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
+
+branch := develop
+user := Wizcorp
+repo_path = ./tmp/$(user)-$(repo)
+
+app-check-repo:
+ifndef repo
+	@echo "Please specify a repository name to test against using repo=[github repo name]" && exit 1
+endif
+
+app-check-repo-path:
+	@[ ! -d $(repo_path) ] \
+		&& echo 'Please run `make app-update repo=$(repo)$(shell [ "$(user)" != "Wizcorp" ] && echo " user=$(user)")` first' \
+		&& exit 1 \
+		|| true
+
+app-update: app-check-repo
+#
+# If the repository wasn't cloned yet, we clone it
+#
+	[ ! -d $(repo_path) ] && git clone git@github.com:$(user)/$(repo).git $(repo_path) || true
+
+#
+# We:
+#
+# 	* Checkout package.json (to make sure no uncommitted changes are left; see below)
+# 	* Checkout the branch we wish to test
+# 	* Pull the latest updates for that branch
+#
+	cd $(repo_path) && git checkout package.json && git checkout $(branch) && git pull origin $(branch)
+
+app-build: app-check-repo app-check-repo-path
+#
+# We:
+#
+#   * Remove MAGE dependency from package.json
+#   * Install node dependencies
+#   * Symlink to MAGE (or update the symlink if it exists)
+#   * Rebuild MAGE for the current platform
+#
+	cd $(repo_path) \
+		&& make clean \
+		&& npm rm --save mage \
+		&& $(MAKE) deps-npm \
+		&& rm -rf ./node_modules/mage \
+		&& ln -sf ../../../ ./node_modules/mage \
+		&& npm rebuild
+
+#
+# We complete the setup process
+#
+	cd $(repo_path) && $(MAKE) deps-component
+
+	if grep '^build:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) build; fi
+	if grep '^datastores:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) datastores; fi
+
+#
+# We run the tests
+#
+app-test: app-check-repo app-check-repo-path
+	cd $(repo_path) && make test
+
+app-run: app-check-repo app-check-repo-path
+	cd $(repo_path) && node .

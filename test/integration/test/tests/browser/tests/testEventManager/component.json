@@ -1,0 +1,6 @@
+{
+	"name": "testEventManager",
+	"scripts": ["index.js"],
+	"paths": ["../../../../../node_modules/mage/lib"],
+	"local": ["eventManager"]
+}
