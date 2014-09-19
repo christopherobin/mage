@@ -5,7 +5,7 @@
 ### Bug Fixes
 
 * The ZooKeeper client was failing too easily during announcements.
-
+* Fixed bootstrap generation of config files.
 
 
 ## v0.39.0 - Necktie Cats
