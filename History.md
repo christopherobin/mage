@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT - ??? Cat
+## v0.39.1 - Pancake Cat
 
 ### Miscellaneous Changes
 
