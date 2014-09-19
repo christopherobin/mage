@@ -1,5 +1,8 @@
 # Release history
 
+## vNEXT - ??? Cat
+
+
 ## v0.39.1 - Pancake Cat
 
 ### Miscellaneous Changes
@@ -14,6 +17,7 @@
 * The ZooKeeper client was failing too easily during announcements.
 * Fixed bootstrap generation of config files.
 * Fixed an issue where cronClient would always log an error.
+
 
 ## v0.39.0 - Necktie Cats
 
