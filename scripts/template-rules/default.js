@@ -49,10 +49,6 @@ replacements = {
 	ENV_USER: process.env.USER
 };
 
-if (process.env.NODE_ENV) {
-	replacements.ENV_NODE_ENV = process.env.NODE_ENV;
-}
-
 
 exports.prepare = function (cb) {
 	// ask questions to fill the replacements map
@@ -68,7 +64,7 @@ exports.prepare = function (cb) {
 			ask('Name the author/company:', 'APP_AUTHOR', null, callback);
 		},
 		function (callback) {
-			ask('Provide the base URL for your game (you may leave this empty for now):', 'APP_CLIENTHOST_EXPOSE', null, callback);
+			ask('Provide the base URL for your game (you may leave this empty):', 'APP_CLIENTHOST_EXPOSE', null, callback);
 		},
 		function (callback) {
 			ask('Please provide a valid GitHub repository URL (if there is one):', 'APP_REPO', null, callback);
