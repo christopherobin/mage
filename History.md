@@ -1,5 +1,19 @@
 # Release history
 
+## v0.39.1 - Pancake Cat
+
+### Miscellaneous Changes
+
+* cronClient now calls state.error when an error occurs.
+* state.error no longer complains when called without a callback.
+* insufficient access on the server side are now logged at the info level instead of error.
+
+### Bug Fixes
+
+* Added the required `ident` topic to the template app.
+* The ZooKeeper client was failing too easily during announcements.
+* Fixed bootstrap generation of config files.
+* Fixed an issue where cronClient would always log an error.
 
 ## v0.39.0 - Necktie Cats
 

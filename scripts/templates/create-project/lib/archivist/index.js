@@ -31,3 +31,10 @@ exports.session = {
 		}
 	}
 };
+
+exports.ident = {
+	index: ['userId'],
+	vaults: {
+		file: {}
+	}
+};
