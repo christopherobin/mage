@@ -1,7 +1,11 @@
 # Release history
 
-
 ## vNEXT - ??? Cat
+
+### Bug Fixes
+
+* The ZooKeeper client was failing too easily during announcements.
+
 
 
 ## v0.39.0 - Necktie Cats
