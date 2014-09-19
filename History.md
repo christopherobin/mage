@@ -6,6 +6,7 @@
 
 * cronClient now calls state.error when an error occurs.
 * state.error no longer complains when called without a callback.
+* insufficient access on the server side are now logged at the info level instead of error.
 
 ### Bug Fixes
 
