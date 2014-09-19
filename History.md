@@ -2,11 +2,16 @@
 
 ## vNEXT - ??? Cat
 
+### Miscellaneous Changes
+
+* cronClient now calls state.error when an error occurs.
+* state.error no longer complains when called without a callback.
+
 ### Bug Fixes
 
 * The ZooKeeper client was failing too easily during announcements.
 * Fixed bootstrap generation of config files.
-
+* Fixed an issue where cronClient would always log an error.
 
 ## v0.39.0 - Necktie Cats
 
