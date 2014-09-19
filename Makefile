@@ -179,3 +179,67 @@ clean-deps:
 clean-report:
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
+
+branch := develop
+user := Wizcorp
+repo_path = ./tmp/$(user)-$(repo)
+
+app-check-repo:
+ifndef repo
+	@echo "Please specify a repository name to test against using repo=[github repo name]" && exit 1
+endif
+
+app-check-repo-path:
+	@[ ! -d $(repo_path) ] \
+		&& echo 'Please run `make app-update repo=$(repo)$(shell [ "$(user)" != "Wizcorp" ] && echo " user=$(user)")` first' \
+		&& exit 1 \
+		|| true
+
+app-update: app-check-repo
+#
+# If the repository wasn't cloned yet, we clone it
+#
+	[ ! -d $(repo_path) ] && git clone git@github.com:$(user)/$(repo).git $(repo_path) || true
+
+#
+# We:
+#
+# 	* Checkout package.json (to make sure no uncommitted changes are left; see below)
+# 	* Checkout the branch we wish to test
+# 	* Pull the latest updates for that branch
+#
+	cd $(repo_path) && git checkout package.json && git checkout $(branch) && git pull origin $(branch)
+
+app-build: app-check-repo app-check-repo-path
+#
+# We:
+#
+#   * Remove MAGE dependency from package.json
+#   * Install node dependencies
+#   * Symlink to MAGE (or update the symlink if it exists)
+#   * Rebuild MAGE for the current platform
+#
+	cd $(repo_path) \
+		&& make clean \
+		&& npm rm --save mage \
+		&& $(MAKE) deps-npm \
+		&& rm -rf ./node_modules/mage \
+		&& ln -sf ../../../ ./node_modules/mage \
+		&& npm rebuild
+
+#
+# We complete the setup process
+#
+	cd $(repo_path) && $(MAKE) deps-component
+
+	if grep '^build:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) build; fi
+	if grep '^datastores:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) datastores; fi
+
+#
+# We run the tests
+#
+app-test: app-check-repo app-check-repo-path
+	cd $(repo_path) && make test
+
+app-run: app-check-repo app-check-repo-path
+	cd $(repo_path) && node .

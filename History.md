@@ -1,5 +1,47 @@
 # Release history
 
+## vNEXT - ??? Cat
+
+### Bug Fixes
+
+* The ZooKeeper client was failing too easily during announcements.
+
+
+
+## v0.39.0 - Necktie Cats
+
+### Identification
+
+The ident module has undergone a radical change to turn it into a feature you will want to use in
+your application. The main change is that the ident module requires it's own topic called `ident`
+where it stores MAGE users. Users can login to their account through any supported ident engine.
+Currently MAGE has support for userpass, ldap and anonymous logins, but we now have a framework
+that will allow us to easily add new engines at will. Imagine giving your users the power to login
+to their account with their github, facebook, gmail, and twitter accounts. Soon, my mages, soon.
+
+Ident now has support for banning and unbanning users based on the new MAGE userId. Call
+`mage.ident.ban` with their `userId` and optionally a reason for their ban. They will be logged out
+immediately. Unban them by calling `mage.ident.unban` with their `userId` and they'll be able to
+login again.
+
+### Traditional HTTP caching
+
+All the pages we serve now respond with a last-modified HTTP header, allowing browsers and platforms
+to make decisions about caching. When an if-modified-since request header is sent, we allow the
+client to use the cached version.
+
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.29  | 0.10.31  | [Release notes](http://blog.nodejs.org/2014/08/19/node-v0-10-31-stable/) |
+
+### Bug Fixes
+
+* The built in mage favicon will no longer overwrite the favicon you set.
+* CronClient now sets up a client vault so that data changes will be distributed to connected
+  clients.
+
 
 ## v0.38.2 - Relax Cat
 
@@ -21,20 +63,6 @@
 
 
 ## v0.38.0 - Bonk Cat
-
-### Identification
-
-The ident module has undergone a radical change to turn it into a feature you will want to use in
-your application. The main change is that the ident module requires it's own topic called `ident`
-where it stores MAGE users. Users can login to their account through any supported ident engine.
-Currently MAGE has support for userpass, ldap and anonymous logins, but we now have a framework
-that will allow us to easily add new engines at will. Imagine giving your users the power to login
-to their account with their github, facebook, gmail, and twitter accounts. Soon, my mages, soon.
-
-Ident now has support for banning and unbanning users based on the new MAGE userId. Call
-`mage.ident.ban` with their `userId` and optionally a reason for their ban. They will be logged out
-immediately. Unban them by calling `mage.ident.unban` with their `userId` and they'll be able to
-login again.
 
 ### Loader
 
