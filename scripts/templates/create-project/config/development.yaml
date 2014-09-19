@@ -1,7 +1,7 @@
 #
-# %APP_NAME% - %ENV_NODE_ENV%.yaml
+# %APP_NAME% - development.yaml
 #
-# This file includes all the configuration that is unique to the "%ENV_NODE_ENV%" environment.
+# This file includes all the configuration that is unique to the "development" environment.
 # When it overlaps with default.yaml it will override its values.
 #
 
@@ -86,7 +86,6 @@ archivist:
 
     # When doing "list" operations, we will attempt each mentioned vault until successful
     listOrder:
-        - memory
         - file
 
     # When doing "get" operations, we will attempt each mentioned vault until successful
