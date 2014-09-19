@@ -9,6 +9,7 @@
 
 ### Bug Fixes
 
+* Added the required `ident` topic to the template app.
 * The ZooKeeper client was failing too easily during announcements.
 * Fixed bootstrap generation of config files.
 * Fixed an issue where cronClient would always log an error.
