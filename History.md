@@ -3,6 +3,11 @@
 ## vNEXT - ??? Cat
 
 
+### Miscellaneous Changes
+
+* Archivist now logs more context when encountering errors during list and get operations.
+
+
 ## v0.39.1 - Pancake Cat
 
 ### Miscellaneous Changes
