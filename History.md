@@ -1,6 +1,9 @@
 # Release history
 
 
+## vNEXT - ??? Cat
+
+
 ## v0.39.2 - Snake Charmer Cat
 
 ### Miscellaneous Changes
