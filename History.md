@@ -6,6 +6,8 @@
 ### Miscellaneous Changes
 
 * Archivist now logs more context when encountering errors during list and get operations.
+* Reduced the logging level of internal server errors from `critical` to `error`. If you want to
+  log at a higher level, you should do so in your app.
 
 
 ## v0.39.1 - Pancake Cat
