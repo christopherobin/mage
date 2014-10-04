@@ -3,6 +3,10 @@
 
 ## vNEXT - ??? Cat
 
+### Bug Fixes
+
+* Archivist will no longer synchronously return when a value is known to not exist.
+
 
 ## v0.39.2 - Snake Charmer Cat
 
