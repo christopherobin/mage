@@ -3,6 +3,12 @@
 
 ## vNEXT - ??? Cat
 
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.31  | 0.10.32  | [Release notes](http://blog.nodejs.org/2014/09/16/node-v0-10-32-stable/) |
+
 ### Bug Fixes
 
 * Archivist will no longer synchronously return when a value is known to not exist.
