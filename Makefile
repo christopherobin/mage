@@ -5,6 +5,7 @@ TEST_INTEGRATION = ./test/integration
 SCRIPTS = ./scripts
 COVERAGE_REPORT = html-report
 COMPLEXITY_REPORT = plato-report
+APP_ROOT = ./tmp
 
 
 # GETTING STARTED
@@ -28,6 +29,7 @@ help:
 	$(helpDevelopment)
 	$(helpQuality)
 	$(helpCleanup)
+	$(helpApps)
 
 build:
 	@echo "MAGE has nothing to build."
@@ -180,11 +182,37 @@ clean-report:
 	rm -rf "$(COVERAGE_REPORT)"
 	rm -rf "$(COMPLEXITY_REPORT)"
 
-branch := develop
-user := Wizcorp
-repo_path = ./tmp/$(user)-$(repo)
 
-app-check-repo:
+# APPLICATION TESTS AGAINST MAGE
+
+define helpApps
+	@echo "Applications:"
+	@echo
+	@echo "  make app-update        Updates or installs the repo."
+	@echo "  make app-build         Installs the app, its dependencies and datastores."
+	@echo "  make app-test          Runs \"make test\" against the app."
+	@echo "  make app-run           Runs the app in the foreground."
+	@echo
+	@echo "  variables that apply to all app-commands:"
+	@echo "    user                 Name of the GitHub user (default: Wizcorp)."
+	@echo "    repo                 Name of the repository (not optional)."
+	@echo "    branch               Name of the branch to checkout (default: develop)."
+	@echo
+endef
+
+.PHONY: app-check-repo-name app-check-repo-path app-update app-build app-test app-run
+
+ifndef branch
+  branch = develop
+endif
+
+ifndef user
+  user = Wizcorp
+endif
+
+repo_path = $(APP_ROOT)/$(user)-$(repo)
+
+app-check-repo-name:
 ifndef repo
 	@echo "Please specify a repository name to test against using repo=[github repo name]" && exit 1
 endif
@@ -195,31 +223,27 @@ app-check-repo-path:
 		&& exit 1 \
 		|| true
 
-app-update: app-check-repo
-#
+app-update: app-check-repo-name
+
 # If the repository wasn't cloned yet, we clone it
-#
-	[ ! -d $(repo_path) ] && git clone git@github.com:$(user)/$(repo).git $(repo_path) || true
+	[ ! -d "$(repo_path)" ] && git clone "git@github.com:$(user)/$(repo).git" "$(repo_path)" || true
 
-#
-# We:
-#
-# 	* Checkout package.json (to make sure no uncommitted changes are left; see below)
-# 	* Checkout the branch we wish to test
-# 	* Pull the latest updates for that branch
-#
-	cd $(repo_path) && git checkout package.json && git checkout $(branch) && git pull origin $(branch)
+# * Checkout package.json (to make sure no uncommitted changes are left; see below)
+# * Checkout the branch we wish to test
+# * Pull the latest updates for that branch
 
-app-build: app-check-repo app-check-repo-path
-#
-# We:
-#
-#   * Remove MAGE dependency from package.json
-#   * Install node dependencies
-#   * Symlink to MAGE (or update the symlink if it exists)
-#   * Rebuild MAGE for the current platform
-#
-	cd $(repo_path) \
+	cd "$(repo_path)" && git checkout package.json && git checkout "$(branch)" && git pull origin "$(branch)"
+
+app-build: app-check-repo-name app-check-repo-path
+
+# * Remove MAGE dependency from package.json
+# * Install node dependencies
+# * Symlink to MAGE (or update the symlink if it exists)
+# * Rebuild MAGE for the current platform
+# * Build the apps
+# * Set up datastores
+
+	cd "$(repo_path)" \
 		&& make clean \
 		&& npm rm --save mage \
 		&& $(MAKE) deps-npm \
@@ -227,19 +251,13 @@ app-build: app-check-repo app-check-repo-path
 		&& ln -sf ../../../ ./node_modules/mage \
 		&& npm rebuild
 
-#
-# We complete the setup process
-#
-	cd $(repo_path) && $(MAKE) deps-component
+	cd "$(repo_path)" && $(MAKE) deps-component
 
-	if grep '^build:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) build; fi
-	if grep '^datastores:' $(repo_path)/Makefile > /dev/null; then cd $(repo_path) && $(MAKE) datastores; fi
+	if grep '^build:' "$(repo_path)/Makefile" > /dev/null; then cd "$(repo_path)" && $(MAKE) build; fi
+	if grep '^datastores:' "$(repo_path)/Makefile" > /dev/null; then cd "$(repo_path)" && $(MAKE) datastores; fi
 
-#
-# We run the tests
-#
-app-test: app-check-repo app-check-repo-path
-	cd $(repo_path) && make test
+app-test: app-check-repo-name app-check-repo-path
+	cd "$(repo_path)" && make test
 
-app-run: app-check-repo app-check-repo-path
-	cd $(repo_path) && node .
+app-run: app-check-repo-name app-check-repo-path
+	cd "$(repo_path)" && node .
