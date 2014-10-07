@@ -6,6 +6,7 @@
 ### Bug Fixes
 
 * Archivist will no longer synchronously return when a value is known to not exist.
+* Client vault will no longer synchronously execute operations.
 
 
 ## v0.39.2 - Snake Charmer Cat
