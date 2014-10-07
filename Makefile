@@ -248,8 +248,9 @@ app-build: app-check-repo-name app-check-repo-path
 		&& npm rm --save mage \
 		&& $(MAKE) deps-npm \
 		&& rm -rf ./node_modules/mage \
-		&& ln -sf ../../../ ./node_modules/mage \
-		&& npm rebuild
+		&& ln -sf ../../../ ./node_modules/mage
+
+	cd "$(repo_path)/node_modules/mage" && npm rebuild
 
 	cd "$(repo_path)" && $(MAKE) deps-component
 
