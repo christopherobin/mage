@@ -1,7 +1,7 @@
 # Release history
 
 
-## vNEXT - ??? Cat
+## v0.39.3 - Stoplight Cat
 
 ### Dependency updates
 
