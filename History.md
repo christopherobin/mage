@@ -3,6 +3,22 @@
 
 ## vNEXT - ??? Cat
 
+
+## v0.39.4 - Failure To Launch Cat
+
+### Bug Fixes
+
+* Pin stacktrace to v0.6.2 instead of latest since latest broke.
+
+
+## v0.39.3 - Stoplight Cat
+
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.31  | 0.10.32  | [Release notes](http://blog.nodejs.org/2014/09/16/node-v0-10-32-stable/) |
+
 ### Miscellaneous Changes
 
 * Reduced the log level of some warnings to debug in msgServer. Notably: 'Cannot handle message
