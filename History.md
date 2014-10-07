@@ -3,6 +3,10 @@
 
 ## vNEXT - ??? Cat
 
+### Bug Fixes
+
+* Pin stacktrace to v0.6.2 instead of latest since latest broke.
+
 
 ## v0.39.3 - Stoplight Cat
 

@@ -3,7 +3,7 @@
 	"description": "Logger module.",
 	"dependencies": {
 		"ericclemmons/unique-selector": "v0.0.3",
-		"stacktracejs/stacktrace.js": "*",
+		"stacktracejs/stacktrace.js": "v0.6.2",
 		"component/emitter": "1.1.0"
 	},
 	"local": ["mage"],
