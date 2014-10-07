@@ -1,7 +1,7 @@
 # Release history
 
 
-## vNEXT - ??? Cat
+## v0.39.4 - Failure To Launch Cat
 
 ### Bug Fixes
 
