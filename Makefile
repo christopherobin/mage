@@ -202,13 +202,10 @@ endef
 
 .PHONY: app-check-repo-name app-check-repo-path app-update app-build app-test app-run
 
-ifndef branch
-  branch = develop
-endif
+# set values for branch and user, only if not already set from the outside
 
-ifndef user
-  user = Wizcorp
-endif
+branch := develop
+user := Wizcorp
 
 repo_path = $(APP_ROOT)/$(user)-$(repo)
 
