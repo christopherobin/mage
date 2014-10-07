@@ -9,9 +9,15 @@
 |-------------|----------|----------|-----------|
 | node        | 0.10.31  | 0.10.32  | [Release notes](http://blog.nodejs.org/2014/09/16/node-v0-10-32-stable/) |
 
+### Miscellaneous Changes
+
+* Reduced the log level of some warnings to debug in msgServer. Notably: 'Cannot handle message
+  store response without a recipient address' and 'Could not deliver messages to'
+
 ### Bug Fixes
 
 * Archivist will no longer synchronously return when a value is known to not exist.
+* Client vault will no longer synchronously execute operations.
 
 
 ## v0.39.2 - Snake Charmer Cat
