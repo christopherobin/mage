@@ -193,10 +193,10 @@ define helpApps
 	@echo "  make app-test          Runs \"make test\" against the app."
 	@echo "  make app-run           Runs the app in the foreground."
 	@echo
-	@echo "  variables that apply to all app-commands:"
-	@echo "    user                 Name of the GitHub user (default: Wizcorp)."
+	@echo "  variables for app-commands:"
+	@echo "    user                 Name of the GitHub (default: Wizcorp)."
 	@echo "    repo                 Name of the repository (not optional)."
-	@echo "    branch               Name of the branch to checkout (default: develop)."
+	@echo "    branch               Name of the branch to checkout (only used by app-update, default: develop)."
 	@echo
 endef
 
