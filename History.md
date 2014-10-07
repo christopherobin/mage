@@ -3,6 +3,11 @@
 
 ## vNEXT - ??? Cat
 
+### Miscellaneous Changes
+
+* Reduced the log level of some warnings to debug in msgServer. Notably: 'Cannot handle message
+  store response without a recipient address' and 'Could not deliver messages to'
+
 ### Bug Fixes
 
 * Archivist will no longer synchronously return when a value is known to not exist.
