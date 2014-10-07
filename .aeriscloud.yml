@@ -79,3 +79,4 @@ infras:
 # development here
 #
 timezone: Asia/Tokyo
+node_version: v0.10.32

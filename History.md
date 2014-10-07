@@ -3,6 +3,12 @@
 
 ## vNEXT - ??? Cat
 
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.31  | 0.10.32  | [Release notes](http://blog.nodejs.org/2014/09/16/node-v0-10-32-stable/) |
+
 ### Miscellaneous Changes
 
 * Reduced the log level of some warnings to debug in msgServer. Notably: 'Cannot handle message
