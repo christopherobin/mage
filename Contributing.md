@@ -68,6 +68,6 @@ found in `/test/integration/test/tests`.
 ### Testing existing apps with your changes
 
 You can test every MAGE application on GitHub that you have access to by using the following Make
-copmmands: `app-update`, `app-build`, `app-test`, `app-run`. For more information on how to use
-these, please run `make` in the root of the MAGE project. You are encouraged to make sure existing
+commands: `app-update`, `app-build`, `app-test`, `app-run`. For more information on how to use
+these, please [read the documentation](docs/Testing.md). You are encouraged to make sure existing
 applications don't break with the changes you introduce to MAGE.
