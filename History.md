@@ -10,6 +10,57 @@ than 100 msecs. Additionally, all async operations in filevault run in parallel 
 20 simultaneous reads.
 
 
+## v0.39.4 - Failure To Launch Cat
+
+### Bug Fixes
+
+* Pin stacktrace to v0.6.2 instead of latest since latest broke.
+
+
+## v0.39.3 - Stoplight Cat
+
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| node        | 0.10.31  | 0.10.32  | [Release notes](http://blog.nodejs.org/2014/09/16/node-v0-10-32-stable/) |
+
+### Miscellaneous Changes
+
+* Reduced the log level of some warnings to debug in msgServer. Notably: 'Cannot handle message
+  store response without a recipient address' and 'Could not deliver messages to'
+
+### Bug Fixes
+
+* Archivist will no longer synchronously return when a value is known to not exist.
+* Client vault will no longer synchronously execute operations.
+
+
+## v0.39.2 - Snake Charmer Cat
+
+### Miscellaneous Changes
+
+* Archivist now logs more context when encountering errors during list and get operations.
+* Reduced the logging level of internal server errors from `critical` to `error`. If you want to
+  log at a higher level, you should do so in your app.
+
+
+## v0.39.1 - Pancake Cat
+
+### Miscellaneous Changes
+
+* cronClient now calls state.error when an error occurs.
+* state.error no longer complains when called without a callback.
+* insufficient access on the server side are now logged at the info level instead of error.
+
+### Bug Fixes
+
+* Added the required `ident` topic to the template app.
+* The ZooKeeper client was failing too easily during announcements.
+* Fixed bootstrap generation of config files.
+* Fixed an issue where cronClient would always log an error.
+
+
 ## v0.39.0 - Necktie Cats
 
 ### Identification

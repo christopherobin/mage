@@ -49,10 +49,6 @@ replacements = {
 	ENV_USER: process.env.USER
 };
 
-if (process.env.NODE_ENV) {
-	replacements.ENV_NODE_ENV = process.env.NODE_ENV;
-}
-
 
 exports.prepare = function (cb) {
 	// ask questions to fill the replacements map
