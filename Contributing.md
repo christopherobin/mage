@@ -61,5 +61,13 @@ explain to end-users what it's all about.
 
 When you provide code, please also provide unit tests to prove that your code works. When you
 provide tests, you save others time and make a much more convincing case that your contribution has
-positive value. All tests can be found under `/test/server` (for pure Node.js tests) and
-`/test/browser` (for tests that are run by Phantom.js).
+positive value. All unit tests can be found in `/test/unit` (for pure Node.js tests) and
+integration tests, which simulate MAGE being tested as a middleware from an application, can be
+found in `/test/integration/test/tests`.
+
+### Testing existing apps with your changes
+
+You can test every MAGE application on GitHub that you have access to by using the following Make
+commands: `app-update`, `app-build`, `app-test`, `app-run`. For more information on how to use
+these, please [read the documentation](docs/Testing.md). You are encouraged to make sure existing
+applications don't break with the changes you introduce to MAGE.

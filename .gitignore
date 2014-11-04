@@ -3,6 +3,7 @@
 /test/browser/build
 /plato-report
 /html-report
+/tmp
 .swp
 *.swp
 *.session
