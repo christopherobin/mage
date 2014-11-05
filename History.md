@@ -3,6 +3,25 @@
 
 ## vNEXT - ??? Cat
 
+### FileVault
+
+The filevault now logs the durations of scans and notifies you when meta file reads take longer
+than 100 msecs. Additionally, all async operations in filevault run in parallel with a limit of
+10 simultaneous reads.
+
+### node.js versions
+
+MAGE no longer forces you to be on a specific version of node. You are now free to use any version
+of node from v0.8 (deprecated), v0.10 (stable) and even the latest in v0.11 (unstable), however we
+recommend you stick to the latest stable version for the best experience.
+
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| async       | 0.2.9    | 0.9.0    | [Release notes](https://github.com/caolan/async/releases/tag/0.9.0) |
+| tomes       | 0.0.21   | 0.0.22   | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/0.0.22) |
+
 
 ## v0.39.4 - Failure To Launch Cat
 

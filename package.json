@@ -9,19 +9,19 @@
 		"url": "http://github.com/Wizcorp/mage/issues"
 	},
 	"engines": {
-		"node": "0.10.32"
+		"node": ">=0.8 <=0.11"
 	},
 	"dependencies": {
 		"commander": "2.2.0",
 		"tabalot" : "0.7.2",
-		"async": "0.2.9",
+		"async": "0.9.0",
 		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.4",
 		"multipart-parser": "0.0.2",
 		"epipebomb": "0.1.1",
 		"ws": "0.4.32",
 		"colours": "0.6.0-2",
 		"rumplestiltskin": "0.0.6",
-		"tomes": "0.0.21",
+		"tomes": "0.0.22",
 		"node-uuid": "1.4.1",
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
