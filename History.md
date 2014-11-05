@@ -7,7 +7,13 @@
 
 The filevault now logs the durations of scans and notifies you when meta file reads take longer
 than 100 msecs. Additionally, all async operations in filevault run in parallel with a limit of
-20 simultaneous reads.
+10 simultaneous reads.
+
+### Dependency updates
+
+| dependency  | from     | to       | changes   |
+|-------------|----------|----------|-----------|
+| async       | 0.2.9    | 0.9.0    | [Release notes](https://github.com/caolan/async/releases/tag/0.9.0) |
 
 
 ## v0.39.4 - Failure To Launch Cat
