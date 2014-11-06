@@ -34,6 +34,11 @@ function createCounter(n, test, cb) {
 }
 
 
+function createUri(port) {
+	return 'tcp://localhost:' + port;
+}
+
+
 describe('MMRP', function () {
 	describe('single node network', function () {
 		function createNetwork(relayCount) {
@@ -75,7 +80,7 @@ describe('MMRP', function () {
 
 			relays.forEach(function (relay) {
 				relays.forEach(function (peer) {
-					relay.relayUp(peer.routerUri, peer.clusterId);
+					relay.relayUp(createUri(peer.routerPort), peer.clusterId);
 				});
 			});
 		}
@@ -209,12 +214,12 @@ describe('MMRP', function () {
 			network.relays.forEach(function (relay) {
 				network.clients.forEach(function (clientGroup) {
 					clientGroup.forEach(function (client) {
-						client.relayUp(relay.routerUri, relay.clusterId);
+						client.relayUp(createUri(relay.routerPort), relay.clusterId);
 					});
 				});
 
 				network.relays.forEach(function (peer) {
-					peer.relayUp(relay.routerUri, relay.clusterId);
+					peer.relayUp(createUri(relay.routerPort), relay.clusterId);
 				});
 			});
 		}
