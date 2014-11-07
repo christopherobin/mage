@@ -3,6 +3,14 @@
 
 ## vNEXT - ??? Cat
 
+### Bootstrap fixes
+
+Fixed an issue with the default configuration of the boostrap app, it should now work regardless of
+what your NODE_ENV is set to (*except maybe production*).
+
+
+## v0.40.0 - Princess Jasmine Cat
+
 ### FileVault
 
 The filevault now logs the durations of scans and notifies you when meta file reads take longer
