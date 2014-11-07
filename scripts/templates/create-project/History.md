@@ -1,5 +1,5 @@
-# Changelog
+# %APP_NAME% Changelog
 
-## v0.0.1
+## %APP_VERSION%
 
 Project started.

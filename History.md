@@ -3,6 +3,11 @@
 
 ## vNEXT - ??? Cat
 
+### Bootstrap fixes
+
+Fixed an issue with the default configuration of the boostrap app, it should no work regardless of
+what your NODE_ENV is set to (*except maybe production*).
+
 
 ## v0.40.0 - Princess Jasmine Cat
 
