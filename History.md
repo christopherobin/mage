@@ -5,7 +5,7 @@
 
 ### Bootstrap fixes
 
-Fixed an issue with the default configuration of the boostrap app, it should no work regardless of
+Fixed an issue with the default configuration of the boostrap app, it should now work regardless of
 what your NODE_ENV is set to (*except maybe production*).
 
 
