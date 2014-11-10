@@ -5,3 +5,10 @@ clientHost:
             heartbeat: 120
     bind:
         file: ./server.sock
+quietRoutes:
+    - ^\/check\.txt
+    - ^\/favicon\.ico
+    - ^\/favicon\.ico
+longRoutes:
+    - ^\/msgstream
+longThreshold: 500
