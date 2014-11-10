@@ -130,3 +130,32 @@ after n retries. If the app is in maintenance it would probably show the mainten
 ##### What does it change for other browsers?
 
 Absolutely nothing. And you can still apply the retry logic on network errors, it's not a bad idea.
+
+### Log Configuration
+
+```yaml
+server:
+    quietRoutes: # Filter out debug and verbose logs for URLs matching these regex
+        - ^\/check\.txt
+        - ^\/favicon\.ico
+    longRoutes: # Filter out long warnings for URLs matching these regex
+        - ^\/msgstream
+    longThreshold: 500 # The number of milliseconds before a request is considered to be taking too long
+````
+
+The following logs will be filtered out when the url for the request matches any regex in the
+`quietRoutes`:
+
+```
+m-28019 - 19:58:44.830     <debug> [MAGE http] Received HTTP GET request: /check.txt
+m-28019 - 19:58:44.830   <verbose> [MAGE http] Following HTTP route /check.txt
+```
+
+The following log will be shown for any http request that takes longer than the configured
+`longThreshold` and can be filtered out when the url for the request matches any reges in the
+`longRoutes`:
+
+```
+m-876 - 20:08:58.193   <warning> [MAGE http] /app/pc/landing completed in 1181 msec
+```
+
