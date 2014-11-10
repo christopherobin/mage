@@ -3,6 +3,9 @@
 
 ## vNEXT - ??? Cat
 
+### Miscellaneous Fixes
+
+* Fixed a crash when a database error occurred during a session resolve.
 
 ## v0.40.0 - Princess Jasmine Cat
 
