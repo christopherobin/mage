@@ -3,8 +3,6 @@ clientHost:
     transports:
         longpolling:
             heartbeat: 120
-    bind:
-        port: 8080
 quietRoutes: # Filter out debug and verbose logs for URLs matching these regex
     - ^\/check\.txt
     - ^\/favicon\.ico
