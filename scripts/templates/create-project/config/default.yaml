@@ -86,6 +86,9 @@ server:
             longpolling:
                 # Respond a short heartbeat message on the long poller every N seconds
                 heartbeat: 30
+        bind:
+            # Make the HTTP server available on port 8080
+            port: 8080
 
     # Set cluster to boolean true to have as many workers as this machine has cores, or a number
     # if you want to be more precise.
