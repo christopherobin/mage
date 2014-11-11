@@ -3,7 +3,6 @@
 
 ## vNEXT - ??? Cat
 
-<<<<<<< HEAD
 ### Miscellaneous Changes
 
 * Lowered the logging level for "missing translations" for assets from error to debug.
