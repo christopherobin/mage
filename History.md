@@ -3,7 +3,12 @@
 
 ## vNEXT - ??? Cat
 
-### Miscellaneous changes
+### Miscellaneous Changes
+
+* Lowered the logging level for "missing translations" for assets from error to debug.
+* Lowered the logging level for "no suitable variant" for assets from error to debug.
+* Lowered the logging level for "No baseUrl configured" from warning to debug.
+* Lowered the logging level for "Not identified as an asset" from warning to verbose.
 * You can now configure http routes to log less. By default /check.txt and /favicon.ico are on the
   list of routes that will log less. See the [httpServer documentation](./lib/httpServer/tranports/http/Readme.md)
   for more details.
@@ -13,12 +18,13 @@
 * The http server no longer binds to a socket by default.
 * The bootstrap app now binds to port 8080 by default.
 
-### Bug fixes
+### Bug Fixes
 
 * Fixed an issue with the default configuration of the boostrap app, it should now work regardless
   of what your NODE_ENV is set to (*except maybe production*).
 * Fixed a crash when a database error occurred during a session resolve.
 * Added a link to the [HTTP Server documentation](./lib/httpServer/transports/http/Readme.md)
+
 
 ## v0.40.0 - Princess Jasmine Cat
 
