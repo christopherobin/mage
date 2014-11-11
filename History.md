@@ -3,6 +3,7 @@
 
 ## vNEXT - ??? Cat
 
+<<<<<<< HEAD
 ### Miscellaneous Changes
 
 * Lowered the logging level for "missing translations" for assets from error to debug.
@@ -19,6 +20,7 @@
 * The bootstrap app now binds to port 8080 by default.
 
 ### Bug Fixes
+
 * Fixed an issue with the default configuration of the boostrap app, it should now work regardless
   of what your NODE_ENV is set to (*except maybe production*).
 * Fixed a crash when a database error occurred during a session resolve.
