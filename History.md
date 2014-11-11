@@ -8,7 +8,7 @@
 * Fixed an issue with the default configuration of the boostrap app, it should now work regardless of
 what your NODE_ENV is set to (*except maybe production*).
 * Fixed a crash when a database error occurred during a session resolve.
-
+* Added a link to the [HTTP Server documentation](./lib/httpServer/transports/http/Readme.md)
 
 ## v0.40.0 - Princess Jasmine Cat
 
