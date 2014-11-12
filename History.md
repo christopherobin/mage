@@ -3,6 +3,15 @@
 
 ## vNEXT - ??? Cat
 
+### Logger
+
+The CLI now accepts an argument -c (or --context) followed by a comma separated list of contexts
+you want to filter on (like grep). This, combined with -v for verbose mode can make it much easier
+to debug certain issues, by showing a lot of detail while limiting the output to the contexts that
+matter to you.
+
+For an example, run your game like: `./game -c archivist,msgServer` and see the result.
+
 
 ## v0.41.0 - DJ Cat
 
