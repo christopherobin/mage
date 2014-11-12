@@ -3,6 +3,29 @@
 
 ## vNEXT - ??? Cat
 
+
+## v0.41.0 - DJ Cat
+
+### Time Module Changes
+
+* Can call configure with startAt as 0 (Fixes #801)
+
+### Time Module Dashboard Changes
+
+* Do not reset the time on load
+* Only change the time on submit
+* Actually do async so you reliably set the time.
+* Use moment to format dates
+* Show the client time as "Real" time and server time as "MAGE" time
+* Show the whole date, including day of the week.
+* Remove "ahead/behind notice"
+
+### Dependency Updates
+
+| dependency              | from     | to       | changes                                                                                |
+|-------------------------|----------|----------|----------------------------------------------------------------------------------------|
+| component-proxy-install | 0.2.0    | 0.3.0    | [Release notes](https://github.com/Wizcorp/component-proxy-install/releases/tag/0.3.0) |
+
 ### Miscellaneous Changes
 
 * Lowered the logging level for "missing translations" for assets from error to debug.
