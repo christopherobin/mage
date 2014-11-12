@@ -3,6 +3,12 @@
 
 ## vNEXT - ??? Cat
 
+### Dependency Updates
+
+| dependency              | from     | to       | changes                                                                                |
+|-------------------------|----------|----------|----------------------------------------------------------------------------------------|
+| component-proxy-install | 0.2.0    | 0.3.0    | [Release notes](https://github.com/Wizcorp/component-proxy-install/releases/tag/0.3.0) |
+
 ### Miscellaneous Changes
 
 * Lowered the logging level for "missing translations" for assets from error to debug.
