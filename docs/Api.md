@@ -7,6 +7,7 @@ traversing the folders in which these subsystems live.
 
 * [Archivist](../lib/archivist)
 * [CLI](../lib/cli)
+* [HTTP Server](../lib/httpServer)
 * [Message Server](../lib/msgServer)
 * [Command Center](../lib/commandCenter)
 * [Configuration](../lib/config)

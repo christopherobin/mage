@@ -1,7 +1,7 @@
 {
 	"name": "mage",
 	"description": "MAGE game development platform for Node.js",
-	"version": "0.40.0",
+	"version": "0.41.0",
 	"author": "Wizcorp K.K. <info@wizcorp.jp>",
 	"homepage": "http://www.wizcorp.jp",
 	"bugs": {
@@ -29,7 +29,7 @@
 		"component-require": "0.3.1",
 		"component-builder": "0.10.0",
 		"component": "0.18.0",
-		"component-proxy-install": "git+https://github.com/Wizcorp/component-proxy-install.git",
+		"component-proxy-install": "0.3.0",
 		"semver": "2.2.1",
 		"mime": "1.2.11",
 		"mkdirp": "0.3.5",

@@ -7,7 +7,6 @@
 # one will override the values here.
 #
 
-
 # Define all apps in existence. Generally our game and dashboard apps (but we leave those to the
 # individual environments).
 
@@ -28,6 +27,21 @@ apps:
             # Gzip compression
             compress: true
 
+    # Dashboard for developers
+    dev:
+        responseCache: 30
+        access: admin
+
+    # Dashboard for content managers
+    cms:
+        responseCache: 30
+        access: admin
+
+    # Dashboard for customer support (you will probably need this in production)
+    support:
+        responseCache: 30
+        access: admin
+
 
 # Define how we want to log debug information, notices, warnings, errors, etc
 
@@ -36,8 +50,7 @@ logging:
     html5:
         # Log to the browser console
         console:
-            channels:
-                - ">=error"
+            channels: ">=debug"
 
         # Send log messages back to the server (usually errors and up)
         server:
@@ -48,6 +61,19 @@ logging:
     server:
         # Enable websocket logging to allow the dashboard to display what's being logged
         websocket: {}
+
+        # Log errors and worse to ./logs/app.log
+        file:
+            channels: ">=error"
+            config:
+                path: "./logs"
+
+        # Log to the terminal (hurts performance, not recommended in production)
+        terminal:
+            channels: ">=debug"
+            config:
+                # Themes enable colors
+                theme: default
 
 
 # The server and its place in the network
@@ -60,6 +86,9 @@ server:
             longpolling:
                 # Respond a short heartbeat message on the long poller every N seconds
                 heartbeat: 30
+        bind:
+            # Make the HTTP server available on port 8080
+            port: 8080
 
     # Set cluster to boolean true to have as many workers as this machine has cores, or a number
     # if you want to be more precise.
@@ -72,3 +101,34 @@ server:
     # Peers in the network should be discoverable. Use mdns or zookeeper.
     # See production.yaml for an example.
     serviceDiscovery: false
+
+
+# This is where all of the configuration for your databases goes. We'll get you started with a
+# simple memoryVault and a fileVault. Keep in mind these are good for easy development, but have
+# shortcomings when it comes to cluster mode.
+
+archivist:
+    vaults:
+        # Our vaults, augment this with as many as you need.
+        # You should take care to name them appropriately given the context of how they will be used.
+        volatileVault:
+            type: memory
+        userVault:
+            type: file
+            config:
+                path: ./userVault
+
+    # When doing "list" operations, we will attempt each mentioned vault until successful
+    listOrder:
+        - userVault
+
+    # When doing "get" operations, we will attempt each mentioned vault until successful
+    readOrder:
+        - volatileVault
+        - userVault
+
+    # When doing "add/set/touch/del" operations, we will write to each mentioned vault in the given order
+    writeOrder:
+        - client
+        - volatileVault
+        - userVault

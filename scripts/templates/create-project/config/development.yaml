@@ -10,26 +10,6 @@
 
 developmentMode: true
 
-
-# Add dashboard apps to the system (see also: default.yaml)
-
-apps:
-    # Dashboard for developers
-    dev:
-        responseCache: 30
-        access: admin
-
-    # Dashboard for content managers
-    cms:
-        responseCache: 30
-        access: admin
-
-    # Dashboard for customer support (you will probably need this in production)
-    support:
-        responseCache: 30
-        access: admin
-
-
 # Augmenting the default configuration for our server
 
 server:
@@ -44,57 +24,3 @@ server:
 
         # What the world will see us as (a full base URL)
         expose: "%APP_CLIENTHOST_EXPOSE%"
-
-
-# Define how we want to log debug information, notices, warnings, errors, etc
-
-logging:
-    # Logging in the browser
-    html5:
-        # Log to the browser console
-        console:
-            channels: ">=debug"
-
-    # Logging on the server
-    server:
-        # Log errors and worse to ./logs/app.log
-        file:
-            channels: ">=error"
-            config:
-                path: "./logs"
-
-        # Log to the terminal (hurts performance, not recommended in production)
-        terminal:
-            channels: ">=debug"
-            config:
-                # Themes enable colors
-                theme: default
-
-
-# Databases
-
-archivist:
-    vaults:
-        # Our vaults, augment this with as many as you need.
-        # You should take care to name them appropriately given the context of how they will be used.
-        memory:
-            type: memory
-        file:
-            type: file
-            config:
-                path: ./filevault
-
-    # When doing "list" operations, we will attempt each mentioned vault until successful
-    listOrder:
-        - file
-
-    # When doing "get" operations, we will attempt each mentioned vault until successful
-    readOrder:
-        - memory
-        - file
-
-    # When doing "add/set/touch/del" operations, we will write to each mentioned vault in the given order
-    writeOrder:
-        - client
-        - memory
-        - file

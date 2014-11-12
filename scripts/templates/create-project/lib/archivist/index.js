@@ -7,7 +7,7 @@ exports.ucResponseMeta = {
 	index: ['session'],
 	vaults: {
 		// Please add one or more vault references here (they must support key expiration)
-		memory: {}
+		volatileVault: {}
 	}
 };
 
@@ -15,7 +15,7 @@ exports.ucResponseData = {
 	index: ['session'],
 	vaults: {
 		// Please add one or more vault references here (they must support key expiration)
-		memory: {}
+		volatileVault: {}
 	}
 };
 
@@ -23,7 +23,7 @@ exports.session = {
 	index: ['actorId'],
 	vaults: {
 		// Please add one or more vault references here (they must support key expiration)
-		memory: {},
+		volatileVault: {},
 		client: {
 			shard: function (value) {
 				return value.index.actorId;
@@ -35,6 +35,6 @@ exports.session = {
 exports.ident = {
 	index: ['userId'],
 	vaults: {
-		file: {}
+		userVault: {}
 	}
 };
