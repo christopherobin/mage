@@ -3,6 +3,20 @@
 
 ## vNEXT - ??? Cat
 
+### Time Module Changes
+
+* Can call configure with startAt as 0 (Fixes #801)
+
+### Time Module Dashboard Changes
+
+* Do not reset the time on load
+* Only change the time on submit
+* Actually do async so you reliably set the time.
+* Use moment to format dates
+* Show the client time as "Real" time and server time as "MAGE" time
+* Show the whole date, including day of the week.
+* Remove "ahead/behind notice"
+
 ### Dependency Updates
 
 | dependency              | from     | to       | changes                                                                                |
