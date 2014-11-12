@@ -3,6 +3,8 @@
 
 ## vNEXT - ??? Cat
 
+### Miscellaneous Changes
+
 * Added [a license](./LICENSE.md)
 
 
