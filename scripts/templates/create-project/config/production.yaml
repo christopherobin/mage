@@ -36,7 +36,7 @@ logging:
                 - ">=error"
 
     server:
-        # You should add logging services such as Graylog or Loggly here
+        # You should add logging services such as Graylog or Syslog here
 
 
 # The server and its place in the network
