@@ -38,6 +38,9 @@ function createGame(app) {
 	loaderPage.registerComponent('landing', './www/pages/landing', { assetMap: true });
 	loaderPage.registerComponent('main', './www/pages/main');
 
+	// pushing '/' on routes makes it so that you don't have to go to /app/game
+	loaderPage.routes.push('/');
+
 	// start mage
 
 	mage.start();

@@ -18,7 +18,9 @@ cost too much effort. We will happily reintegrate it if any interest is shown in
 ### Miscellaneous Changes
 
 * Added [a license](./LICENSE.md)
-
+* The bootstrap no longer asks you if you want to create a git repository if you have a .git folder
+  in your project directory.
+* The bootstrap app now adds the / route.
 
 ## v0.41.0 - DJ Cat
 
