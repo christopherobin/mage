@@ -1,6 +1,5 @@
 # Release history
 
-
 ## vNEXT - ??? Cat
 
 ### Logger
@@ -11,6 +10,10 @@ to debug certain issues, by showing a lot of detail while limiting the output to
 matter to you.
 
 For an example, run your game like: `./game -c archivist,msgServer` and see the result.
+
+### Miscellaneous Changes
+
+* Added [a license](./LICENSE.md)
 
 
 ## v0.41.0 - DJ Cat
