@@ -2,10 +2,15 @@
 
 ## vNEXT - ??? Cat
 
+**Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
+was using it and in the meantime Loggly have migrated to a newer API. To keep supporting it would
+cost too much effort. We will happily reintegrate it if any interest is shown in the future.
+
 ### Dropping support for node v0.8
 
 For quite a few releases MAGE has supported both node v0.8 and v0.10. Going forward we will be
-dropping support for v0.8 allowing us to utilize more up-to-date node modules.
+dropping support for v0.8 allowing us to utilize more up-to-date node modules. You will need to
+update to node v0.10 to continue using MAGE.
 
 ### Logger
 
