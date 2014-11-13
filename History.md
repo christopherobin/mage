@@ -33,6 +33,7 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 * The bootstrap no longer asks you if you want to create a git repository if you have a .git folder
   in your project directory.
 * The bootstrap app now adds the / route.
+* Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
 
 ## v0.41.0 - DJ Cat
 
