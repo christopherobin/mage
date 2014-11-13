@@ -15,7 +15,7 @@
 		"commander": "2.2.0",
 		"tabalot" : "0.7.2",
 		"async": "0.9.0",
-		"localcache": "git+https://github.com/Wizcorp/node-localcache.git#v0.1.4",
+		"localstash": "0.2.0",
 		"multipart-parser": "0.0.2",
 		"epipebomb": "0.1.1",
 		"ws": "0.4.31",
