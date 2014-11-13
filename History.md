@@ -2,6 +2,11 @@
 
 ## vNEXT - ??? Cat
 
+### Dropping support for node v0.8
+
+For quite a few releases MAGE has supported both node v0.8 and v0.10. Going forward we will be
+dropping support for v0.8 allowing us to utilize more up-to-date node modules.
+
 ### Logger
 
 The CLI now accepts an argument -c (or --context) followed by a comma separated list of contexts
@@ -10,6 +15,12 @@ to debug certain issues, by showing a lot of detail while limiting the output to
 matter to you.
 
 For an example, run your game like: `./game -c archivist,msgServer` and see the result.
+
+### Dependency Updates
+
+| dependency | from  | to    | changes                                                                          |
+|------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump   | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
 
 ### Miscellaneous Changes
 
