@@ -3,6 +3,10 @@
 
 ## vNEXT - ??? Cat
 
+### Miscellaneous Changes
+
+* Added [a license](./LICENSE.md)
+
 
 ## v0.41.0 - DJ Cat
 
