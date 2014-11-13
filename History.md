@@ -6,7 +6,8 @@
 ### Miscellaneous Changes
 
 * Added [a license](./LICENSE.md)
-
+* The default mode for the httpServer client is now `free`. To use the old behavior: `blocking`,
+  simply call `mage.httpServer.setCmdMode('blocking')` in your app's client-side code.
 
 ## v0.41.0 - DJ Cat
 
