@@ -34,6 +34,7 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
   in your project directory.
 * The bootstrap app now adds the / route.
 * Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
+* node-localcache became localstash.
 
 ## v0.41.0 - DJ Cat
 
