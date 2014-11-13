@@ -11,6 +11,10 @@ matter to you.
 
 For an example, run your game like: `./game -c archivist,msgServer` and see the result.
 
+**Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
+was using it and in the meantime Loggly have migrated to a newer API. To keep supporting it would
+cost too much effort. We will happily reintegrate it if any interest is shown in the future.
+
 ### Miscellaneous Changes
 
 * Added [a license](./LICENSE.md)
