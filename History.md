@@ -30,11 +30,14 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 ### Miscellaneous Changes
 
 * Added [a license](./LICENSE.md)
+* The default mode for the httpServer client is now `free`. To use the old behavior: `blocking`,
+  simply call `mage.httpServer.setCmdMode('blocking')` in your app's client-side code.
 * The bootstrap no longer asks you if you want to create a git repository if you have a .git folder
   in your project directory.
 * The bootstrap app now adds the / route.
 * Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
 * node-localcache became localstash.
+
 
 ## v0.41.0 - DJ Cat
 
