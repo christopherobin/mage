@@ -2,6 +2,16 @@
 
 ## vNEXT - ??? Cat
 
+**Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
+was using it and in the meantime Loggly have migrated to a newer API. To keep supporting it would
+cost too much effort. We will happily reintegrate it if any interest is shown in the future.
+
+### Dropping support for node v0.8
+
+For quite a few releases MAGE has supported both node v0.8 and v0.10. Going forward we will be
+dropping support for v0.8 allowing us to utilize more up-to-date node modules. You will need to
+update to node v0.10 to continue using MAGE.
+
 ### Logger
 
 The CLI now accepts an argument -c (or --context) followed by a comma separated list of contexts
@@ -11,11 +21,23 @@ matter to you.
 
 For an example, run your game like: `./game -c archivist,msgServer` and see the result.
 
+### Dependency Updates
+
+| dependency | from  | to    | changes                                                                          |
+|------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump   | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
+
 ### Miscellaneous Changes
 
 * Added [a license](./LICENSE.md)
 * The default mode for the httpServer client is now `free`. To use the old behavior: `blocking`,
   simply call `mage.httpServer.setCmdMode('blocking')` in your app's client-side code.
+* The bootstrap no longer asks you if you want to create a git repository if you have a .git folder
+  in your project directory.
+* The bootstrap app now adds the / route.
+* Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
+* node-localcache became localstash.
+
 
 ## v0.41.0 - DJ Cat
 
