@@ -23,11 +23,12 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 
 ### Dependency Updates
 
-| dependency        | from  | to    | changes                                                                          |
-|-------------------|-------|-------|----------------------------------------------------------------------------------|
-| heapdump          | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
-| component/emitter | 1.1.0 | 1.1.3 | [Release notes](https://github.com/component/emitter/releases/tag/1.1.3)         |
-| component/inherit | 0.0.2 | 0.0.3 | [Release notes](https://github.com/component/inherit/releases/tag/0.0.3)         |
+| dependency              | from  | to    | changes                                                                          |
+|-------------------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump                | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
+| component/emitter       | 1.1.0 | 1.1.3 | [Release notes](https://github.com/component/emitter/releases/tag/1.1.3)         |
+| component/inherit       | 0.0.2 | 0.0.3 | [Release notes](https://github.com/component/inherit/releases/tag/0.0.3)         |
+| component/clipboard-dom | 0.0.4 | 0.0.5 | [Release notes](https://github.com/component/clipboard-dom/releases/tag/v0.0.5)  |
 
 ### Miscellaneous Changes
 
