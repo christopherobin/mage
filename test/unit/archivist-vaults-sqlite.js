@@ -1,20 +1,12 @@
-function devNull() {}
-
-var logger = {
-	debug: devNull,
-	verbose: devNull,
-	alert: devNull,
-	warning: devNull
-};
-
-var sqliteVaultMod = require('../vaults/sqlite3');
-var fs = require('fs');
 var assert = require('assert');
-var pathJoin = require('path').join;
+var fs = require('fs');
+var os = require('os');
+var path = require('path');
 var rimraf = require('rimraf');
 
+var sqliteVaultMod = require('../../lib/archivist/vaults/sqlite3');
 
-var tmpPath = './tmpsqlite';
+var tmpPath = require('mktemp').createDirSync(path.join(os.tmpdir(), 'mage-sqlite-XXXXXXXXXX'));
 
 var testData = {
 	table: 'tests',
@@ -30,6 +22,18 @@ function createSimpleData(data) {
 
 var counter = 0;
 
+function devNull() {}
+
+var logger = {
+	debug: devNull,
+	verbose: devNull,
+	alert: console.error,
+	error: console.error,
+	info: devNull,
+	notice: devNull,
+	warning: console.warn
+};
+
 function createVault(name, options) {
 	name = name || 'default';
 	options = options || {};
@@ -37,7 +41,7 @@ function createVault(name, options) {
 
 	// for file test, create a different db everytime
 	if (options.filename === 'filetest') {
-		options.filename = pathJoin(tmpPath, counter++ + '.db');
+		options.filename = path.join(tmpPath, counter++ + '.db');
 	}
 
 	vault.setup(options, function () {});
