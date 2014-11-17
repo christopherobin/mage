@@ -37,6 +37,7 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 * The bootstrap app now adds the / route.
 * Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
 * node-localcache became localstash.
+* migrated SQLite3 tests to the new test system.
 
 
 ## v0.41.0 - DJ Cat
