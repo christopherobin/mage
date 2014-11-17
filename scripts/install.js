@@ -89,7 +89,6 @@ function exec(cmd, args, cwd, cb) {
 
 		cb(null, data);
 	});
-
 }
 
 if (fs.existsSync(appPackagePath)) {
@@ -169,6 +168,18 @@ function bootstrap(cb) {
 		},
 		function (callback) {
 			pretty.h2('Git repository');
+
+			var gitDir;
+
+			try {
+				gitDir = fs.readdirSync(path.join(appPath, '.git'));
+			} catch (e) {
+
+			}
+
+			if (gitDir) {
+				return callback();
+			}
 
 			ask('Would you like me to set up Git for this game?', 'yes', function (answer) {
 				if (answer.toLowerCase() !== 'yes') {

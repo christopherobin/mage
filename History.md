@@ -1,12 +1,88 @@
 # Release history
 
-
 ## vNEXT - ??? Cat
 
-### Bootstrap fixes
+**Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
+was using it and in the meantime Loggly have migrated to a newer API. To keep supporting it would
+cost too much effort. We will happily reintegrate it if any interest is shown in the future.
 
-Fixed an issue with the default configuration of the boostrap app, it should now work regardless of
-what your NODE_ENV is set to (*except maybe production*).
+### Dropping support for node v0.8
+
+For quite a few releases MAGE has supported both node v0.8 and v0.10. Going forward we will be
+dropping support for v0.8 allowing us to utilize more up-to-date node modules. You will need to
+update to node v0.10 to continue using MAGE.
+
+### Logger
+
+The CLI now accepts an argument -c (or --context) followed by a comma separated list of contexts
+you want to filter on (like grep). This, combined with -v for verbose mode can make it much easier
+to debug certain issues, by showing a lot of detail while limiting the output to the contexts that
+matter to you.
+
+For an example, run your game like: `./game -c archivist,msgServer` and see the result.
+
+### Dependency Updates
+
+| dependency | from  | to    | changes                                                                          |
+|------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump   | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
+
+### Miscellaneous Changes
+
+* Added [a license](./LICENSE.md)
+* The default mode for the httpServer client is now `free`. To use the old behavior: `blocking`,
+  simply call `mage.httpServer.setCmdMode('blocking')` in your app's client-side code.
+* The bootstrap no longer asks you if you want to create a git repository if you have a .git folder
+  in your project directory.
+* The bootstrap app now adds the / route.
+* Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
+* node-localcache became localstash.
+* migrated SQLite3 tests to the new test system.
+
+
+## v0.41.0 - DJ Cat
+
+### Time Module Changes
+
+* Can call configure with startAt as 0 (Fixes #801)
+
+### Time Module Dashboard Changes
+
+* Do not reset the time on load
+* Only change the time on submit
+* Actually do async so you reliably set the time.
+* Use moment to format dates
+* Show the client time as "Real" time and server time as "MAGE" time
+* Show the whole date, including day of the week.
+* Remove "ahead/behind notice"
+
+### Dependency Updates
+
+| dependency              | from     | to       | changes                                                                                |
+|-------------------------|----------|----------|----------------------------------------------------------------------------------------|
+| component-proxy-install | 0.2.0    | 0.3.0    | [Release notes](https://github.com/Wizcorp/component-proxy-install/releases/tag/0.3.0) |
+
+### Miscellaneous Changes
+
+* Lowered the logging level for "missing translations" for assets from error to debug.
+* Lowered the logging level for "no suitable variant" for assets from error to debug.
+* Lowered the logging level for "No baseUrl configured" from warning to debug.
+* Lowered the logging level for "Not identified as an asset" from warning to verbose.
+* You can now configure http routes to log less. By default /check.txt and /favicon.ico are on the
+  list of routes that will log less. See the [httpServer documentation](./lib/httpServer/tranports/http/Readme.md)
+  for more details.
+* You can now configure the threshold for http routes to be considered long as well as which routes
+  will be logged when they take too long. See the [httpServer documentation](./lib/httpServer/tranports/http/Readme.md)
+  for more details.
+* The http server no longer binds to a socket by default.
+* The bootstrap app now binds to port 8080 by default.
+
+### Bug Fixes
+
+* Fixed an issue with the default configuration of the boostrap app, it should now work regardless
+  of what your NODE_ENV is set to (*except maybe production*).
+* Fixed a crash when a database error occurred during a session resolve.
+* Added a link to the [HTTP Server documentation](./lib/httpServer/transports/http/Readme.md)
 
 
 ## v0.40.0 - Princess Jasmine Cat

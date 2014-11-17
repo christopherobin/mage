@@ -1,22 +1,11 @@
-function devNull() {}
-
-var logger = {
-	debug: devNull,
-	verbose: devNull,
-	alert: console.error,
-	error: console.error,
-	info: devNull,
-	notice: devNull,
-	warning: console.warn
-};
-
-var fileVaultMod = require('../../lib/archivist/vaults/file');
+var assert = require('assert');
+var async = require('async');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 var os = require('os');
 var path = require('path');
-var async = require('async');
-var assert = require('assert');
-var mkdirp = require('mkdirp');
+
+var fileVaultMod = require('../../lib/archivist/vaults/file');
 
 var pathId = 0;
 var tmpPath = require('mktemp').createDirSync(path.join(os.tmpdir(), 'mage-filevault-XXXXXXXXXX'));
@@ -39,6 +28,18 @@ function createSimpleData(str) {
 function absPath(relPath) {
 	return path.join(tmpPath, relPath);
 }
+
+function devNull() {}
+
+var logger = {
+	debug: devNull,
+	verbose: devNull,
+	alert: console.error,
+	error: console.error,
+	info: devNull,
+	notice: devNull,
+	warning: console.warn
+};
 
 function createVault(cb) {
 	var vault = fileVaultMod.create('myFileVault', logger);
