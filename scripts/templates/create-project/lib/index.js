@@ -49,8 +49,8 @@ function createGame(app) {
 
 mage.setup(function (error, apps) {
 	if (error) {
-		process.exit(1);
-	} else {
-		createGame(apps.game);
+		return mage.quit(-1);
 	}
+
+	createGame(apps.game);
 });
