@@ -41,6 +41,7 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 * Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
 * node-localcache became localstash.
 * migrated SQLite3 tests to the new test system.
+* The jshint error reporter now reports in chronological order (instead of reverse order).
 
 
 ## v0.41.0 - DJ Cat
