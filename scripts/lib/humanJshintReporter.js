@@ -1,20 +1,14 @@
 /**
  * The default JSHint output is somewhat wasteful, and very bland, making it hard for a human to
- * parse. The following does IMO a better job and colours the output for you. This requires the
- * `colours` package, available via npm. If you don't want the dependency, just remove the color
- * commands from strings.
+ * parse. The following does IMO a better job and colors the output for you.
  *
  * Usage: When invoking jshint from the command line, point it to this file with the --reporter
  * flag. e.g.
  *
  * jshint someFile.js --config /path/to/config.cfg --reporter /path/to/jshintReporter.js
- *
- * Mark Stanley Everitt, 2013
- * send pull requests to: https://gist.github.com/qubyte/5430269
- * licence: MIT
  */
 
-require('colours');
+var chalk = require('chalk');
 
 /**
  * Generate a string of spaces num wide.
@@ -67,7 +61,7 @@ exports.reporter = function (data) {
 	var numFiles = fileNames.length;
 
 	fileNames.forEach(function (fileName) {
-		console.log('Errors in file:'.blue.bold, fileName);
+		console.log(chalk.blue.bold('Errors in file:'), fileName);
 
 		// Sort by line number.
 
@@ -93,11 +87,11 @@ exports.reporter = function (data) {
 			var lineString = error.line + pad(lineWidth - ('' + error.line).length);
 			var charString = error.character + pad(charWidth - ('' + error.character).length);
 
-			console.error('  line', lineString.green, 'char', charString.green + ':', error.reason.red);
+			console.error('  line', chalk.green(lineString), 'char', chalk.green(charString) + ':', chalk.red(error.reason));
 		}
 	});
 
-	console.log((data.length + ' errors found in ' + numFiles + ' file' + (numFiles === 1 ? ':' : 's:')).red.bold);
+	console.log(chalk.red.bold(data.length + ' errors found in ' + numFiles + ' file' + (numFiles === 1 ? ':' : 's:')));
 
 	fileNames.forEach(function (fileName) {
 		console.log('  ' + fileName);

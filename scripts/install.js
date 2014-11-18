@@ -16,6 +16,7 @@ var fs = require('fs');
 var spawn = require('child_process').spawn;
 var mkdirpSync = require('mkdirp').sync;
 var async = require('async');
+var chalk = require('chalk');
 var pretty = require('./lib/pretty.js');
 var ask = require('./lib/readline.js').ask;
 var EOL = require('os').EOL;
@@ -273,7 +274,7 @@ function bootstrap(cb) {
 				'Once your application is running, you can open the game at: ' + baseUrl + '/app/game'
 			];
 
-			pretty.chromify(msg.join(EOL), '❖', ['magenta', 'bold'], 'yellow');
+			pretty.chromify(chalk.yellow(msg.join(EOL)), '❖', chalk.magenta.bold);
 			callback();
 		}
 	], cb);

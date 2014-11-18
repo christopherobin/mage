@@ -42,6 +42,8 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 * node-localcache became localstash.
 * migrated SQLite3 tests to the new test system.
 * The jshint error reporter now reports in chronological order (instead of reverse order).
+* MAGE no longer depends on colors/colours, and so no longer infests String.prototype with colorize
+  functions. Instead it now uses the `chalk` module.
 
 
 ## v0.41.0 - DJ Cat
