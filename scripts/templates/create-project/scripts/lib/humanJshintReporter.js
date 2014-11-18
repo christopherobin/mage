@@ -69,22 +69,24 @@ exports.reporter = function (data) {
 	fileNames.forEach(function (fileName) {
 		console.log('Errors in file:'.blue.bold, fileName);
 
-		// Reverse sort. If read top down, corrected errors won't affect the line number of
-		// following errors in a file most of the time.
+		// Sort by line number.
+
 		var fileData = splitUp[fileName].sort(function (a, b) {
-			return b.line - a.line;
+			return a.line - b.line;
 		});
 
 		var lineWidth = 0;
 		var charWidth = 0;
 
 		// Work out column alignment for this file.
+
 		for (var i = 0; i < fileData.length; i++) {
 			lineWidth = Math.max(('' + fileData[i].line).length, lineWidth);
 			charWidth = Math.max(('' + fileData[i].character).length, charWidth);
 		}
 
 		// Print each error.
+
 		for (var j = 0; j < fileData.length; j++) {
 			var error = fileData[j];
 
