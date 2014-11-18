@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "mage": "%MAGE_REPO%#v%MAGE_VERSION%",
-    "colours": "0.6.0-2"
+    "chalk": "0.5.1"
   },
   "devDependencies": {
     "jshint": "2.4.1",

@@ -23,11 +23,12 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 
 ### Dependency Updates
 
-| dependency        | from  | to    | changes                                                                          |
-|-------------------|-------|-------|----------------------------------------------------------------------------------|
-| heapdump          | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
-| component/emitter | 1.1.0 | 1.1.3 | [Release notes](https://github.com/component/emitter/releases/tag/1.1.3)         |
-| component/inherit | 0.0.2 | 0.0.3 | [Release notes](https://github.com/component/inherit/releases/tag/0.0.3)         |
+| dependency              | from  | to    | changes                                                                          |
+|-------------------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump                | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
+| component/emitter       | 1.1.0 | 1.1.3 | [Release notes](https://github.com/component/emitter/releases/tag/1.1.3)         |
+| component/inherit       | 0.0.2 | 0.0.3 | [Release notes](https://github.com/component/inherit/releases/tag/0.0.3)         |
+| component/clipboard-dom | 0.0.4 | 0.0.5 | [Release notes](https://github.com/component/clipboard-dom/releases/tag/v0.0.5)  |
 
 ### Miscellaneous Changes
 
@@ -40,6 +41,9 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 * Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
 * node-localcache became localstash.
 * migrated SQLite3 tests to the new test system.
+* The jshint error reporter now reports in chronological order (instead of reverse order).
+* MAGE no longer depends on colors/colours, and so no longer infests String.prototype with colorize
+  functions. Instead it now uses the `chalk` module.
 
 
 ## v0.41.0 - DJ Cat
