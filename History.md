@@ -44,6 +44,8 @@ For an example, run your game like: `./game -c archivist,msgServer` and see the 
 * The jshint error reporter now reports in chronological order (instead of reverse order).
 * MAGE no longer depends on colors/colours, and so no longer infests String.prototype with colorize
   functions. Instead it now uses the `chalk` module.
+* The Graylog log writer now logs unsupported channels (eg: verbose) to "debug", rather than
+  silently dropping the log messages.
 
 
 ## v0.41.0 - DJ Cat

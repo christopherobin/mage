@@ -39,6 +39,7 @@ extra_roles:
   - shokoti
   - zookeeper
   - xtradb
+  - collector
 
 #
 # The infrastructures you will
