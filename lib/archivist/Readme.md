@@ -416,6 +416,16 @@ archivist.list('player', {}, function (error, indexes) {
 });
 ```
 
+Or for all players that are in a guild:
+
+```javascript
+// A full index for the "guildPlayers" topic consists of "guildId" and "userId"
+
+archivist.list('guildPlayers', { guildId: 'abc' }, function (error, indexes) {
+	/* indexes is now [{ guildId: 'abc', userId: 5 }, { guildId: 'abc', userId: 20 }, ...] */
+});
+```
+
 You may pass the following options:
 
 **sort**
