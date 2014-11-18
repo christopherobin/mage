@@ -404,9 +404,11 @@ Marks data with a new expiration time (unix timestamp in seconds).
 archivist.list(topic, partialIndex, options, function (error, arrayOfIndexes) { });
 ```
 
-Returns an array of indexes on the given topic matching the partial index you provide. The options
-object is not required, and your callback may be passed as the third argument. You can, for example,
-query for all players in the game by calling:
+Returns an array of indexes on the given topic matching the partial index you provide. A partial
+index is the same as a normal index object, except you can leave out properties. That means that if
+your index consists of a single property, the only partial index you can pass is an empty object.
+The options object is not required, and your callback may be passed as the third argument. You can,
+for example, query for all players in the game by calling:
 
 ```javascript
 archivist.list('player', {}, function (error, indexes) {
