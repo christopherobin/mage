@@ -3,6 +3,10 @@
 
 ## vNEXT - ??? Cat
 
+### Bugfixes
+
+* Errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
+
 
 ## v0.42.0 - Doppelganger Cat
 
