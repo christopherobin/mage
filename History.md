@@ -6,6 +6,7 @@
 ### Bugfixes
 
 * Errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
+* Fixed how the SQLite vault was set up and closed, to avoid race conditions.
 
 
 ## v0.42.0 - Doppelganger Cat
