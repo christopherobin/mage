@@ -3,6 +3,12 @@
 
 ## vNEXT - ??? Cat
 
+### Dependency Updates
+
+| dependency | from   | to    | changes                                                                    |
+|------------|--------|-------|----------------------------------------------------------------------------|
+| tomes      | 0.0.22 | 0.1.0 | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0) |
+
 
 ## v0.42.0 - Doppelganger Cat
 
