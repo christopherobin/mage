@@ -3,7 +3,13 @@
 
 ## vNEXT - ??? Cat
 
-### Bugfixes
+### Dependency Updates
+
+| dependency          | from  | to    | changes                                                                             |
+|---------------------|-------|-------|-------------------------------------------------------------------------------------|
+| component-builder-x | 0.1.0 | 0.1.1 | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.1) |
+
+### Bug Fixes
 
 * Errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
 
