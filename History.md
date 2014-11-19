@@ -9,6 +9,10 @@
 |------------|--------|-------|----------------------------------------------------------------------------|
 | tomes      | 0.0.22 | 0.1.0 | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0) |
 
+### Bug Fixes
+
+* Errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
+
 
 ## v0.42.0 - Doppelganger Cat
 
