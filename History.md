@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT - ??? Cat
+## v0.42.0 - Doppelganger Cat
 
 **Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
 was using it and in the meantime Loggly have migrated to a newer API. To keep supporting it would
