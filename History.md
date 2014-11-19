@@ -5,9 +5,10 @@
 
 ### Dependency Updates
 
-| dependency          | from  | to    | changes                                                                             |
-|---------------------|-------|-------|-------------------------------------------------------------------------------------|
-| component-builder-x | 0.1.0 | 0.1.1 | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.1) |
+| dependency          | from   | to    | changes                                                                             |
+|---------------------|--------|-------|-------------------------------------------------------------------------------------|
+| component-builder-x | 0.1.0  | 0.1.1 | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.1) |
+| tomes               | 0.0.22 | 0.1.0 | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
 
 ### Bug Fixes
 

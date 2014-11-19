@@ -21,7 +21,7 @@
 		"ws": "0.4.31",
 		"chalk": "0.5.1",
 		"rumplestiltskin": "0.0.6",
-		"tomes": "0.0.22",
+		"tomes": "0.1.0",
 		"node-uuid": "1.4.1",
 		"jsonlint": "1.6.0",
 		"panopticon": "0.2.0",
