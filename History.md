@@ -5,14 +5,16 @@
 
 ### Dependency Updates
 
-| dependency          | from   | to    | changes                                                                             |
-|---------------------|--------|-------|-------------------------------------------------------------------------------------|
-| component-builder-x | 0.1.0  | 0.1.1 | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.1) |
-| tomes               | 0.0.22 | 0.1.0 | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
+| dependency          | from   | to     | changes                                                                             |
+|---------------------|--------|--------|-------------------------------------------------------------------------------------|
+| component-builder-x | 0.1.0  | 0.1.1  | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.1) |
+| tomes               | 0.0.22 | 0.1.0  | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
+| sqlite3             | 2.2.3  | ~3.0.0 | [Release notes](https://github.com/mapbox/node-sqlite3/blob/master/CHANGELOG.md)    |
 
 ### Bug Fixes
 
 * Errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
+* Fixed how the SQLite vault was set up and closed, to avoid race conditions.
 
 
 ## v0.42.0 - Doppelganger Cat
