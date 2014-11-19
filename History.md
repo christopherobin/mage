@@ -1,5 +1,52 @@
 # Release history
 
+## v0.42.0 - Doppelganger Cat
+
+**Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
+was using it and in the meantime Loggly have migrated to a newer API. To keep supporting it would
+cost too much effort. We will happily reintegrate it if any interest is shown in the future.
+
+### Dropping support for node v0.8
+
+For quite a few releases MAGE has supported both node v0.8 and v0.10. Going forward we will be
+dropping support for v0.8 allowing us to utilize more up-to-date node modules. You will need to
+update to node v0.10 to continue using MAGE.
+
+### Logger
+
+The CLI now accepts an argument -c (or --context) followed by a comma separated list of contexts
+you want to filter on (like grep). This, combined with -v for verbose mode can make it much easier
+to debug certain issues, by showing a lot of detail while limiting the output to the contexts that
+matter to you.
+
+For an example, run your game like: `./game -c archivist,msgServer` and see the result.
+
+### Dependency Updates
+
+| dependency              | from  | to    | changes                                                                          |
+|-------------------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump                | 0.1.0 | 0.3.0 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.0) |
+| component/emitter       | 1.1.0 | 1.1.3 | [Release notes](https://github.com/component/emitter/releases/tag/1.1.3)         |
+| component/inherit       | 0.0.2 | 0.0.3 | [Release notes](https://github.com/component/inherit/releases/tag/0.0.3)         |
+| component/clipboard-dom | 0.0.4 | 0.0.5 | [Release notes](https://github.com/component/clipboard-dom/releases/tag/v0.0.5)  |
+
+### Miscellaneous Changes
+
+* Added [a license](./LICENSE.md)
+* The default mode for the httpServer client is now `free`. To use the old behavior: `blocking`,
+  simply call `mage.httpServer.setCmdMode('blocking')` in your app's client-side code.
+* The bootstrap no longer asks you if you want to create a git repository if you have a .git folder
+  in your project directory.
+* The bootstrap app now adds the / route.
+* Swapped out component-builder v0.10.0 for our fork of it called component-builder-x.
+* node-localcache became localstash.
+* migrated SQLite3 tests to the new test system.
+* The jshint error reporter now reports in chronological order (instead of reverse order).
+* MAGE no longer depends on colors/colours, and so no longer infests String.prototype with colorize
+  functions. Instead it now uses the `chalk` module.
+* The Graylog log writer now logs unsupported channels (eg: verbose) to "debug", rather than
+  silently dropping the log messages.
+
 
 ## v0.41.0 - DJ Cat
 

@@ -155,7 +155,6 @@ the server:
 * file: write to log files on disk
 * syslog: write to syslog through UDP
 * graylog: www.graylog2.com
-* loggly: www.loggly.com
 * websocket: streams the log on a [Savvy](../savvy/Readme.md) websocket
 
 And the following are available on the client:
@@ -244,19 +243,7 @@ logging:
                     embedData: false     # embed data into the message
 ```
 
-### Server: Loggly
-
-```yaml
-logging:
-    server:
-        loggly:
-            channels: [">=error"]
-            config:
-                token: "the token, see loggly indication on web interface account login"
-                subdomain: mysubdomain
-```
-
-### Server: Websocket
+### Server: WebSocket
 
 ```yaml
 logging:

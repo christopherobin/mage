@@ -6,7 +6,7 @@
  *
  */
 
-require('colours');
+var chalk = require('chalk');
 var EOL = require('os').EOL;
 
 /**
@@ -20,45 +20,29 @@ function pad(n) {
 }
 
 var log = console.log;
+var error = console.error;
 
 
 /**
  * Wrap a sting with visual chrome above and below. Automatic length.
  *
- * @param  {String}          basic      A basic string to wrap. No whitespace padding needed.
- * @param  {String}          chromeChar A character to use for the chrome.
- * @param  {String|String[]} innerstyle A string corresponding to a style provided by the `color` package, or an array of such strings. This styles the content.
- * @param  {String|String[]} outerstyle A string corresponding to a style provided by the `color` package, or an array of such strings. This styles the chrome.
+ * @param  {String}          content         A basic string to wrap. No whitespace padding needed.
+ * @param  {String}          chromeChar      A character to use for the chrome.
+ * @param  {String|String[]} outerColorize   A function to style the chrome with.
  */
 
-exports.chromify = function (basic, chromeChar, innerstyle, outerstyle) {
-	var maxLength = Math.max.apply(null, basic.split(EOL).map(function (subString) {
+exports.chromify = function (content, chromeChar, outerColorize) {
+	var maxLength = Math.max.apply(null, content.split(EOL).map(function (subString) {
 		return subString.length;
 	}));
 
 	var chrome = (new Array(maxLength + 3)).join(chromeChar);
 
-	if (Array.isArray(outerstyle)) {
-		outerstyle.forEach(function (style) {
-			chrome = chrome[style];
-		});
+	if (outerColorize) {
+		chrome = outerColorize(chrome);
 	}
 
-	if (typeof outerstyle === 'string') {
-		chrome = chrome[outerstyle];
-	}
-
-	if (Array.isArray(innerstyle)) {
-		innerstyle.forEach(function (style) {
-			basic = basic[style];
-		});
-	}
-
-	if (typeof innerstyle === 'string') {
-		basic = basic[innerstyle];
-	}
-
-	log(EOL + chrome + EOL + ' ' + basic.replace(new RegExp(EOL, 'g'), EOL + ' ') + EOL + chrome + EOL + EOL);
+	log(EOL + chrome + EOL + ' ' + content.replace(new RegExp(EOL, 'g'), EOL + ' ') + EOL + chrome + EOL + EOL);
 };
 
 
@@ -69,7 +53,7 @@ exports.chromify = function (basic, chromeChar, innerstyle, outerstyle) {
  */
 
 exports.h1 = function (content) {
-	exports.chromify(content, '❖', ['bold', 'blue'], 'blue');
+	exports.chromify(chalk.bold.blue(content), '❖', chalk.blue);
 };
 
 
@@ -80,7 +64,7 @@ exports.h1 = function (content) {
  */
 
 exports.h2 = function (content) {
-	log(('‣ ' + content).blue.bold + EOL);
+	log(chalk.blue.bold('‣ ' + content) + EOL);
 };
 
 
@@ -91,7 +75,7 @@ exports.h2 = function (content) {
  */
 
 exports.h3 = function (content) {
-	log(('-- ' + content).blue.bold + EOL);
+	log(chalk.blue.bold('-- ' + content) + EOL);
 };
 
 
@@ -102,7 +86,7 @@ exports.h3 = function (content) {
  */
 
 exports.h4 = function (content) {
-	log(('◦◦◦ ' + content).blue.bold + EOL);
+	log(chalk.blue.bold('◦◦◦ ' + content) + EOL);
 };
 
 
@@ -113,7 +97,7 @@ exports.h4 = function (content) {
  */
 
 exports.h5 = function (content) {
-	log(('◘◘◘◘ ' + content).blue.bold + EOL);
+	log(chalk.blue.bold('◘◘◘◘ ' + content) + EOL);
 };
 
 
@@ -126,7 +110,7 @@ exports.h5 = function (content) {
 
 exports.info = function (content, padding, specialChar) {
 	var c = specialChar || '⚀';
-	log((pad(padding) + c + ' ' + content).grey);
+	log(chalk.gray(pad(padding) + c + ' ' + content));
 };
 
 
@@ -138,7 +122,7 @@ exports.info = function (content, padding, specialChar) {
  */
 
 exports.warning = function (content, padding) {
-	log((pad(padding) + '⧫  ' + content).yellow.bold);
+	log(chalk.yellow.bold(pad(padding) + '⧫  ' + content));
 };
 
 
@@ -150,7 +134,7 @@ exports.warning = function (content, padding) {
  */
 
 exports.error = function (content, padding) {
-	console.error((pad(padding) + '✘  ' + content).red.bold);
+	error(chalk.red.bold(pad(padding) + '✘  ' + content));
 };
 
 
@@ -162,5 +146,5 @@ exports.error = function (content, padding) {
  */
 
 exports.ok = function (content, padding) {
-	log((pad(padding) + '✔  ' + content).green.bold);
+	log(chalk.green.bold(pad(padding) + '✔  ' + content));
 };
