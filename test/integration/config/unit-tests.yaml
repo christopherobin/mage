@@ -2,11 +2,17 @@ logging:
     server:
         terminal:
             config: {}
+    html5:
+        disableOverride: false
+        server:
+            channels: ">=warning"
+        console:
+            channels: ">=verbose"
 
 server:
     clientHost:
         bind:
             file: null
-            port: 0
+            port: 8080
         expose: null
     cluster: false
