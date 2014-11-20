@@ -2,6 +2,9 @@ logging:
     server:
         terminal:
             config: {}
+    html5:
+        server:
+            channels: ">=warning"
 
 server:
     clientHost:
