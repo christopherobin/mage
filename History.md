@@ -7,7 +7,7 @@
 
 | dependency          | from   | to     | changes                                                                             |
 |---------------------|--------|--------|-------------------------------------------------------------------------------------|
-| component-builder-x | 0.1.0  | 0.1.1  | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.1) |
+| component-builder-x | 0.1.0  | 0.1.3  | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.3) |
 | tomes               | 0.0.22 | 0.1.0  | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
 | sqlite3             | 2.2.3  | ~3.0.0 | [Release notes](https://github.com/mapbox/node-sqlite3/blob/master/CHANGELOG.md)    |
 
