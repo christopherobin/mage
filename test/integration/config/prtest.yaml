@@ -3,7 +3,12 @@ archivist:
         mysqlVault:
             type: mysql
             config:
-                url: "mysql://test:np2Vwj7zGfcVK6Wp@192.168.2.21/test_pr_mage_unit_tests"
+                options:
+                    host: "192.168.2.21"
+                    port: "3306"
+                    user: "test"
+                    password: "np2Vwj7zGfcVK6Wp"
+                    database: "mage_unit_tests"
     listOrder:
         - volatileVault
         - mysqlVault
