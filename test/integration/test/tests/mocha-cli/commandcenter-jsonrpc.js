@@ -14,6 +14,46 @@ describe('commandCenter', function () {
 		});
 
 		describe('without session', function () {
+			it('should send number errors as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'number' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, '0');
+					done();
+				});
+			});
+
+			it('should send Error objects as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'Error' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'This is an Error object');
+					done();
+				});
+			});
+
+			it('should send string errors as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'string' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'string');
+					done();
+				});
+			});
+
+			it('should send object errors as toString()', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'object' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, '[object Object]');
+					done();
+				});
+			});
+
 			it('should be able to obtain a new session', function (done) {
 				var client = jayson.client.http(clientOptions);
 				client.request('ident.login', {
