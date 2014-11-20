@@ -3,16 +3,13 @@ logging:
         terminal:
             config: {}
     html5:
-        disableOverride: false
         server:
             channels: ">=warning"
-        console:
-            channels: ">=verbose"
 
 server:
     clientHost:
         bind:
             file: null
-            port: 8080
+            port: 0
         expose: null
     cluster: false
