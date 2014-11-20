@@ -1,3 +1,5 @@
+var assert = require('assert');
+
 exports.access = 'anonymous';
 
 exports.params = ['testType'];
@@ -17,6 +19,13 @@ exports.execute = function (state, testType, callback) {
 		break;
 	case 'object':
 		error = { foo: 'bar' };
+		break;
+	case 'assert':
+		try {
+			assert(false, 'assertion failed');
+		} catch (assertError) {
+			error = assertError;
+		}
 		break;
 	default:
 		throw new Error('Unknown testType for state.error: ' + testType);

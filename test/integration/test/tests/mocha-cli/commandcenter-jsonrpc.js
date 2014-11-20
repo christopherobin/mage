@@ -34,6 +34,16 @@ describe('commandCenter', function () {
 				});
 			});
 
+			it('should send assertion errors as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'assert' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'assertion failed');
+					done();
+				});
+			});
+
 			it('should send string errors as string', function (done) {
 				var client = jayson.client.http(clientOptions);
 
