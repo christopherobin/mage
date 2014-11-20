@@ -1,5 +1,7 @@
 var mage = require('mage');
 
+var checkMagic = require('./checkMagic');
+
 var mageModules = [
 	'archivist',
 	'dashboard',
@@ -37,7 +39,6 @@ function createTest(app) {
 
 	var testPage = app.addIndexPage('loader', './www/test/');
 	testPage.registerComponent('mypackage', './www/test/mypackage', { assetMap: true });
-	testPage.registerComponent('unbuildablepackage', './www/test/unbuildablepackage');
 	testPage.routes.push('/test');
 	testPage.routes.push('/');
 }
@@ -57,7 +58,15 @@ function mageSetup(cb) {
 }
 
 function mageStart(cb) {
-	mage.start(cb);
+	mage.start(function (error) {
+		if (error) {
+			return cb(error);
+		}
+
+		checkMagic(mage);
+
+		cb();
+	});
 }
 
 // We can setup the project with this.

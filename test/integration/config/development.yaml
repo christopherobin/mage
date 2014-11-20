@@ -4,3 +4,13 @@ archivist:
             type: mysql
             config:
                 url: "mysql://root:aeriscloud@localhost/mage_unit_tests"
+    listOrder:
+        - volatileVault
+        - mysqlVault
+    readOrder:
+        - volatileVault
+        - mysqlVault
+    writeOrder:
+        - client
+        - volatileVault
+        - mysqlVault

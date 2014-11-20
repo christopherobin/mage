@@ -1,7 +1,14 @@
+archivist:
+    vaults:
+        mysqlVault:
+            type: mysql
+            config:
+                url: "mysql://root:aeriscloud@localhost/mage_unit_tests"
+
 logging:
     server:
         terminal:
-            config: {}
+            channels: ">=alert"
     html5:
         server:
             channels: ">=warning"
