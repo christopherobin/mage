@@ -8,7 +8,7 @@ archivist:
                     port: "3306"
                     user: "root"
                     password: "aeriscloud"
-                    database: "mage_unit_tests"
+                    database: "test_mage_app"
     listOrder:
         - volatileVault
         - mysqlVault

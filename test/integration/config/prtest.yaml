@@ -8,7 +8,7 @@ archivist:
                     port: "3306"
                     user: "test"
                     password: "np2Vwj7zGfcVK6Wp"
-                    database: "mage_unit_tests"
+                    database: "test_mage_pr"
     listOrder:
         - volatileVault
         - mysqlVault

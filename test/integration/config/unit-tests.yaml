@@ -4,7 +4,7 @@ archivist:
             type: mysql
             config:
                 options:
-                    database: "mage_unit_tests"
+                    database: "test_mage_unit"
 
 logging:
     server:
