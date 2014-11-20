@@ -14,6 +14,16 @@ describe('commandCenter', function () {
 		});
 
 		describe('without session', function () {
+			it('should default errors to "server"', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'default' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'server');
+					done();
+				});
+			});
+
 			it('should send number errors as string', function (done) {
 				var client = jayson.client.http(clientOptions);
 
@@ -54,12 +64,12 @@ describe('commandCenter', function () {
 				});
 			});
 
-			it('should send object errors as toString()', function (done) {
+			it('should turn object errors into "server"', function (done) {
 				var client = jayson.client.http(clientOptions);
 
 				client.request('test.test-errors', { testType: 'object' }, 1, function (err, response) {
 					assert.ifError(err);
-					assert.strictEqual(response.result.errorCode, '[object Object]');
+					assert.strictEqual(response.result.errorCode, 'server');
 					done();
 				});
 			});

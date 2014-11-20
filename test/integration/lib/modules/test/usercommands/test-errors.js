@@ -20,6 +20,9 @@ exports.execute = function (state, testType, callback) {
 	case 'object':
 		error = { foo: 'bar' };
 		break;
+	case 'default':
+		error = null;
+		break;
 	case 'assert':
 		try {
 			assert(false, 'assertion failed');
