@@ -15,6 +15,7 @@
 
 * Errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
 * Fixed how the SQLite vault was set up and closed, to avoid race conditions.
+* Lingering .sock files are now always deleted on startup (if the app is really not running).
 
 
 ## v0.42.0 - Doppelganger Cat
