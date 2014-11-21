@@ -11,6 +11,10 @@
 | tomes               | 0.0.22 | 0.1.0  | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
 | sqlite3             | 2.2.3  | ~3.0.0 | [Release notes](https://github.com/mapbox/node-sqlite3/blob/master/CHANGELOG.md)    |
 
+### Miscellaneous Changes
+
+* You may now pass Error objects (including assertion errors) into state.error's first argument.
+
 ### Bug Fixes
 
 * Client errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
