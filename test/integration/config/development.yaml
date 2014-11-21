@@ -3,4 +3,24 @@ archivist:
         mysqlVault:
             type: mysql
             config:
-                url: "mysql://root:aeriscloud@localhost/mage_unit_tests"
+                options:
+                    host: "localhost"
+                    port: "3306"
+                    user: "root"
+                    password: "aeriscloud"
+                    database: "test_mage_app"
+    listOrder:
+        - volatileVault
+        - mysqlVault
+    readOrder:
+        - volatileVault
+        - mysqlVault
+    writeOrder:
+        - client
+        - volatileVault
+        - mysqlVault
+
+server:
+    clientHost:
+        bind:
+            port: 8080
