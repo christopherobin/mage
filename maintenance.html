@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>MAGE - Maintenance</title>
+		<style type="text/css">
+			body {
+				width: 800px;
+				height: 480px;
+				position: relative;
+				margin: 0 auto;
+				font-family: sans-serif;
+			}
+			.main {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 800px;
+				height: 600px;
+				background-color: #fff;
+				background-image: url('http://www.wizcorp.jp/images/mage-120x120.png');
+				background-repeat: no-repeat;
+			}
+			.title {
+				font-weight: bold;
+			}
+			.maintenanceContainer {
+				position: absolute;
+				top: 30px;
+				left: 130px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<div class="maintenanceContainer">
+				<div class="title">This MAGE app is under maintenance</div>
+				<div class="description">
+					<div>Please try again later.</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			window.setInterval(function () {
+				// Reload every 30s in case the server is back online
+				window.location.reload();
+			}, 30000);
+		</script>
+	</body>
+</html>
