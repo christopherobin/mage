@@ -24,6 +24,45 @@ var logger = {
 	critical: devNull
 };
 
+describe('HTTP server binding', function () {
+	var initializer = require('../../lib/httpServer');
+
+	it('should parse URIs', function () {
+		var parsed;
+
+		parsed = initializer.parseBinding('unix:/foo/server.sock');
+		assert.deepEqual(parsed, { file: 'foo/server.sock' });
+
+		parsed = initializer.parseBinding('http://unix:/foo/server.sock');
+		assert.deepEqual(parsed, { file: 'foo/server.sock' });
+
+		parsed = initializer.parseBinding('http://0.0.0.0:0');
+		assert.deepEqual(parsed, { host: '0.0.0.0', port: 0 });
+
+		parsed = initializer.parseBinding('tcp://127.0.0.1:8080');
+		assert.deepEqual(parsed, { host: '127.0.0.1', port: 8080 });
+
+		assert.throws(function () {
+			initializer.parseBinding('foo://0.0.0.0:0');
+		});
+	});
+
+	it('should parse objects', function () {
+		var parsed;
+
+		parsed = initializer.parseBinding({ file: 'foo/server.sock' });
+		assert.deepEqual(parsed, { file: 'foo/server.sock' });
+
+		parsed = initializer.parseBinding({ host: '0.0.0.0', port: '0' });
+		assert.deepEqual(parsed, { host: '0.0.0.0', port: 0 });
+
+		assert.throws(function () {
+			initializer.parseBinding({});
+		});
+	});
+});
+
+
 describe('HTTP server', function () {
 	var httpServer;
 	var port = 0;

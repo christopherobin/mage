@@ -11,6 +11,25 @@
 | tomes               | 0.0.22 | 0.1.0  | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
 | sqlite3             | 2.2.3  | ~3.0.0 | [Release notes](https://github.com/mapbox/node-sqlite3/blob/master/CHANGELOG.md)    |
 
+### HTTP server binding
+
+You may now use a URI to describe how the HTTP server should bind. Some examples:
+
+```yaml
+server:
+  clientHost:
+    bind: "unix:/server.sock"
+    bind: "unix:some/folder/server.sock"
+    bind: "http://unix:some/folder/server.sock"
+    bind: "http://0.0.0.0:8080"
+    bind: "tcp://0.0.0.0:8080"
+```
+
+This change makes it easier to overwrite a configuration entry. Before, we supported file, host and
+port. If all three properties existed, MAGE chose the port configuration over the file, but that was
+an undefined behavior that this string replacement deals with elegantly. The object notation still
+works, but we now advise against using it.
+
 ### Miscellaneous Changes
 
 * You may now pass Error objects (including assertion errors) into state.error's first argument.
