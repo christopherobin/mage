@@ -1,5 +1,15 @@
+var assert = require('assert');
+
 describe('Session module', function () {
+	var mage;
+
 	before(function (done) {
+		mage = require('mage');
+
+		mage.eventManager.on('io.error', function (path) {
+			throw path;
+		});
+
 		mage.useModules(require, 'session');
 
 		mage.setup(function (error) {
@@ -22,10 +32,6 @@ describe('Session module', function () {
 
 			done();
 		});
-	});
-
-	mage.eventManager.on('io.error', function (path) {
-		throw path;
 	});
 
 	it('can log out', function (done) {

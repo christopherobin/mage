@@ -1,17 +1,25 @@
-module.exports = function (done) {
-	var mage = window.mage = require('mage');
+module.exports = function (cb) {
+	describe('MAGE', function () {
+		var mage = require('mage');
 
-	mage.httpServer.cmdMode = 'free';
+		mage.httpServer.cmdMode = 'free';
 
-	mage.setup(function (error) {
-		assert.ifError(error);
+		mage.setup(function (error) {
+			if (error) {
+				return cb(error);
+			}
 
-		require('testEventManager');
-		require('testLoader');
-		require('testArchivist');
-		require('testIdent');
-		require('testSession');
+			try {
+				require('./tests/testArchivist.js');
+				require('./tests/testEventManager');
+				require('./tests/testIdent');
+				require('./tests/testLoader.js');
+				require('./tests/testSession.js');
+			} catch (e) {
+				return cb(e);
+			}
 
-		done();
+			cb();
+		});
 	});
 };

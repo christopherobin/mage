@@ -1,15 +1,22 @@
+var assert = require('assert');
+
 describe('Ident module', function () {
 	var password = 'password';
+	var mage;
 
 	before(function (done) {
-		mage.user.register(password, function (error, admin) {
+		mage = require('mage');
+
+		mage.useModules(require, 'ident', 'user');
+
+		mage.setup(function (error) {
 			assert.ifError(error);
-			assert(admin);
 
-			mage.user.login(admin, password, function (error) {
+			mage.user.register(password, function (error, admin) {
 				assert.ifError(error);
+				assert(admin);
 
-				done();
+				mage.user.login(admin, password, done);
 			});
 		});
 	});
