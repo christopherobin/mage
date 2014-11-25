@@ -1,4 +1,6 @@
-describe('MAGE Package Loader', function () {
+var assert = require('assert');
+
+describe('Loader', function () {
 	var loader = require('loader');
 	var Package = loader.Package;
 
@@ -371,9 +373,7 @@ describe('MAGE Package Loader', function () {
 		});
 	});
 
-	it('handles internal server errors', function (done) {
-		// tests issue #623
-
+	it('handles 404s', function (done) {
 		var counter = 0;
 
 		function count(error) {
@@ -401,6 +401,6 @@ describe('MAGE Package Loader', function () {
 
 		loader.on('error', count);
 
-		loader.loadPackage('unbuildablepackage', count);
+		loader.loadPackage('doesNotExist', count);
 	});
 });

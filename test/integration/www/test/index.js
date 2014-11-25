@@ -1,20 +1,20 @@
-// Mocha needs a div with id="mocha"
-var elm = document.createElement('div');
-elm.id = 'mocha';
-document.body.appendChild(elm);
-
-window.assert = require('assert');
-
 require('mocha');
 
+// For some reason we can't require and assign it to the window at the same time.
 var mocha = window.mocha;
 mocha.setup('bdd');
 
-function phantomRunner() {
-	function phantomMsg(obj) {
-		if (window.hasOwnProperty('_phantom')) {
-			console.log('__PHANTOM__:' + JSON.stringify(obj));
-		}
+function phantomMsg(obj) {
+	if (window.hasOwnProperty('_phantom')) {
+		console.log('__PHANTOM__:' + JSON.stringify(obj));
+	} else {
+		console.log(obj);
+	}
+}
+
+function phantomRunner(error) {
+	if (error) {
+		return phantomMsg({ exit: 1, msg: 'Could not start tests', error: error });
 	}
 
 	var indent = '';
@@ -48,11 +48,7 @@ function phantomRunner() {
 	});
 }
 
+// Our tests live in /test/tests/browser
+var browserTests = require('browser');
 
-// load and run the browser tests
-
-describe('MAGE Integration Tests', function () {
-	it('Runs the browser test suite', require('browser'));
-});
-
-phantomRunner();
+browserTests(phantomRunner);

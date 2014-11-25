@@ -1,5 +1,11 @@
-describe('archivist', function () {
+var assert = require('assert');
+
+describe('Archivist', function () {
+	var mage;
+
 	before(function (done) {
+		mage = require('mage');
+
 		mage.useModules(require, 'archivist', 'session', 'user');
 
 		mage.setup(function (error) {
