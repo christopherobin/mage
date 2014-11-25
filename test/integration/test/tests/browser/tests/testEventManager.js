@@ -1,12 +1,12 @@
-describe('MAGE eventManager', function () {
+var assert = require('assert');
+
+describe('EventManager', function () {
 	var EventManager = require('eventManager');
 
 	var eventManager = new EventManager();
 
 	it('should emit and receive a simple event', function (done) {
-		eventManager.once('message', function () {
-			done();
-		});
+		eventManager.once('message', done);
 		eventManager.emit('message');
 	});
 

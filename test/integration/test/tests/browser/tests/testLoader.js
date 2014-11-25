@@ -1,4 +1,6 @@
-describe('MAGE Package Loader', function () {
+var assert = require('assert');
+
+describe('Loader', function () {
 	var loader = require('loader');
 	var Package = loader.Package;
 
@@ -260,10 +262,13 @@ describe('MAGE Package Loader', function () {
 
 		loader.loadPackage('mypackage', function (error, pkg) {
 			assert.ifError(error);
-			assert.ok(pkg);
+			assert(pkg);
 
-			// test if JS executed
-			window.require('mypackage');
+			// You *must* use window.require here because 'mypackage' is *not* a dependency, it is
+			// a magical 'MAGE package' and is out of the scope of this module.
+
+			var myPackage = window.require('mypackage');
+			assert.strictEqual(myPackage.testValue, 456);
 
 			// test CSS element
 			assert(pkg.getCss());
@@ -371,9 +376,7 @@ describe('MAGE Package Loader', function () {
 		});
 	});
 
-	it('handles internal server errors', function (done) {
-		// tests issue #623
-
+	it('handles 404s', function (done) {
 		var counter = 0;
 
 		function count(error) {
@@ -401,6 +404,6 @@ describe('MAGE Package Loader', function () {
 
 		loader.on('error', count);
 
-		loader.loadPackage('unbuildablepackage', count);
+		loader.loadPackage('doesNotExist', count);
 	});
 });
