@@ -89,7 +89,7 @@ describe('archivist', function () {
 
 	describe('exists', function () {
 		it('returns false for non-existing values', function (done) {
-			mage.archivist.exists('session', { actorId: 'abcxyz' }, { maxAge: 0 }, function (error, exists) {
+			mage.archivist.exists('user', { userId: 'abcxyz' }, { maxAge: 0 }, function (error, exists) {
 				assert.ifError(error);
 				assert.strictEqual(exists, false);
 				done();
@@ -97,7 +97,7 @@ describe('archivist', function () {
 		});
 
 		it('returns true for existing values', function (done) {
-			mage.archivist.exists('session', { actorId: mage.session.getActorId() }, function (error, exists) {
+			mage.archivist.exists('user', { userId: mage.user.id }, function (error, exists) {
 				assert.ifError(error);
 				assert.strictEqual(exists, true);
 				done();
@@ -139,7 +139,7 @@ describe('archivist', function () {
 
 	describe('cached value', function () {
 		it('returns true for existing values', function (done) {
-			mage.archivist.get('session', { actorId: mage.session.getActorId() }, function (error, data) {
+			mage.archivist.get('user', { userId: mage.user.id }, function (error, data) {
 				assert.ifError(error);
 				assert(data);
 
@@ -149,7 +149,7 @@ describe('archivist', function () {
 
 				mage.eventManager.on('io.archivist.rawExists', listener);
 
-				mage.archivist.exists('session', { actorId: mage.session.getActorId() }, function (error, exists) {
+				mage.archivist.exists('user', { userId: mage.user.id }, function (error, exists) {
 					assert.ifError(error);
 					assert.strictEqual(exists, true);
 
