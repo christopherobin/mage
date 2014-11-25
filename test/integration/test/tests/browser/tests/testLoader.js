@@ -262,10 +262,13 @@ describe('Loader', function () {
 
 		loader.loadPackage('mypackage', function (error, pkg) {
 			assert.ifError(error);
-			assert.ok(pkg);
+			assert(pkg);
 
-			// test if JS executed
-			window.require('mypackage');
+			// You *must* use window.require here because 'mypackage' is *not* a dependency, it is
+			// a magical 'MAGE package' and is out of the scope of this module.
+
+			var myPackage = window.require('mypackage');
+			assert.strictEqual(myPackage.testValue, 456);
 
 			// test CSS element
 			assert(pkg.getCss());
