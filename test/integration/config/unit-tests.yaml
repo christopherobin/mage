@@ -16,6 +16,6 @@ logging:
 
 server:
     clientHost:
-        bind: "http://0.0.0.0:8080"
+        bind: "http://0.0.0.0:0"
         expose: null
     cluster: false
