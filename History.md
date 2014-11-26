@@ -30,6 +30,13 @@ port. If all three properties existed, MAGE chose the port configuration over th
 an undefined behavior that this string replacement deals with elegantly. The object notation still
 works, but we now advise against using it.
 
+### Archivist.exists
+
+Archivist has gained a new API: `exists(topic, index, cb)` which returns a single boolean indicating
+whether or not a value exists in a vault. This is cheaper in execution than executing a `get`
+operation and then throwing away the value. In the future we will further optimize this operation by
+allowing each vault to implement a specialized `exists` implementation.
+
 ### Miscellaneous Changes
 
 * You may now pass Error objects (including assertion errors) into state.error's first argument.
@@ -39,6 +46,7 @@ works, but we now advise against using it.
 * Client errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
 * Fixed how the SQLite vault was set up and closed, to avoid race conditions.
 * Lingering .sock files are now always deleted on startup (if the app is really not running).
+* State.respond would not allow you to respond falsy values.
 
 
 ## v0.42.0 - Doppelganger Cat
