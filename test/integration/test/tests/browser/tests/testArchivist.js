@@ -95,7 +95,7 @@ describe('Archivist', function () {
 
 	describe('exists', function () {
 		it('returns false for non-existing values', function (done) {
-			mage.archivist.exists('user', { userId: 'abcxyz' }, { maxAge: 0 }, function (error, exists) {
+			mage.archivist.exists('user', { userId: 'abcxyz' }, function (error, exists) {
 				assert.ifError(error);
 				assert.strictEqual(exists, false);
 				done();
@@ -103,7 +103,7 @@ describe('Archivist', function () {
 		});
 
 		it('returns true for existing values', function (done) {
-			mage.archivist.exists('user', { userId: mage.user.id }, function (error, exists) {
+			mage.archivist.exists('user', { userId: mage.user.id }, { maxAge: 0 }, function (error, exists) {
 				assert.ifError(error);
 				assert.strictEqual(exists, true);
 				done();
