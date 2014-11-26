@@ -13,7 +13,7 @@ inherits(Bomb, EventEmitter);
 Bomb.prototype.explode = function (name) {
 	name = name || this.name;
 
-	this.emit('exploded', name);
+	this.emit('exploded', name, Date.now() - this.start);
 };
 
 Bomb.prototype.arm = function (name, duration) {
@@ -24,11 +24,16 @@ Bomb.prototype.arm = function (name, duration) {
 	this.start = Date.now();
 
 	var that = this;
-	this.fuse = setTimeout(that.explode, this.duration);
+
+	this.fuse = setTimeout(function () {
+		that.explode(name);
+	}, this.duration);
 };
 
 Bomb.prototype.disarm = function (name) {
 	if (this.name !== name) {
+		console.error('Disarming', name, 'during', this.name, 'phase');
+
 		return this.explode(name);
 	}
 
