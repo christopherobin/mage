@@ -15,6 +15,7 @@ module.exports = function (cb) {
 				require('./tests/testIdent');
 				require('./tests/testLoader.js');
 				require('./tests/testSession.js');
+				require('./tests/testWebApp.js');
 			} catch (e) {
 				return cb(e);
 			}
