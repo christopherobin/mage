@@ -404,13 +404,27 @@ Marks data with a new expiration time (unix timestamp in seconds).
 archivist.list(topic, partialIndex, options, function (error, arrayOfIndexes) { });
 ```
 
-Returns an array of indexes on the given topic matching the partial index you provide. The options
-object is not required, and your callback may be passed as the third argument. You can, for example,
-query for all players in the game by calling:
+Returns an array of indexes on the given topic matching the partial index you provide. A partial
+index is the same as a normal index object, except you can leave out properties.
+The options object is not required, and your callback may be passed as the third argument.
+
+You can, for example, query for all players in the game by using an empty partial index:
 
 ```javascript
+// A full index for the "players" topic contains only the "id" property.
+
 archivist.list('player', {}, function (error, indexes) {
 	/* indexes is now [{ id: 5 }, { id: 20 }, ...] */
+});
+```
+
+Or for all players that are in a guild:
+
+```javascript
+// A full index for the "guildPlayers" topic consists of "guildId" and "userId"
+
+archivist.list('guildPlayers', { guildId: 'abc' }, function (error, indexes) {
+	/* indexes is now [{ guildId: 'abc', userId: 5 }, { guildId: 'abc', userId: 20 }, ...] */
 });
 ```
 

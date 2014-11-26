@@ -13,16 +13,23 @@ archivist:
             type: memory
     listOrder:
         - volatileVault
-        - mysqlVault
     readOrder:
         - volatileVault
-        - mysqlVault
     writeOrder:
         - client
         - volatileVault
-        - mysqlVault
+
+checkMagic: true
 
 developmentMode: true
+
+logging:
+    server:
+        websocket: {}
+        terminal:
+            channels: ">=verbose"
+            config:
+                theme: default
 
 module:
     ident:

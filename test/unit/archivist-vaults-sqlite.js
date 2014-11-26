@@ -34,37 +34,40 @@ var logger = {
 	warning: console.warn
 };
 
-function createVault(name, options) {
-	name = name || 'default';
-	options = options || {};
+function createVault(options, cb) {
+	var name = 'default';
 	var vault = sqliteVaultMod.create(name, logger);
+
+	options = options || {};
 
 	// for file test, create a different db everytime
 	if (options.filename === 'filetest') {
 		options.filename = path.join(tmpPath, counter++ + '.db');
 	}
 
-	vault.setup(options, function () {});
+	vault.setup(options, cb);
 	return vault;
 }
 
 function setupVault(container, cfg, cb) {
-	var vault = container.vault = createVault(null, cfg);
-	var sql =
-		'CREATE TABLE IF NOT EXISTS ' + testData.table + ' (' +
-		' id INTEGER PRIMARY KEY AUTOINCREMENT,' +
-		' value TEXT NOT NULL,' +
-		' mediaType VARCHAR(255) NOT NULL' +
-		')';
+	var vault = container.vault = createVault(cfg, function (error) {
+		assert.ifError(error);
 
-	vault.db.run(sql, [], function (error) {
-		return cb(error);
+		var sql =
+			'CREATE TABLE IF NOT EXISTS ' + testData.table + ' (' +
+			' id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+			' value TEXT NOT NULL,' +
+			' mediaType VARCHAR(255) NOT NULL' +
+			')';
+
+		vault.db.run(sql, [], function (error) {
+			return cb(error);
+		});
 	});
 }
 
 function destroyVault(vault, cb) {
 	vault.close(function (error) {
-		vault = null;
 		return cb(error);
 	});
 }
@@ -81,8 +84,8 @@ function tests(cfg) {
 	describe('Basic Instantiation', function () {
 		var vault;
 
-		it('should not fail', function () {
-			vault = createVault(null, cfg);
+		it('should not fail', function (done) {
+			vault = createVault(cfg, done);
 			assert.ok(vault, 'SQLiteVault instantiation failed.');
 		});
 
@@ -94,8 +97,8 @@ function tests(cfg) {
 	describe('#createDatabase', function () {
 		var vault;
 
-		before(function () {
-			vault = createVault(null, cfg);
+		before(function (done) {
+			vault = createVault(cfg, done);
 		});
 
 		it('should create a database', function (done) {
@@ -110,8 +113,8 @@ function tests(cfg) {
 	describe('#dropDatabase', function () {
 		var vault;
 
-		before(function () {
-			vault = createVault(null, cfg);
+		before(function (done) {
+			vault = createVault(cfg, done);
 		});
 
 		it('should drop a database', function (done) {
@@ -122,8 +125,8 @@ function tests(cfg) {
 	describe('#getMigrations', function () {
 		var vault;
 
-		before(function () {
-			vault = createVault(null, cfg);
+		before(function (done) {
+			vault = createVault(cfg, done);
 		});
 
 		it('should get an array of migrations', function (done) {
@@ -143,8 +146,9 @@ function tests(cfg) {
 		var vault;
 
 		before(function (done) {
-			vault = createVault(null, cfg);
-			vault.getMigrations(done);
+			vault = createVault(cfg, function () {
+				vault.getMigrations(done);
+			});
 		});
 
 		it('should not fail', function (done) {
@@ -171,14 +175,12 @@ function tests(cfg) {
 		var version = '0.1.9';
 
 		before(function (done) {
-			vault = createVault(null, cfg);
-			vault.getMigrations(function () {
-				vault.registerMigration(version, 'Registered Migration', function (error) {
-					if (error) {
-						console.log(error);
-					}
-
-					return done();
+			vault = createVault(cfg, function () {
+				vault.getMigrations(function () {
+					vault.registerMigration(version, 'Registered Migration', function (error) {
+						assert.ifError(error);
+						return done();
+					});
 				});
 			});
 		});

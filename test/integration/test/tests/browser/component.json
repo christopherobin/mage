@@ -1,19 +1,29 @@
 {
 	"name": "browser",
 	"description": "Browser integration tests",
+	"dependencies": {
+		"timoxley/assert": "*"
+	},
 	"paths": [
-		"./tests",
-		"../../../../../lib"
+		"../../../lib/modules",
+		"../../../node_modules/mage/lib",
+		"../../../node_modules/mage/lib/modules"
 	],
 	"local": [
+		"archivist",
+		"eventManager",
+		"ident",
+		"loader",
 		"mage",
-		"testEventManager",
-		"testLoader",
-		"testArchivist",
-		"testIdent",
-		"testSession"
+		"session",
+		"user"
 	],
 	"scripts": [
-		"index.js"
+		"index.js",
+		"tests/testArchivist.js",
+		"tests/testEventManager.js",
+		"tests/testIdent.js",
+		"tests/testLoader.js",
+		"tests/testSession.js"
 	]
 }

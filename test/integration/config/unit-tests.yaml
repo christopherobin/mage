@@ -1,7 +1,18 @@
+archivist:
+    vaults:
+        mysqlVault:
+            type: mysql
+            config:
+                options:
+                    database: "test_mage_unit"
+
 logging:
     server:
         terminal:
-            config: {}
+            channels: ">=alert"
+    html5:
+        server:
+            channels: ">=warning"
 
 server:
     clientHost:
