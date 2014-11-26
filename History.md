@@ -6,7 +6,7 @@
 
 ### Bug Fixes
 
-* MAGE shuts down a bit more gracefully now, avoiding lingering server.sock files.
+* MAGE shuts down a bit more gracefully now.
 
 
 ## v0.43.0 - Rollover Cat
