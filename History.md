@@ -4,6 +4,11 @@
 ## vNEXT - ??? Cat
 
 
+### Bug Fixes
+
+* MAGE shuts down a bit more gracefully now.
+
+
 ## v0.43.0 - Rollover Cat
 
 ### Dependency Updates
