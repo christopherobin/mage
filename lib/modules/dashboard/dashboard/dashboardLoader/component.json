@@ -1,19 +1,16 @@
 {
 	"name": "dashboardLoader",
 	"description": "The loader page for MAGE dashboard.",
-	"local": [
-		"loader"
-	],
-	"paths": [
-		"../../../.."
+	"dependencies": {
+		"mage/loader.js": "0.1.0"
+	},
+	"scripts": [
+		"index.js"
 	],
 	"styles": [
 		"github-highlight.css",
 		"github-markdown.css",
 		"gridiculous.css",
 		"styles.css"
-	],
-	"scripts": [
-		"index.js"
 	]
 }

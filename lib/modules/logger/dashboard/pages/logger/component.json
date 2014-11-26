@@ -1,9 +1,11 @@
 {
 	"name": "logger",
 	"description": "Logger tool",
+	"dependencies": {
+		"mage/loader.js": "0.1.0"
+	},
 	"local": [
 		"mage",
-		"loader",
 		"logger"
 	],
 	"paths": [

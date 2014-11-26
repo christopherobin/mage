@@ -2,11 +2,11 @@
 	"name": "time",
 	"description": "Time dashboard",
 	"dependencies": {
+		"mage/loader.js": "0.1.0",
 		"moment/moment": "2.8.3"
 	},
 	"local": [
 		"mage",
-		"loader",
 		"time"
 	],
 	"paths": [

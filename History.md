@@ -3,6 +3,12 @@
 
 ## vNEXT - ??? Cat
 
+### MAGE components ***Breaking Changes***
+
+We're moving existing client side code into individual components in [the MAGE organization](https://github.com/mage).
+This will require you to modify your existing code to take all MAGE components out of the local
+section in your component.json files and replace them with the external MAGE components. To start
+with, we will be moving loader to [mage/loader.js](https://github.com/mage/loader.js).
 
 ## v0.43.0 - Rollover Cat
 
