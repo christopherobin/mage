@@ -1,5 +1,0 @@
-{
-	"name": "unbuildablepackage",
-	"scripts": ["noexisto.js"],
-	"main": "noexisto.js"
-}

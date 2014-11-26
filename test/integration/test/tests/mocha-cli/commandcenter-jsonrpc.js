@@ -14,6 +14,66 @@ describe('commandCenter', function () {
 		});
 
 		describe('without session', function () {
+			it('should default errors to "server"', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'default' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'server');
+					done();
+				});
+			});
+
+			it('should send number errors as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'number' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, '0');
+					done();
+				});
+			});
+
+			it('should send Error objects as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'Error' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'This is an Error object');
+					done();
+				});
+			});
+
+			it('should send assertion errors as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'assert' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'assertion failed');
+					done();
+				});
+			});
+
+			it('should send string errors as string', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'string' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'string');
+					done();
+				});
+			});
+
+			it('should turn object errors into "server"', function (done) {
+				var client = jayson.client.http(clientOptions);
+
+				client.request('test.test-errors', { testType: 'object' }, 1, function (err, response) {
+					assert.ifError(err);
+					assert.strictEqual(response.result.errorCode, 'server');
+					done();
+				});
+			});
+
 			it('should be able to obtain a new session', function (done) {
 				var client = jayson.client.http(clientOptions);
 				client.request('ident.login', {

@@ -51,6 +51,24 @@ function test(url, cb) {
 		}
 	};
 
+	page.onError = function (msg, trace) {
+		var msgStack = ['Phantom runner caught error: ' + msg];
+
+		if (trace && trace.length) {
+			msgStack.push('TRACE:');
+
+			trace.forEach(function (t) {
+				var file = t.file || '(unknown file)';
+				var line = t.line || '(unknown line)';
+				var fn = t.function ? '(in function "' + t.function + '")' : '(anonymous function)';
+
+				msgStack.push('  ' + file + ': ' + line + ' ' + fn);
+			});
+		}
+
+		console.error(msgStack.join('\n'));
+	};
+
 	// After we open the page, we expect the callback to be called through the
 	// phantomMsg channel.
 

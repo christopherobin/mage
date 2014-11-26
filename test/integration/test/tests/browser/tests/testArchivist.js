@@ -1,5 +1,11 @@
-describe('archivist', function () {
+var assert = require('assert');
+
+describe('Archivist', function () {
+	var mage;
+
 	before(function (done) {
+		mage = require('mage');
+
 		mage.useModules(require, 'archivist', 'session', 'user');
 
 		mage.setup(function (error) {
@@ -87,6 +93,24 @@ describe('archivist', function () {
 		});
 	});
 
+	describe('exists', function () {
+		it('returns false for non-existing values', function (done) {
+			mage.archivist.exists('user', { userId: 'abcxyz' }, function (error, exists) {
+				assert.ifError(error);
+				assert.strictEqual(exists, false);
+				done();
+			});
+		});
+
+		it('returns true for existing values', function (done) {
+			mage.archivist.exists('user', { userId: mage.user.id }, { maxAge: 0 }, function (error, exists) {
+				assert.ifError(error);
+				assert.strictEqual(exists, true);
+				done();
+			});
+		});
+	});
+
 	describe('list', function () {
 		it('fails bad input', function (done) {
 			mage.archivist.list('user', { userId: {} }, {}, function (error, results) {
@@ -120,6 +144,27 @@ describe('archivist', function () {
 	});
 
 	describe('cached value', function () {
+		it('returns true for existing values', function (done) {
+			mage.archivist.get('user', { userId: mage.user.id }, function (error, data) {
+				assert.ifError(error);
+				assert(data);
+
+				function listener() {
+					throw new Error('Server access during what should be a cached-operation');
+				}
+
+				mage.eventManager.on('io.archivist.rawExists', listener);
+
+				mage.archivist.exists('user', { userId: mage.user.id }, function (error, exists) {
+					assert.ifError(error);
+					assert.strictEqual(exists, true);
+
+					mage.eventManager.removeListener('io.archivist.rawExists', listener);
+					done();
+				});
+			});
+		});
+
 		it('get', function (done) {
 			var userId = mage.user.id;
 
@@ -164,7 +209,6 @@ describe('archivist', function () {
 				assert.ifError(error);
 
 				assert.equal(mage.user.name, 'Johnny Test');
-
 				done();
 			});
 		});

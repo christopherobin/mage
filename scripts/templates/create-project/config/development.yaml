@@ -18,9 +18,5 @@ server:
 #       cors:
 #           origin: "%APP_CLIENTHOST_EXPOSE%"
 
-        # What to listen on
-        bind:
-            port: 8080
-
         # What the world will see us as (a full base URL)
         expose: "%APP_CLIENTHOST_EXPOSE%"

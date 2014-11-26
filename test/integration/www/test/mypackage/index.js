@@ -1,1 +1,1 @@
-window.mypackageTestValue = 456;
+exports.testValue = 456;

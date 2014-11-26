@@ -1,5 +1,54 @@
 # Release history
 
+
+## v0.43.0 - Rollover Cat
+
+### Dependency Updates
+
+| dependency          | from   | to     | changes                                                                             |
+|---------------------|--------|--------|-------------------------------------------------------------------------------------|
+| component-builder-x | 0.1.0  | 0.1.3  | [Release notes](https://github.com/Wizcorp/component-builder-x/releases/tag/v0.1.3) |
+| tomes               | 0.0.22 | 0.1.0  | [Release notes](https://github.com/Wizcorp/node-tomes/releases/tag/v0.1.0)          |
+| sqlite3             | 2.2.3  | ~3.0.0 | [Release notes](https://github.com/mapbox/node-sqlite3/blob/master/CHANGELOG.md)    |
+
+### HTTP server binding
+
+You may now use a URI to describe how the HTTP server should bind. Some examples:
+
+```yaml
+server:
+  clientHost:
+    bind: "unix:/server.sock"
+    bind: "unix:some/folder/server.sock"
+    bind: "http://unix:some/folder/server.sock"
+    bind: "http://0.0.0.0:8080"
+    bind: "tcp://0.0.0.0:8080"
+```
+
+This change makes it easier to overwrite a configuration entry. Before, we supported file, host and
+port. If all three properties existed, MAGE chose the port configuration over the file, but that was
+an undefined behavior that this string replacement deals with elegantly. The object notation still
+works, but we now advise against using it.
+
+### Archivist.exists
+
+Archivist has gained a new API: `exists(topic, index, cb)` which returns a single boolean indicating
+whether or not a value exists in a vault. This is cheaper in execution than executing a `get`
+operation and then throwing away the value. In the future we will further optimize this operation by
+allowing each vault to implement a specialized `exists` implementation.
+
+### Miscellaneous Changes
+
+* You may now pass Error objects (including assertion errors) into state.error's first argument.
+
+### Bug Fixes
+
+* Client errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
+* Fixed how the SQLite vault was set up and closed, to avoid race conditions.
+* Lingering .sock files are now always deleted on startup (if the app is really not running).
+* State.respond would not allow you to respond falsy values.
+
+
 ## v0.42.0 - Doppelganger Cat
 
 **Backwards compatible break:** We have removed support for Loggly. The main reason is that nobody
