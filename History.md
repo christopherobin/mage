@@ -10,6 +10,11 @@ This will require you to modify your existing code to take all MAGE components o
 section in your component.json files and replace them with the external MAGE components. To start
 with, we will be moving loader to [mage/loader.js](https://github.com/mage/loader.js).
 
+### Bug Fixes
+
+* MAGE shuts down a bit more gracefully now.
+
+
 ## v0.43.0 - Rollover Cat
 
 ### Dependency Updates
