@@ -1,7 +1,7 @@
 var async = require('async');
 var fs = require('fs');
+var Bomb = require('itd');
 
-var Bomb = require('./bomb');
 var runners = [
 	{ name: 'Browser', run: require('./runners/browser') },
 	{ name: 'Mocha CLI', run: require('./runners/mocha-cli') },
@@ -44,19 +44,29 @@ exports.start = function (project) {
 		cleanUp();
 
 		project.quit(exitCode);
-
-		process.exit(exitCode);
 	}
 
 	var bomb = new Bomb();
 
-	bomb.on('exploded', function (name, msec) {
-		console.error(name, 'failed after', msec, 'msec');
+	bomb.on('exploded', function (code, duration, reason) {
+		switch (reason) {
+		case 'timeOut':
+			console.error('Step: ' + code + ' failed to complete in' + duration + 'msec');
+			break;
+		case 'wrongCode':
+			console.error('Step: ' + code + ' completed while ' + bomb.code + ' was active');
+			break;
+		case 'alreadyArmed':
+			console.error('Step: ' + code + ' started while ' + bomb.code + ' was active');
+			break;
+		default:
+			console.error('Bomb exploded for unknown reason'); // This should never happen.
+		}
 		exit(1);
 	});
 
-	bomb.on('disarmed', function (name, msec) {
-		console.log(name, 'completed in', msec, 'msec');
+	bomb.on('disarmed', function (code, duration) {
+		console.log('Step:', code, 'completed in', duration, 'msec');
 	});
 
 
@@ -117,40 +127,29 @@ exports.start = function (project) {
 	// create the project and host it,
 	// then wait for requests or run the tests immediately
 
-	projectSetup(function (error) {
+	async.series([projectSetup, projectStart], function (error) {
 		if (error) {
 			console.error(error);
 			return exit(1);
 		}
 
-		projectStart(function (error) {
+		if (!project.autorun) {
+			var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
+			var address = httpServer.server.address();
+
+			console.log('Waiting for requests at http://' + address.address + ':' + address.port + '/app/test');
+			return;
+		}
+
+		// run all the tests
+
+		async.eachSeries(runners, runTests, function (error) {
 			if (error) {
-				console.error(error);
+				console.error(error.stack || error);
 				return exit(1);
 			}
 
-			if (!project.autorun) {
-				var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
-				var address = httpServer.server.address();
-
-				console.log('Waiting for requests at http://' + address.address + ':' + address.port + '/app/test');
-				return;
-			}
-
-			// run all the tests
-
-			async.eachSeries(
-				runners,
-				runTests,
-				function (error) {
-					if (error) {
-						console.log(error.stack || error);
-						return exit(1);
-					}
-
-					exit(0);
-				}
-			);
+			exit(0);
 		});
 	});
 };
