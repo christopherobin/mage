@@ -49,10 +49,18 @@ exports.start = function (project) {
 	var bomb = new Bomb();
 
 	bomb.on('exploded', function (code, duration, reason) {
-		if (reason === 'timeOut') {
-			console.error('Step:', code, 'failed to complete in', duration, 'msec');
-		} else {
-			console.error('Step:', code, 'completed out of order.');
+		switch (reason) {
+		case 'timeOut':
+			console.error('Step: ' + code + ' failed to complete in' + duration + 'msec');
+			break;
+		case 'wrongCode':
+			console.error('Step: ' + code + ' completed while ' + bomb.code + ' was active');
+			break;
+		case 'alreadyArmed':
+			console.error('Step: ' + code + ' started while ' + bomb.code + ' was active');
+			break;
+		default:
+			console.error('Bomb exploded for unknown reason'); // This should never happen.
 		}
 		exit(1);
 	});
