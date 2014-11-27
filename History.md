@@ -3,10 +3,20 @@
 
 ## vNEXT - ??? Cat
 
+### Dependency Updates
+
+| dependency    | from | to    | changes                                                                  |
+|---------------|------|-------|--------------------------------------------------------------------------|
+| wizcorp-timer |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0) |
+
 ### Miscellaneous Changes
 
 * The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
   finds in the folder you provide.
+
+### Bug Fixes
+
+* MAGE shuts down a bit more gracefully now.
 
 
 ## v0.43.0 - Rollover Cat
