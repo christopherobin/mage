@@ -16,12 +16,12 @@ describe('Time module', function () {
 	});
 
 	it('get the time in seconds and milliseconds', function () {
-		assert(mage.time.sec());
-		assert(mage.time.msec());
+		assert(mage.time.sec() && isFinite(mage.time.sec()));
+		assert(mage.time.msec() && isFinite(mage.time.msec()));
 	});
 
 	it('get the time in seconds and milliseconds through the now method', function () {
-		assert(mage.time.now());
-		assert(mage.time.now(true));
+		assert(mage.time.now() && isFinite(mage.time.now()));
+		assert(mage.time.now(true) && isFinite(mage.time.now(true)));
 	});
 });
