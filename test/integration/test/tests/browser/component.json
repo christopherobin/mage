@@ -16,6 +16,7 @@
 		"loader",
 		"mage",
 		"session",
+		"time",
 		"user"
 	],
 	"scripts": [
@@ -24,6 +25,7 @@
 		"tests/testEventManager.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
-		"tests/testSession.js"
+		"tests/testSession.js",
+		"tests/testTime.js"
 	]
 }
