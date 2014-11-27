@@ -3,6 +3,11 @@
 
 ## vNEXT - ??? Cat
 
+### Dependency Updates
+
+| dependency    | from | to    | changes                                                                  |
+|---------------|------|-------|--------------------------------------------------------------------------|
+| wizcorp-timer |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0) |
 
 ### Bug Fixes
 
