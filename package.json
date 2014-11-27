@@ -14,6 +14,7 @@
 	"dependencies": {
 		"commander": "2.2.0",
 		"tabalot" : "0.7.2",
+		"glob": "4.2.1",
 		"async": "0.9.0",
 		"localstash": "0.2.0",
 		"multipart-parser": "0.0.2",
