@@ -12,15 +12,17 @@ with, we will be moving loader to [mage/loader.js](https://github.com/mage/loade
 
 ### Dependency Updates
 
-| dependency    | from | to    | changes                                                                  |
-|---------------|------|-------|--------------------------------------------------------------------------|
-| wizcorp-timer |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0) |
-| mage-loader   |      | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/v0.1.2)   |
+| dependency    | from  | to    | changes                                                                      |
+|---------------|-------|-------|------------------------------------------------------------------------------|
+| wizcorp-timer |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0)     |
+| mage-loader   |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/v0.1.2)       |
+| cachepuncher  | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/v0.1.3) |
 
 ### Miscellaneous Changes
 
 * The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
   finds in the folder you provide.
+* make clean now removes installed components.
 
 ### Bug Fixes
 

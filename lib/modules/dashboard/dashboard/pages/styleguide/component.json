@@ -2,7 +2,7 @@
 	"name": "styleguide",
 	"description": "MAGE dashboard style guide.",
 	"dependencies": {
-		"mage/loader.js": "0.1.0"
+		"mage/loader.js": "0.1.2"
 	},
 	"scripts": [
 		"index.js"
