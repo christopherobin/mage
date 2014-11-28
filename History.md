@@ -13,6 +13,7 @@
 
 * The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
   finds in the folder you provide.
+* If MAGE doesn't shut down gracefully pressing ctrl+C a second time will cause MAGE to shut down immediately.
 
 ### Bug Fixes
 
