@@ -10,6 +10,18 @@ This will require you to modify your existing code to take all MAGE components o
 section in your component.json files and replace them with the external MAGE components. To start
 with, we will be moving loader to [mage/loader.js](https://github.com/mage/loader.js).
 
+### Dependency Updates
+
+| dependency    | from | to    | changes                                                                  |
+|---------------|------|-------|--------------------------------------------------------------------------|
+| wizcorp-timer |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0) |
+| mage-loader   |      | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/v0.1.2)   |
+
+### Miscellaneous Changes
+
+* The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
+  finds in the folder you provide.
+
 ### Bug Fixes
 
 * MAGE shuts down a bit more gracefully now.
