@@ -19,3 +19,9 @@ server:
         bind: "http://0.0.0.0:0"
         expose: null
     cluster: false
+    mmrp:
+        bind:
+            host: "*"
+            port: "*"
+    serviceDiscovery:
+        engine: single

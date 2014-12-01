@@ -27,6 +27,7 @@
 		"tests/testLoader.js",
 		"tests/testSession.js",
 		"tests/testWebApp.js",
-		"tests/testTime.js"
+		"tests/testTime.js",
+		"tests/testServerEvents.js"
 	]
 }
