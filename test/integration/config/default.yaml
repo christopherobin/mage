@@ -31,6 +31,17 @@ logging:
             config:
                 theme: default
 
+module:
+    ident:
+        engines:
+            mageUsernames:
+                type: userpass
+                saltSize: 32
+                config:
+                    hmac:
+                        algorithm: sha256
+                        key: somelongkeythatnoonewillguess
+
 server:
     clientHost:
         bind:
