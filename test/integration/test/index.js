@@ -2,12 +2,6 @@ var async = require('async');
 var fs = require('fs');
 var Bomb = require('itd');
 
-var runners = [
-	{ name: 'Browser', run: require('./runners/browser') },
-	{ name: 'Mocha CLI', run: require('./runners/mocha-cli') },
-	{ name: 'Mocha API', run: require('./runners/mocha-embedded') }
-];
-
 function unlink(path) {
 	try {
 		fs.unlinkSync(path);
@@ -29,13 +23,13 @@ function before() {
 	fs.symlinkSync('../', './node_modules/mage', 'dir');
 }
 
-exports.before = before;
-
 function after() {
 	cleanUp();
 }
 
+exports.before = before;
 exports.after = after;
+
 
 exports.start = function (project) {
 	function exit(exitCode) {
@@ -51,7 +45,7 @@ exports.start = function (project) {
 	bomb.on('exploded', function (code, duration, reason) {
 		switch (reason) {
 		case 'timeOut':
-			console.error('Step: ' + code + ' failed to complete in' + duration + 'msec');
+			console.error('Step: ' + code + ' failed to complete in ' + duration + ' msec');
 			break;
 		case 'wrongCode':
 			console.error('Step: ' + code + ' completed while ' + bomb.code + ' was active');
@@ -131,6 +125,16 @@ exports.start = function (project) {
 		if (error) {
 			console.error(error);
 			return exit(1);
+		}
+
+		var runners = [
+			{ name: 'Browser', run: require('./runners/browser') },
+			{ name: 'Mocha CLI', run: require('./runners/mocha-cli') },
+			{ name: 'Mocha API', run: require('./runners/mocha-embedded') }
+		];
+
+		if (project.autorun) {
+			runners.push({ name: 'Shutdown', run: require('./runners/shutdown') });
 		}
 
 		if (!project.autorun) {
