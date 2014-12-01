@@ -18,6 +18,7 @@
 ### Bug Fixes
 
 * MAGE shuts down a bit more gracefully now.
+* The client vault can now handle ArrayTomes in the sharding function.
 
 
 ## v0.43.0 - Rollover Cat
