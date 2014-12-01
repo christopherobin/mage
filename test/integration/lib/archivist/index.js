@@ -1,7 +1,31 @@
 exports.ident = {
 	index: ['userId'],
 	vaults: {
+		client: {
+			shard: function (value) {
+				return value.index.userId;
+			}
+		},
 		volatileVault: {}
+	}
+};
+
+exports.mageUsernames = {
+	index: ['username'],
+	vaults: {
+		volatileVault: {}
+	}
+};
+
+exports.mysqlBinaryTopic = {
+	index: ['id'],
+	readOptions: {
+		mediaTypes: ['application/octet-stream'],
+		encodings: ['live'],
+		optional: false
+	},
+	vaults: {
+		mysqlVault: {}
 	}
 };
 
@@ -13,25 +37,6 @@ exports.session = {
 				return value.index.actorId;
 			}
 		},
-		volatileVault: {}
-	}
-};
-
-exports.user = {
-	index: ['userId'],
-	vaults: {
-		client: {
-			shard: function (value) {
-				return value.index.userId;
-			}
-		},
-		volatileVault: {}
-	}
-};
-
-exports.testEngine = {
-	index: ['username'],
-	vaults: {
 		volatileVault: {}
 	}
 };
@@ -48,13 +53,6 @@ exports.scratch = {
 	}
 };
 
-exports.ucResponseMeta = {
-	index: ['session'],
-	vaults: {
-		volatileVault: {}
-	}
-};
-
 exports.ucResponseData = {
 	index: ['session'],
 	vaults: {
@@ -62,15 +60,16 @@ exports.ucResponseData = {
 	}
 };
 
+exports.ucResponseMeta = exports.ucResponseData;
 
-exports.mysqlBinaryTopic = {
-	index: ['id'],
-	readOptions: {
-		mediaTypes: ['application/octet-stream'],
-		encodings: ['live'],
-		optional: false
-	},
+exports.user = {
+	index: ['userId'],
 	vaults: {
-		mysqlVault: {}
+		client: {
+			shard: function (value) {
+				return value.index.userId;
+			}
+		},
+		volatileVault: {}
 	}
 };

@@ -1,14 +1,10 @@
-# User/Password Ident Engine
+# userpass
 
 The `userpass` engine provides a basic username/password identification mechanism to be used with
-your game. It uses hash based identification and allows you to store your credentials in archivist.
-This archivist topic (`credentials` by default), can be overridden in the configuration.
+your app. It uses hash based identification and allows you to store your credentials in archivist.
+The archivist topic is the same as the engine name. It can be overridden in the configuration.
 Requirements are that the vault you use supports `get` and `set` operations and the index is set to
-`[ 'userId' ]`.
-
-The userId is not the same as the username. To create a user ID that is unique to the whole system
-and across different ident engines, the ID is built as `engine name COLON username`, for example:
-`userpass:bob`.
+`[ 'username' ]`. MAGE comes preconfigured with one userpass engine called `mageUsernames`.
 
 ## Configuration
 
@@ -16,8 +12,8 @@ This is the engine configuration:
 
 ```yaml
 config:
-	# you can override the archivist topic here (default: "credentials")
-	#topic: "identusers"
+	# you can override the archivist topic here, by default it's the same as the engine name.
+	#topic: "specialUsers"
 
 	# change the size of salts generated when creating a new user, by default the engine uses
 	# 32 bytes which should be more than enough for quite a while but like the pbkdf2 iterations
@@ -45,49 +41,50 @@ config:
 	#	iterations: 15000
 ```
 
-## Parameters
+## Methods
 
-These are the parameters you can give to the `check` function for that engine:
-
-* __username__ _(string)_: The user's username.
-* __password__ _(string)_: The user's password.
-
-## User management
-
-### Getting the engine instance
-
-```javascript
-var engine = mage.ident.getEngine(engineName);
+### auth ( state, credentials, cb )
+Credentials must be an object with two properties: `username` and `password`, like this:
+``` json
+{
+	"username": "info@wizcorp.jp",
+	"password": "123456"
+}
 ```
 
-### Creating a user
-
-```javascript
-var credentials = {
-	username: 'Bob',
-	password: 'f00b4r'
-};
-
-// `user` is optional but here are the possible values
-var user = {
-	displayName: 'the name that is gonna be displayed (default is credentials.username)',
-	data: {
-		property: 'Any data you need to store about your user'
-	}
-};
-
-engine.createUser(state, credentials, user, function (error, user) { /* .. */ });
+Successful authentication with the userpass engine will return the userId of the user in the
+callback, in this user's case:
+```
+"be895324-7325-4239-92ef-1f04c1c225d1"
 ```
 
-### Getting a single user object
 
-```javascript
-engine.getUser(state, userId, function (error, user) { /* .. */ });
+### createUser ( state, credentials, userId, cb )
+Credentials must be an object with two properties: `username` and `password`, like this:
+``` json
+{
+	"username": "info@wizcorp.jp",
+	"password": "123456"
+}
 ```
 
-### Listing users
+If you pass in a userId, MAGE will use that as this user's gobally unique userId. If you leave it
+out, MAGE will generate a UUID.
 
-```javascript
-engine.listUsers(state, function (error, users) {
-	// users is an array of User objects
-});
+### getUser ( state, username, cb )
+Returns the entire user object which looks something like this:
+``` json
+{
+	"username": "info@wizcorp.jp",
+	"userId": "be895324-7325-4239-92ef-1f04c1c225d1",
+	"password": "5843c8e0dbf4bf3dc4599ad125d2c679e60df4bd",
+	"salt": "88dc3d39ce12f617a2d15817ce0a403c4ff6d09e67e4d82f0960a4cc2780b377"
+}
+```
+
+### listUsers ( state, cb )
+Returns a list of usernames and userIds, like this:
+``` json
+[ { "username": "info@wizcorp.jp",
+	"userId": "be895324-7325-4239-92ef-1f04c1c225d1" } ]
+```

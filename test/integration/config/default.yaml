@@ -31,16 +31,6 @@ logging:
             config:
                 theme: default
 
-module:
-    ident:
-        engines:
-            testEngine:
-                type: userpass
-                access: admin
-                config:
-                    topic: testEngine
-                    hash: sha1
-
 server:
     clientHost:
         bind:
