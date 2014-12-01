@@ -2,7 +2,8 @@
 	"name": "browser",
 	"description": "Browser integration tests",
 	"dependencies": {
-		"timoxley/assert": "*"
+		"timoxley/assert": "*",
+		"Wizcorp/node-tomes": "*"
 	},
 	"paths": [
 		"../../../lib/modules",

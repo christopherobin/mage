@@ -29,6 +29,18 @@ exports.user = {
 	}
 };
 
+exports.shardTest = {
+	index: ['userId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return value.data;
+			}
+		},
+		volatileVault: {}
+	}
+};
+
 exports.testEngine = {
 	index: ['username'],
 	vaults: {
