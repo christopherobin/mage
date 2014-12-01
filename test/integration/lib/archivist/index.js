@@ -29,6 +29,18 @@ exports.mysqlBinaryTopic = {
 	}
 };
 
+exports.shardTest = {
+	index: ['userId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return value.data;
+			}
+		},
+		volatileVault: {}
+	}
+};
+
 exports.session = {
 	index: ['actorId'],
 	vaults: {
