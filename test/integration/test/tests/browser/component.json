@@ -3,7 +3,8 @@
 	"description": "Browser integration tests",
 	"dependencies": {
 		"mage/loader.js": "0.1.2",
-		"timoxley/assert": "*"
+		"timoxley/assert": "*",
+		"Wizcorp/node-tomes": "*"
 	},
 	"paths": [
 		"../../../lib/modules",

@@ -23,10 +23,12 @@ with, we will be moving loader to [mage/loader.js](https://github.com/mage/loade
 * The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
   finds in the folder you provide.
 * make clean now removes installed components.
+* If MAGE doesn't shut down gracefully pressing ctrl+C a second time will cause MAGE to shut down immediately.
 
 ### Bug Fixes
 
 * MAGE shuts down a bit more gracefully now.
+* The client vault can now handle ArrayTomes in the sharding function.
 
 
 ## v0.43.0 - Rollover Cat
