@@ -5,9 +5,10 @@
 
 ### Dependency Updates
 
-| dependency    | from | to    | changes                                                                  |
-|---------------|------|-------|--------------------------------------------------------------------------|
-| wizcorp-timer |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0) |
+| dependency             | from | to    | changes                                                                       |
+|------------------------|------|-------|-------------------------------------------------------------------------------|
+| wizcorp-timer.js       |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/0.2.0)       |
+| mage-message-server.js |      | 0.1.0 | [Release notes](https://github.com/mage/message-server.js/releases/tag/0.1.0) |
 
 ### Miscellaneous Changes
 
