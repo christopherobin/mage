@@ -133,10 +133,6 @@ exports.start = function (project) {
 			{ name: 'Mocha API', run: require('./runners/mocha-embedded') }
 		];
 
-		if (project.autorun) {
-			runners.push({ name: 'Shutdown', run: require('./runners/shutdown') });
-		}
-
 		if (!project.autorun) {
 			var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();
 			var address = httpServer.server.address();

@@ -18,7 +18,7 @@ server:
     clientHost:
         bind: "http://0.0.0.0:0"
         expose: null
-        closeTimeout: 1000
+        closeTimeout: 2000
     cluster: false
     mmrp:
         bind:
