@@ -40,13 +40,14 @@ describe('Application lifecycle', function () {
 
 // helper function that creates a function that makes the request
 
-function createRequestTester(host, port, fnCounter, type, expectGracefulHeader) {
+function createRequestTester(host, port, fnCounter, type, reqConnType, expConnType) {
 	return function (callback) {
 		var socket = net.connect({ host: host, port: port });
 
 		var requestString =
 			'GET /stallforever?test=' + type + ' HTTP/1.1\r\n' +
 			'Host: ' + host + ':' + port + '\r\n' +
+			'Connection: ' + reqConnType + '\r\n' +
 			'\r\n';
 
 		var data = '';
@@ -62,12 +63,14 @@ function createRequestTester(host, port, fnCounter, type, expectGracefulHeader) 
 		});
 
 		socket.on('data', function (str) {
-			data += str;
+			data += str.toLowerCase();
 		});
 
 		socket.on('close', function () {
-			if (expectGracefulHeader) {
-				assert.notEqual(data.toLowerCase().indexOf('connection: close'), -1, 'Connection: close header missing');
+			if (expConnType === 'keep-alive') {
+				assert.strictEqual(data.indexOf('connection: close'), -1, type + ' connection type should not be "close"');
+			} else if (expConnType === 'close') {
+				assert.notEqual(data.indexOf('connection: close'), -1, type + ' connection type should be "close"');
 			}
 
 			fnCounter(type);
@@ -96,7 +99,7 @@ describe('Shutting down', function () {
 				return;
 			}
 
-			// extract host and port from the running app and create the connections
+			// extract host and port from the running app
 
 			host = m[1];
 			port = parseInt(m[2]);
@@ -115,25 +118,36 @@ describe('Shutting down', function () {
 			void: [2, 10],
 			headers: [2, 10],
 			somedata: [2, 10],
-			alldata: [0, 1]
+			alldata: [0, 1],
+			close: undefined
 		};
 
 		function count(name) {
 			closedSockets += 1;
 
-			var diff = process.hrtime(shutdownStart);
-			var duration = diff[0] + diff[1] / 1e9; // in seconds
 			var expected = durations[name];
 
-			assert(duration >= expected[0], 'Socket ' + name + ' closed too soon');
-			assert(duration <= expected[1], 'Socket ' + name + ' closed too late');
+			if (expected === undefined) {
+				// must be before shutdown
+				assert.strictEqual(shutdownStart, undefined);
+
+				shutdownStart = process.hrtime();
+				process.kill(child.pid);
+			} else {
+				var diff = process.hrtime(shutdownStart);
+				var duration = diff[0] + diff[1] / 1e9; // in seconds
+
+				assert(duration >= expected[0], 'Socket ' + name + ' closed too soon');
+				assert(duration <= expected[1], 'Socket ' + name + ' closed too late');
+			}
 		}
 
 		var tests = [
-			createRequestTester(host, port, count, 'void', true),
-			createRequestTester(host, port, count, 'headers'),
-			createRequestTester(host, port, count, 'somedata'),
-			createRequestTester(host, port, count, 'alldata')
+			createRequestTester(host, port, count, 'void', 'keep-alive', 'close'),
+			createRequestTester(host, port, count, 'headers', 'keep-alive', 'keep-alive'),
+			createRequestTester(host, port, count, 'somedata', 'keep-alive', 'keep-alive'),
+			createRequestTester(host, port, count, 'alldata', 'keep-alive', 'keep-alive'),
+			createRequestTester(host, port, count, 'close', 'close', 'close')
 		];
 
 		child.on('exit', function (code) {
@@ -143,18 +157,8 @@ describe('Shutting down', function () {
 			done();
 		});
 
-		async.parallel(tests, function (error) {
+		async.series(tests, function (error) {
 			assert.ifError(error);
-
-			// allow the server a bit of time to process the incoming requests, then send a kill signal to shut down
-			// the application
-
-			setTimeout(function () {
-				shutdownStart = process.hrtime();
-				process.kill(child.pid);
-			}, 250);
-
-			// from here, the child's on('exit') will take over
 		});
 	});
 });
