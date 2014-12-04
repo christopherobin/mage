@@ -11,7 +11,6 @@ module.exports = function (cb) {
 
 			try {
 				require('./tests/testArchivist.js');
-				require('./tests/testEventManager');
 				require('./tests/testIdent');
 				require('./tests/testLoader.js');
 				require('./tests/testSession.js');

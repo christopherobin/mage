@@ -12,7 +12,6 @@
 	],
 	"local": [
 		"archivist",
-		"eventManager",
 		"ident",
 		"loader",
 		"mage",
@@ -23,7 +22,6 @@
 	"scripts": [
 		"index.js",
 		"tests/testArchivist.js",
-		"tests/testEventManager.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
 		"tests/testSession.js",
