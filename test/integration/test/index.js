@@ -2,6 +2,12 @@ var async = require('async');
 var fs = require('fs');
 var Bomb = require('itd');
 
+var runners = [
+	{ name: 'Browser', run: require('./runners/browser') },
+	{ name: 'Mocha CLI', run: require('./runners/mocha-cli') },
+	{ name: 'Mocha API', run: require('./runners/mocha-embedded') }
+];
+
 function unlink(path) {
 	try {
 		fs.unlinkSync(path);
@@ -126,12 +132,6 @@ exports.start = function (project) {
 			console.error(error);
 			return exit(1);
 		}
-
-		var runners = [
-			{ name: 'Browser', run: require('./runners/browser') },
-			{ name: 'Mocha CLI', run: require('./runners/mocha-cli') },
-			{ name: 'Mocha API', run: require('./runners/mocha-embedded') }
-		];
 
 		if (!project.autorun) {
 			var httpServer = project.mage.core.httpServer || project.mage.core.msgServer.getHttpServer();

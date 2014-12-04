@@ -38,9 +38,99 @@ describe('Application lifecycle', function () {
 });
 
 
+function parsePayload(data) {
+	data = data ? data.split('\n') : [];
+
+	var result = {
+		header: {},
+		body: null,
+		status: 0,
+		corrupt: false
+	};
+
+	var body = '';
+	var part = 'header';
+	var m;
+
+	if (data[0]) {
+		m = data[0].match(/^HTTP\/(\d+\.\d+) (\d+)/);
+		if (m) {
+			result.httpVersion = m[1];
+			result.status = parseInt(m[2], 10);
+		}
+	}
+
+	for (var i = 1; i < data.length; i += 1) {
+		var line = data[i];
+
+		if (part === 'header') {
+			line = line.trim();
+
+			if (line === '') {
+				part = 'body';
+			} else {
+				m = line.match(/^(.+?): (.+)$/);
+				if (m) {
+					result.header[m[1].trim().toLowerCase()] = m[2].trim();
+				}
+			}
+		} else {
+			if (body) {
+				body += '\n' + line;
+			} else {
+				body = line;
+			}
+		}
+	}
+
+
+	// process chunked body
+
+	if (result.header['transfer-encoding'] && result.header['transfer-encoding'].toLowerCase() === 'chunked') {
+		while (body) {
+			m = body.match(/^[0-9a-f]+\r?\n/im);
+			if (!m) {
+				// incomplete download?
+				result.corrupt = true;
+				break;
+			}
+
+			var chunkSize = parseInt(m[0], 16);
+			if (chunkSize === 0) {
+				// successful download
+				break;
+			}
+
+			// drop chunk size from body
+
+			body = body.substr(m[0].length);
+
+			if (body) {
+				if (result.body) {
+					result.body += body.substr(0, chunkSize);
+				} else {
+					result.body = body.substr(0, chunkSize);
+				}
+			}
+		}
+	} else if (result.header['content-length']) {
+		if (body) {
+			var length = parseInt(result.header['content-length'], 10);
+
+			result.corrupt = (Buffer.byteSize(body) !== length);
+			result.body = body;
+		} else {
+			result.corrupt = true;
+		}
+	}
+
+	return result;
+}
+
+
 // helper function that creates a function that makes the request
 
-function createRequestTester(host, port, fnCounter, type, reqConnType, expConnType) {
+function createRequestTester(host, port, fnCounter, type, reqConnType) {
 	return function (callback) {
 		var socket = net.connect({ host: host, port: port });
 
@@ -59,21 +149,17 @@ function createRequestTester(host, port, fnCounter, type, reqConnType, expConnTy
 		socket.setEncoding('utf8');
 
 		socket.on('error', function (error) {
-			// this is generally good
+			// this is generally good, we listen to prevent uncaught exceptions (yay, Node.js EventEmitter)
 		});
 
 		socket.on('data', function (str) {
-			data += str.toLowerCase();
+			data += str;
 		});
 
 		socket.on('close', function () {
-			if (expConnType === 'keep-alive') {
-				assert.strictEqual(data.indexOf('connection: close'), -1, type + ' connection type should not be "close"');
-			} else if (expConnType === 'close') {
-				assert.notEqual(data.indexOf('connection: close'), -1, type + ' connection type should be "close"');
-			}
+			var response = parsePayload(data);
 
-			fnCounter(type);
+			fnCounter(type, response);
 		});
 	};
 }
@@ -83,6 +169,8 @@ describe('Shutting down', function () {
 	var child, host, port;
 
 	before(function (done) {
+		this.timeout(10000);
+
 		child = spawn('node', ['.', '-v'], { cwd: cwd });
 
 		child.stderr.setEncoding('utf8');
@@ -114,51 +202,85 @@ describe('Shutting down', function () {
 		var shutdownStart;
 		var closedSockets = 0;
 
-		var durations = {
-			void: [2, 10],
-			headers: [2, 10],
-			somedata: [2, 10],
-			alldata: [0, 1],
-			close: undefined
+		function assertDuration(type, from, to) {
+			if (!shutdownStart) {
+				return;
+			}
+
+			var diff = process.hrtime(shutdownStart);
+			var duration = diff[0] + diff[1] / 1e9; // in seconds
+
+			assert(duration >= from, 'Socket ' + type + ' closed too soon');
+			assert(duration <= to, 'Socket ' + type + ' closed too late');
+		}
+
+		// check headers
+
+		var testFns = {
+			void: function (response) {
+				assert.strictEqual(response.status, 500);
+				assert.equal(response.header.connection, 'close');
+				assert.strictEqual(response.body, null);
+				assert.strictEqual(response.corrupt, false);
+				assertDuration('void', 2, 10);
+			},
+			headers: function (response) {
+				// no response
+				assert.strictEqual(response.status, 0);
+				assert.strictEqual(response.body, null);
+				assert.strictEqual(response.corrupt, false);
+				assertDuration('headers', 2, 10);
+			},
+			somedata: function (response) {
+				assert.strictEqual(response.status, 200);
+				assert.notEqual(response.header.connection, 'close');
+				assert.strictEqual(response.corrupt, true);
+				assertDuration('somedata', 2, 10);
+			},
+			alldata: function (response) {
+				assert.strictEqual(response.status, 200);
+				assert.notEqual(response.header.connection, 'close');
+				assert.strictEqual(response.body, 'KeepAlive');
+				assert.strictEqual(response.corrupt, false);
+				assertDuration('alldata', 0, 1);
+			},
+			close: function (response) {
+				assert.strictEqual(response.status, 200);
+				assert.equal(response.header.connection, 'close');
+				assert.strictEqual(response.body, 'Closed');
+				assert.strictEqual(response.corrupt, false);
+				assert.strictEqual(shutdownStart, undefined);
+			}
 		};
 
-		function count(name) {
+		function count(type, response) {
 			closedSockets += 1;
 
-			var expected = durations[name];
-
-			if (expected === undefined) {
-				// must be before shutdown
-				assert.strictEqual(shutdownStart, undefined);
-
-				shutdownStart = process.hrtime();
-				process.kill(child.pid);
-			} else {
-				var diff = process.hrtime(shutdownStart);
-				var duration = diff[0] + diff[1] / 1e9; // in seconds
-
-				assert(duration >= expected[0], 'Socket ' + name + ' closed too soon');
-				assert(duration <= expected[1], 'Socket ' + name + ' closed too late');
-			}
+			testFns[type](response);
 		}
 
 		var tests = [
-			createRequestTester(host, port, count, 'void', 'keep-alive', 'close'),
-			createRequestTester(host, port, count, 'headers', 'keep-alive', 'keep-alive'),
-			createRequestTester(host, port, count, 'somedata', 'keep-alive', 'keep-alive'),
-			createRequestTester(host, port, count, 'alldata', 'keep-alive', 'keep-alive'),
-			createRequestTester(host, port, count, 'close', 'close', 'close')
+			createRequestTester(host, port, count, 'void', 'keep-alive'),
+			createRequestTester(host, port, count, 'headers', 'keep-alive'),
+			createRequestTester(host, port, count, 'somedata', 'keep-alive'),
+			createRequestTester(host, port, count, 'alldata', 'keep-alive'),
+			createRequestTester(host, port, count, 'close', 'close')
 		];
 
 		child.on('exit', function (code) {
 			assert.strictEqual(code, 0);
-			assert.strictEqual(closedSockets, Object.keys(durations).length);
+			assert.strictEqual(closedSockets, tests.length);
 
 			done();
 		});
 
 		async.series(tests, function (error) {
 			assert.ifError(error);
+
+			setTimeout(function () {
+				shutdownStart = process.hrtime();
+				process.kill(child.pid);
+			}, 250);
 		});
 	});
 });
