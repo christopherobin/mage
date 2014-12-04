@@ -131,3 +131,14 @@ archivist:
         - client
         - volatileVault
         - userVault
+
+module:
+    ident:
+        engines:
+            mageUsernames:
+                type: userpass
+                saltSize: 32
+                config:
+                    hmac:
+                        algorithm: sha256
+                        key: somelongkeythatnoonewillguess

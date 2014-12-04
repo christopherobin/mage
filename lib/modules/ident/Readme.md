@@ -15,6 +15,7 @@ The first step to making engines available to your game is through configuration
 ```yaml
 module:
     ident:
+        #topic: ident # This is the topic archivist will use for the user data.
         engines:
             # Configuration for all the engines we want to use
 
@@ -34,6 +35,22 @@ module:
 The example above shows you all patterns for authentication. Feel free to name the engines anything
 you want. See the individual [engines](#engines)' documentation for more details on how to configure
 them.
+
+You'll need to define the topic API in `lib/archivist/lindex.js` a typical API would be:
+
+``` javascript
+exports.ident = {
+	index: ['userId'],
+	vaults: {
+		client: {
+			shard: function (value) {
+				return value.index.userId;
+			}
+		},
+		userVault: {}
+	}
+};
+```
 
 ## Engines
 
