@@ -38,7 +38,7 @@ describe('Application lifecycle', function () {
 });
 
 
-function parsePayload(data) {
+function parseHttpResponse(data) {
 	data = data ? data.split('\n') : [];
 
 	var result = {
@@ -157,7 +157,7 @@ function createRequestTester(host, port, fnCounter, type, reqConnType) {
 		});
 
 		socket.on('close', function () {
-			var response = parsePayload(data);
+			var response = parseHttpResponse(data);
 
 			fnCounter(type, response);
 		});
@@ -203,10 +203,6 @@ describe('Shutting down', function () {
 		var closedSockets = 0;
 
 		function assertDuration(type, from, to) {
-			if (!shutdownStart) {
-				return;
-			}
-
 			var diff = process.hrtime(shutdownStart);
 			var duration = diff[0] + diff[1] / 1e9; // in seconds
 
