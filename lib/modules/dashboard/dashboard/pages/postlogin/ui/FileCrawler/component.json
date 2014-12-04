@@ -3,14 +3,9 @@
 	"description": "File Crawler UI element",
 	"dependencies": {
 		"component/emitter": "1.1.3",
-		"component/inherit": "0.0.3"
+		"component/inherit": "0.0.3",
+		"mage/mage.js": "0.1.0"
 	},
-	"local": [
-		"mage"
-	],
-	"paths": [
-		"../../../../../../.."
-	],
 	"scripts": [
 		"index.js"
 	]

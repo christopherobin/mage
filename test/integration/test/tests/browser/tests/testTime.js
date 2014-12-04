@@ -4,7 +4,7 @@ describe('Time module', function () {
 	var mage;
 
 	before(function (done) {
-		mage = require('mage');
+		mage = require('mage.js');
 
 		mage.eventManager.once('io.error', function (path) {
 			throw path;

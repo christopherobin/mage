@@ -5,7 +5,7 @@ describe('Ident module', function () {
 	var mage;
 
 	before(function (done) {
-		mage = require('mage');
+		mage = require('mage.js');
 
 		mage.useModules(require, 'ident', 'user');
 

@@ -3,16 +3,15 @@
 	"description": "Archivist tool",
 	"dependencies": {
 		"component/escape-html": "1.0.0",
-		"mage/loader.js": "0.1.2"
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
 	},
 	"local": [
-		"mage",
 		"archivist",
 		"DocEditor"
 	],
 	"paths": [
 		"../../../..",
-		"../../../../..",
 		"../../../../dashboard/dashboard/pages/postlogin/ui"
 	],
 	"scripts": [
