@@ -135,7 +135,7 @@ else
 endif
 
 test-unit:
-	$(BIN)/mocha -R spec --recursive $(TEST_UNIT)
+	NODE_ENV="$(NODE_ENV),unit-tests" $(BIN)/mocha -R spec --recursive $(TEST_UNIT)
 
 test-integration:
 	@echo Running integration tests

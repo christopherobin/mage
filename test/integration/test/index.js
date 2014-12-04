@@ -29,13 +29,13 @@ function before() {
 	fs.symlinkSync('../', './node_modules/mage', 'dir');
 }
 
-exports.before = before;
-
 function after() {
 	cleanUp();
 }
 
+exports.before = before;
 exports.after = after;
+
 
 exports.start = function (project) {
 	function exit(exitCode) {
@@ -51,7 +51,7 @@ exports.start = function (project) {
 	bomb.on('exploded', function (code, duration, reason) {
 		switch (reason) {
 		case 'timeOut':
-			console.error('Step: ' + code + ' failed to complete in' + duration + 'msec');
+			console.error('Step: ' + code + ' failed to complete in ' + duration + ' msec');
 			break;
 		case 'wrongCode':
 			console.error('Step: ' + code + ' completed while ' + bomb.code + ' was active');
