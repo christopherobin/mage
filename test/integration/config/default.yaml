@@ -34,12 +34,13 @@ logging:
 module:
     ident:
         engines:
-            testEngine:
+            mageUsernames:
                 type: userpass
-                access: admin
+                saltSize: 32
                 config:
-                    topic: testEngine
-                    hash: sha1
+                    hmac:
+                        algorithm: sha256
+                        key: somelongkeythatnoonewillguess
 
 server:
     clientHost:

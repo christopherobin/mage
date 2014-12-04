@@ -24,9 +24,9 @@
 		"tests/testArchivist.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
+		"tests/testServerEvents.js",
 		"tests/testSession.js",
-		"tests/testWebApp.js",
 		"tests/testTime.js",
-		"tests/testServerEvents.js"
+		"tests/testWebApp.js"
 	]
 }
