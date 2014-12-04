@@ -3,13 +3,13 @@
 	"description": "MAGE game development platform for Node.js",
 	"dependencies": {
 		"component/emitter": "1.1.3",
-		"component/inherit": "0.0.3"
+		"component/inherit": "0.0.3",
+		"mage/event-manager.js": "0.1.1"
 	},
 	"local": [
 		"loader",
 		"msgServer",
-		"httpServer",
-		"eventManager"
+		"httpServer"
 	],
 	"paths": [
 		"../"
