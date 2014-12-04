@@ -13,7 +13,6 @@
 	],
 	"local": [
 		"archivist",
-		"eventManager",
 		"ident",
 		"mage",
 		"session",
@@ -23,11 +22,11 @@
 	"scripts": [
 		"index.js",
 		"tests/testArchivist.js",
-		"tests/testEventManager.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
 		"tests/testSession.js",
 		"tests/testWebApp.js",
-		"tests/testTime.js"
+		"tests/testTime.js",
+		"tests/testServerEvents.js"
 	]
 }

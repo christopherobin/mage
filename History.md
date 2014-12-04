@@ -3,20 +3,22 @@
 
 ## vNEXT - ??? Cat
 
-### MAGE components ***Breaking Changes***
+### MAGE components ***MAJOR BREAKING CHANGES***
 
 We're moving existing client side code into individual components in [the MAGE organization](https://github.com/mage).
 This will require you to modify your existing code to take all MAGE components out of the local
-section in your component.json files and replace them with the external MAGE components. To start
-with, we will be moving loader to [mage/loader.js](https://github.com/mage/loader.js).
+section in your component.json files and replace them with the external MAGE components.
+
+* eventManager: [mage/eventManager.js](https://github.com/mage/event-manager.js)
+* loader: [mage/loader.js](https://github.com/mage/loader.js)
 
 ### Dependency Updates
-
-| dependency    | from  | to    | changes                                                                      |
-|---------------|-------|-------|------------------------------------------------------------------------------|
-| wizcorp-timer |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0)     |
-| mage-loader   |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/v0.1.2)       |
-| cachepuncher  | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/v0.1.3) |
+| dependency         | from  | to    | changes                                                                      |
+|--------------------|-------|-------|------------------------------------------------------------------------------|
+| cachepuncher       | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/v0.1.3) |
+| mage-event-manager |       | 0.1.1 | [Release notes](https://github.com/mage/event-manager.js/releases/tag/0.1.1) |
+| mage-loader        |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.1.2)        |
+| wizcorp-timer      |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/0.2.0)      |
 
 ### Miscellaneous Changes
 
