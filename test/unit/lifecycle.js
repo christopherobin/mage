@@ -88,9 +88,9 @@ function parseHttpResponse(data) {
 
 	if (result.header['transfer-encoding'] && result.header['transfer-encoding'].toLowerCase() === 'chunked') {
 		while (body) {
-			m = body.match(/^[0-9a-f]+\r?\n/im);
+			m = body.match(/^\r?\n?[0-9a-f]+\r?\n/im);
 			if (!m) {
-				// incomplete download?
+				// incomplete or corrupt download
 				result.corrupt = true;
 				break;
 			}
@@ -106,11 +106,16 @@ function parseHttpResponse(data) {
 			body = body.substr(m[0].length);
 
 			if (body) {
+				// note: chunksize is in bytes, so we technically should be using Buffer objects.
+				// for the sake of this test however, we don't use multibyte characters and we should be fine.
+
 				if (result.body) {
 					result.body += body.substr(0, chunkSize);
 				} else {
 					result.body = body.substr(0, chunkSize);
 				}
+
+				body = body.substr(chunkSize);
 			}
 		}
 	} else if (result.header['content-length']) {
@@ -230,6 +235,7 @@ describe('Shutting down', function () {
 			somedata: function (response) {
 				assert.strictEqual(response.status, 200);
 				assert.notEqual(response.header.connection, 'close');
+				assert.strictEqual(response.body, 'Some Fragmented Data');
 				assert.strictEqual(response.corrupt, true);
 				assertDuration('somedata', 2, 10);
 			},
