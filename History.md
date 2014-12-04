@@ -3,17 +3,28 @@
 
 ## vNEXT - ??? Cat
 
-### Dependency Updates
+### MAGE components ***MAJOR BREAKING CHANGES***
 
-| dependency         | from | to    | changes                                                                       |
-|--------------------|------|-------|-------------------------------------------------------------------------------|
-| wizcorp-timer      |      | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/v0.2.0)      |
-| mage-event-manager |      | 0.1.1 | [Release notes](https://github.com/mage/event-manager.js/releases/tag/v0.1.1) |
+We're moving existing client side code into individual components in [the MAGE organization](https://github.com/mage).
+This will require you to modify your existing code to take all MAGE components out of the local
+section in your component.json files and replace them with the external MAGE components.
+
+* eventManager: [mage/eventManager.js](https://github.com/mage/event-manager.js)
+* loader: [mage/loader.js](https://github.com/mage/loader.js)
+
+### Dependency Updates
+| dependency         | from  | to    | changes                                                                      |
+|--------------------|-------|-------|------------------------------------------------------------------------------|
+| cachepuncher       | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/v0.1.3) |
+| mage-event-manager |       | 0.1.1 | [Release notes](https://github.com/mage/event-manager.js/releases/tag/0.1.1) |
+| mage-loader        |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.1.2)        |
+| wizcorp-timer      |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/0.2.0)      |
 
 ### Miscellaneous Changes
 
 * The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
   finds in the folder you provide.
+* make clean now removes installed components.
 * If MAGE doesn't shut down gracefully pressing ctrl+C a second time will cause MAGE to shut down immediately.
 
 ### Bug Fixes

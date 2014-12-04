@@ -166,7 +166,7 @@ define helpCleanup
 	@echo
 	@echo "  make clean             Cleans all dependencies and reports."
 	@echo
-	@echo "  make clean-deps        Cleans node_modules."
+	@echo "  make clean-deps        Cleans node_modules and components."
 	@echo "  make clean-report      Removes all reports."
 	@echo
 endef
@@ -177,6 +177,7 @@ clean: clean-deps clean-report
 
 clean-deps:
 	@git ls-files node_modules --error-unmatch > /dev/null 2>&1 && echo "Not removing node_modules from repo" || echo "Removing node_modules" && rm -rf node_modules
+	@git ls-files components --error-unmatch > /dev/null 2>&1 && echo "Not removing components from repo" || echo "Removing components" && rm -rf components
 
 clean-report:
 	rm -rf "$(COVERAGE_REPORT)"

@@ -1,9 +1,11 @@
 {
 	"name": "home",
 	"description": "Home page for the MAGE dashboard.",
+	"dependencies": {
+		"mage/loader.js": "0.1.2"
+	},
 	"local": [
-		"mage",
-		"loader"
+		"mage"
 	],
 	"paths": [
 		"../../../../.."

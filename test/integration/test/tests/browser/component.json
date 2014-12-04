@@ -2,6 +2,7 @@
 	"name": "browser",
 	"description": "Browser integration tests",
 	"dependencies": {
+		"mage/loader.js": "0.1.2",
 		"timoxley/assert": "*",
 		"Wizcorp/node-tomes": "*"
 	},
@@ -13,7 +14,6 @@
 	"local": [
 		"archivist",
 		"ident",
-		"loader",
 		"mage",
 		"session",
 		"time",
