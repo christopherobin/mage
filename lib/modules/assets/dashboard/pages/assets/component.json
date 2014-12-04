@@ -1,8 +1,10 @@
 {
 	"name": "assets",
+	"dependencies": {
+		"mage/loader.js": "0.1.2"
+	},
 	"local": [
 		"mage",
-		"loader",
 		"AssetPreviewer",
 		"forms",
 		"format"
