@@ -20,9 +20,3 @@ server:
         expose: null
         closeTimeout: 2000
     cluster: false
-    mmrp:
-        bind:
-            host: "*"
-            port: "*"
-    serviceDiscovery:
-        engine: single
