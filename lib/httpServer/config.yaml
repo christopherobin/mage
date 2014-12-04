@@ -1,5 +1,6 @@
 clientHost:
     protocol: http
+    closeTimeout: 5000
     transports:
         longpolling:
             heartbeat: 120
