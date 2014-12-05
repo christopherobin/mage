@@ -5,7 +5,7 @@ describe('Archivist', function () {
 	var mage, userId;
 
 	before(function (done) {
-		mage = require('mage.js');
+		mage = require('mage');
 
 		mage.useModules(require, 'archivist', 'session', 'user');
 

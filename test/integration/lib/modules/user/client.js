@@ -1,4 +1,4 @@
-var mage = require('mage.js');
+var mage = require('mage');
 
 var tUser = {};
 

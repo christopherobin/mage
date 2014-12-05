@@ -4,7 +4,7 @@ describe('Server events', function () {
 	var mage;
 
 	before(function (done) {
-		mage = require('mage.js');
+		mage = require('mage');
 		mage.session.loginAnonymous('admin', function (error) {
 			assert.ifError(error);
 			assert(mage.session.getKey());

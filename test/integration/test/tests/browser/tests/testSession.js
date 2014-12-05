@@ -4,7 +4,7 @@ describe('Session module', function () {
 	var mage;
 
 	before(function (done) {
-		mage = require('mage.js');
+		mage = require('mage');
 
 		mage.eventManager.on('io.error', function (path) {
 			throw path;

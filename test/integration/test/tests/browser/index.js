@@ -1,6 +1,6 @@
 module.exports = function (cb) {
 	describe('MAGE', function () {
-		var mage = window.mage = require('mage.js');
+		var mage = window.mage = require('mage');
 
 		mage.httpServer.cmdMode = 'free';
 
