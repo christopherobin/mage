@@ -6,11 +6,9 @@
 		"component/inherit": "0.0.3",
 		"mage/event-manager.js": "0.1.1",
 		"mage/http-server.js": "0.1.0",
-		"mage/loader.js": "0.1.2"
+		"mage/loader.js": "0.1.2",
+		"mage/message-server.js": "0.1.0"
 	},
-	"local": [
-		"msgServer"
-	],
 	"paths": [
 		"../"
 	],
