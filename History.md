@@ -1,6 +1,9 @@
 # Release history
 
 
+## vNEXT - ??? Cat
+
+
 ## v0.44.0 - Cup Noodle Cat
 
 ### MAGE components ***MAJOR BREAKING CHANGES***
