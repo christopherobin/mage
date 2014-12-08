@@ -2,10 +2,10 @@
 	"name": "login",
 	"description": "Login screen for MAGE dashboard.",
 	"dependencies": {
-		"mage/loader.js": "0.1.2"
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
 	},
 	"local": [
-		"mage",
 		"logger",
 		"assets",
 		"session",
@@ -13,7 +13,6 @@
 		"ident"
 	],
 	"paths": [
-		"../../../../..",
 		"../../../../../modules"
 	],
 	"styles": [
