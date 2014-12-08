@@ -1,13 +1,10 @@
 {
 	"name": "home",
 	"description": "Home page for the MAGE dashboard.",
-	"local": [
-		"mage",
-		"loader"
-	],
-	"paths": [
-		"../../../../.."
-	],
+	"dependencies": {
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
+	},
 	"templates": [
 		"page.html"
 	],

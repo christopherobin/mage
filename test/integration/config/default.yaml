@@ -34,15 +34,22 @@ logging:
 module:
     ident:
         engines:
-            testEngine:
+            mageUsernames:
                 type: userpass
-                access: admin
+                saltSize: 32
                 config:
-                    topic: testEngine
-                    hash: sha1
+                    hmac:
+                        algorithm: sha256
+                        key: somelongkeythatnoonewillguess
 
 server:
     clientHost:
         bind:
             port: 9990
     cluster: false
+    mmrp:
+        bind:
+            host: "*"
+            port: "*"
+    serviceDiscovery:
+        engine: single

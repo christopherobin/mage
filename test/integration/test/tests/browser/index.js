@@ -1,6 +1,6 @@
 module.exports = function (cb) {
 	describe('MAGE', function () {
-		var mage = require('mage');
+		var mage = window.mage = require('mage');
 
 		mage.httpServer.cmdMode = 'free';
 
@@ -11,10 +11,12 @@ module.exports = function (cb) {
 
 			try {
 				require('./tests/testArchivist.js');
-				require('./tests/testEventManager');
 				require('./tests/testIdent');
 				require('./tests/testLoader.js');
 				require('./tests/testSession.js');
+				require('./tests/testWebApp.js');
+				require('./tests/testTime.js');
+				require('./tests/testServerEvents.js');
 			} catch (e) {
 				return cb(e);
 			}

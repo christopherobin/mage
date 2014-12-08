@@ -1,9 +1,11 @@
 {
 	"name": "postlogin",
 	"description": "Page that holds some crucial libraries (UI) that are needed once logged in.",
+	"dependencies": {
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
+	},
 	"local": [
-		"mage",
-		"loader",
 		"Router",
 		"Sidebar",
 		"clipboard",
@@ -13,7 +15,6 @@
 		"format"
 	],
 	"paths": [
-		"../../../../..",
 		"ui"
 	],
 	"templates": [

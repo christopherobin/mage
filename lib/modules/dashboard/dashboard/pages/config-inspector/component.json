@@ -1,20 +1,15 @@
 {
 	"name": "config-inspector",
 	"description": "Configuration inspector",
-	"local": [
-		"mage",
-		"loader"
-	],
 	"dependencies": {
-		"component/escape-html": "1.0.0"
+		"component/escape-html": "1.0.0",
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
 	},
-	"paths": [
-		"../../../../.."
+	"scripts": [
+		"index.js"
 	],
 	"templates": [
 		"page.html"
-	],
-	"scripts": [
-		"index.js"
 	]
 }

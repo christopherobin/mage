@@ -2,14 +2,9 @@
 	"name": "dashboard",
 	"description": "Dashboard module for tool creation and management",
 	"dependencies": {
-		"component/emitter": "1.1.3"
+		"component/emitter": "1.1.3",
+		"mage/mage.js": "0.1.0"
 	},
-	"local": [
-		"mage"
-	],
-	"paths": [
-		"../.."
-	],
 	"scripts": [
 		"client.js"
 	],

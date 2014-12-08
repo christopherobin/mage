@@ -1,7 +1,7 @@
 var assert = require('assert');
 
 describe('Loader', function () {
-	var loader = require('loader');
+	var loader = require('mage-loader.js');
 	var Package = loader.Package;
 
 	afterEach(function () {

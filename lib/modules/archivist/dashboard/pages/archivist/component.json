@@ -1,27 +1,26 @@
 {
 	"name": "archivist",
 	"description": "Archivist tool",
+	"dependencies": {
+		"component/escape-html": "1.0.0",
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
+	},
 	"local": [
-		"mage",
-		"loader",
 		"archivist",
 		"DocEditor"
 	],
-	"dependencies": {
-		"component/escape-html": "1.0.0"
-	},
 	"paths": [
 		"../../../..",
-		"../../../../..",
 		"../../../../dashboard/dashboard/pages/postlogin/ui"
+	],
+	"scripts": [
+		"index.js"
 	],
 	"styles": [
 		"styles.css"
 	],
 	"templates": [
 		"page.html"
-	],
-	"scripts": [
-		"index.js"
 	]
 }

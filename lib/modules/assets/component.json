@@ -1,13 +1,10 @@
 {
 	"name": "assets",
 	"description": "Asset manager for MAGE.",
-	"local": [
-		"loader",
-		"mage"
-	],
-	"paths": [
-		"../.."
-	],
+	"dependencies": {
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
+	},
 	"scripts": [
 		"client.js"
 	],

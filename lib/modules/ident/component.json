@@ -1,12 +1,9 @@
 {
 	"name": "ident",
 	"description": "Authentication for MAGE.",
-	"local": [
-		"mage"
-	],
-	"paths": [
-		"../.."
-	],
+	"dependencies": {
+		"mage/mage.js": "0.1.0"
+	},
 	"scripts": [
 		"client.js"
 	],
