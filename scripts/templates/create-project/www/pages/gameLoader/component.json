@@ -1,12 +1,9 @@
 {
 	"name": "gameLoader",
 	"description": "Game's loader page.",
-	"local": [
-		"loader"
-	],
-	"paths": [
-		"../../../node_modules/mage/lib"
-	],
+	"dependencies": {
+		"mage/loader.js": "0.1.2"
+	},
 	"scripts": [
 		"index.js"
 	],

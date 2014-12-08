@@ -1,17 +1,18 @@
 {
 	"name": "landing",
 	"description": "The welcome screen",
+	"dependencies": {
+		"mage/loader.js": "0.1.2",
+		"mage/mage.js": "0.1.0"
+	},
 	"local": [
-		"mage",
-		"loader",
-		"logger",
-		"time",
-		"assets",
 		"archivist",
-		"session"
+		"assets",
+		"logger",
+		"session",
+		"time"
 	],
 	"paths": [
-		"../../../node_modules/mage/lib",
 		"../../../node_modules/mage/lib/modules"
 	],
 	"templates": [
