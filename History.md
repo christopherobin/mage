@@ -1,6 +1,12 @@
 # Release history
 
 
+## v0.44.1 - Ungraceful Cat
+
+### Bug Fixes
+ * Updated the bootstrap app to use the external components.
+
+
 ## v0.44.0 - Cup Noodle Cat
 
 ### MAGE components ***MAJOR BREAKING CHANGES***

@@ -1,2 +1,2 @@
-var pkg = require('loader').getPackage('main');
+var pkg = require('mage-loader.js').getPackage('main');
 pkg.addHtml(require('./page.html'));
