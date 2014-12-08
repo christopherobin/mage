@@ -1,6 +1,6 @@
 // Import the MAGE loader library.
 
-var loader = require('loader');
+var loader = require('mage-loader.js');
 
 
 // Commence downloading and execution of the "landing" package.

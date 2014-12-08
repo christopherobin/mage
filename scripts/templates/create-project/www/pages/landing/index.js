@@ -1,5 +1,5 @@
 var mage = require('mage');
-var mageLoader = require('loader');
+var mageLoader = require('mage-loader.js');
 
 
 /**
@@ -15,11 +15,11 @@ function done(n) {
 
 
 mage.useModules(require,
-	'logger',
-	'time',
-	'assets',
 	'archivist',
-	'session'
+	'assets',
+	'logger',
+	'session',
+	'time'
 );
 
 
