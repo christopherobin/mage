@@ -1,7 +1,7 @@
 # Release history
 
 
-## vNEXT - ??? Cat
+## v0.44.0 - Cup Noodle Cat
 
 ### MAGE components ***MAJOR BREAKING CHANGES***
 
@@ -10,6 +10,7 @@ This will require you to modify your existing code to take all MAGE components o
 section in your component.json files and replace them with the external MAGE components.
 
 * eventManager: [mage/event-manager.js](https://github.com/mage/event-manager.js)
+* httpServer: [mage/http-server.js](https://github.com/mage/http-server.js)
 * loader: [mage/loader.js](https://github.com/mage/loader.js)
 * mage: [mage/mage.js](https://github.com/mage/mage.js)
 * msgServer: [mage/message-server.js](https://github.com/mage/message-server.js)
@@ -17,13 +18,15 @@ section in your component.json files and replace them with the external MAGE com
 ### Dependency Updates
 | dependency              | from  | to    | changes                                                                                |
 |-------------------------|-------|-------|----------------------------------------------------------------------------------------|
-| cachepuncher            | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/v0.1.3)           |
-| mage-event-manager.js   |       | 0.1.1 | [Release notes](https://github.com/mage/event-manager.js/releases/tag/0.1.1)           |
-| mage-loader.js          |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.1.2)                  |
-| mage-message-server.js  |       | 0.1.0 | [Release notes](https://github.com/mage/message-server.js/releases/tag/0.1.0)          |
-| wizcorp-timer.js        |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/0.2.0)                |
+| cachepuncher            | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/0.1.3)            |
 | component-x             |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/component-x/releases/tag/0.1.0)             |
 | component-proxy-install | 0.3.0 | 0.4.1 | [Release notes](https://github.com/Wizcorp/component-proxy-install/releases/tag/0.4.1) |
+| mage-event-manager.js   |       | 0.1.1 | [Release notes](https://github.com/mage/event-manager.js/releases/tag/0.1.1)           |
+| mage-http-server.js     |       | 0.1.0 | [Release notes](https://github.com/mage/http-server.js/releases/tag/0.1.0)             |
+| mage-loader.js          |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.1.2)                  |
+| mage.js                 |       | 0.1.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.1.0)                    |
+| mage-message-server.js  |       | 0.1.0 | [Release notes](https://github.com/mage/message-server.js/releases/tag/0.1.0)          |
+| wizcorp-timer.js        |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/0.2.0)                |
 
 
 ### Miscellaneous Changes
