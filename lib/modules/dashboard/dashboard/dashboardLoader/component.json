@@ -2,7 +2,7 @@
 	"name": "dashboardLoader",
 	"description": "The loader page for MAGE dashboard.",
 	"dependencies": {
-		"mage/loader.js": "0.1.2"
+		"mage/loader.js": "0.2.0"
 	},
 	"scripts": [
 		"index.js"
