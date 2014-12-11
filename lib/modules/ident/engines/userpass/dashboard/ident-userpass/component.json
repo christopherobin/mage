@@ -1,11 +1,12 @@
 {
 	"name": "ident-userpass",
+	"dependencies": {
+		"mage/mage.js": "0.2.0"
+	},
 	"local": [
-		"mage",
 		"forms"
 	],
 	"paths": [
-		"../../../../..",
 		"../../../../dashboard/dashboard/pages/postlogin/ui"
 	],
 	"scripts": [

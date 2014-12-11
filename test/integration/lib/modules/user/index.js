@@ -4,7 +4,7 @@ var uuid = require('node-uuid');
 
 exports.setName = require('./name').set;
 
-var IDENT_ENGINE = 'testEngine';
+var IDENT_ENGINE = 'mageUsernames';
 
 function createUser(state, userId) {
 	var newUser = {

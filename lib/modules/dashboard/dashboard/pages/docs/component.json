@@ -1,13 +1,10 @@
 {
 	"name": "docs",
 	"description": "Documentation page",
-	"local": [
-		"mage",
-		"loader"
-	],
-	"paths": [
-		"../../../../.."
-	],
+	"dependencies": {
+		"mage/loader.js": "0.2.0",
+		"mage/mage.js": "0.2.0"
+	},
 	"styles": [
 		"styles.css"
 	],

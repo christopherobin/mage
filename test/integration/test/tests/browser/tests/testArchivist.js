@@ -1,7 +1,8 @@
 var assert = require('assert');
+var Tome = require('tomes').Tome;
 
 describe('Archivist', function () {
-	var mage;
+	var mage, userId;
 
 	before(function (done) {
 		mage = require('mage');
@@ -17,7 +18,16 @@ describe('Archivist', function () {
 				assert.ifError(error);
 				assert(username);
 
-				mage.user.login(username, password, done);
+				mage.user.login(username, password, function (error, sessionData) {
+					assert.ifError(error);
+					assert(sessionData);
+
+					userId = sessionData.userId;
+
+					assert(userId);
+
+					done();
+				});
 			});
 		});
 	});
@@ -93,6 +103,24 @@ describe('Archivist', function () {
 		});
 	});
 
+	describe('exists', function () {
+		it('returns false for non-existing values', function (done) {
+			mage.archivist.exists('user', { userId: 'abcxyz' }, function (error, exists) {
+				assert.ifError(error);
+				assert.strictEqual(exists, false);
+				done();
+			});
+		});
+
+		it('returns true for existing values', function (done) {
+			mage.archivist.exists('user', { userId: userId }, { maxAge: 0 }, function (error, exists) {
+				assert.ifError(error);
+				assert.strictEqual(exists, true);
+				done();
+			});
+		});
+	});
+
 	describe('list', function () {
 		it('fails bad input', function (done) {
 			mage.archivist.list('user', { userId: {} }, {}, function (error, results) {
@@ -126,9 +154,28 @@ describe('Archivist', function () {
 	});
 
 	describe('cached value', function () {
-		it('get', function (done) {
-			var userId = mage.user.id;
+		it('returns true for existing values', function (done) {
+			mage.archivist.get('user', { userId: userId }, function (error, data) {
+				assert.ifError(error);
+				assert(data);
 
+				function listener() {
+					throw new Error('Server access during what should be a cached-operation');
+				}
+
+				mage.eventManager.on('io.archivist.rawExists', listener);
+
+				mage.archivist.exists('user', { userId: userId }, function (error, exists) {
+					assert.ifError(error);
+					assert.strictEqual(exists, true);
+
+					mage.eventManager.removeListener('io.archivist.rawExists', listener);
+					done();
+				});
+			});
+		});
+
+		it('get', function (done) {
 			mage.archivist.get('user', { userId: userId }, {}, function (error, tUser1) {
 				assert.ifError(error);
 
@@ -142,8 +189,6 @@ describe('Archivist', function () {
 		});
 
 		it('mget', function (done) {
-			var userId = mage.user.id;
-
 			var query = {
 				user: {
 					topic: 'user',
@@ -170,8 +215,29 @@ describe('Archivist', function () {
 				assert.ifError(error);
 
 				assert.equal(mage.user.name, 'Johnny Test');
-
 				done();
+			});
+		});
+	});
+
+	describe('shard tomes', function () {
+		it('Client vault can handle arrayTomes in the shard', function (done) {
+			var tData = Tome.conjure([userId, true, 'asdf']);
+
+			mage.archivist.set('shardTest', { userId: userId }, tData);
+
+			mage.archivist.distribute(function (error) {
+				assert.ifError(error);
+
+				mage.session.loginAsActor(userId, 'user', function (error) {
+					assert.ifError(error);
+					mage.archivist.get('shardTest', { userId: userId }, { optional: true, maxAge: 0 }, function (error, result) {
+						assert.ifError(error);
+						assert.deepEqual(result, tData);
+
+						done();
+					});
+				});
 			});
 		});
 	});

@@ -16,8 +16,7 @@ logging:
 
 server:
     clientHost:
-        bind:
-            file: null
-            port: 0
+        bind: "http://0.0.0.0:0"
         expose: null
+        closeTimeout: 2000
     cluster: false

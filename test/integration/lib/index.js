@@ -41,6 +41,8 @@ function createTest(app) {
 	testPage.registerComponent('mypackage', './www/test/mypackage', { assetMap: true });
 	testPage.routes.push('/test');
 	testPage.routes.push('/');
+
+	app.addIndexPage('xmltest', './www/xmltest/', { context: 'xml', route: 'gadget.xml' });
 }
 
 function mageSetup(cb) {

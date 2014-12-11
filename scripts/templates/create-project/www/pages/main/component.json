@@ -1,12 +1,9 @@
 {
 	"name": "main",
 	"description": "The page that runs the actual game",
-	"local": [
-		"loader"
-	],
-	"paths": [
-		"../../../node_modules/mage/lib"
-	],
+	"dependencies": {
+		"mage/loader.js": "0.1.2"
+	},
 	"templates": [
 		"page.html"
 	],

@@ -17,7 +17,7 @@ describe('commandCenter', function () {
 			it('should default errors to "server"', function (done) {
 				var client = jayson.client.http(clientOptions);
 
-				client.request('test.test-errors', { testType: 'default' }, 1, function (err, response) {
+				client.request('test.errors', { testType: 'default' }, 1, function (err, response) {
 					assert.ifError(err);
 					assert.strictEqual(response.result.errorCode, 'server');
 					done();
@@ -27,7 +27,7 @@ describe('commandCenter', function () {
 			it('should send number errors as string', function (done) {
 				var client = jayson.client.http(clientOptions);
 
-				client.request('test.test-errors', { testType: 'number' }, 1, function (err, response) {
+				client.request('test.errors', { testType: 'number' }, 1, function (err, response) {
 					assert.ifError(err);
 					assert.strictEqual(response.result.errorCode, '0');
 					done();
@@ -37,7 +37,7 @@ describe('commandCenter', function () {
 			it('should send Error objects as string', function (done) {
 				var client = jayson.client.http(clientOptions);
 
-				client.request('test.test-errors', { testType: 'Error' }, 1, function (err, response) {
+				client.request('test.errors', { testType: 'Error' }, 1, function (err, response) {
 					assert.ifError(err);
 					assert.strictEqual(response.result.errorCode, 'This is an Error object');
 					done();
@@ -47,7 +47,7 @@ describe('commandCenter', function () {
 			it('should send assertion errors as string', function (done) {
 				var client = jayson.client.http(clientOptions);
 
-				client.request('test.test-errors', { testType: 'assert' }, 1, function (err, response) {
+				client.request('test.errors', { testType: 'assert' }, 1, function (err, response) {
 					assert.ifError(err);
 					assert.strictEqual(response.result.errorCode, 'assertion failed');
 					done();
@@ -57,7 +57,7 @@ describe('commandCenter', function () {
 			it('should send string errors as string', function (done) {
 				var client = jayson.client.http(clientOptions);
 
-				client.request('test.test-errors', { testType: 'string' }, 1, function (err, response) {
+				client.request('test.errors', { testType: 'string' }, 1, function (err, response) {
 					assert.ifError(err);
 					assert.strictEqual(response.result.errorCode, 'string');
 					done();
@@ -67,7 +67,7 @@ describe('commandCenter', function () {
 			it('should turn object errors into "server"', function (done) {
 				var client = jayson.client.http(clientOptions);
 
-				client.request('test.test-errors', { testType: 'object' }, 1, function (err, response) {
+				client.request('test.errors', { testType: 'object' }, 1, function (err, response) {
 					assert.ifError(err);
 					assert.strictEqual(response.result.errorCode, 'server');
 					done();
@@ -121,7 +121,7 @@ describe('commandCenter', function () {
 				client.options.headers = {};
 				client.options.headers['X-MAGE-SESSION'] = 'invalidSessionKey';
 
-				client.request('test.test', {}, 2, function (err, response) {
+				client.request('test.noArgs', {}, 2, function (err, response) {
 					assert.ifError(err);
 
 					assert.strictEqual(typeof response, 'object');
@@ -141,13 +141,13 @@ describe('commandCenter', function () {
 				client.options.headers['X-MAGE-SESSION'] = 'invalidSessionKey';
 
 				var batch = [
-					client.request('test.test', {}, 3),
-					client.request('test.testwithargs', {
+					client.request('test.noArgs', {}, 3),
+					client.request('test.withArgs', {
 						arg1: 'a',
 						arg2: 'b',
 						arg3: 'c'
 					}, 4),
-					client.request('test.test', {}, 5)
+					client.request('test.noArgs', {}, 5)
 				];
 
 				client.request(batch, function (err, responses) {
@@ -200,7 +200,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should send a notification', function (done) {
-				client.request('test.test', {}, null, function (err, response) {
+				client.request('test.noArgs', {}, null, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -212,7 +212,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should run a command without arguments', function (done) {
-				client.request('test.test', {}, 2, function (err, response) {
+				client.request('test.noArgs', {}, 2, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -230,7 +230,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should not update the object after the respond call', function (done) {
-				client.request('test.test-postupdate', {}, 2, function (err, response) {
+				client.request('test.postUpdate', {}, 2, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -251,7 +251,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should run a command with positional arguments', function (done) {
-				client.request('test.testwithargs', ['a', 'b', 'c'], 2, function (err, response) {
+				client.request('test.withArgs', ['a', 'b', 'c'], 2, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -270,7 +270,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should run a command with positional arguments with one missing', function (done) {
-				client.request('test.testwithargs', ['a', 'b'], 2, function (err, response) {
+				client.request('test.withArgs', ['a', 'b'], 2, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -289,7 +289,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should throw an exception if there are too many args', function (done) {
-				client.request('test.testwithargs', ['a', 'b', 'c', 'd'], 2, function (err, response) {
+				client.request('test.withArgs', ['a', 'b', 'c', 'd'], 2, function (err, response) {
 					if (err) {
 						done(err);
 						return;
@@ -306,7 +306,7 @@ describe('commandCenter', function () {
 			});
 
 			it('should run a command with named parameters', function (done) {
-				client.request('test.testwithargs', {
+				client.request('test.withArgs', {
 					arg1: 'a',
 					arg2: 'b',
 					arg3: 'c'
@@ -330,14 +330,14 @@ describe('commandCenter', function () {
 
 			it('should run a Batch', function (done) {
 				var batch = [
-					client.request('test.test', {}, 3),
-					client.request('test.testwithargs', {
+					client.request('test.noArgs', {}, 3),
+					client.request('test.withArgs', {
 						arg1: 'a',
 						arg2: 'b',
 						arg3: 'c'
 					}, 4),
 					client.request('foobar', {}, 5),      // invalid user command
-					client.request('test.test', {}, null) // notification
+					client.request('test.noArgs', {}, null) // notification
 				];
 				client.request(batch, function (err, responses) {
 					if (err) {

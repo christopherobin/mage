@@ -3,6 +3,58 @@
 
 ## vNEXT - ??? Cat
 
+
+## v0.44.1 - Ungraceful Cat
+
+### Bug Fixes
+ * Updated the bootstrap app to use the external components.
+
+
+## v0.44.0 - Cup Noodle Cat
+
+### MAGE components ***MAJOR BREAKING CHANGES***
+
+We're moving existing client side code into individual components in [the MAGE organization](https://github.com/mage).
+This will require you to modify your existing code to take all MAGE components out of the local
+section in your component.json files and replace them with the external MAGE components.
+
+* eventManager: [mage/event-manager.js](https://github.com/mage/event-manager.js)
+* httpServer: [mage/http-server.js](https://github.com/mage/http-server.js)
+* loader: [mage/loader.js](https://github.com/mage/loader.js)
+* mage: [mage/mage.js](https://github.com/mage/mage.js)
+* msgServer: [mage/message-server.js](https://github.com/mage/message-server.js)
+
+### Dependency Updates
+| dependency              | from  | to    | changes                                                                                |
+|-------------------------|-------|-------|----------------------------------------------------------------------------------------|
+| cachepuncher            | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/0.1.3)            |
+| component-x             |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/component-x/releases/tag/0.1.0)             |
+| component-proxy-install | 0.3.0 | 0.4.1 | [Release notes](https://github.com/Wizcorp/component-proxy-install/releases/tag/0.4.1) |
+| mage-event-manager.js   |       | 0.1.1 | [Release notes](https://github.com/mage/event-manager.js/releases/tag/0.1.1)           |
+| mage-http-server.js     |       | 0.1.0 | [Release notes](https://github.com/mage/http-server.js/releases/tag/0.1.0)             |
+| mage-loader.js          |       | 0.1.2 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.1.2)                  |
+| mage.js                 |       | 0.1.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.1.0)                    |
+| mage-message-server.js  |       | 0.1.0 | [Release notes](https://github.com/mage/message-server.js/releases/tag/0.1.0)          |
+| wizcorp-timer.js        |       | 0.2.0 | [Release notes](https://github.com/Wizcorp/timer.js/releases/tag/0.2.0)                |
+
+
+### Miscellaneous Changes
+
+* The index page builder no longer recursively scans folders looking for HTML files. It now picks the first one it
+  finds in the folder you provide.
+* make clean now removes installed components.
+* If MAGE doesn't shut down gracefully pressing ctrl+C a second time will cause MAGE to shut down immediately.
+* Replaced the official component client with component-x to better handle redirects, errors, and
+  various issues that have been plaguing us for quite a while now.
+
+### Bug Fixes
+
+* MAGE shuts down a bit more gracefully now.
+* The client vault can now handle ArrayTomes in the sharding function.
+
+
+## v0.43.0 - Rollover Cat
+
 ### Dependency Updates
 
 | dependency          | from   | to     | changes                                                                             |
@@ -30,6 +82,13 @@ port. If all three properties existed, MAGE chose the port configuration over th
 an undefined behavior that this string replacement deals with elegantly. The object notation still
 works, but we now advise against using it.
 
+### Archivist.exists
+
+Archivist has gained a new API: `exists(topic, index, cb)` which returns a single boolean indicating
+whether or not a value exists in a vault. This is cheaper in execution than executing a `get`
+operation and then throwing away the value. In the future we will further optimize this operation by
+allowing each vault to implement a specialized `exists` implementation.
+
 ### Miscellaneous Changes
 
 * You may now pass Error objects (including assertion errors) into state.error's first argument.
@@ -39,6 +98,7 @@ works, but we now advise against using it.
 * Client errors that originated in native functions (such as JSON.parse) would not be logged with a stack.
 * Fixed how the SQLite vault was set up and closed, to avoid race conditions.
 * Lingering .sock files are now always deleted on startup (if the app is really not running).
+* State.respond would not allow you to respond falsy values.
 
 
 ## v0.42.0 - Doppelganger Cat

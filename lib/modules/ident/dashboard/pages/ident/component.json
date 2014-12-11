@@ -1,20 +1,21 @@
 {
 	"name": "ident",
+	"dependencies": {
+		"mage/loader.js": "0.2.0",
+		"mage/mage.js": "0.2.0"
+	},
 	"local": [
-		"mage",
-		"loader",
 		"forms",
 		"ident-userpass"
 	],
 	"paths": [
-		"../../../../..",
 		"../../../../dashboard/dashboard/pages/postlogin/ui",
 		"../../../engines/userpass/dashboard"
 	],
-	"templates": [
-		"page.html"
-	],
 	"scripts": [
 		"index.js"
+	],
+	"templates": [
+		"page.html"
 	]
 }

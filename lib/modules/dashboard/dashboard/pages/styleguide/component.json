@@ -1,16 +1,13 @@
 {
 	"name": "styleguide",
 	"description": "MAGE dashboard style guide.",
-	"paths": [
-		"../../../../.."
-	],
-	"local": [
-		"loader"
+	"dependencies": {
+		"mage/loader.js": "0.2.0"
+	},
+	"scripts": [
+		"index.js"
 	],
 	"templates": [
 		"page.html"
-	],
-	"scripts": [
-		"index.js"
 	]
 }

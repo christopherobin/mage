@@ -274,6 +274,9 @@ given, archivist will try to detect one. If you want to store this data for a li
 pass an `expirationTime` (unix timestamp in seconds). If a value already existed, you should expect
 this call to fail.
 
+This call is very similar to a combination of `archivist.exists` followed by `archivist.set` when
+the `exists` value is `false`.
+
 
 ### Getting data
 
@@ -358,6 +361,15 @@ The result is an object map where the keys match the input keys:
 	"c": { "name": "Harry" }
 }
 ```
+
+### Testing existence of data
+
+```js
+archivist.exists(topic, index, function (error, exists) { });
+```
+
+This checks if the value exists in a vault or not. The `exists` boolean will reflect the result of
+this test.
 
 
 ### Overwriting data

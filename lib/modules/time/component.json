@@ -1,8 +1,10 @@
 {
 	"name": "time",
 	"description": "Client/Server time sync module for MAGE.",
+	"dependencies": {
+		"wizcorp/timer.js": "0.2.0"
+	},
 	"scripts": [
-		"Timer.js",
 		"client.js"
 	],
 	"main": "client.js"

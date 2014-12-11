@@ -1,6 +1,7 @@
 {
 	"requireCurlyBraces": ["if", "else", "for", "while", "do", "try", "catch", "finally"],
-	"requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "finally"],
+	"requireSpaceBeforeKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "finally"],
+	"requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "finally", "typeof"],
 	"requireSpaceBeforeBlockStatements": true,
 	"requireParenthesesAroundIIFE": true,
 	"requireSpacesInConditionalExpression": true,
@@ -11,6 +12,7 @@
 	"requireSpacesInNamedFunctionExpression": {
 		"beforeOpeningCurlyBrace": true
 	},
+	"disallowNewlineBeforeBlockStatements": true,
 	"requireBlocksOnNewline": true,
 	"disallowPaddingNewlinesInBlocks": true,
 	"disallowEmptyBlocks": true,
@@ -21,6 +23,7 @@
 	"disallowSpaceAfterObjectKeys": true,
 	"requireCommaBeforeLineBreak": true,
 	"requireOperatorBeforeLineBreak": true,
+	"requireSpaceBeforeObjectValues": true,
 	"disallowSpaceAfterPrefixUnaryOperators": true,
 	"disallowSpaceBeforePostfixUnaryOperators": true,
 	"disallowSpaceBeforeBinaryOperators": [","],
@@ -34,10 +37,12 @@
 		"mark": "'",
 		"escape": false
 	},
+	"validateParameterSeparator": ", ",
 	"validateIndentation": "\t",
 	"disallowMixedSpacesAndTabs": "smart",
 	"disallowTrailingWhitespace": true,
 	"disallowTrailingComma": true,
+	"disallowSpacesInCallExpression": true,
 	"disallowKeywordsOnNewLine": ["else", "catch", "finally"],
 	"maximumLineLength": {
 		"value": 120,

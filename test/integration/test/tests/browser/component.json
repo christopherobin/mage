@@ -2,28 +2,30 @@
 	"name": "browser",
 	"description": "Browser integration tests",
 	"dependencies": {
-		"timoxley/assert": "*"
+		"mage/loader.js": "0.2.0",
+		"mage/mage.js": "0.2.0",
+		"timoxley/assert": "*",
+		"Wizcorp/node-tomes": "0.1.0"
 	},
 	"paths": [
 		"../../../lib/modules",
-		"../../../node_modules/mage/lib",
 		"../../../node_modules/mage/lib/modules"
 	],
 	"local": [
 		"archivist",
-		"eventManager",
 		"ident",
-		"loader",
-		"mage",
 		"session",
+		"time",
 		"user"
 	],
 	"scripts": [
 		"index.js",
 		"tests/testArchivist.js",
-		"tests/testEventManager.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
-		"tests/testSession.js"
+		"tests/testServerEvents.js",
+		"tests/testSession.js",
+		"tests/testTime.js",
+		"tests/testWebApp.js"
 	]
 }
