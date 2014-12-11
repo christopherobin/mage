@@ -1,21 +1,35 @@
 # Message Server
 
-The message server is in charge of message propagation through the network.
+The message server is in charge of message propagation through the network and between the clients and the backend.
 
 
 ## MMRP
 
-The message server uses the MMRP library to ensure communication between the different MAGE
-instances on the network.
+The message server uses the MMRP library to ensure communication between the different MAGE instances on the network.
+In order to find these instances, you need to have [service discovery](../serviceDiscovery/Readme.md) set up.
 
-See the [MMRP documentation](./mmrp/Readme.md) for more information.
+To use MMRP, please configure it to bind to a particular port and pick a network on which it is expected to communicate.
+
+Example:
+
+```yaml
+server:
+    mmrp:
+        bind:
+            host: "*"  # asterisk for 0.0.0.0, or a valid IP address
+            port: "*"  # asterisk for any port, or a valid integer
+        network:
+            - "192.168.2"  # formatted according to https://www.npmjs.com/package/netmask
+```
+
+For more information, please read the [MMRP documentation](./mmrp/Readme.md).
 
 
 ## Message stream
 
 The messages sent by the server inevitably make their way to a client through a message stream.
 
-See the [Message Stream documentation](./msgStream/Readme.md) for more information.
+For more information, please read the [Message Stream documentation](./msgStream/Readme.md).
 
 
 ## Testing your application with AerisCloud and Marathon
@@ -63,4 +77,4 @@ When pushing the application to Marathon, you need to select ports for PORT0 and
 aeriscloud marathon office/jp push -p 80 16001
 ```
 
-[Read more about how to use AerisCloud and Marathon](https://github.com/Wizcorp/AerisCloud/blob/master/docs/walkthrough/marathon.md)
+For more information about using Marathon, please read the [documentation](https://github.com/Wizcorp/AerisCloud/blob/master/docs/walkthrough/marathon.md)

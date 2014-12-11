@@ -6,7 +6,8 @@ MMRP (MAGE Message Relay Protocol) is the messaging layer between node instances
 enable communication between multiple MAGE instances and between the different node processes run by
 MAGE. In the end, it allows messages to flow from one user to another.
 
-Imagine a network set up like the following, where 3 servers each host a process-cluster.
+Imagine a network set up like the following, where 3 servers each host a
+[process-cluster](http://nodejs.org/docs/latest/api/cluster.html).
 
 ```
  Cluster 1                Cluster 2                Cluster 3
