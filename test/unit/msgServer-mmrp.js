@@ -40,7 +40,7 @@ function createUri(port) {
 
 
 describe('MMRP', function () {
-	describe('single node network', function () {
+	describe('relay-client in multi-relay network', function () {
 		function createNetwork(relayCount) {
 			relayCount = relayCount || 5;
 
@@ -98,7 +98,22 @@ describe('MMRP', function () {
 			});
 		});
 
-		it('sends a message from one client to another relay', function (done) {
+		it('sends a message from one client-relay to itself', function (done) {
+			var relays = createNetwork();
+			announceNetwork(relays, function () {
+				var a = relays[0];
+
+				a.on('delivery.self', function (envelope) {
+					assert.strictEqual(envelope.messages[0].toString(), 'hello');
+					destroyNetwork(relays);
+					done();
+				});
+
+				a.send(new Envelope('self', 'hello', [a.identity]));
+			});
+		});
+
+		it('sends a message from one client-relay to another', function (done) {
 			var relays = createNetwork();
 			announceNetwork(relays, function () {
 				var a = relays[0];
@@ -141,7 +156,7 @@ describe('MMRP', function () {
 		});
 	});
 
-	describe('clustered network', function () {
+	describe('multi-client in multi-relay network', function () {
 		function createNetwork(relayCount, clientCount) {
 			relayCount = relayCount || 4;
 			clientCount = clientCount || 4;
