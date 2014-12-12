@@ -6,11 +6,11 @@
 
 The message server has been rewritten from the ground up. The new architecture should lay the groundwork for future
 releases of MAGE that will often be focussed on how MAGE communicates with the frontend. Externalizing the web frontend
-(as you witnessed in v0.44.0 was the first major step in that direction).
+(as you witnessed in v0.44.0) was the first major step in that direction.
 
 So what parts got a major update?
 
-- MMRP (MAGE Message Relay Protocol)
+- MMRP (MAGE Message Relay Protocol, which gets messages from node to node)
 - Message Stream (the part that gets the messages to your endusers)
 - Message Store (the cache that keeps unreceived messages around until delivered)
 - Message Server (the small library that couples the three systems above)
@@ -27,9 +27,9 @@ changes:
 
 These are some of the things we will be working on in the future, based on the work that has been done so far.
 
-- Additional RPC protocol support (eg: REST, TCP, Protobuf, other strongly typed protocols).
-- Additional transport protocols (eg: SPDY, UDP).
-- Combining the user command communication with the message stream communication.
+- Additional RPC protocol support (eg: REST, Protobuf, other strongly typed protocols).
+- Additional transport protocols (eg: SPDY, TCP, UDP).
+- Combining the user command communication with the message stream communication (one less connection).
 - Pub/Sub support (useful to implement rooms for users).
 
 
