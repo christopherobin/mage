@@ -1,19 +1,50 @@
 # Release history
 
-
 ## vNEXT - ??? Cat
+
+### Message Server
+
+The message server has been rewritten from the ground up. The new architecture should lay the groundwork for future
+releases of MAGE that will often be focussed on how MAGE communicates with the frontend. Externalizing the web frontend
+(as you witnessed in v0.44.0 was the first major step in that direction).
+
+So what parts got a major update?
+
+- MMRP (MAGE Message Relay Protocol)
+- Message Stream (the part that gets the messages to your endusers)
+- Message Store (the cache that keeps unreceived messages around until delivered)
+- Message Server (the small library that couples the three systems above)
+
+So what changes for you now? Not too much, to be honest. The new system is completely backwards compatible, and you can
+emit and broadcast your events as usual through the `state` object. What does affect you *today* are the following two
+changes:
+
+- `state.broadcast()` was broken and would only deliver events to a single worker per cluster. This has been fixed.
+- WebSocket support has been added, and has become the first choice protocol. When WebSocket support is not available,
+  MAGE will automatically fallback to HTTP long-polling.
+
+**So what's next?**
+
+These are some of the things we will be working on in the future, based on the work that has been done so far.
+
+- Additional RPC protocol support (eg: REST, TCP, Protobuf, other strongly typed protocols).
+- Additional transport protocols (eg: SPDY, UDP).
+- Combining the user command communication with the message stream communication.
+- Pub/Sub support (useful to implement rooms for users).
 
 
 ## v0.44.2 - On Head Cat
 
 ### Bug Fixes
- * The `del` operation for the MySQL Vault was broken because of an incorrect query syntax.
+
+* The `del` operation for the MySQL Vault was broken because of an incorrect query syntax.
 
 
 ## v0.44.1 - Ungraceful Cat
 
 ### Bug Fixes
- * Updated the bootstrap app to use the external components.
+
+* Updated the bootstrap app to use the external components.
 
 
 ## v0.44.0 - Cup Noodle Cat
@@ -31,6 +62,7 @@ section in your component.json files and replace them with the external MAGE com
 * msgServer: [mage/message-server.js](https://github.com/mage/message-server.js)
 
 ### Dependency Updates
+
 | dependency              | from  | to    | changes                                                                                |
 |-------------------------|-------|-------|----------------------------------------------------------------------------------------|
 | cachepuncher            | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/0.1.3)            |
