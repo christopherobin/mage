@@ -1,254 +1,207 @@
 # MMRP
 
-MMRP (MAGE Message Relay Protocol) is the messaging layer between node instances.
-It is used to ensure communication between multiple MAGE instances
-and between the different node processes run by MAGE.
+## General concept
+
+MMRP (MAGE Message Relay Protocol) is the messaging layer between node instances. It is used to
+enable communication between multiple MAGE instances and between the different node processes run by
+MAGE. In the end, it allows messages to flow from one user to another.
+
+Imagine a network set up like the following, where 3 servers each host a
+[process-cluster](http://nodejs.org/docs/latest/api/cluster.html).
 
 ```
-+-----+                  +-----+
-|     |                  |     |
-|  M  +------------------+  M  |
-|     |                  |     |
-+--+--+                  ++---++
-   |                      |   |
-   |                   +--+   +--+
-   |                   |         |
-+--+--+             +--+--+   +--+--+
-|     |             |     |   |     |
-|  W  |             |  W  |   |  W  |
-|     |             |     |   |     |
-+-----+             +-----+   +-----+
+ Cluster 1                Cluster 2                Cluster 3
+  +-----+                  +-----+                  +-----+
+  |     |                  |     |                  |     |
+  |  M  +------------------+  M  +------------------+ M/W |
+  |     |                  |     |                  |     |
+  +--+--+                  ++---++                  +-----+
+     |                      |   |
+     |                   +--+   +--+
+     |                   |         |
+  +--+--+             +--+--+   +--+--+
+  |     |             |     |   |     |
+  |  W  |             |  W  |   |  W  |
+  |     |             |     |   |     |
+  +-----+             +-----+   +-----+
+
 
 M: MAGE master / MMRP relay
 W: MAGE worker / MMRP client
 ```
 
-Each MAGE master will instantiate an MMRP relay, and each worker an MMRP client.
+Each MAGE master will instantiate an MMRP relay, and each worker an MMRP client. If MAGE is running
+in single-node mode (that is, the cluster consists of only a single process), it will instantiate
+MMRP as both a relay and as a client. Through this topology, messages can be sent between all
+processes (or nodes) in the MAGE network.
 
-When the `comm` module of the `msgServer` will send a message,
-the MMRP client will send the message to its MMRP relay.
-The relay will then transfer the message to all the other relays,
-if the recipient is not one of its attached clients.
-If one of the relay detects that the recipient is one of its attached clients,
-it will forward the message to the client.
+MMRP depends on [service discovery](../../serviceDiscovery/Readme.md) to announce relays on the
+network to each process. The protocol and library used to communicate between processes is
+[ZeroMQ](http://zeromq.org/).
 
-This protocol is implemented in the [msgServer](../index.js) module.
 
-## Relay
+## MMRP Nodes
 
-Each relay uses two ZMQ sockets to communicate: a router and a dealer.
+### Node API
 
-The router acts as a server and receives `request` messages,
-the dealer acts as a client and receives `reply` messages.
+#### Construction
 
-### Relay(String identity)
+To get started, you must have access to an MMRP node object, or create one like this:
 
-Create the two ZMQ sockets and assigns the given `identity` to the created sockets.
+```js
+var MmrpNode = mage.core.msgServer.mmrp.MmrpNode;
 
-### relay.close()
+var role = 'relay'; // or 'client', or 'both'
+var cfg = { host: '*', port: '*' };
+var clusterId = require('os').hostname();
 
-Close the ZMQ sockets.
-
-### relay.handlePacket(Meta metadata, Buffer packet, String eventType)
-
-Emit an event or forward the `packet` according to the recipient.
-
-`eventType` can be one of the following:
-* `request`: if the message was received by the router.
-* `reply`: if the message was received by the dealer.
-
-_Note_: Called when the router or the dealer receives a `packet`.
-
-### relay.sendReply(Meta metadata, Buffer packet)
-
-### relay.connect(String addr)
-
-Make the dealer connect to another relay.
-The relay is specified by its address.
-
-### relay.disconnect(String addr)
-
-Make the dealer disconnect from another relay.
-The relay is specified by its address.
-
-### relay.bindSync(String addr)
-
-Make the router bind to the given address.
-
-### relay.unbind(String addr)
-
-_Note_: Not yet implemented.
-
-### Events
-
-#### error: (Error error)
-
-Emitted when an error occurred.
-
-#### message: (Buffer data, String returnPath, Meta metadata)
-
-Emitted when the relay receives a message and it is the destination.
-
-* `data` contains the body of the packet.
-* `returnPath` contains the identity to the relay to which you have to send
-a reply, if the `REPLY_EXPECTED` flag is enabled in `metadata`.
-
-#### request: (String sender, Buffer data, String returnPath, Meta meta)
-
-Emitted when the router receive a message and it has to forward it.
-
-_Note_: Not used.
-
-#### reply: (String sender, Buffer data, String returnPath, Meta meta)
-
-Emitted when the dealer receive a message and it has to forward it.
-
-_Note_: Not used.
-
-## Client
-
-Each client uses a ZMQ socket configured as a dealer.
-
-### Client(String identity)
-
-Create the ZMQ socket and assigns the given `identity` to the created socket.
-
-### client.connect(String uri)
-
-Make the dealer connect to the relay at the given `uri`.
-
-### client.close()
-
-Make the dealer disconnect.
-
-### client.parseMessage(Buffer packet)
-
-Parse the `packet` and emit an event with the parsed message.
-
-_Note_: Called when the dealer receives a `packet`.
-
-### client.send(String addr, Buffer data, Meta metadata)
-
-Send a message to the given address.
-
-### Events
-
-#### error: (Error error)
-
-Emitted when an error occurred.
-
-#### message: (String sendToAddr, data, Meta metadata)
-
-Emitted when the relay receives a message and it is the destination.
-
-* `data` contains the body of the packet.
-* `sendToAddr` contains the address of the recipient.
-
-## Meta
-
-This object contains the metadata related to a packet sent through MMRP.
-The metadata are required to handle serialization and deserialized.
-
-The attributes are stored internally in a `Buffer`.
-The structure is the as follows:
-```
-+--------------+--------+----------+------+------+
-|              |        |          |      |      |
-| dataPosition |  ttl   | dataType |    flags    |
-|    8 bits    | 8 bits |  8 bits  |   16 bits   |
-|              |        |          |      |      |
-+--------------+--------+----------+------+------+
+var node = new MmrpNode(role, cfg, clusterId);
 ```
 
-### meta.dataPosition
+#### node.relayUp(uri, clusterId)
 
-A packet is an array of Buffer.
-The typical structure is a list of addresses, followed by the body and the metadata.
+Notify the node that another relay has become available at a particular URI with a particular
+clusterId. If the node is a relay, it should connect to it. If the node is a client, it should
+connect to it only if it's the relay of the same clusterId as the client.
 
-This attribute allows to know the place of the body inside the packet.
+#### node.relayDown(uri)
 
-Type: 8 bit integer.
+Notify the node that another relay has become unavailable. If we are connected to it, we should use
+this as an advice to disconnect.
 
-### meta.ttl
+#### node.send(envelope, attempts)
 
-Type: 8 bit integer.
+Sends an envelope across the network according to the route inside it. If attempts is passed, the
+node will try to resend the envelope if routing failed. Retrying should normally not be needed, as
+ZeroMQ manages connections and buffers for you.
 
-_Note_: This attribute is not used.
+#### node.broadcast(envelope)
 
-### meta.dataType
+Will broadcast the envelope to every node on the network.
 
-The nature of the content of the related packet.
 
-Type: 8 bit integer.
+### Node events
 
-The supported `dataType` values are:
-* `UNKNOWN`: The default value.
-  The buffer is not modified when using `serialize()` or `deserialize()`.
-* `UTF8STRING`: The `Buffer` will be converted to a `String`
-  when using `serialize()` or `deserialize()`.
-* `JSON`: The `Buffer` will be converted to a `String` (resp. an `Object`)
-  when using `serialize()` (resp. `deserialize()`).
+#### delivery
 
-The available values are stored in the `DATATYPE` constant.
+When an envelope is received, a delivery is always fired, *even* if the envelope is not intended for
+this cluster or even this node in the cluster! It is up to the receiver to decide to act on it or
+not. You can listen for the event based on the type of the envelope that is being delivered.
 
-### meta.flags
+For example, if the type of the envelope is `"my.special.namespace"`, a total of four events will
+be emitted with the envelope as the sole argument, in the following order:
 
-Information about the packet.
-Multiple flags can combined by using bitwise operators.
+- delivery.my.special.namespace
+- delivery.my.special
+- delivery.my
+- delivery
 
-Type: 16 bit integer.
 
-The supported `flags` are:
-* `NONE`: Default value.
-* `REPLY_EXPECTED`: The relays will update the packet to maintain a route,
-  so that a reply will be able to find the final relay
-  where the reply recipient is attached.
-* `AUTO_DESERIALIZE`: The packet will be automatically deserialized by the client.
-* `IS_RESPONSE_PKT`: Mark the packet as a response packet.
-* `DST_ATTAINED`: Not used.
-* `PAYLOAD_MODIFIED`: Not used.
-* `PAYLOAD_CORRUPTED`: Not used.
-* `PAYLOAD_ENCRYPTED`: Not used.
-* `IGNORE`: The packet will not be handled by the relay router.
-  It's used to notify the relay that someone is connected to it.
+## Envelopes
 
-They available values are stored in the `FLAGS` constant.
+MMRP communicates by sending envelopes from node to node. An envelope is a type of object that is
+instantiated by MMRP when it receives one, and you must instantiate yourself when you want to send
+one. The public API for that is described below.
 
-### Meta(Buffer buffer)
 
-Create a new `Meta` object from a `Buffer`.
-This is used to read the metadata of a packet we have just received.
+### Envelope API
 
-### Meta(int ttl, int dataType, int flags)
+#### Construction
 
-Create a new `Meta` object with the given information.
+You can get a hold of the Envelope class through MMRP, and instantiate it as follows.
 
-* `ttl`: Not used.
-* `dataType`: The nature of the content of the related packet.
-* `flags`: Information about the packet.
+```js
+var Envelope = mage.core.msgServer.mmrp.Envelope;
 
-Example:
-``` javascript
-var meta = require('./meta');
-var metadata = new meta.Meta(null, meta.DATATYPE.JSON, meta.FLAGS.REPLY_EXPECTED);
+var type = 'something.i.made.up';
+var message = ['hello', 'world'];
+var route = ['someClusterId', 'someAddressOnThatCluster'];
+var returnRoute = [];
+var flags = ['TRACK_ROUTE'];
+
+var envelope = new Envelope(type, message, route, returnRoute, flags);
 ```
 
-### meta.getBuffer()
+#### To and from ZeroMQ
 
-Return the internal `Buffer`.
+To create an envelope from an array received through ZeroMQ, call:
 
-It's useful to send the `Meta` object over the network.
+```js
+var envelope = Envelope.fromArgs(myArgs);
+```
 
-### meta.deserialize(Bufffer data)
+To turn an envelope into an array that can be sent through ZeroMQ, call:
 
-Deserialize the provided `Buffer`.
+```js
+var args = envelope.toArgs();
+```
 
-It uses the `meta.dataType` attribute to determine how should the `data` be deserialized.
 
-### meta.serialize(Buffer data)
+#### The message
 
-Serialize the provided `Buffer`.
+##### envelope.setMessage(type, message)
 
-It uses the `meta.dataType` attribute to determine how should the `data` be serialized.
+Resets the envelope's type and message, where message is either a string, buffer or an array of
+strings and buffers.
 
-_Note_: This method is not used.
+##### envelope.addMessage(message)
+
+Adds the message to the list of messages currently wrapped inside the envelope. The message must be
+a buffer or a string.
+
+
+#### The route
+
+##### envelope.setRoute(route)
+
+Resets the route of the envelope. The route must be an array, or a string (that becomes a 1-element
+array) or falsy (to empty the route).
+
+##### envelope.consumeRoute(identity)
+
+Removes the identity from the start of the route, if it's there. If no identity is given, the entire
+route is emptied.
+
+##### envelope.routeRemains()
+
+Returns true if there is a route left, false otherwise.
+
+##### envelope.getFinalDestination()
+
+Returns the final address in the route.
+
+
+#### The return route
+
+##### envelope.setReturnRoute(route)
+
+Like the `setRoute(route)` function, and applying the same rules to its only argument, this sets
+the return route of the message. In other words, if we want to send something back to the sender of
+this envelope, we should use this returnRoute.
+
+##### envelope.injectSender(identity)
+
+Prepends an identity to the returnRoute.
+
+##### envelope.getInitialSource()
+
+Returns the envelope's original sender identity.
+
+
+#### Flags
+
+There is currently only 1 flag, namely 'TRACK_ROUTE'. When this flag is active, the returnRoute must
+be kept around in the envelope as it travels across the network.
+
+##### envelope.isFlagged(flag)
+
+Returns true if a flag is turned on for this envelope, false otherwise. The flag may be a string, or
+its integer representation.
+
+##### envelope.getFlags()
+
+Returns an array with string representations of all flags that are turned on.
+
+##### envelope.setFlag(flag)
+
+Turns a flag on.

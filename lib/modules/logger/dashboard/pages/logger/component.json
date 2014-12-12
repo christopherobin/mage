@@ -2,8 +2,8 @@
 	"name": "logger",
 	"description": "Logger tool",
 	"dependencies": {
-		"mage/loader.js": "0.1.2",
-		"mage/mage.js": "0.1.0"
+		"mage/loader.js": "0.2.0",
+		"mage/mage.js": "0.2.0"
 	},
 	"local": [
 		"logger"

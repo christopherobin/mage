@@ -19,7 +19,7 @@
 		"localstash": "0.2.0",
 		"multipart-parser": "0.0.2",
 		"epipebomb": "0.1.1",
-		"ws": "0.4.31",
+		"ws": "0.4.32",
 		"chalk": "0.5.1",
 		"rumplestiltskin": "0.0.6",
 		"tomes": "0.1.0",
@@ -58,7 +58,7 @@
 		"es": "~0.4.4",
 		"node-zookeeper-client": "~0.2.0",
 		"mdns2": "~2.1.4",
-		"zmq": "^2.5.1",
+		"zmq": "^2.8.0",
 		"ldapjs": "0.6.3"
 	},
 	"devDependencies": {
@@ -74,7 +74,7 @@
 		"plato": "0.6.2",
 		"rimraf": "2.2.8",
 		"sqlite3": "3.0.4",
-		"zmq": "^2.5.1"
+		"zmq": "2.8.0"
 	},
 	"main": "lib/mage",
 	"scripts": {
