@@ -1,15 +1,16 @@
 # Release history
 
 
-## vNEXT - ??? Cat
+## v0.44.2 - On Head Cat
+
+### Bug Fixes
+ * The `del` operation for the MySQL Vault was broken because of an incorrect query syntax.
 
 
 ## v0.44.1 - Ungraceful Cat
 
 ### Bug Fixes
  * Updated the bootstrap app to use the external components.
- * The `del` operation for the MySQL Vault was broken because of an incorrect query syntax. The problem has been fixed
-   and an integration test for that operation has been added.
 
 
 ## v0.44.0 - Cup Noodle Cat
