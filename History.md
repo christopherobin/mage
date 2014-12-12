@@ -1,6 +1,12 @@
 # Release history
 
 
+## v0.44.2 - On Head Cat
+
+### Bug Fixes
+ * The `del` operation for the MySQL Vault was broken because of an incorrect query syntax.
+
+
 ## v0.44.1 - Ungraceful Cat
 
 ### Bug Fixes

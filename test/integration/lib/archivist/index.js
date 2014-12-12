@@ -29,6 +29,18 @@ exports.mysqlBinaryTopic = {
 	}
 };
 
+exports.mysqlDelTopic = {
+	index: ['id', 'name'],
+	readOptions: {
+		mediaTypes: ['application/octet-stream'],
+		encodings: ['live'],
+		optional: false
+	},
+	vaults: {
+		mysqlVault: {}
+	}
+};
+
 exports.shardTest = {
 	index: ['userId'],
 	vaults: {
