@@ -143,4 +143,72 @@ describe('MySQL Vault', function () {
 			});
 		});
 	});
+
+	describe('Del operation', function () {
+		var testTopic = 'mysqlDelTopic';
+		var indexColumns = [
+			{ name: 'id', type: 'VARCHAR(64) NOT NULL', pk: true },
+			{ name: 'name', type: 'VARCHAR(64) NOT NULL', pk: true }
+		];
+		var binaryBuffer = new Buffer('/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBAQIBAQECAgICAgQDAgICAgUEBA', 'base64');
+
+		// Create the db before the test
+		before(function (done) {
+			state = new mage.core.State();
+			mysqlVault = state.archivist.getWriteVault(mysqlVaultName);
+
+			createDatabase(mysqlVault, function () {
+				createTable(mysqlVault, testTopic, indexColumns, 'BLOB', done);
+			});
+		});
+
+
+
+		it('can successfully delete a row', function (done) {
+			var index = { id: 2, name: 'mage' };
+
+			// First, let's insert the data
+			state.archivist.set(testTopic, index, binaryBuffer, 'application/octet-stream', 'live');
+			state.archivist.distribute(function (error) {
+				assert.ifError(error);
+
+				// Check if the data exists
+				state.archivist.get(testTopic, index, { optional: true }, function (error, data) {
+					assert.ifError(error);
+					assert(data, 'Can\'t find the previously inserted data');
+
+					// Now, delete the data
+					state.archivist.del(testTopic, index);
+					state.archivist.distribute(function (error) {
+						assert.ifError(error);
+
+						// Ensure we retrieve the data from MySQL and not from the cache
+						state.archivist.clearCache();
+
+						// The data should not be there anymore
+						state.archivist.get(testTopic, index, { optional: true }, function (error, data) {
+							assert.ifError(error);
+							assert(!data, 'Could find a data that got deleted');
+							done();
+						});
+					});
+				});
+			});
+		});
+
+
+		// Delete the db when the test is done
+		after(function (done) {
+			mysqlVault.dropTable(testTopic, function () {
+				dropDatabase(mysqlVault, function () {
+					state.close(function () {
+						mysqlVault = null;
+						state = null;
+
+						done();
+					});
+				});
+			});
+		});
+	});
 });
