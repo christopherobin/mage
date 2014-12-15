@@ -11,13 +11,13 @@ module.exports = function (cb) {
 
 			try {
 				require('./tests/testArchivist.js');
-				require('./tests/testIdent.js');
 				require('./tests/testHttpServer.js');
+				require('./tests/testIdent.js');
 				require('./tests/testLoader.js');
-				require('./tests/testSession.js');
-				require('./tests/testWebApp.js');
-				require('./tests/testTime.js');
 				require('./tests/testServerEvents.js');
+				require('./tests/testSession.js');
+				require('./tests/testTime.js');
+				require('./tests/testWebApp.js');
 			} catch (e) {
 				return cb(e);
 			}

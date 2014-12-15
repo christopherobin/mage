@@ -33,12 +33,17 @@ describe('HTTP Server', function () {
 
 	before(function (done) {
 		mage = require('mage');
-
-		mage.useModules(require, 'test');
-
-		mage.setup(function (error) {
+		mage.session.loginAnonymous('admin', function (error) {
 			assert.ifError(error);
-			done();
+			assert(mage.session.getKey());
+
+			mage.useModules(require, 'test');
+
+			mage.setup(function (error) {
+				assert.ifError(error);
+
+				done();
+			});
 		});
 	});
 
