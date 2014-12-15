@@ -52,6 +52,7 @@ describe('HTTP Server', function () {
 			assert.ifError(error);
 			assert.strictEqual(xhr.status, 200);
 			assert.strictEqual(xhr.getResponseHeader('content-type').toLowerCase(), 'text/plain');
+			assert.strictEqual(xhr.responseText, 'This is foo.txt');
 			done();
 		});
 	});
