@@ -22,6 +22,7 @@
 		"index.js",
 		"tests/testArchivist.js",
 		"tests/testIdent.js",
+		"tests/testHttpServer.js",
 		"tests/testLoader.js",
 		"tests/testServerEvents.js",
 		"tests/testSession.js",

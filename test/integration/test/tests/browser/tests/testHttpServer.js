@@ -1,0 +1,62 @@
+var assert = require('assert');
+
+function syncDownload(path, cb) {
+	var XHR = window.XMLHttpRequest;
+
+	var xhr = new XHR();
+
+	xhr.open('GET', path, false);
+
+	xhr.onerror = function (error) {
+		cb(error);
+	};
+
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4) {
+			cb(null, xhr);
+		}
+	};
+
+	try {
+		xhr.send();
+	} catch (error) {
+		cb(error);
+	}
+}
+
+
+describe('HTTP Server', function () {
+	var mage;
+
+	before(function (done) {
+		mage = require('mage');
+
+		mage.useModules(require, 'test');
+
+		mage.setup(function (error) {
+			assert.ifError(error);
+			done();
+		});
+	});
+
+	it('registers routes to files', function (done) {
+		mage.test.exposeFileRoute(done);
+	});
+
+	it('serves files with a correct content-type', function (done) {
+		syncDownload('/foo.txt', function (error, xhr) {
+			assert.ifError(error);
+			assert.strictEqual(xhr.status, 200);
+			assert.strictEqual(xhr.getResponseHeader('content-type').toLowerCase(), 'text/plain');
+			done();
+		});
+	});
+
+	it('turns bad file exposure into 404', function (done) {
+		syncDownload('/404.txt', function (error, xhr) {
+			assert.ifError(error);
+			assert.strictEqual(xhr.status, 404);
+			done();
+		});
+	});
+});
