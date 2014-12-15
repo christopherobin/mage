@@ -34,11 +34,12 @@ These are some of the things we will be working on in the future, based on the w
 
 ### Dependency Updates
 
-| dependency           | from  | to    | changes                                                                     |
-|----------------------|-------|-------|-----------------------------------------------------------------------------|
-| mage/loader.js       | 0.1.3 | 0.2.0 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.2.0)       |
-| mage/mage.js         | 0.1.0 | 0.2.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.0)         |
-| wizcorp-deep-copy.js |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/deep-copy.js/releases/tag/0.1.0) |
+| dependency           | from  | to    | changes                                                                          |
+|----------------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump             | 0.3.0 | 0.3.3 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.3) |
+| mage/loader.js       | 0.1.3 | 0.2.0 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.2.0)            |
+| mage/mage.js         | 0.1.0 | 0.2.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.0)              |
+| wizcorp-deep-copy.js |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/deep-copy.js/releases/tag/0.1.0)      |
 
 
 ## v0.44.2 - On Head Cat
