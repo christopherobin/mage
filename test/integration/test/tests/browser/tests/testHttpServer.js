@@ -1,6 +1,9 @@
 var assert = require('assert');
 
 function syncDownload(path, cb) {
+	// synchronous, because PhantomJS just gives status 0 for non-200 responses when asynchronous
+	// see: https://github.com/ariya/phantomjs/issues/11195
+
 	var XHR = window.XMLHttpRequest;
 
 	var xhr = new XHR();

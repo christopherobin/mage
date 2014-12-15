@@ -40,6 +40,11 @@ These are some of the things we will be working on in the future, based on the w
 | mage/mage.js         | 0.1.0 | 0.2.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.0)         |
 | wizcorp-deep-copy.js |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/deep-copy.js/releases/tag/0.1.0) |
 
+### Bug Fixes
+
+* Up til now, the `httpServer.serveFile()` API did not auto-inject a content-type. Now it does, based on the file
+  extension.
+
 
 ## v0.44.2 - On Head Cat
 
