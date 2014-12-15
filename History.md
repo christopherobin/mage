@@ -40,6 +40,17 @@ These are some of the things we will be working on in the future, based on the w
 | mage/mage.js         | 0.1.0 | 0.2.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.0)         |
 | wizcorp-deep-copy.js |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/deep-copy.js/releases/tag/0.1.0) |
 
+### Miscellaneous Changes
+ *  Removed the following helper functions that were not being used by MAGE:
+  * `benchmark`
+  * `strChunks`
+  * `randomInteger`
+  * `chooseWeighted`
+  * `objToJson`
+  * `lintingJsonParse`
+  * `getFilesContents`
+  * `getFilesRecursive`
+
 
 ## v0.44.2 - On Head Cat
 
