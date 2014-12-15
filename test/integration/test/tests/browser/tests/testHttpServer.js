@@ -47,10 +47,6 @@ describe('HTTP Server', function () {
 		});
 	});
 
-	it('registers routes to files', function (done) {
-		mage.test.exposeFileRoute(done);
-	});
-
 	it('serves files with a correct content-type', function (done) {
 		syncDownload('/foo.txt', function (error, xhr) {
 			assert.ifError(error);
