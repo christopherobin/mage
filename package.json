@@ -43,6 +43,7 @@
 		"netmask": "1.0.4",
 		"jayson": "1.1.1",
 		"http-close": "0.0.2",
+		"wizcorp-deep-copy.js": "0.1.0",
 		"wizcorp-timer.js": "0.2.0"
 	},
 	"optionalPeerDependencies": {
