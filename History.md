@@ -46,6 +46,17 @@ These are some of the things we will be working on in the future, based on the w
 * Up til now, the `httpServer.serveFile()` API did not auto-inject a content-type. Now it does, based on the file
   extension.
 
+### ***BACKWARDS INCOMPATIBLE CHANGES***
+ * Removed the following helper functions that were not being used by MAGE:
+  * `benchmark`
+  * `strChunks`
+  * `randomInteger`
+  * `chooseWeighted`
+  * `objToJson`
+  * `lintingJsonParse`
+  * `getFilesContents`
+  * `getFilesRecursive`
+
 
 ## v0.44.2 - On Head Cat
 
