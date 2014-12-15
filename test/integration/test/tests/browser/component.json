@@ -21,6 +21,7 @@
 	"scripts": [
 		"index.js",
 		"tests/testArchivist.js",
+		"tests/testHttpServer.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
 		"tests/testServerEvents.js",
