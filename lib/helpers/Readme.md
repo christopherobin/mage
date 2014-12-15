@@ -9,7 +9,6 @@ The helpers library is a collection of useful miscellaneous functions.
  - `timeCodeToSec`
  - `objToJson`
  - `lintingJsonParse`
- - `deepCopy`
  - `getFileContents`
  - `getFilesContents`
  - `readDirectory`
