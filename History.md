@@ -56,6 +56,7 @@ These are some of the things we will be working on in the future, based on the w
   * `lintingJsonParse`
   * `getFilesContents`
   * `getFilesRecursive`
+ * Removed commandCenter.expose, it has been deprecated for a long time.
 
 
 ## v0.44.2 - On Head Cat
