@@ -2,6 +2,9 @@
 
 ## vNEXT - ??? Cat
 
+
+## v0.45.0 - Into the Snow Cat
+
 ### Message Server
 
 The message server has been rewritten from the ground up. The new architecture should lay the groundwork for future
