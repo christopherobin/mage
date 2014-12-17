@@ -24,3 +24,18 @@ server:
     clientHost:
         bind:
             port: 8080
+    msgStream:
+        transports:
+            longpolling:
+                route: "/msgstream"
+                heartbeat: 60
+            shortpolling:
+                route: "/msgstream"
+                afterRequestInterval: 250
+            websocket:
+                route: "/msgstream"
+        detect:
+            - websocket
+            - longpolling
+            - shortpolling
+
