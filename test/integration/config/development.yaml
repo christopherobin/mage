@@ -19,3 +19,8 @@ archivist:
         - client
         - volatileVault
         - mysqlVault
+
+server:
+    clientHost:
+        bind:
+            port: 8080
