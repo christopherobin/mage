@@ -2,7 +2,6 @@ var assert = require('assert');
 
 describe('Server events', function () {
 	var mage;
-	var sessionKey;
 	var fullConfig;
 
 	before(function (done) {
@@ -11,10 +10,7 @@ describe('Server events', function () {
 
 		mage.session.loginAnonymous('admin', function (error) {
 			assert.ifError(error);
-
-			sessionKey = mage.session.getKey();
-
-			assert(sessionKey);
+			assert(mage.session.getKey());
 
 			mage.useModules(require, 'test');
 
