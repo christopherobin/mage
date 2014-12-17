@@ -1,6 +1,7 @@
 # Release history
 
-## vNEXT - ??? Cat
+
+## v0.45.1 - I Would Like to Propose a Toast Cat
 
 ### Dependency Updates
 
