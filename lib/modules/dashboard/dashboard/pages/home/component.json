@@ -2,8 +2,8 @@
 	"name": "home",
 	"description": "Home page for the MAGE dashboard.",
 	"dependencies": {
-		"mage/loader.js": "0.1.2",
-		"mage/mage.js": "0.1.0"
+		"mage/loader.js": "0.2.0",
+		"mage/mage.js": "0.2.0"
 	},
 	"templates": [
 		"page.html"

@@ -19,6 +19,6 @@ describe('Savvy', function () {
 	});
 
 	it('exposes itself correctly', function () {
-		assert.ok(savvy.getBaseUrl().match(/\/savvy$/));
+		assert.equal(savvy.getRoute(), '/savvy');
 	});
 });

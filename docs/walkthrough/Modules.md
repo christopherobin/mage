@@ -79,12 +79,9 @@ the following:
 ```json
 {
 	"name": "gifting",
-	"local": [
-		"mage"
-	],
-	"paths": [
-		"../../../node_modules/mage/lib"
-	],
+	"dependencies": {
+		"mage/mage.js": "*"
+	},
 	"scripts": [
 		"client.js",
 		"foo.js"
