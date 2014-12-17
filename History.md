@@ -1,5 +1,20 @@
 # Release history
 
+
+## v0.45.1 - I Would Like to Propose a Toast Cat
+
+### Dependency Updates
+
+| dependency           | from  | to    | changes                                                             |
+|----------------------|-------|-------|---------------------------------------------------------------------|
+| mage/mage.js         | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.1) |
+
+### Bug Fixes
+
+* You never can test enough. Since the introduction of WebSocket message stream, the fallback polling method was no
+  longer working. This has been fixed, and tests have been added to make sure this never happens again.
+
+
 ## v0.45.0 - Into the Snow Cat
 
 ### Message Server
