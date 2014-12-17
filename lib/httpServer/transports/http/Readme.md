@@ -50,10 +50,30 @@ Removes the handler function registered on the given route.
 
 ## Simple file serving
 
-### httpServer.serveFile(route, filePath, [errorHandler])
+### httpServer.serveFolder(route, folderPath, [options], [onFinish])
 
-Registers a route to lead directly to a file on disk. If you want to receive errors, rather than
-have the HTTP server log them, you may pass an error handler function.
+Registers a route to lead directly to a folder on disk. If you want to be notified when a request finishes, you may pass
+an `onFinish` function. It may receive an error as its first argument. If you decide to pass this function, logging the
+error will be your responsibility.
+
+If you pass an options object, you may give it the `autoIndex` boolean property, as seen below. This will expose
+the folder and its sub-folders as browseable HTML that lists the files inside.
+
+Example:
+
+```js
+var options = {
+    autoIndex: mage.isDevelopmentMode()  // only expose folder contents during development
+};
+
+mage.core.httpServer.serveFolder('/source', './lib', options);
+```
+
+### httpServer.serveFile(route, filePath, [onFinish])
+
+Registers a route to lead directly to a file on disk. If you want to be notified when a request finishes, you may pass
+an `onFinish` function. It may receive an error as its first argument. If you decide to pass this function, logging the
+error will be your responsibility.
 
 
 ## check.txt
