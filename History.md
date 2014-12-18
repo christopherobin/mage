@@ -1,6 +1,14 @@
 # Release history
 
+
 ## vNEXT - ??? Cat
+
+### Miscellaneous Changes
+
+* Updated .aeriscloud.yml to use node v0.10.34 for development.
+
+
+## v0.45.1 - I Would Like to Propose a Toast Cat
 
 ### Dependency Updates
 
