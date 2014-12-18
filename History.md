@@ -1,11 +1,17 @@
 # Release history
 
-
 ## vNEXT - ??? Cat
 
 ### Miscellaneous Changes
 
 * Updated .aeriscloud.yml to use node v0.10.34 for development.
+* Logging of requests and responses in the HTTP server has been made much more consistent and reliable.
+* The response times of all HTTP requests are now reported by the sampler.
+
+### ***BACKWARDS INCOMPATIBLE CHANGES***
+
+* When registering a `callback` style HTTP route, you may no longer return `false` as an error status code. It *has* to
+  be numeric.
 
 
 ## v0.45.1 - I Would Like to Propose a Toast Cat
@@ -16,20 +22,10 @@
 |----------------------|-------|-------|---------------------------------------------------------------------|
 | mage/mage.js         | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.1) |
 
-### Miscellaneous Changes
-
-* Logging of requests and responses in the HTTP server has been made much more consistent and reliable.
-* The response times of all HTTP requests are now reported by the sampler.
-
 ### Bug Fixes
 
 * You never can test enough. Since the introduction of WebSocket message stream, the fallback polling method was no
   longer working. This has been fixed, and tests have been added to make sure this never happens again.
-
-### ***BACKWARDS INCOMPATIBLE CHANGES***
-
-* When registering a `callback` style HTTP route, you may no longer return `false` as an error status code. It *has* to
-  be numeric.
 
 
 ## v0.45.0 - Into the Snow Cat
