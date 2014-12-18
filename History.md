@@ -1,11 +1,17 @@
 # Release history
 
-
 ## vNEXT - ??? Cat
 
 ### Miscellaneous Changes
 
 * Updated .aeriscloud.yml to use node v0.10.34 for development.
+* Logging of requests and responses in the HTTP server has been made much more consistent and reliable.
+* The response times of all HTTP requests are now reported by the sampler.
+
+### ***BACKWARDS INCOMPATIBLE CHANGES***
+
+* When registering a `callback` style HTTP route, you may no longer return `false` as an error status code. It *has* to
+  be numeric.
 
 
 ## v0.45.1 - I Would Like to Propose a Toast Cat
