@@ -94,12 +94,12 @@ describe('HTTP server', function () {
 	}
 
 	function req(method, path, headers, data, cb) {
-		var parsed = urlParse(url + path);
+		var parsed = urlParse(url + (path === '*' ? '' : path));
 		var options = {
 			method: method || 'GET',
 			hostname: parsed.hostname,
 			port: parsed.port,
-			path: parsed.path,
+			path: (path === '*' ? '*' : parsed.path),
 			headers: headers
 		};
 
@@ -541,6 +541,21 @@ describe('HTTP server', function () {
 				assert.strictEqual(res.headers['access-control-allow-methods'], 'OPTIONS, GET, POST');
 				assert.strictEqual(res.headers['access-control-allow-credentials'], 'true');
 				assert.strictEqual(res.headers['access-control-allow-headers'], 'x-helloworld');
+				done();
+			});
+		});
+
+		it('serves CORS options on the "*" URI', function (done) {
+			var headers = {
+				'Access-Control-Request-Headers': 'x-helloasterisk'
+			};
+
+			req('OPTIONS', '*', headers, null, function (error, result, res) {
+				assert.ifError(error);
+				assert.strictEqual(res.headers['access-control-allow-origin'], 'http://foo.com');
+				assert.strictEqual(res.headers['access-control-allow-methods'], 'OPTIONS, GET, POST');
+				assert.strictEqual(res.headers['access-control-allow-credentials'], 'true');
+				assert.strictEqual(res.headers['access-control-allow-headers'], 'x-helloasterisk');
 				done();
 			});
 		});
