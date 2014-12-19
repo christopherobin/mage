@@ -7,6 +7,7 @@
 * Updated .aeriscloud.yml to use node v0.10.34 for development.
 * Logging of requests and responses in the HTTP server has been made much more consistent and reliable.
 * The response times of all HTTP requests are now reported by the sampler.
+* We now always log the actorId when we log "Executed user command".
 
 ### ***BACKWARDS INCOMPATIBLE CHANGES***
 
