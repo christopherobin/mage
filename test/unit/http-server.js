@@ -517,13 +517,15 @@ describe('HTTP server', function () {
 			var funky = {
 				origin: 'http://foo.com',
 				methods: ['options', 'GET', 'PoSt'],
-				credentials: true
+				credentials: true,
+				maxAge: 100
 			};
 
 			var real = {
 				origin: 'http://foo.com',
 				methods: 'OPTIONS, GET, POST',
-				credentials: true
+				credentials: true,
+				maxAge: '100'
 			};
 
 			httpServer.setCorsConfig(funky);
@@ -532,7 +534,8 @@ describe('HTTP server', function () {
 
 		it('serves CORS options', function (done) {
 			var headers = {
-				'Access-Control-Request-Headers': 'x-helloworld'
+				'Access-Control-Request-Headers': 'x-helloworld',
+				Origin: 'http://www.example.com'
 			};
 
 			req('OPTIONS', '/favicon.ico', headers, null, function (error, result, res) {
@@ -547,7 +550,8 @@ describe('HTTP server', function () {
 
 		it('serves CORS options on the "*" URI', function (done) {
 			var headers = {
-				'Access-Control-Request-Headers': 'x-helloasterisk'
+				'Access-Control-Request-Headers': 'x-helloasterisk',
+				Origin: 'http://www.example.com'
 			};
 
 			req('OPTIONS', '*', headers, null, function (error, result, res) {
@@ -561,7 +565,11 @@ describe('HTTP server', function () {
 		});
 
 		it('serves files with CORS meta data', function (done) {
-			get('/favicon.ico', function (error, result, res) {
+			var headers = {
+				Origin: 'http://www.example.com'
+			};
+
+			req('GET', '/favicon.ico', headers, null, function (error, result, res) {
 				assert.ifError(error);
 				assert.strictEqual(res.statusCode, 200);
 				assert.strictEqual(res.headers['access-control-allow-origin'], 'http://foo.com');

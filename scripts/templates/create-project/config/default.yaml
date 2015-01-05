@@ -24,9 +24,6 @@ apps:
             # HTML5 Application Cache
             useManifest: false
 
-            # Gzip compression
-            compress: true
-
     # Dashboard for developers
     dev:
         responseCache: 30
