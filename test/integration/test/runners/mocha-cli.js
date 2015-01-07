@@ -1,11 +1,11 @@
-var childProcess = require('child_process');
 var path = require('path');
-var binPath = path.join(__dirname, '../../node_modules/.bin/mocha');
+var bin = path.join(__dirname, '../../node_modules/.bin/mocha');
+var exec = require('./lib/exec.js');
 
 var pathToTests = path.join(__dirname, '../tests/mocha-cli');
 
 var options = {
-	timeout: 10000,
+	timeout: 30000,
 	env: process.env
 };
 
@@ -15,12 +15,12 @@ module.exports = function (project, cb) {
 
 	options.env.MAGE_APP_ADDRESS = JSON.stringify(address);
 
-	var childArgs = ['-R', 'spec', '--recursive', pathToTests];
+	var args = ['-R', 'spec', '--recursive', pathToTests];
 
-	console.log('executing', binPath, childArgs.join(' '));
+	console.log('Executing mocha-cli test:', bin, args.join(' '));
 
-	childProcess.execFile(binPath, childArgs, options, function (error, stdout) {
-		console.log(stdout);
+	exec(bin, args, options, function (error) {
+		console.log('Finished executing mocha-cli test:', bin, args.join(' '));
 		cb(error);
 	});
 };

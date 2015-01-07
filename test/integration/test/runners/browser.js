@@ -1,8 +1,9 @@
 // runs PhantomJS against the running instance
 
 var async = require('async');
-var childProcess = require('child_process');
 var path = require('path');
+var pathToHarness = path.join(__dirname, 'lib/phantom-harness.js');
+var exec = require('./lib/exec.js');
 
 var options = {
 	timeout: 10000
@@ -10,15 +11,13 @@ var options = {
 
 
 function runThroughPhantom(url, cb) {
-	var pathToHarness = path.join(__dirname, 'lib/phantom-harness.js');
-
 	var bin = require('phantomjs').path;
 	var args = [pathToHarness, url];
 
-	console.log('executing', bin, args.join(' '));
+	console.log('Executing browser test:', bin, args.join(' '));
 
-	childProcess.execFile(bin, args, options, function (error, stdout) {
-		console.log(stdout);
+	exec(bin, args, options, function (error) {
+		console.log('Finished executing browser test:', bin, args.join(' '));
 		cb(error);
 	});
 }
