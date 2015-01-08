@@ -145,7 +145,7 @@ exports.start = function (project) {
 
 		async.eachSeries(runners, runTests, function (error) {
 			if (error) {
-				console.error(error.stack || error);
+				console.error(error);
 				return exit(1);
 			}
 

@@ -2,6 +2,19 @@
 
 ## vNEXT - ??? Cat
 
+### Web Apps
+
+* WebApp responses are now cached and stored zipped AND unzipped. This avoids on-the-fly unzipping when clients don't
+  support compressed responses (which actually happens).
+* We now respond properly to HEAD requests on these web apps (no content).
+
+### HTTP server
+
+***BACKWARDS INCOMPATIBLE CHANGE***
+
+* When registering a `callback` style HTTP route, you may no longer return `false` as an error status code. It *has* to
+  be numeric.
+
 ### Miscellaneous Changes
 
 * Updated .aeriscloud.yml to use node v0.10.34 for development.
@@ -10,11 +23,6 @@
 * We now always log the actorId when we log "Executed user command".
 * `mage.fatalError` is now deprecated, throwing an uncaught exception has the same effect if not caught and allows
   someone to potentially catch those errors if needed.
-
-### ***BACKWARDS INCOMPATIBLE CHANGES***
-
-* When registering a `callback` style HTTP route, you may no longer return `false` as an error status code. It *has* to
-  be numeric.
 
 
 ## v0.45.1 - I Would Like to Propose a Toast Cat
