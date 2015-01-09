@@ -205,6 +205,9 @@ exports.myTopicName = {
 	index: ['propName', 'propName'],
 	vaults: {
 		myVaultName: myTopicAPI
+	},
+	afterLoad: function (state, value, cb) {
+		cb();
 	}
 };
 ```
@@ -224,9 +227,20 @@ from your archivist. The following defaults are defined, and they can be individ
 }
 ```
 
-The `myTopicAPI` object may be replaced with `true` in order to get all default behaviors for
-that vault type. Read about "Advanced usage" to see how you can set up these topic APIs with
-custom behaviors. In order to keep your configuration maintainable, it makes a lot of sense to
+The `myTopicAPI` object that you provide per vault-name, may be replaced with `true` in order to get all default
+behaviors for that vault type. Read about "Advanced usage" to see how you can set up these topic APIs with custom
+behaviors.
+
+Finally, you may optionally provide an `afterLoad` function that takes 3 arguments: `state`, `value` and `cb`.
+When you provide this function, each database load will call this function before returning to userland code. That gives
+you (for example) the opportunity to perform document migration. The document can be found in `value.data`, but you will
+have to make sure yourself that it's deserialized before you read from it. You can do this by calling
+`value.setEncoding('live');`. After this, `value.data` will contain the unserialized document. You could store a
+document schema version number in this document and when you notice it falls behind, migrate the document to the latest
+schema. When you're done handling the `afterLoad` logic, you **must** call `cb` to continue. If you pass an error to
+`cb`, the `get()` or `mget()` call that the load originated from will receive that error. It is up to you to log it.
+
+In order to keep your configuration maintainable, it makes a lot of sense to
 categorize your topics. Imagine for example the following configuration:
 
 ```javascript

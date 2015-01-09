@@ -1,96 +1,138 @@
 # Message Server
 
-The message server is in charge of event propagation through the system.
+The message server is in charge of message propagation through the network and between the clients and the backend.
 
-## MMRP
+## Subsystems
 
-The message server uses the MMRP protocol to ensure communication between the different MAGE
-instances on the network.
+The systems that make the message server and their configuration are described below.
 
-See the [MMRP documentation](./mmrp/Readme.md).
+### MMRP
 
-# Message stream
+The message server uses the MMRP library to ensure communication between the different MAGE instances on the network.
+In order to find these instances, you need to have [service discovery](../serviceDiscovery/Readme.md) set up.
 
-The messages emitted by the server inevitably make their way to the client.
+To use MMRP, please configure it to bind to a particular port and pick a network on which it is expected to communicate.
 
-## The protocol
+Example:
 
-The serialization protocol used by the message stream is the same regardless of the transport type
-used. Packages of messages are formatted in JSON as follows:
+```yaml
+server:
+    mmrp:
+        bind:
+            host: "*"  # asterisk for 0.0.0.0, or a valid IP address
+            port: "*"  # asterisk for any port, or a valid integer
+        network:
+            - "192.168.2"  # formatted according to https://www.npmjs.com/package/netmask
+```
+
+For more information, please read the [MMRP documentation](./mmrp/Readme.md).
+
+
+### Message stream
+
+The messages sent by the server inevitably make their way to a client through a message stream.
+
+For more information, please read the [Message Stream documentation](./msgStream/Readme.md).
+
+
+## Sending messages
+
+It is recommended to use the [State class](../state/Readme.md) to send and broadcast messages to users, but if you want
+more control over or a better understanding about how messages are sent, please keep on reading.
+
+> Keep in mind that the system makes no guarantees that the message will actually be delivered, although as long as the
+> address and clusterId you pass are valid, and that user remains logged in, the message should be received.
+
+### Sending a single message
+
+You can send a message directly to a user using the following call.
+
+```js
+mage.core.msgServer.send(address, clusterId, message);
+```
+
+Where:
+
+- `address` is the recipient's session key.
+- `clusterId` refers to the physical location in the network where that session's messages are being stored for delivery.
+- `message` is a string or Buffer containing valid JSON, or an array of strings/Buffers if you want to send a batch.
+
+
+### Broadcasting a message to all logged-in users
+
+You can send a message to all logged-in users, by using the following call.
+
+```js
+mage.core.msgServer.broadcast(message);
+```
+
+Where:
+
+- `message` is a string or Buffer, or when you want to send multiple messages, an array of strings/Buffers.
+
+
+## Receiving messages on a web client
+
+The MAGE client will receive messages and emit them as events. You can listen for them through `mage.eventManager`.
+
+```js
+mage.eventManager.on('event.name', function (message) {
+  /* use the message */
+});
+```
+
+For now, the only way to receive these messages is to make sure messages are sent or broadcast with the following format:
 
 ```json
-{
-  "1": [
-    ["some.event.name"],
-    ["another.event", { "some": "data" }]
-  ],
-  "2": [
-    ["eventname", { "any": "data" }]
-  ]
-}
+[
+  ["event.name", {"key":5,"another":"value"}],
+  ["another.event", {"etc":false}],
+]
 ```
 
-The key represents the message pack ID, which increments by 1 for each batch of messages emitted.
-Messages must be processed in order of message ID and the array order in which they occur. The
-content of the message is an array of 1 or 2 elements.
+## Testing your application with AerisCloud and Marathon
 
-The first element is a string that represents the type of the message. This may be used as the event
-name in a client-side event emitter. The optional second element is the real payload of the message.
+When using AerisCloud to test your application across a cluster of servers using the Marathon service, please make sure
+to include the following configuration in `config/marathon.yaml`. Over time, the addresses below may change, so always
+stay in touch with your friendly local system administrator to make sure these make sense.
 
-A common convention is for event names to be dot-separated. A client may choose to implement the
-emission of an event in chunks from most-relevant to least-relevant. For example, the event
-`shop.purchase` with data `{ "item": "boots" }` may be emitted twice.
-
-1. `shop.purchase` with data `{ "item": "boots" }`
-2. `shop` with data `{ "item": "boots" }`
-
-## Transport types
-
-There are currently two transport types that allow message retrieval and confirmation.
-
-### HTTP short-polling
-
-With short-polling, the endpoint for message retrieval becomes:
-
-```
-GET http://domain/msgstream?sessionKey=abc&transport=shortpolling
+```yaml
+server:
+    clientHost:
+        expose: null
+        bind:
+            port: PORT0
+    serviceDiscovery:
+        engine: "zookeeper"
+        options:
+            hosts: "192.168.2.21:2181"
+    mmrp:
+        bind:
+            port: PORT1
+        network:
+            - "192.168.2"
 ```
 
-Always be sure to pass the active session key for this user. Without it, no messages can be
-delivered. If messages are available, they will be returned in the format described in
-"The protocol", with content-type `application/json` and HTTP status code `200`. If no messages are
-available, HTTP status code `204` will be returned without a response body.
+Your Makefile needs to replace the magical constants PORT0 and PORT1 in this file when running. Here's an example of
+the marathon Make target:
 
-### HTTP long-polling
+```make
+.PHONY: marathon
 
-With long-polling, the endpoint for message retrieval becomes:
-
-```
-GET http://domain/msgstream?sessionKey=abc&transport=longpolling
-```
-
-Always be sure to pass the active session key for this user. Without it, no messages can be
-delivered. If messages are available, they will be returned in the format described in
-"The protocol", with content-type `application/json` and HTTP status code `200`. This is no
-different from short-polling. If there are no messages available however, the connection will hang
-and wait for messages to arrive. The moment messages are ready for delivery, the HTTP request will
-return with HTTP status code `200` and content-type `application/json`.
-
-In order to reliably detect clients unavailability, the server will periodically close the
-connection to the client. It is up to the client to detect this, and reconnect with the server to
-make its presence known. The disconnect will happen with HTTP status code `204` and does not carry a
-response body.
-
-## Confirming message receipts
-
-Because networks (especially mobile) are not always reliable, MAGE will keep all messages on the
-server until the client actively reports successful delivery. This is done per message ID.
-Regardless of transport, the message IDs you want to confirm are to be sent back in the URL's query
-string named `confirmIds` and comma separated, as follows:
-
-```
-GET http://domain/msgstream?transport=longpolling&confirmIds=1,2,3
+marathon:
+	source /opt/nvm/nvm.sh && \
+	sed -i "s/PORT0/${PORT0}/" config/marathon.yaml && \
+	sed -i "s/PORT1/${PORT1}/" config/marathon.yaml && \
+	sed -i "s/PORT/${PORT}/" config/marathon.yaml && \
+	nvm use 0.10.33 && \
+	NODE_ENV=production,marathon HOME=${MESOS_DIRECTORY} make deps && \
+	NODE_ENV=production,marathon node .
 ```
 
-The confirmation can simply be part of the next poll-request and should not be an independent HTTP
-request just for the sake of confirmation.
+When pushing the application to Marathon, you need to select ports for PORT0 and PORT1. An example:
+
+```sh
+aeriscloud marathon office/jp push -p 80 16001
+```
+
+For more information about using Marathon, please read the [documentation](https://github.com/Wizcorp/AerisCloud/blob/master/docs/walkthrough/marathon.md)

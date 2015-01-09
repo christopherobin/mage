@@ -1,10 +1,91 @@
 # Release history
 
 
+## v0.45.1 - I Would Like to Propose a Toast Cat
+
+### Dependency Updates
+
+| dependency           | from  | to    | changes                                                             |
+|----------------------|-------|-------|---------------------------------------------------------------------|
+| mage/mage.js         | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.1) |
+
+### Bug Fixes
+
+* You never can test enough. Since the introduction of WebSocket message stream, the fallback polling method was no
+  longer working. This has been fixed, and tests have been added to make sure this never happens again.
+
+
+## v0.45.0 - Into the Snow Cat
+
+### Message Server
+
+The message server has been rewritten from the ground up. The new architecture should lay the groundwork for future
+releases of MAGE that will often be focussed on how MAGE communicates with the frontend. Externalizing the web frontend
+(as you witnessed in v0.44.0) was the first major step in that direction.
+
+So what parts got a major update?
+
+- MMRP (MAGE Message Relay Protocol, which gets messages from node to node)
+- Message Stream (the part that gets the messages to your endusers)
+- Message Store (the cache that keeps unreceived messages around until delivered)
+- Message Server (the small library that couples the three systems above)
+
+So what changes for you now? Not too much, to be honest. The new system is completely backwards compatible, and you can
+emit and broadcast your events as usual through the `state` object. What does affect you *today* are the following two
+changes:
+
+- `state.broadcast()` was broken and would only deliver events to a single worker per cluster. This has been fixed.
+- WebSocket support has been added, and has become the first choice protocol. When WebSocket support is not available,
+  MAGE will automatically fallback to HTTP long-polling.
+
+**So what's next?**
+
+These are some of the things we will be working on in the future, based on the work that has been done so far.
+
+- Additional RPC protocol support (eg: REST, Protobuf, other strongly typed protocols).
+- Additional transport protocols (eg: SPDY, TCP, UDP).
+- Combining the user command communication with the message stream communication (one less connection).
+- Pub/Sub support (useful to implement rooms for users).
+
+### Dependency Updates
+
+| dependency           | from  | to    | changes                                                                          |
+|----------------------|-------|-------|----------------------------------------------------------------------------------|
+| heapdump             | 0.3.0 | 0.3.3 | [Release notes](https://github.com/bnoordhuis/node-heapdump/releases/tag/v0.3.3) |
+| mage/loader.js       | 0.1.3 | 0.2.0 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.2.0)            |
+| mage/mage.js         | 0.1.0 | 0.2.0 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.0)              |
+| wizcorp-deep-copy.js |       | 0.1.0 | [Release notes](https://github.com/Wizcorp/deep-copy.js/releases/tag/0.1.0)      |
+
+### Bug Fixes
+
+* Up til now, the `httpServer.serveFile()` API did not auto-inject a content-type. Now it does, based on the file
+  extension.
+
+### ***BACKWARDS INCOMPATIBLE CHANGES***
+ * Removed the following helper functions that were not being used by MAGE:
+  * `benchmark`
+  * `strChunks`
+  * `randomInteger`
+  * `chooseWeighted`
+  * `objToJson`
+  * `lintingJsonParse`
+  * `getFilesContents`
+  * `getFilesRecursive`
+ * Removed commandCenter.expose, it has been deprecated for a long time.
+
+
+## v0.44.2 - On Head Cat
+
+### Bug Fixes
+
+* The `del` operation for the MySQL Vault was broken because of an incorrect query syntax.
+
+
 ## v0.44.1 - Ungraceful Cat
 
 ### Bug Fixes
- * Updated the bootstrap app to use the external components.
+
+* Updated the bootstrap app to use the external components.
 
 
 ## v0.44.0 - Cup Noodle Cat
@@ -22,6 +103,7 @@ section in your component.json files and replace them with the external MAGE com
 * msgServer: [mage/message-server.js](https://github.com/mage/message-server.js)
 
 ### Dependency Updates
+
 | dependency              | from  | to    | changes                                                                                |
 |-------------------------|-------|-------|----------------------------------------------------------------------------------------|
 | cachepuncher            | 0.1.2 | 0.1.3 | [Release notes](https://github.com/Wizcorp/cachepuncher/releases/tag/0.1.3)            |

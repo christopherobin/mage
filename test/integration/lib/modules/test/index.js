@@ -1,11 +1,22 @@
 var mage = require('mage');
 var assert = require('assert');
+var path = require('path');
 
 
 exports.setup = function (state, callback) {
 	return callback();
 };
 
+
+// expose a file
+
+mage.core.httpServer.serveFile('/foo.txt', path.join(__dirname, 'foo.txt'));
+
+// expose a non existing file
+
+mage.core.httpServer.serveFile('/404.txt', path.join(__dirname, '404.txt'));
+
+// expose an endpoint that behaves badly
 
 mage.core.httpServer.addRoute('/stallforever', function (req, res, path, query) {
 	if (query.test === 'void') {

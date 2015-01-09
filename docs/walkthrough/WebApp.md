@@ -180,15 +180,16 @@ In the example that follows, we will split up our game into two packages:
 - "main" (containing the actual game)
 
 Our landing page will be quite like the example we have seen before. In our "boot" component, we
-will refer to the MAGE Loader (a component called "loader"), so that we can download additional
+will refer to the MAGE Package Loader (a component called "loader.s"), so that we can download additional
 packages. The "/www/game/pages/boot/component.json" file now looks like this:
 
 ```json
 {
   "name": "index",
   "description": "Loader of the game",
-  "local": ["loader"],
-  "paths": ["../../../../node_modules/mage/lib"],
+  "dependencies": {
+    "mage/loader.js": "*"
+  },
   "scripts": ["index.js"],
   "main": "index.js"
 }
@@ -236,7 +237,7 @@ the "main" package. We added the MAGE loader to the "boot" component earlier, so
 use it as follows.
 
 ```javascript
-var loader = require('loader');
+var loader = require('mage-loader.js');
 
 // download and run the "main" package
 
@@ -271,7 +272,7 @@ don't forget to require() the loader and to add "loader" to your component.json 
 An example:
 
 ```js
-var loader = require('loader');
+var loader = require('mage-loader.js');
 
 loader.loadPackage('main', function () {
   window.require('main');
@@ -294,7 +295,7 @@ but you should put it last in the chain. The components in the "main" package ar
 depend on an optional package.
 
 To get more control over how the loader treats HTML and styles that you put into your package,
-please read more about the [Loader API](../../lib/loader/Readme.md).
+please read more about the [Loader API](https://github.com/mage/loader.js/blob/master/README.md).
 
 ## Next chapter
 

@@ -2,8 +2,8 @@
 	"name": "assets",
 	"description": "Asset manager for MAGE.",
 	"dependencies": {
-		"mage/loader.js": "0.1.2",
-		"mage/mage.js": "0.1.0"
+		"mage/loader.js": "0.2.0",
+		"mage/mage.js": "0.2.1"
 	},
 	"scripts": [
 		"client.js"
