@@ -1,19 +1,19 @@
 process.chdir(__dirname);
 
-var test = require('./test');
+var tester = require('./test');
 
-test.before();
+tester.before();
 
 var app;
 
 try {
 	app = require('./lib');
 } catch (e) {
-	test.after();
+	tester.after();
 	console.error('Error requiring app:', e);
 	process.exit(1);
 }
 
-app.mage.on('shutdown', test.after);
+app.mage.on('shutdown', tester.after);
 
-test.start(app);
+tester.start(app);

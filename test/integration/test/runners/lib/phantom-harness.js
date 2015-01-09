@@ -1,3 +1,5 @@
+/* jshint phantom: true */
+
 var system = require('system');
 var url = system.args[1];
 
