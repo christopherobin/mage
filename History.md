@@ -57,7 +57,6 @@ The HTTP server can now serve entire folders and their contents. For more inform
 
 * You never can test enough. Since the introduction of WebSocket message stream, the fallback polling method was no
   longer working. This has been fixed, and tests have been added to make sure this never happens again.
->>>>>>> develop
 
 
 ## v0.45.0 - Into the Snow Cat
