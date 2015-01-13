@@ -2,10 +2,62 @@
 
 ## vNEXT - ??? Cat
 
-### HTTP Server
+### Web Apps
+
+* WebApp responses are now cached and stored zipped AND unzipped. This avoids on-the-fly unzipping when clients don't
+  support compressed responses (which actually happens).
+* We now respond properly to HEAD requests on these web apps (no content).
+
+### HTTP server
 
 The HTTP server can now serve entire folders and their contents. For more information on how to use
 `mage.core.httpServer.serveFolder()`, have a look at [the documentation](./lib/httpServer/transports/http/Readme.md).
+
+***BACKWARDS INCOMPATIBLE CHANGE***
+
+* When registering a `callback` style HTTP route, you may no longer return `false` as an error status code. It *has* to
+  be numeric.
+
+### Miscellaneous Changes
+
+* Updated .aeriscloud.yml to use node v0.10.35 for development.
+* Logging of requests and responses in the HTTP server has been made much more consistent and reliable.
+* The response times of all HTTP requests are now reported by the sampler.
+* We now always log the actorId when we log "Executed user command".
+* `mage.fatalError` is now deprecated, throwing an uncaught exception has the same effect if not caught and allows
+  someone to potentially catch those errors if needed.
+
+### Dependency Updates
+
+| dependency           | from   | to    | changes                                                                    |
+|----------------------|--------|-------|----------------------------------------------------------------------------|
+| commander            |  2.2.0 | 2.6.0 | [Release notes](https://github.com/tj/commander.js/blob/master/History.md) |
+| tabalot              |  0.7.2 | 0.8.0 | [Commit log](https://github.com/mafintosh/tabalot/commits/v0.8.0) |
+| glob                 |  4.2.1 | 4.3.2 | [Commit log](https://github.com/isaacs/node-glob/commits/v4.3.2) |
+| ws                   | 0.4.32 | 0.6.5 | [Commit log](https://github.com/einaros/ws/commits/552dddaf9bcc5304c22415b81aa748384d82837c) |
+| node-uuid            |  1.4.1 | 1.4.2 | [Commit log](https://github.com/broofa/node-uuid/commits/v1.4.2) |
+| jsonlint             |  1.6.0 | 1.6.2 | [Commit log](https://github.com/zaach/jsonlint/commits/fca1f5f84624875c3aba99d766d3f7dc16d07eb1) |
+| js-yaml              |  2.1.3 | 3.2.5 | [Release notes](https://github.com/nodeca/js-yaml/blob/3.2.5/HISTORY.md) |
+| semver               |  2.2.1 | 4.2.0 | [Commit log](https://github.com/npm/node-semver/commits/v4.2.0) |
+| mkdirp               |  0.3.5 | 0.5.0 | [Commit log](https://github.com/substack/node-mkdirp/commits/0.5.0) |
+| marked               |  0.3.0 | 0.3.2 | [Commit log](https://github.com/chjj/marked/commits/v0.3.2) |
+| highlight.js         |  8.0.0 | 8.4.0 | [Release notes](https://github.com/isagalaev/highlight.js/blob/8.4/CHANGES.md) |
+| netmask              |  1.0.4 | 1.0.5 | [Commit log](https://github.com/rs/node-netmask/commits/1.0.5) |
+
+
+## v0.45.1 - I Would Like to Propose a Toast Cat
+
+### Dependency Updates
+
+| dependency           | from  | to    | changes                                                             |
+|----------------------|-------|-------|---------------------------------------------------------------------|
+| mage/mage.js         | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.1) |
+
+### Bug Fixes
+
+* You never can test enough. Since the introduction of WebSocket message stream, the fallback polling method was no
+  longer working. This has been fixed, and tests have been added to make sure this never happens again.
+>>>>>>> develop
 
 
 ## v0.45.0 - Into the Snow Cat

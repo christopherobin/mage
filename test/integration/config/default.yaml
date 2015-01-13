@@ -53,3 +53,7 @@ server:
             port: "*"
     serviceDiscovery:
         engine: single
+    msgStream:
+        transports:
+            shortpolling:
+                afterRequestInterval: 250
