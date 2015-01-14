@@ -44,6 +44,8 @@ function createTest(app) {
 	testPage.routes.push('/');
 
 	app.addIndexPage('xmltest', './www/xmltest/', { context: 'xml', route: 'gadget.xml' });
+
+	mage.core.httpServer.serveFolder('/modsource', './lib/modules');
 }
 
 function mageSetup(cb) {
