@@ -27,6 +27,10 @@ The HTTP server can now serve entire folders and their contents. For more inform
 * `mage.fatalError` is now deprecated, throwing an uncaught exception has the same effect if not caught and allows
   someone to potentially catch those errors if needed.
 
+### Bug Fixes
+
+* A recent refactoring in the command center broke the case where a module would have no "usercommands" folder.
+
 ### Dependency Updates
 
 | dependency           | from   | to    | changes                                                                    |

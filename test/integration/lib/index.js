@@ -16,7 +16,8 @@ mage.addModulesPath('./lib/modules');
 
 var projectModules = [
 	'test',
-	'user'
+	'user',
+	'no-uc'
 ];
 
 mage.useModules(projectModules);
