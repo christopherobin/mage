@@ -1,0 +1,7 @@
+{
+	"name": "no-uc",
+	"main": "client.js",
+	"scripts": [
+		"client.js"
+	]
+}

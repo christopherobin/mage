@@ -19,7 +19,7 @@ describe('Application lifecycle', function () {
 
 
 	it('can start', function (done) {
-		this.timeout(5000);
+		this.timeout(10000);
 
 		cli('start', done);
 	});
@@ -31,7 +31,7 @@ describe('Application lifecycle', function () {
 	});
 
 	it('can stop', function (done) {
-		this.timeout(5000);
+		this.timeout(10000);
 
 		cli('stop', done);
 	});
