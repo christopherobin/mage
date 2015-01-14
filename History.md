@@ -27,6 +27,7 @@
 ### Bug Fixes
 
 * A recent refactoring in the command center broke the case where a module would have no "usercommands" folder.
+* MMRP was no longer acting as optional, when it should have been. This prevented bootstrapping from working correctly.
 
 ### Dependency Updates
 
