@@ -16,6 +16,7 @@
 		"ident",
 		"session",
 		"time",
+		"no-uc",
 		"user"
 	],
 	"scripts": [
@@ -24,6 +25,7 @@
 		"tests/testHttpServer.js",
 		"tests/testIdent.js",
 		"tests/testLoader.js",
+		"tests/testModules.js",
 		"tests/testServerEvents.js",
 		"tests/testSession.js",
 		"tests/testTime.js",
