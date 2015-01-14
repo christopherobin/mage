@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT - ??? Cat
+## v0.46.0 - Cat on grass
 
 ### Web Apps
 
