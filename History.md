@@ -2,6 +2,11 @@
 
 ## vNEXT
 
+### HTTP server
+
+The HTTP server can now serve entire folders and their contents. For more information on how to use
+`mage.core.httpServer.serveFolder()`, have a look at [the documentation](./lib/httpServer/transports/http/Readme.md).
+
 
 
 ## v0.46.0 - Cat on grass
@@ -13,9 +18,6 @@
 * We now respond properly to HEAD requests on these web apps (no content).
 
 ### HTTP server
-
-The HTTP server can now serve entire folders and their contents. For more information on how to use
-`mage.core.httpServer.serveFolder()`, have a look at [the documentation](./lib/httpServer/transports/http/Readme.md).
 
 ***BACKWARDS INCOMPATIBLE CHANGE***
 
