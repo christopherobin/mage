@@ -1,6 +1,10 @@
 # Release history
 
-## vNEXT - ??? Cat
+## vNEXT
+
+
+
+## v0.46.0 - Cat on grass
 
 ### Web Apps
 
@@ -30,6 +34,7 @@ The HTTP server can now serve entire folders and their contents. For more inform
 ### Bug Fixes
 
 * A recent refactoring in the command center broke the case where a module would have no "usercommands" folder.
+* MMRP was no longer acting as optional, when it should have been. This prevented bootstrapping from working correctly.
 
 ### Dependency Updates
 
