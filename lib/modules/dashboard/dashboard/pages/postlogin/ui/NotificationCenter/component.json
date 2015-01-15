@@ -2,7 +2,7 @@
 	"name": "NotificationCenter",
 	"description": "Notification center for the dashboard",
 	"dependencies": {
-		"component/emitter": "1.1.3"
+		"Wizcorp/events": "0.1.3"
 	},
 	"scripts": [
 		"index.js"
