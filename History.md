@@ -9,10 +9,11 @@ The HTTP server can now serve entire folders and their contents. For more inform
 
 ### Dependency Updates
 
-| dependency           | from  | to    | changes                                                               |
-|----------------------|-------|-------|-----------------------------------------------------------------------|
-| mage/mage.js         | 0.2.1 | 0.2.2 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.2)   |
-| mage/loader.js       | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.2.1) |
+| dependency           | from  | to    | changes                                                                   |
+|----------------------|-------|-------|---------------------------------------------------------------------------|
+| mage/mage.js         | 0.2.1 | 0.2.2 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.2)       |
+| mage/loader.js       | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.2.1)     |
+| moment/moment        | 2.8.3 | 2.9.0 | [Release notes](https://github.com/moment/moment/blob/2.9.0/CHANGELOG.md) |
 
 ***PLEASE NOTE***
 
