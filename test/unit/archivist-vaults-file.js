@@ -126,7 +126,7 @@ describe('File Vault', function () {
 			createVault(function (fileVault) {
 				fileVault.get(testFilePath, function (error, data) {
 					assert.ifError(error, 'FileVault#get returned an error');
-
+					assert(data, 'No data was returned');
 					assert.deepEqual(data.content, testFileData.content, 'Write/Read equality mismatch');
 					done();
 				});

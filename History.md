@@ -21,6 +21,12 @@ You should update all your usages of these components to use these latest versio
 component installation may occur. The reason we updated these components was to no longer depend on `component/emitter`
 and `component/inherits`, which were sources of the same file corruption trouble.
 
+### Dependency Updates
+
+| dependency | from  | to    | changes                                                      |
+|------------|-------|-------|--------------------------------------------------------------|
+| jayson     | 1.1.1 | 1.1.3 | [Commit log](https://github.com/tedeh/jayson/commits/v1.1.3) |
+
 
 ## v0.46.0 - Cat on grass
 
