@@ -7,6 +7,19 @@
 The HTTP server can now serve entire folders and their contents. For more information on how to use
 `mage.core.httpServer.serveFolder()`, have a look at [the documentation](./lib/httpServer/transports/http/Readme.md).
 
+### Component updates
+
+| dependency           | from  | to    | changes                                                                   |
+|----------------------|-------|-------|---------------------------------------------------------------------------|
+| mage/mage.js         | 0.2.1 | 0.2.2 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.2)       |
+| mage/loader.js       | 0.2.0 | 0.2.1 | [Release notes](https://github.com/mage/loader.js/releases/tag/0.2.1)     |
+| moment/moment        | 2.8.3 | 2.9.0 | [Release notes](https://github.com/moment/moment/blob/2.9.0/CHANGELOG.md) |
+
+***PLEASE NOTE***
+
+You should update all your usages of these components to use these latest versions. If not, file corruption during
+component installation may occur. The reason we updated these components was to no longer depend on `component/emitter`
+and `component/inherits`, which were sources of the same file corruption trouble.
 
 
 ## v0.46.0 - Cat on grass

@@ -2,7 +2,7 @@
 	"name": "ident",
 	"description": "Authentication for MAGE.",
 	"dependencies": {
-		"mage/mage.js": "0.2.1"
+		"mage/mage.js": "0.2.2"
 	},
 	"scripts": [
 		"client.js"

@@ -3,8 +3,8 @@
 	"description": "Configuration inspector",
 	"dependencies": {
 		"component/escape-html": "1.0.0",
-		"mage/loader.js": "0.2.0",
-		"mage/mage.js": "0.2.1"
+		"mage/loader.js": "0.2.1",
+		"mage/mage.js": "0.2.2"
 	},
 	"scripts": [
 		"index.js"
