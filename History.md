@@ -7,6 +7,11 @@
 The HTTP server can now serve entire folders and their contents. For more information on how to use
 `mage.core.httpServer.serveFolder()`, have a look at [the documentation](./lib/httpServer/transports/http/Readme.md).
 
+### Miscellaneous Changes
+
+* Bootstrapped apps now include a [make run](https://github.com/Wizcorp/AerisCloud/blob/master/docs/walkthrough/requirements.md#make-run)
+  target to run it in the foreground.
+
 ### Component updates
 
 | dependency           | from  | to    | changes                                                                   |
