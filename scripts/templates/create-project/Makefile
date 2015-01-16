@@ -194,6 +194,7 @@ report-coverage: instrument
 define helpRunning
 	@echo "Running:"
 	@echo
+	@echo "  make run               Starts the application in the foreground."
 	@echo "  make start             Starts the application daemonized."
 	@echo "  make stop              Stops the daemonized application."
 	@echo "  make restart           Restarts the daemonized application."
@@ -202,7 +203,10 @@ define helpRunning
 	@echo
 endef
 
-.PHONY: start stop restart reload status
+.PHONY: run start stop restart reload status
+
+run:
+	node .
 
 start:
 	node . start
