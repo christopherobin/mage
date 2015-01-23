@@ -59,6 +59,7 @@
 	"jsDoc": {
 		"checkAnnotations": true,
 		"checkParamNames": true,
+		"checkRedundantParams": true,
 		"requireParamTypes": true,
 		"checkReturnTypes": true,
 		"checkRedundantReturns": true,
