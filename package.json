@@ -67,7 +67,7 @@
 		"istanbul": "0.3.5",
 		"itd": "0.1.3",
 		"jscs": "1.10.0",
-		"jscs-jsdoc": "0.4.0",
+		"jscs-jsdoc": "0.4.3",
 		"jshint": "2.5.11",
 		"mktemp": "0.3.5",
 		"mocha": "2.1.0",
