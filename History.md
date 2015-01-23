@@ -28,9 +28,10 @@ and `component/inherits`, which were sources of the same file corruption trouble
 
 ### Dependency Updates
 
-| dependency | from  | to    | changes                                                      |
-|------------|-------|-------|--------------------------------------------------------------|
-| jayson     | 1.1.1 | 1.1.3 | [Commit log](https://github.com/tedeh/jayson/commits/v1.1.3) |
+| dependency | from  | to    | changes                                                         |
+|------------|-------|-------|-----------------------------------------------------------------|
+| jayson     | 1.1.1 | 1.1.3 | [Commit log](https://github.com/tedeh/jayson/commits/v1.1.3)    |
+| ws         | 0.6.5 | 0.7.0 | [Release notes](https://github.com/einaros/ws/releases/tag/0.7) |
 
 
 ## v0.46.0 - Cat on grass
