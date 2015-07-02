@@ -2,7 +2,7 @@
 	"name": "archivist",
 	"description": "Archivist tool",
 	"dependencies": {
-		"component/escape-html": "1.0.0",
+		"component/escape-html": "v1.0.2",
 		"mage/loader.js": "0.2.1",
 		"mage/mage.js": "0.2.2"
 	},
