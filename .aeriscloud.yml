@@ -2,7 +2,7 @@
 # The name of your game. Please make sure
 # it matches the repository name
 #
-game_name: mage
+project_name: mage
 
 #
 # A unique ID provided by
@@ -31,7 +31,7 @@ id: 17
 # ls ${AERISCLOUD_PATH}/ansible/roles
 # ```
 #
-extra_roles:
+services:
   - couchbase
   - dynamodb
   - elasticsearch
