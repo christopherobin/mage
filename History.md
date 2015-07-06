@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.46.1 - Fastfood Cat
 
 ### HTTP server
 
