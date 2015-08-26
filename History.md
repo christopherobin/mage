@@ -1,5 +1,17 @@
 # Release history
 
+
+## DEVELOP
+
+### Bugfixes & Improvments
+
+* Added code to allow redis db id configuration
+* added getter for mmrpNode
+* added missing prefix msgServer for messagepack messages
+* bumped couchbase peer dependency to latest v1, v1.2.2 (v1.2.0 was broken)
+* added archivist export to get topic apis using mage.core.archivist.getTopicApi
+
+
 ## v0.46.1 - Fastfood Cat
 
 ### HTTP server
