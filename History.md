@@ -6,7 +6,7 @@
 ### Bugfixes & Improvments
 
 * Added an "address" property to state.data when State is instantiated through command center.
-* Fixed JSON-RPC error cases where no request object is present.
+* Fixed JSON-RPC error cases where no request object is present or data is malformed.
 * Added code to allow redis db id configuration
 * Added getter for mmrpNode
 * Added missing prefix msgServer for messagepack messages
