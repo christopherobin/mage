@@ -5,6 +5,8 @@
 
 ### Bugfixes & Improvments
 
+* Added an "address" property to state.data when State is instantiated through command center.
+* Fixed JSON-RPC error cases where no request object is present.
 * Added code to allow redis db id configuration
 * Added getter for mmrpNode
 * Added missing prefix msgServer for messagepack messages
@@ -5526,4 +5528,3 @@ BC breaks:
 * Command centers (multi) are now created per package.
 * Client: mithril options now can contain an IO timeout value and defaultHooks.
 * Client: the Giraffe module has been refactored.
-

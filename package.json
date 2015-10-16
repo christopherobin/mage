@@ -21,6 +21,7 @@
 		"epipebomb": "0.1.1",
 		"ws": "0.7.0",
 		"chalk": "0.5.1",
+		"forwarded-for": "1.0.0",
 		"rumplestiltskin": "0.0.6",
 		"tomes": "0.1.0",
 		"node-uuid": "1.4.2",
