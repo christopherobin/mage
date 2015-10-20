@@ -1,16 +1,46 @@
 var assert = require('assert');
-
 var jayson = require('jayson');
+var http = require('http');
+
 
 describe('commandCenter', function () {
 	describe('json-rpc', function () {
 		var clientOptions = { path: '/test/jsonrpc' };
+
+		function post(data, headers, cb) {
+			var req = http.request({
+				method: 'POST',
+				hostname: clientOptions.hostname,
+				port: clientOptions.port,
+				path: clientOptions.path,
+				headers: headers || {}
+			}, cb);
+
+			req.write(data);
+			req.end();
+		}
 
 		before(function (done) {
 			var address = JSON.parse(process.env.MAGE_APP_ADDRESS);
 			clientOptions.hostname = address.address;
 			clientOptions.port = address.port;
 			done();
+		});
+
+		describe('malformed', function () {
+			it('should cope with a bad content-type', function (done) {
+				post('{}', null, function (res) {
+					assert.strictEqual(res.statusCode, 415); // 415: Unsupported media type
+					done();
+				});
+			});
+
+			it('should cope with a malformed JSON-RPC body', function (done) {
+				post('12', { 'content-type': 'application/json' }, function (res) {
+					assert.strictEqual(res.statusCode, 400);
+					done();
+				});
+			});
 		});
 
 		describe('without session', function () {
