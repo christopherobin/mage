@@ -53,6 +53,7 @@ should work from your project (please do mind the hostname and port):
 
 ```sh
 ./node_modules/mage/node_modules/.bin/wscat --connect "ws://localhost/savvy/sampler/"
+```
 
 You can dig into the dataset by augmenting the path you query. For example, if all you care about is
 the PID of the master process, you may query `http://localhost/savvy/sampler/realtimeish/data/pid/values/master/val`.
