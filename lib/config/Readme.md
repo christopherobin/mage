@@ -6,6 +6,7 @@ can be found in a number of places, and may be either JSON or YAML. In **ascendi
  1. Module `config` files
  2. Game `default` file
  3. Personal configuration file
+ 4. Optional `environment` file
 
 For example, if a field exists in the game default configuration, and also in a module default
 configuration, then the game configuration wins.
@@ -63,6 +64,32 @@ use, sans extension. i.e. If your `NODE_ENV` resolves to `me`, then the personal
 to be used should be called `me.json` or `me.yaml` (don't have both in the directory, just don't).
 Make sure you set this environment variable in your `.bash_profile` or `.profile` so you don't have
 to keep typing it.
+
+## Environment file
+
+The environment file should be called `environment.json` or `environment.yaml` and allows the user
+to define variables in the configuration that might be overridden by environment variables, it takes
+the same format as the original configuration files but instead of a value the name of the environment
+variable should be used.
+
+For example if one wants `database.mysql.url` to be overridden by an optional `DB_URL` variable:
+
+```yaml
+database:
+  mysql:
+    url: DB_URL
+```
+
+Environment variables also support casting to `int`, `float` or `bool` by adding a colon and the
+type right after it inside your `environment` file:
+
+```yaml
+foo:
+  variable_int: VAR_INT:int # will cast VAR_INT to int
+  variable_float: VAR_FLOAT:float
+bar:
+  variable_bool: VAR_BOOL:bool
+```
 
 ## Methods
 

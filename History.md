@@ -5,6 +5,7 @@
 
 ### Bugfixes & Improvments
 
+* Allow configuration from the environment.
 * Added an "address" property to state.data when State is instantiated through command center.
 * Fixed JSON-RPC error cases where no request object is present or data is malformed.
 * Added code to allow redis db id configuration
