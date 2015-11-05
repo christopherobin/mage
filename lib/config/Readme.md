@@ -67,9 +67,10 @@ to keep typing it.
 
 ## Environment file
 
-The environment file allows for the user to define variables in the configuration that might be
-overridden by environment variables, it takes the same format as the original configuration files
-but instead of a value the name of the environment variable should be used.
+The environment file should be called `environment.json` or `environment.yaml` and allows the user
+to define variables in the configuration that might be overridden by environment variables, it takes
+the same format as the original configuration files but instead of a value the name of the environment
+variable should be used.
 
 For example if one wants `database.mysql.url` to be overridden by an optional `DB_URL` variable:
 
