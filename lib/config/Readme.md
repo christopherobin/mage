@@ -80,12 +80,14 @@ database:
 ```
 
 Environment variables also support casting to `int`, `float` or `bool` by adding a colon and the
-type right after it:
+type right after it inside your `environment` file:
 
 ```yaml
-variable_int: VAR_INT:int
-variable_float: VAR_FLOAT:float
-variable_bool: VAR_BOOL:bool
+foo:
+  variable_int: VAR_INT:int # will cast VAR_INT to int
+  variable_float: VAR_FLOAT:float
+bar:
+  variable_bool: VAR_BOOL:bool
 ```
 
 ## Methods
