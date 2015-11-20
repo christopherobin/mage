@@ -33,7 +33,7 @@ describe('Server events', function () {
 	});
 
 	it('can receive events from the server during a user command', function (done) {
-		mage.eventManager.on('syncEvent', function (evtName, data) {
+		mage.eventManager.once('syncEvent', function (evtName, data) {
 			assert.strictEqual(evtName, 'syncEvent');
 			assert.deepEqual(data, { hello: 'world' });
 			done();
@@ -42,26 +42,26 @@ describe('Server events', function () {
 		mage.test.synchronousEvent();
 	});
 
-	describe('WebSocket', function () {
+	describe('HTTP short-polling', function () {
 		it('can receive events from the server after a user command', function (done) {
 			var success = mage.msgServer.setupMessageStream({
 				transports: {
-					websocket: fullConfig.transports.websocket
+					shortpolling: fullConfig.transports.shortpolling
 				},
-				detect: ['websocket']
+				detect: ['shortpolling']
 			});
 
-			assert(success, 'could not configure WebSocket stream');
+			assert(success, 'could not configure HTTP short-polling stream');
 
 			mage.msgServer.start();
 
 			mage.eventManager.once('asyncEvent', function (evtName, data) {
 				assert.strictEqual(evtName, 'asyncEvent');
-				assert.deepEqual(data, { hello: 'WebSocket' });
+				assert.deepEqual(data, { hello: 'ShortPolling' });
 				done();
 			});
 
-			mage.test.asynchronousEvent('WebSocket');
+			mage.test.asynchronousEvent('ShortPolling');
 		});
 	});
 
@@ -88,26 +88,38 @@ describe('Server events', function () {
 		});
 	});
 
-	describe('HTTP short-polling', function () {
+	describe('WebSocket', function () {
 		it('can receive events from the server after a user command', function (done) {
 			var success = mage.msgServer.setupMessageStream({
 				transports: {
-					shortpolling: fullConfig.transports.shortpolling
+					websocket: fullConfig.transports.websocket
 				},
-				detect: ['shortpolling']
+				detect: ['websocket']
 			});
 
-			assert(success, 'could not configure HTTP short-polling stream');
+			assert(success, 'could not configure WebSocket stream');
 
 			mage.msgServer.start();
 
 			mage.eventManager.once('asyncEvent', function (evtName, data) {
 				assert.strictEqual(evtName, 'asyncEvent');
-				assert.deepEqual(data, { hello: 'ShortPolling' });
+				assert.deepEqual(data, { hello: 'WebSocket' });
 				done();
 			});
 
-			mage.test.asynchronousEvent('ShortPolling');
+			mage.test.asynchronousEvent('WebSocket');
+		});
+	});
+
+	describe('Server gone behavior', function () {
+		it('Disconnects session when its host cannot be located', function (done) {
+			mage.eventManager.once('session.unset', function (evtName, data) {
+				assert.strictEqual(evtName, 'session.unset');
+				assert.strictEqual(data, 'hostGone');
+				done();
+			});
+
+			mage.test.corruptSessionHost();
 		});
 	});
 });

@@ -33,7 +33,7 @@ describe('Message Store', function () {
 		var emitted = 0;
 		var ids;
 
-		store.on('forward', function (payload, address, targetRoute) {
+		store.setForwarder(function (payload, address, targetRoute) {
 			emitted += 1;
 			assert.equal(address, 'def');
 			assert.equal(payload.length, 3 * 2 * emitted);  // msgId + msg + msgId + msg + msgId + msg
@@ -49,12 +49,16 @@ describe('Message Store', function () {
 		assert(store.isConnected('def'));
 
 		store.send('def', ['hello', 'world', '1']);
+		store.forward('def');
 		assert(store.isConnected('def'));
 		store.send('def', ['goodbye', 'world', '1']);
+		store.forward('def');
 		assert(store.isConnected('def'));
 		store.send('def', ['hello', 'world', '2']);
+		store.forward('def');
 		assert(store.isConnected('def'));
 		store.send('def', ['goodbye', 'world', '2']);
+		store.forward('def');
 		assert(store.isConnected('def'));
 		assert.equal(emitted, 4);
 
@@ -62,39 +66,9 @@ describe('Message Store', function () {
 		store.confirm('def', ids);
 		emitted = 0;
 		store.send('def', ['goodbye', 'world', '2']);
+		store.forward('def');
 		assert(store.isConnected('def'));
 		assert.equal(emitted, 1);
-
-		store.close();
-	});
-
-	it('can broadcast to many people in the store', function () {
-		var store = new Store();
-		var aAddress = 'def';
-		var bAddress = 'uvw';
-		var aRoute = ['abc'];
-		var bRoute = ['xyz'];
-		var emitted = 0;
-
-		store.on('forward', function (payload, address, targetRoute) {
-			emitted += 1;
-			assert.equal(payload.length, 4);  // msgId + msg + msgId + msg
-
-			if (address === 'def') {
-				assert.deepEqual(aRoute, targetRoute);
-			} else {
-				assert.equal(address, 'uvw');
-				assert.deepEqual(bRoute, targetRoute);
-			}
-		});
-
-		store.connectAddress(aRoute, aAddress, 'never');
-		store.connectAddress(bRoute, bAddress, 'never');
-		assert(store.isConnected('def'));
-		assert(store.isConnected('uvw'));
-
-		store.broadcast(['hello', 'world']);
-		assert.equal(emitted, 2);
 
 		store.close();
 	});
@@ -107,7 +81,7 @@ describe('Message Store', function () {
 		var emitted = 0;
 		var ids;
 
-		store.on('forward', function (payload, address, targetRoute) {
+		store.setForwarder(function (payload, address, targetRoute) {
 			emitted += 1;
 			assert.equal(address, 'def');
 			assert.equal(payload.length, 3 * 2 * emitted);
@@ -120,14 +94,16 @@ describe('Message Store', function () {
 		});
 
 		store.connectAddress(route, address, 'ondelivery');
-		assert(store.isConnected('def'));
+		assert(store.isConnected(address));
 
-		store.send('def', ['hello', 'world', '1']);
-		assert(!store.isConnected('def'));
+		store.send(address, ['hello', 'world', '1']);
+		store.forward(address);
+		assert(!store.isConnected(address));
 		assert.equal(emitted, 1);
 
-		store.send('def', ['hello', 'world', '1']);
-		assert(!store.isConnected('def'));
+		store.send(address, ['hello', 'world', '1']);
+		store.forward(address);
+		assert(!store.isConnected(address));
 		assert.equal(emitted, 1);
 
 		store.close();
@@ -142,7 +118,7 @@ describe('Message Store', function () {
 		var ids;
 		var expectedLen = 0;
 
-		store.on('forward', function (payload, address, targetRoute) {
+		store.setForwarder(function (payload, address, targetRoute) {
 			emitted += 1;
 
 			assert.equal(address, 'def');
@@ -156,19 +132,21 @@ describe('Message Store', function () {
 		});
 
 		store.connectAddress(route, address, 'always');
+		store.forward(address);
 		assert(!store.isConnected('def'));
 		assert.equal(emitted, 1);
 
-		store.send('def', ['foo']);
+		store.send(address, ['foo']);
 		expectedLen += 2;
-		store.send('def', ['foo']);
+		store.send(address, ['foo']);
 		expectedLen += 2;
-		store.send('def', ['foo']);
+		store.send(address, ['foo']);
 		expectedLen += 2;
-		assert(!store.isConnected('def'));
+		assert(!store.isConnected(address));
 		assert.equal(emitted, 1);
 
 		store.connectAddress(route, address, 'always');
+		store.forward(address);
 		assert.equal(emitted, 2);
 
 		store.close();
