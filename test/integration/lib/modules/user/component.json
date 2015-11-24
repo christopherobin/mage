@@ -1,7 +1,7 @@
 {
 	"name": "user",
 	"dependencies": {
-		"mage/mage.js": "0.2.4"
+		"mage/mage.js": "0.2.5"
 	},
 	"main": "client.js",
 	"scripts": [

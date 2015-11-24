@@ -3,7 +3,7 @@
 	"description": "Login screen for MAGE dashboard.",
 	"dependencies": {
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.4"
+		"mage/mage.js": "0.2.5"
 	},
 	"local": [
 		"logger",

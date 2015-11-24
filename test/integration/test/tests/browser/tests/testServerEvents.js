@@ -75,6 +75,7 @@ describe('Server events', function () {
 			});
 
 			assert(success, 'could not configure HTTP long-polling stream');
+			assert.equal(mage.msgServer.stream.constructor.name, 'HttpPollingClient');
 
 			mage.msgServer.start();
 
@@ -98,6 +99,7 @@ describe('Server events', function () {
 			});
 
 			assert(success, 'could not configure WebSocket stream');
+			assert.equal(mage.msgServer.stream.constructor.name, 'WebSocketClient');
 
 			mage.msgServer.start();
 
