@@ -3,7 +3,7 @@
 	"description": "Asset preview and edit library",
 	"dependencies": {
 		"Wizcorp/events": "0.1.3",
-		"mage/mage.js": "0.2.3"
+		"mage/mage.js": "0.2.4"
 	},
 	"local": [
 		"forms",

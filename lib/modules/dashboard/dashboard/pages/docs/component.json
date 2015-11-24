@@ -3,7 +3,7 @@
 	"description": "Documentation page",
 	"dependencies": {
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.3"
+		"mage/mage.js": "0.2.4"
 	},
 	"styles": [
 		"styles.css"

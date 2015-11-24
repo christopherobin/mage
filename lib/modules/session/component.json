@@ -3,7 +3,7 @@
 	"description": "Sessions for MAGE.",
 	"dependencies": {
 		"Wizcorp/events": "0.1.3",
-		"mage/mage.js": "0.2.3"
+		"mage/mage.js": "0.2.4"
 	},
 	"scripts": [
 		"client.js"

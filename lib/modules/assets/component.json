@@ -3,7 +3,7 @@
 	"description": "Asset manager for MAGE.",
 	"dependencies": {
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.3"
+		"mage/mage.js": "0.2.4"
 	},
 	"scripts": [
 		"client.js"

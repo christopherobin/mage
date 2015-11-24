@@ -1,7 +1,7 @@
 {
 	"name": "ident-userpass",
 	"dependencies": {
-		"mage/mage.js": "0.2.3"
+		"mage/mage.js": "0.2.4"
 	},
 	"local": [
 		"forms"
