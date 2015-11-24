@@ -140,7 +140,7 @@ test-unit:
 test-integration:
 	@echo Running integration tests
 	@echo
-	NODE_ENV="$(NODE_ENV),unit-tests" node $(TEST_INTEGRATION) autorun
+	NODE_ENV="$(NODE_ENV),unit-tests" node $(TEST_INTEGRATION) autorun || node $(TEST_INTEGRATION) -v autorun
 
 
 report-complexity:
