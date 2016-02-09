@@ -36,7 +36,7 @@ The example above shows you all patterns for authentication. Feel free to name t
 you want. See the individual [engines](#engines)' documentation for more details on how to configure
 them.
 
-You'll need to define the topic API in `lib/archivist/lindex.js` a typical API would be:
+You'll need to define the topic API in `lib/archivist/index.js` a typical API would be:
 
 ``` javascript
 exports.ident = {
@@ -100,7 +100,7 @@ var credentials = {
 
 // you use the `login` method to login and pass it the name of the engine as you have configured it.
 
-mage.ident.login('userpass', credentials, function (error, data) {
+mage.ident.login('userlogin', credentials, function (error, data) {
 	if (error) {
 		return window.alert(error);
 	}

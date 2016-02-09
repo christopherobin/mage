@@ -55,7 +55,7 @@ wouldn't be able to do much with that.
 To login anonymously and get a session, please run the following code.
 
 ```javascript
-mage.ident.login('anonymous', null, { access: 'user' }, function (error, user) {
+mage.ident.login('anonymous', null, function (error, user) {
 	if (error) {
 		return console.error('Error logging in:', error);
 	}
