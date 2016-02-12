@@ -4,7 +4,7 @@
 	"dependencies": {
 		"component/escape-html": "v1.0.2",
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.2"
+		"mage/mage.js": "0.2.5"
 	},
 	"scripts": [
 		"index.js"

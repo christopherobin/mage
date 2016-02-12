@@ -3,7 +3,7 @@
 	"description": "A module to add a copy to clipboard button to elements",
 	"dependencies": {
 		"component/clipboard-dom": "v0.0.5",
-		"mage/mage.js": "0.2.2"
+		"mage/mage.js": "0.2.5"
 	},
 	"scripts": [
 		"index.js"
