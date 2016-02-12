@@ -14,7 +14,12 @@
 * Bumped couchbase peer dependency to latest v1, v1.2.2 (v1.2.0 was broken)
 * Added archivist export to get topic apis using mage.core.archivist.getTopicApi
 * Added additional configuration to archivist vaults allowing the user to disable the drop operation. This is very useful when you want to keep static data around but want to keep your makefile simple.
-* Bumped mage.js (javascript client) version to 0.2.5
+
+### Component updates
+
+| dependency           | from  | to    | changes
+|----------------------|-------|-------|-----------------------------------------------------------------------------------|
+| mage/mage.js         | 0.2.2 | 0.2.5 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.5)               |
 
 
 ## v0.46.1 - Fastfood Cat
