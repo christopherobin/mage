@@ -1,9 +1,10 @@
 # Release history
 
+## v0.47.0 - Waiting for ages cat
 
-## DEVELOP
+It's been a while, but there's a new release out with a bunch of fixes.
 
-### Bugfixes & Improvments
+### Bugfixes & Improvements
 
 * Allow configuration from the environment.
 * Added an "address" property to state.data when State is instantiated through command center.
