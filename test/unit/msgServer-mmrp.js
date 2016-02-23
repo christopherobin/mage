@@ -129,6 +129,22 @@ describe('MMRP', function () {
 			});
 		});
 
+		it('fires callbacks after send', function (done) {
+			var relays = createNetwork();
+			announceNetwork(relays, function () {
+				var a = relays[0];
+
+				a.send(new Envelope('self', 'hello', [a.identity]), 1, function (error) {
+					assert.ifError(error);
+
+					a.send(new Envelope('self', 'hello', ['foobar']), 1, function (error) {
+						assert(error);
+						done();
+					});
+				});
+			});
+		});
+
 		it('broadcasts', function (done) {
 			var relays = createNetwork();
 			announceNetwork(relays, function () {

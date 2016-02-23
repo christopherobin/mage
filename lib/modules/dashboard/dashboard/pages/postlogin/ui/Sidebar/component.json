@@ -3,7 +3,7 @@
 	"description": "The UI Sidebar",
 	"dependencies": {
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.5"
+		"mage/mage.js": "0.2.6"
 	},
 	"scripts": [
 		"index.js"

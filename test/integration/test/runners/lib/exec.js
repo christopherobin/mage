@@ -7,14 +7,14 @@ function exec(filePath, args, options, cb) {
 	var proc = spawn(filePath, args, { stdio: 'inherit', env: options.env || process.env });
 	var timer;
 
-	proc.on('exit', function (code) {
+	proc.on('exit', function (code, signal) {
 		clearTimeout(timer);
 
 		if (code === 0) {
 			return cb();
 		}
 
-		return cb(new Error('Execution failed: ' + code));
+		return cb(new Error('Execution failed: ' + (code || signal)));
 	});
 
 	if (options.timeout) {

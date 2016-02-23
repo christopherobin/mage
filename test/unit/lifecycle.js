@@ -10,13 +10,30 @@ var cwd = path.resolve(path.join(__dirname, '../integration'));
 
 describe('Application lifecycle', function () {
 	function cli(args, cb) {
+		var output = '';
+
 		var proc = spawn('node', ['.'].concat(args), { cwd: cwd });
+
+		proc.stdout.on('data', function (data) {
+			output += data;
+		});
+
+		proc.stderr.on('data', function (data) {
+			output += data;
+		});
+
 		proc.on('exit', function (code) {
-			assert.strictEqual(code, 0);
+			if (code !== 0) {
+				process.stdout.write('Server log:\n');
+				process.stdout.write('====================================\n');
+				process.stdout.write(output);
+				process.stdout.write('\n====================================\n');
+			}
+
+			assert.strictEqual(code, 0, 'Exit code must be 0, but is ' + code);
 			cb();
 		});
 	}
-
 
 	it('can start', function (done) {
 		this.timeout(10000);
@@ -286,4 +303,3 @@ describe('Shutting down', function () {
 		});
 	});
 });
-
