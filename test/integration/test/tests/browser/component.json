@@ -3,13 +3,13 @@
 	"description": "Browser integration tests",
 	"dependencies": {
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.5",
+		"mage/mage.js": "0.2.6",
 		"timoxley/assert": "*",
 		"Wizcorp/node-tomes": "0.1.0"
 	},
 	"paths": [
 		"../../../lib/modules",
-		"../../../node_modules/mage/lib/modules"
+		"../../../../../lib/modules"
 	],
 	"local": [
 		"archivist",

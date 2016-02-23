@@ -93,7 +93,7 @@ endef
 
 .PHONY: test report test-lint test-style test-unit test-integration report-complexity report-coverage
 
-test: test-lint test-style test-unit test-integration
+test: test-lint test-style test-component test-unit test-integration
 report: report-complexity report-coverage
 
 define lintPath
@@ -142,6 +142,9 @@ test-integration:
 	@echo
 	NODE_ENV="$(NODE_ENV),unit-tests" node $(TEST_INTEGRATION) autorun || node $(TEST_INTEGRATION) -v autorun
 
+test-component:
+	@echo "Testing components"
+	$(BIN)/component-hint -rw $$(cd ./test/integration && ./scripts/getApplicationComponentPaths.js | sed 's/^/.\/test\/integration\//');
 
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)

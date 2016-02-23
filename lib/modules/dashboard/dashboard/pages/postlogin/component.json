@@ -3,7 +3,7 @@
 	"description": "Page that holds some crucial libraries (UI) that are needed once logged in.",
 	"dependencies": {
 		"mage/loader.js": "0.2.1",
-		"mage/mage.js": "0.2.5"
+		"mage/mage.js": "0.2.6"
 	},
 	"local": [
 		"Router",

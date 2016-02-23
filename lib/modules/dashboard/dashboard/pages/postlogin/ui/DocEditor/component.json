@@ -2,7 +2,7 @@
 	"name": "DocEditor",
 	"description": "Document editor",
 	"dependencies": {
-		"mage/mage.js": "0.2.5",
+		"mage/mage.js": "0.2.6",
 		"Wizcorp/node-tomes": "0.1.0"
 	},
 	"scripts": [
