@@ -1,9 +1,10 @@
 # Release history
 
+## v0.47.0 - Waiting for ages cat
 
-## DEVELOP
+It's been a while, but there's a new release out with a bunch of fixes.
 
-### Bugfixes & Improvments
+### Bugfixes & Improvements
 
 * Allow configuration from the environment.
 * Added an "address" property to state.data when State is instantiated through command center.
@@ -14,6 +15,12 @@
 * Bumped couchbase peer dependency to latest v1, v1.2.2 (v1.2.0 was broken)
 * Added archivist export to get topic apis using mage.core.archivist.getTopicApi
 * Added additional configuration to archivist vaults allowing the user to disable the drop operation. This is very useful when you want to keep static data around but want to keep your makefile simple.
+
+### Component updates
+
+| dependency           | from  | to    | changes
+|----------------------|-------|-------|-----------------------------------------------------------------------------------|
+| mage/mage.js         | 0.2.2 | 0.2.5 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.5)               |
 
 
 ## v0.46.1 - Fastfood Cat
