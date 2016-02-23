@@ -144,7 +144,7 @@ test-integration:
 
 test-component:
 	@echo "Testing components"
-	$(BIN)/component-hint -rw $$(cd ./test/integration && ./scripts/getApplicationComponentPaths.js | sed 's/^/.\/test\/integration\//');
+	$(BIN)/component-hint -r $$(cd ./test/integration && ./scripts/getApplicationComponentPaths.js | sed 's/^/.\/test\/integration\//');
 
 report-complexity:
 	$(BIN)/plato -r -d $(COMPLEXITY_REPORT) -l .jshintrc $(LIB)
