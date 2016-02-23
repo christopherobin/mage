@@ -1,5 +1,17 @@
 # Release history
 
+## Current
+
+* Added test-component target to make file and to tests
+* Fixed mmrp issue where user sessions remain in tact after a server restart. This would break message passing
+
+### Component updates
+
+| dependency           | from  | to    | changes
+|----------------------|-------|-------|-----------------------------------------------------------------------------------|
+| mage/mage.js         | 0.2.5 | 0.2.6 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.6)               |
+
+
 ## v0.47.0 - Waiting for ages cat
 
 It's been a while, but there's a new release out with a bunch of fixes.
