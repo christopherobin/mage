@@ -9,6 +9,7 @@ var identity = require('os').hostname();
 
 function createCounter(n, test, cb) {
 	var counted = 0;
+	var error = null;
 
 	if (!cb) {
 		cb = test;
@@ -21,14 +22,20 @@ function createCounter(n, test, cb) {
 	return function () {
 		counted += 1;
 
-		assert(counted <= n, 'Event fired more than ' + n + ' times');
+		try {
+			assert(counted <= n, 'Event fired more than ' + n + ' times');
+		} catch (e) {
+			error = e;
+		}
 
 		if (test) {
 			test.apply(null, arguments);
 		}
 
 		if (counted === n) {
-			cb();
+			setImmediate(function () {
+				cb(error);
+			});
 		}
 	};
 }
@@ -40,7 +47,108 @@ function createUri(port) {
 
 
 describe('MMRP', function () {
-	describe('relay-client in multi-relay network', function () {
+	describe('multi-client in single-relay network', function () {
+		function createNetwork(clientCount) {
+			clientCount = clientCount || 5;
+
+			var result = {
+				clientCount: clientCount,
+				relay: null,
+				clients: []
+			};
+
+			result.relay = new MmrpNode('relay', { host: '127.0.0.1', port: '*' }, 'clusterSingle');
+
+			for (var i = 0; i < clientCount; i += 1) {
+				result.clients.push(new MmrpNode('client', { host: '127.0.0.1', port: '*' }, 'clusterSingle'));
+			}
+
+			return result;
+		}
+
+		function destroyNetwork(network) {
+			network.relay.close();
+
+			network.clients.forEach(function (client) {
+				client.close();
+			});
+		}
+
+		function announceNetwork(network, cb) {
+			// clients will handshake to their own relay
+
+			var count = createCounter(network.clientCount, function (error) {
+				assert.ifError(error);
+
+				// make sure all connections make sense
+
+				var relayIds = Object.keys(network.relay.relays);    // incoming connections from peers
+				var clientIds = Object.keys(network.relay.clients);  // clients of this relay
+
+				assert.equal(relayIds.length, 0);
+				assert.equal(clientIds.length, network.clientCount);
+
+				cb();
+			});
+
+
+			// check handshake counts
+
+			network.clients.forEach(function (client) {
+				client.on('handshake', function () {
+					throw new Error('Client received a handshake');
+				});
+			});
+
+			network.relay.on('handshake', count);
+
+
+			// initiate handshakes
+
+			network.clients.forEach(function (client) {
+				client.relayUp(createUri(network.relay.routerPort), network.relay.clusterId);
+			});
+
+			network.relay.relayUp(createUri(network.relay.routerPort), network.relay.clusterId);
+		}
+
+		it('instantiates', function () {
+			destroyNetwork(createNetwork());
+		});
+
+		it('connects', function (done) {
+			var network = createNetwork();
+			announceNetwork(network, function () {
+				destroyNetwork(network);
+				done();
+			});
+		});
+
+		it('broadcasts', function (done) {
+			var network = createNetwork();
+			announceNetwork(network, function () {
+				var expected = network.clients.length + 1;
+
+				function test(envelope) {
+					assert.strictEqual(envelope.messages[0].toString(), 'cruel world');
+				}
+
+				var count = createCounter(expected, test, function (error) {
+					destroyNetwork(network);
+					done(error);
+				});
+
+				network.relay.on('delivery.bye', count);
+				network.clients.forEach(function (client) {
+					client.on('delivery.bye', count);
+				});
+
+				network.clients[0].broadcast(new Envelope('bye', 'cruel world'));
+			});
+		});
+	});
+
+	describe('single-client in multi-relay network', function () {
 		function createNetwork(relayCount) {
 			relayCount = relayCount || 5;
 
@@ -63,7 +171,9 @@ describe('MMRP', function () {
 			var connectionsPerRelay = relays.length - 1;  // the other relays
 			var expected = relays.length * connectionsPerRelay;
 
-			var count = createCounter(expected, function () {
+			var count = createCounter(expected, function (error) {
+				assert.ifError(error);
+
 				// make sure all connections make sense
 
 				relays.forEach(function (relay) {
@@ -154,9 +264,9 @@ describe('MMRP', function () {
 					assert.strictEqual(envelope.messages[0].toString(), 'cruel world');
 				}
 
-				var count = createCounter(expected, test, function () {
+				var count = createCounter(expected, test, function (error) {
 					destroyNetwork(relays);
-					done();
+					done(error);
 				});
 
 				for (var i = 0; i < relays.length; i += 1) {
@@ -218,7 +328,9 @@ describe('MMRP', function () {
 				network.relayCount * network.clientsPerRelay +
 				network.relayCount * (network.relayCount - 1);
 
-			var count = createCounter(expected, function () {
+			var count = createCounter(expected, function (error) {
+				assert.ifError(error);
+
 				// make sure all connections make sense
 
 				network.relays.forEach(function (relay) {
@@ -319,10 +431,9 @@ describe('MMRP', function () {
 			announceNetwork(network, function () {
 				var expected = network.relayCount + network.relayCount * network.clientsPerRelay;
 
-				var count = createCounter(expected, function () {
+				var count = createCounter(expected, function (error) {
 					destroyNetwork(network);
-
-					done();
+					done(error);
 				});
 
 				network.relays.forEach(function (relay, index) {
@@ -342,10 +453,9 @@ describe('MMRP', function () {
 			announceNetwork(network, function () {
 				var expected = network.relayCount + network.relayCount * network.clientsPerRelay;
 
-				var count = createCounter(expected, function () {
+				var count = createCounter(expected, function (error) {
 					destroyNetwork(network);
-
-					done();
+					done(error);
 				});
 
 				network.relays.forEach(function (relay, index) {
