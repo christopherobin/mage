@@ -1,6 +1,4 @@
 apps:
-    dev:
-        access: admin
     test:
         access: admin
         delivery:
