@@ -485,7 +485,7 @@ Options example (sorted by id (descending), page 3 with 10 results per page):
 ### Distributing changes to all vaults
 
 ```javascript
-archivist.distribute(function (error) { });
+archivist.distribute(function (distributeError, operationErrors) { });
 ```
 
 This takes all the queued up operations (add, set, del, touch) and executes them on each of
