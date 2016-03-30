@@ -403,6 +403,45 @@ describe('MMRP', function () {
 			});
 		});
 
+		it('can detect sendError (after dropped relay)', function (done) {
+			var network = createNetwork();
+			announceNetwork(network, function () {
+				var route = [
+					network.relays[0].identity,
+					network.relays[1].identity,
+					network.clients[1][0].identity
+				];
+
+				var completed = false;
+				network.clients[0][0].on('delivery.mmrp.sendError', function (envelope) {
+					completed = true;
+					destroyNetwork(network);
+					done();
+				});
+
+				function sendLoop() {
+					if (completed) {
+						return;
+					}
+
+					network.clients[0][0].send(new Envelope(
+						'alltheway',
+						'hello',
+						route,
+						[network.clients[0][0].identity],
+						'TRACK_ROUTE'
+					), 1, function () {
+						setTimeout(sendLoop, 100);
+					});
+				}
+
+				network.relays[1].close();
+				network.relays[0].relayDown(createUri(network.relays[1].routerPort));
+
+				sendLoop();
+			});
+		});
+
 		it('can send many buffers at once', function (done) {
 			var network = createNetwork();
 			announceNetwork(network, function () {
