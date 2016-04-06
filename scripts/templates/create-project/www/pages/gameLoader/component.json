@@ -2,7 +2,7 @@
 	"name": "gameLoader",
 	"description": "Game's loader page.",
 	"dependencies": {
-		"mage/loader.js": "0.2.0"
+		"mage/loader.js": "0.2.1"
 	},
 	"scripts": [
 		"index.js"

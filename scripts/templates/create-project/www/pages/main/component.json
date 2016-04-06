@@ -2,7 +2,7 @@
 	"name": "main",
 	"description": "The page that runs the actual game",
 	"dependencies": {
-		"mage/loader.js": "0.1.2"
+		"mage/loader.js": "0.2.1"
 	},
 	"templates": [
 		"page.html"

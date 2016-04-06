@@ -1,9 +1,12 @@
 # Release history
 
-## Current
+## vNEXT
 
-* Added test-component target to make file and to tests
-* Fixed mmrp issue where user sessions remain in tact after a server restart. This would break message passing
+### Bugfixes and improvements
+
+* Added test-component target to make file and to tests.
+* Fixed mmrp issue where user sessions remain intact after a server restart. This would break message passing.
+* Fixed bootstrap template component versions.
 
 ### Component updates
 
