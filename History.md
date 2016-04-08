@@ -10,9 +10,16 @@
 
 ### Component updates
 
-| dependency           | from  | to    | changes
-|----------------------|-------|-------|-----------------------------------------------------------------------------------|
-| mage/mage.js         | 0.2.5 | 0.2.6 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.6)               |
+| dependency          | from  | to    | changes
+|---------------------|-------|-------|------------------------------------------------------------------------------|
+| mage/mage.js        | 0.2.5 | 0.2.6 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.6)          |
+| Wizcorp/node-tomes  | 0.1.0 | 0.2.1 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md) |
+
+### Dependency Updates
+
+| dependency          | from  | to    | changes                                                                      |
+|---------------------|-------|-------|------------------------------------------------------------------------------|
+| tomes               | 0.1.0 | 0.2.1 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md) |
 
 
 ## v0.47.0 - Waiting for ages cat
