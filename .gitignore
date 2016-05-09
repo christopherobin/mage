@@ -1,5 +1,7 @@
 /node_modules
 /components
+/test/integration/components
+/test/integration/node_modules
 /test/browser/build
 /plato-report
 /html-report
