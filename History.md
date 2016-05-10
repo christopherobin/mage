@@ -10,6 +10,7 @@
 * Fixed archivist issue where cache wasn't checked on get after a set operation has been performed
 * Added archivist operation errors to distribute callback
 * Added couchbase create & drop database (bucket) capabilities
+* Added daemon timeouts to configuration
 
 ### Component updates
 
