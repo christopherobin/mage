@@ -32,14 +32,14 @@ id: 17
 # ```
 #
 services:
- - couchbase
- - dynamodb
- - elasticsearch
- - redis
- - shokoti
- - zookeeper
- - xtradb
- - collector
+  - couchbase
+  - dynamodb
+  - elasticsearch
+  - redis
+  - shokoti
+  - zookeeper
+  - xtradb
+  - collector
 
 # There is no AerisCloud playbook roles for these services on centos7, temporary disable it until a patch is done.
 #  - dynamodb
