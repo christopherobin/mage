@@ -82,5 +82,5 @@ basebox_url: http://boxes-aeriscloud.wizcorp.jp/meta
 # development here
 #
 timezone: Asia/Tokyo
-
+node_version: v0.10.35
 xtradb_version: "56"
