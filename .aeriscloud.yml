@@ -61,7 +61,7 @@ services:
 #
 boxes:
   - name: centos
-    basebox: base/centos-7.2
+    basebox: base/centos-6.6
     cpu: 1
     ram: 2048
 basebox_url: http://boxes-aeriscloud.wizcorp.jp/meta
