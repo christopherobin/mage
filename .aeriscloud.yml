@@ -41,11 +41,6 @@ services:
   - xtradb
   - collector
 
-# There is no AerisCloud playbook roles for these services on centos7, temporary disable it until a patch is done.
-#  - dynamodb
-#  - elasticsearch
-#  - shokoti
-
 #
 # The infrastructures you will
 # deploy to in production.
