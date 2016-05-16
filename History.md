@@ -7,6 +7,10 @@
 * Added test-component target to make file and to tests.
 * Fixed mmrp issue where user sessions remain intact after a server restart. This would break message passing.
 * Fixed bootstrap template component versions.
+* Fixed archivist issue where cache wasn't checked on get after a set operation has been performed
+* Added archivist operation errors to distribute callback
+* Added couchbase create & drop database (bucket) capabilities
+* Added daemon timeouts to configuration
 
 ### Component updates
 
@@ -17,9 +21,11 @@
 
 ### Dependency Updates
 
-| dependency          | from  | to    | changes                                                                      |
-|---------------------|-------|-------|------------------------------------------------------------------------------|
-| tomes               | 0.1.0 | 0.2.1 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md) |
+| dependency          | from   | to      | changes                                                                              |
+|---------------------|--------|---------|--------------------------------------------------------------------------------------|
+| tomes               | 0.1.0  | 0.2.1   | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md)         |
+| couchbase           | 1.2.2  | 2.1.6   |                                                                                      |
+| zmq                 | ^2.8.0 | ^2.14.0 | [Release notes](https://github.com/JustinTulloss/zeromq.node/blob/2.14.0/History.md) |
 
 
 ## v0.47.0 - Waiting for ages cat
