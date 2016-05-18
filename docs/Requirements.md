@@ -33,8 +33,8 @@ To install NVM, please follow the instructions in
 To then install Node.js, please run:
 
 ```sh
-nvm install 0.10
-nvm use 0.10
+nvm install 5
+nvm use 5
 ```
 
 See also:
