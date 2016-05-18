@@ -1,6 +1,10 @@
 # Release history
 
-## vNEXT
+## v0.48.0
+
+### Node.js
+
+MAGE is now compatible with Node.js 0.10, 0.12, 4 and 5!
 
 ### Bugfixes and improvements
 
