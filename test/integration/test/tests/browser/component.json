@@ -5,7 +5,7 @@
 		"mage/loader.js": "0.2.1",
 		"mage/mage.js": "0.2.6",
 		"timoxley/assert": "*",
-		"Wizcorp/node-tomes": "0.2.1"
+		"Wizcorp/node-tomes": "0.2.3"
 	},
 	"paths": [
 		"../../../lib/modules",

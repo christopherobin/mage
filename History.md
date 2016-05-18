@@ -11,21 +11,26 @@
 * Added archivist operation errors to distribute callback
 * Added couchbase create & drop database (bucket) capabilities
 * Added daemon timeouts to configuration
+* Changed memwatch dependency to memwatch-next as it is an up to date fork
+* Changed mdns2 back to mdns as it has been updated back with mdns2 changes
 
 ### Component updates
 
 | dependency          | from  | to    | changes
 |---------------------|-------|-------|------------------------------------------------------------------------------|
 | mage/mage.js        | 0.2.5 | 0.2.6 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.6)          |
-| Wizcorp/node-tomes  | 0.1.0 | 0.2.1 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md) |
+| Wizcorp/node-tomes  | 0.1.0 | 0.2.3 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.3/HISTORY.md) |
 
 ### Dependency Updates
 
 | dependency          | from   | to      | changes                                                                              |
 |---------------------|--------|---------|--------------------------------------------------------------------------------------|
-| tomes               | 0.1.0  | 0.2.1   | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md)         |
+| tomes               | 0.1.0  | 0.2.3   | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.3/HISTORY.md)         |
 | couchbase           | 1.2.2  | 2.1.6   |                                                                                      |
-| zmq                 | ^2.8.0 | ^2.14.0 | [Release notes](https://github.com/JustinTulloss/zeromq.node/blob/2.14.0/History.md) |
+| zmq                 | ^2.8.0 | ~2.14.0 | [Release notes](https://github.com/JustinTulloss/zeromq.node/blob/2.14.0/History.md) |
+| heapdump            | 0.3.3  | 0.3.7   |                                                                                      |
+| sqlite3             | ~3.0.0 | ~3.1.0  |                                                                                      |
+| ldapjs              | 0.6.3  | 0.7.1   |                                                                                      |
 
 
 ## v0.47.0 - Waiting for ages cat

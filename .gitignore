@@ -1,8 +1,8 @@
 /node_modules
 /components
+/test/browser/build
 /test/integration/components
 /test/integration/node_modules
-/test/browser/build
 /plato-report
 /html-report
 /tmp
@@ -18,7 +18,6 @@
 .pidfile
 npm-debug.log
 .digest-cache.json
-test/integration/config/*
 check.txt
 .vagrant
 *.heapsnapshot
