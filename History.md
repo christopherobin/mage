@@ -1,6 +1,6 @@
 # Release history
 
-## v0.48.0
+## v0.48.0 - Modern Node Cat
 
 ### Node.js
 
