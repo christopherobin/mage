@@ -1,5 +1,22 @@
 # Release history
 
+## vNext
+
+### Bugfixes and improvements
+
+
+### Component updates
+
+| dependency          | from  | to    | changes
+|---------------------|-------|-------|------------------------------------------------------------------------------|
+
+### Dependency Updates
+
+| dependency          | from   | to      | changes                                                                   |
+|---------------------|--------|---------|---------------------------------------------------------------------------|
+| component-x         | 0.1.0  | ~0.1.1  |                                                                           |
+
+
 ## v0.48.0 - Modern Node Cat
 
 ### Node.js

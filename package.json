@@ -29,7 +29,7 @@
 		"panopticon": "0.2.0",
 		"js-yaml": "3.2.5",
 		"handlebars": "2.0.0",
-		"component-x": "0.1.0",
+		"component-x": "~0.1.1",
 		"component-builder-x": "0.1.3",
 		"component-proxy-install": "0.4.1",
 		"component-require": "0.3.1",
