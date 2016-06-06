@@ -169,7 +169,8 @@ describe('Archivist', function () {
 					assert.ifError(error);
 					assert.strictEqual(exists, true);
 
-					mage.eventManager.removeListener('io.archivist.rawExists', listener);
+					mage.eventManager.removeListener('io.archivist.' +
+						'rawExists', listener);
 					done();
 				});
 			});
@@ -229,7 +230,7 @@ describe('Archivist', function () {
 			mage.archivist.distribute(function (error) {
 				assert.ifError(error);
 
-				mage.session.loginAsActor(userId, 'user', function (error) {
+				mage.session.loginAsActor(userId, ['user'], function (error) {
 					assert.ifError(error);
 					mage.archivist.get('shardTest', { userId: userId }, { optional: true, maxAge: 0 }, function (error, result) {
 						assert.ifError(error);

@@ -21,7 +21,6 @@ module:
 
             userlogin:             # The name we give to the engine
                 type: userpass     # The type of engine
-                access: user       # Authenticated users can access up to "user" level user commands.
                 config:
                                    # Engine specific config
 

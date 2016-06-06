@@ -4,6 +4,10 @@ exports.ident = {
 		client: {
 			shard: function (value) {
 				return value.index.userId;
+			},
+			acl: function (test) {
+				test('user', '*', { shard: true });
+				test('admin', '*');
 			}
 		},
 		volatileVault: {}
@@ -47,6 +51,10 @@ exports.shardTest = {
 		client: {
 			shard: function (value) {
 				return value.data;
+			},
+			acl: function (test) {
+				test('user', '*', { shard: true });
+				test('admin', '*');
 			}
 		},
 		volatileVault: {}
@@ -59,6 +67,10 @@ exports.session = {
 		client: {
 			shard: function (value) {
 				return value.index.actorId;
+			},
+			acl: function (test) {
+				test('user', 'get', { shard: true });
+				test('admin', '*');
 			}
 		},
 		volatileVault: {}
@@ -71,6 +83,9 @@ exports.scratch = {
 		client: {
 			shard: function () {
 				return true;
+			},
+			acl: function (test) {
+				test('admin', '*');
 			}
 		},
 		volatileVault: {}
@@ -92,6 +107,10 @@ exports.user = {
 		client: {
 			shard: function (value) {
 				return value.index.userId;
+			},
+			acl: function (test) {
+				test('user', '*', { shard: true });
+				test('admin', '*');
 			}
 		},
 		volatileVault: {}

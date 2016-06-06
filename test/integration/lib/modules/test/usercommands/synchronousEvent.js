@@ -1,4 +1,4 @@
-exports.access = 'user';
+exports.acl = ['user'];
 
 exports.params = [];
 

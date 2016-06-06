@@ -235,7 +235,7 @@ into the server to execute the gift transaction. When you implement a user comma
 **automatically** expose it on your client module. The user command function is named the same as
 the implementation's filename. Requirements inside the user command are:
 
-- Export an access level.
+- Export an access control list. Built in access tag are '*', 'user', and 'admin'
 - Export an `execute` function that contains the logic for the operation and follows the `params`.
 - Export a `params` array that describes the `execute` function, but excludes `state` and `callback`, which always exist.
 
@@ -246,7 +246,7 @@ var mage = require('mage');
 
 // The requester needs to be at least an authenticated user.
 
-exports.access = 'user';
+exports.acl = ['user'];
 
 // Export the user command's signature.
 

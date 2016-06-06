@@ -1,6 +1,6 @@
 var mage = require('mage');
 
-exports.access = 'anonymous';
+exports.acl = ['*'];
 exports.params = ['password'];
 
 exports.execute = function (state, password, cb) {

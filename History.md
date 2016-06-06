@@ -2,6 +2,33 @@
 
 ## vNext
 
+### Access Control List (ACL)
+
+Mage access has been replaced with Access Control List.
+* Users can now specify a list of "tags" (E.g: '*', 'admin', 'cms') on a user command to allow a user with the tag to access it.
+* A wildcard '*' tag allows any user command to be accessed by any user.
+* In development mode every user will be granted '*' tag automatically, please test your ACL under development mode is false.
+* User commands that do not have `exports.acl` attribute specified or an empty `exports.acl = []` will not be accessible by anyone.
+* The previous `exports.access = 'user'` attribute in a user command has been replaced with `exports.acl = ['user']`.
+* By default, there are three built in tags namely "*", "admin" and "user". However, you can specify any custom tag as you wish.
+* Ident module `register` API for user creation receives an `acl` attribute through the `options` parameter. `acl` is an array
+  with all the tags accessible by this user. Therefore it is a suggestion that you at least specify a built in tag to a user.
+
+### ACL for archivist
+
+ACL can also be used with archivist.
+* In `lib/archivist` you can configure acl test for each topic to provide appropriate access to a user.
+* For example: adding the "acl" attribute to the vault client config.
+```
+acl: function (test) {
+	test('user', 'get', { shard: true });
+	test('admin', '*');
+}
+```
+* `test` function will receives user tag in first parameter (array or string). Any tags supported by ACL.
+* `test` function will receives operation key in first parameter (array or string). Available key are "get", "set", "touch", "del", "list" and "*".
+* Third parameter is an optional object with only one "shard" option for now. This option ensure to includes the sharding check.
+
 ### Bugfixes and improvements
 
 
