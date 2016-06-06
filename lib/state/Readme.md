@@ -56,11 +56,11 @@ Returns the registered description.
 
 Returns the language of the registered session. Returns `en` if none is known.
 
-### state.emit(string actorId, string path, data, string language, boolean isJson)
+### state.emit(string actorId|string actorIds[], string path, data, string language, boolean isJson)
 
 Emits an event to the given actorId's client.
 
-* actorId: The actorId to emit to.
+* actorId: The actorId or actorIds (array) to emit to.
 * path: The event name (or dot separated path).
 * data: Any data you want to send with this event.
 * language: A language code that may be given if the data is bound to a single language only.
@@ -73,11 +73,6 @@ Broadcast an event to all the actors.
 * path: The event name (or dot separated path).
 * data: Any data you want to send with this event.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
-
-### state.emitToActors(array actorIds, string path, data, string language, boolean isJson)
-
-Just like `emit`, but for multiple actors at once. The actorIds argument is an array of actor ID
-strings.
 
 ### state.error(string code, string logDetails, Function callback)
 
