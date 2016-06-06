@@ -20,6 +20,9 @@ function actorToAddress(actorId) {
 }
 
 var fakeMage = {
+	isDevelopmentMode: function () {
+		return false;
+	},
 	session: {
 		getActorAddresses: function (state, actorIds, cb) {
 			cb(null, actorIds.map(actorToAddress));
