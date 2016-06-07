@@ -200,6 +200,7 @@ The format is as follows:
 
 ```javascript
 exports.myTopicName = {
+	mediaType: 'application/json',
 	readOptions: {
 	},
 	index: ['propName', 'propName'],
@@ -215,6 +216,8 @@ exports.myTopicName = {
 Where you do this for each topic you want to store in your vaults. The `index` array must be
 provided if your topic depends on an index. This array is the signature of the indexes you will
 provide when referring to data.
+
+If `mediaType` is provided, this topic's media type will default to the specified value. 
 
 The `readOptions` object may be supplied to overwrite default `options` that are used when reading
 from your archivist. The following defaults are defined, and they can be individually replaced:
