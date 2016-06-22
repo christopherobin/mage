@@ -55,7 +55,13 @@ describe('State class', function () {
 	});
 
 	it('It should be constructable', function (done) {
-		var session = { actorId: 'abc' };
+		var session = {
+			actorId: 'abc',
+			getData: function (key) {
+				return undefined;
+			}
+		};
+
 		var state = new State(null, session);
 
 		assert.strictEqual(state.session, session);
