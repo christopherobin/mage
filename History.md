@@ -2,46 +2,76 @@
 
 ## vNext
 
+### Session variables
+
+Like in the good old days of PHP, MAGE now supports session variables. That means there is now a public API to store
+any JSON serializable information on a session. In your user commands you will have direct access to these values, since
+sessions are resolved (and their variables loaded) before running any user command. This means that reading session
+variables during user commands is essentially a free operation. See the
+[Session module](./lib/modules/session/Readme.md) documentation for more info.
+
+### Who's online?
+
+You can now check if a user is online (read: has an active session) by calling
+`state.findActors(string actorIds[], Function callback)`. The logic behind this method is also run internally when
+emitting events, and its results are cached. That means that running this function before emitting to other users can
+be considered to be essentially a free operation. See the [State](./lib/state/Readme.md) documentation for more info.
+
+### state.emitToActors deprecated
+
+When emitting a message to multiple actors at once, you were expected to use this function. Now you can just call
+`state.emit` with an array of actorIds instead of a single actorId string. So from now on, please use `state.emit` for
+event emission everywhere.
+
 ### Access Control List (ACL)
 
-Mage access has been replaced with Access Control List.
-* Users can now specify a list of "tags" (E.g: '*', 'admin', 'cms') on a user command to allow a user with the tag to access it.
-* A wildcard '*' tag allows any user command to be accessed by any user.
-* In development mode every user will be granted '*' tag automatically, please test your ACL under development mode is false.
-* User commands that do not have `exports.acl` attribute specified or an empty `exports.acl = []` will not be accessible by anyone.
-* The previous `exports.access = 'user'` attribute in a user command has been replaced with `exports.acl = ['user']`.
-* By default, there are three built in tags namely "*", "admin" and "user". However, you can specify any custom tag as you wish.
-* Ident module `register` API for user creation receives an `acl` attribute through the `options` parameter. `acl` is an array
-  with all the tags accessible by this user. Therefore it is a suggestion that you at least specify a built in tag to a user.
+#### ACL for User Commands
 
-### ACL for archivist
+Mage user command "access" has been replaced with Access Control Lists.
 
-ACL can also be used with archivist.
-* In `lib/archivist` you can configure acl test for each topic to provide appropriate access to a user.
-* For example: adding the "acl" attribute to the vault client config.
-```
-acl: function (test) {
-	test('user', 'get', { shard: true });
-	test('admin', '*');
+* Users can now specify an array of "tags" (E.g: '*', 'admin', 'cms') on a user command to allow users with at least
+  one of those tags to run it.
+* A wildcard '*' tag allows a user command to be run by any user.
+* Tagging a user with the wildcard tag allows the user to run any user command.
+* In development mode, every user will be granted the wildcard tag automatically.
+* User commands that do not have an `exports.acl` property specified or an empty `exports.acl = []` will not be able to
+  be run by anyone.
+* The previous `exports.access = 'foo'` property in existing user commands has been replaced with
+  `exports.acl = ['foo']`.
+* By default, there are three built-in tags namely "*", "admin" and "user". However, you can name tag any way you wish.
+* The ident module's `register` API for user creation receives an `acl` attribute through the `options` parameter. `acl`
+  is an array with all the tags accessible by this user. Therefore it is a suggestion that you at least attach one
+  built-in tag to a user.
+
+#### ACL for Archivist
+
+ACL can also be used with archivist's client vault. In `lib/archivist` you can configure an ACL test-function for each
+topic to set access-rules for users. That function receives a function called `test` that accepts:
+
+1. ACL-tag(s) (array or string).
+2. The archivist operation(s) (array or string). Available keys are "get", "set", "touch", "del", "list" and "*".
+3. An optional options-object that takes the `shard` boolean. This ensures data is only exposed to users sharded to.
+
+Configuration of the client vault could look as follows:
+
+```js
+{
+    acl: function (test) {
+        test('user', 'get', { shard: true });
+        test('admin', '*');
+    }
 }
 ```
-* `test` function will receives user tag in first parameter (array or string). Any tags supported by ACL.
-* `test` function will receives operation key in first parameter (array or string). Available key are "get", "set", "touch", "del", "list" and "*".
-* Third parameter is an optional object with only one "shard" option for now. This option ensure to includes the sharding check.
 
 ### Bugfixes and improvements
 
-
-### Component updates
-
-| dependency          | from  | to    | changes
-|---------------------|-------|-------|------------------------------------------------------------------------------|
+* When creating a Couchbase N1QL index, we weren't waiting properly for creation to complete.
 
 ### Dependency Updates
 
 | dependency          | from   | to      | changes                                                                   |
 |---------------------|--------|---------|---------------------------------------------------------------------------|
-| component-x         | 0.1.0  | ~0.1.1  |                                                                           |
+| component-x         | 0.1.0  | ~0.1.1  | Removes the unused "jog" dependency (which was breaking)                  |
 
 
 ## v0.48.0 - Modern Node Cat

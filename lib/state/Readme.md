@@ -41,8 +41,7 @@ If a timeout has been set, this will remove it.
 
 ### boolean state.canAccess(string accessLevel)
 
-Returns `true` if the registered session is authorised at the given access level or beyond. Returns
-`false` otherwise. If no session is registered, the state object's access level becomes "anonymous".
+Returns `true` if the registered session is authorised at the given access level. Returns `false` otherwise.
 
 ### state.setDescription(string desc)
 
