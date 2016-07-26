@@ -11,6 +11,10 @@ FakeArchivist.prototype.distribute = function (cb) {
 };
 
 function actorToAddress(actorId) {
+	if (actorId.indexOf('offline') !== -1) {
+		return;
+	}
+
 	return {
 		actorId: actorId,
 		language: 'en',
@@ -25,7 +29,7 @@ var fakeMage = {
 	},
 	session: {
 		getActorAddresses: function (state, actorIds, cb) {
-			cb(null, actorIds.map(actorToAddress));
+			cb(null, actorIds.map(actorToAddress).filter(Boolean));
 		}
 	},
 	core: {
@@ -87,6 +91,8 @@ describe('State class', function () {
 		state.emit('jkl', 'test.7', { seven: 7 });         // to other user
 
 		state.close(function (error, output) {
+			assert.ifError(error);
+
 			assert.deepEqual(output.myEvents, [
 				'["test.1",{"hello":"world"}]',
 				'["test.2",{"goodbye":"world"}]'
@@ -97,6 +103,20 @@ describe('State class', function () {
 				{ addrName: 'addr:ghi', clusterId: 'cluster:ghi', payload: '[["test.4",{"four":4}],["test.5",{"five":5}]]' },
 				{ addrName: 'addr:jkl', clusterId: 'cluster:jkl', payload: '[["test.7",{"seven":7}]]' }
 			]);
+
+			done();
+		});
+	});
+
+	it('Should find actors', function (done) {
+		var state = new State('abc');
+		state.findActors(['def', 'foo', 'offline', 'bar'], function (error, found) {
+			assert.ifError(error);
+
+			assert.deepEqual(found, {
+				online: ['def', 'foo', 'bar'],
+				offline: ['offline']
+			});
 
 			done();
 		});
