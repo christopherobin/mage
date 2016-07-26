@@ -3,7 +3,7 @@
 	"description": "Document editor",
 	"dependencies": {
 		"mage/mage.js": "0.2.6",
-		"Wizcorp/node-tomes": "0.2.1"
+		"Wizcorp/node-tomes": "0.2.3"
 	},
 	"scripts": [
 		"index.js"

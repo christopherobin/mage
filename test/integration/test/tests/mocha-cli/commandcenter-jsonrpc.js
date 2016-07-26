@@ -110,7 +110,6 @@ describe('commandCenter', function () {
 					engineName: 'anonymous',
 					credentials: null,
 					options: {
-						access: 'user'
 					}
 				}, 1, function (err, response) {
 					if (err) {
@@ -209,7 +208,6 @@ describe('commandCenter', function () {
 					engineName: 'anonymous',
 					credentials: null,
 					options: {
-						access: 'user'
 					}
 				}, 1, function (err, response) {
 					if (err) {

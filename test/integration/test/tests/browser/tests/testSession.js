@@ -26,7 +26,7 @@ describe('Session module', function () {
 	it('anonymous login', function (done) {
 		assert(!mage.session.getKey());
 
-		mage.session.loginAnonymous('admin', function (error) {
+		mage.session.loginAnonymous(['admin'], function (error) {
 			assert.ifError(error);
 			assert(mage.session.getKey());
 
@@ -56,7 +56,7 @@ describe('Session module', function () {
 		it('cannot login as a falsy actor ID', function (done) {
 			assert(!mage.session.getKey());
 
-			mage.session.loginAsActor(null, 'admin', function (error) {
+			mage.session.loginAsActor(null, ['admin'], function (error) {
 				assert(error);
 				done();
 			});
@@ -66,7 +66,7 @@ describe('Session module', function () {
 		var actorId2 = '67890';
 
 		it('can login as a random actor ID', function (done) {
-			mage.session.loginAsActor(actorId1, 'admin', function (error) {
+			mage.session.loginAsActor(actorId1, ['admin'], function (error) {
 				assert.ifError(error);
 				assert.strictEqual(actorId1, mage.session.getActorId());
 

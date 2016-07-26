@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-exports.access = 'anonymous';
+exports.acl = ['*'];
 
 exports.params = ['testType'];
 

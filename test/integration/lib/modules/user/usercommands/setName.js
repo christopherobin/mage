@@ -1,6 +1,6 @@
 var mage = require('mage');
 
-exports.access = 'user';
+exports.acl = ['user'];
 exports.params = ['name'];
 
 exports.execute = function (state, name, cb) {

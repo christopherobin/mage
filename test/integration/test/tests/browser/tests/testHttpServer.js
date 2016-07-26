@@ -33,7 +33,7 @@ describe('HTTP Server', function () {
 
 	before(function (done) {
 		mage = require('mage');
-		mage.session.loginAnonymous('admin', function (error) {
+		mage.session.loginAnonymous(['admin'], function (error) {
 			assert.ifError(error);
 			assert(mage.session.getKey());
 

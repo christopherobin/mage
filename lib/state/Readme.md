@@ -41,8 +41,7 @@ If a timeout has been set, this will remove it.
 
 ### boolean state.canAccess(string accessLevel)
 
-Returns `true` if the registered session is authorised at the given access level or beyond. Returns
-`false` otherwise. If no session is registered, the state object's access level becomes "anonymous".
+Returns `true` if the registered session is authorised at the given access level. Returns `false` otherwise.
 
 ### state.setDescription(string desc)
 
@@ -56,11 +55,11 @@ Returns the registered description.
 
 Returns the language of the registered session. Returns `en` if none is known.
 
-### state.emit(string actorId, string path, data, string language, boolean isJson)
+### state.emit(string actorId|string actorIds[], string path, data, string language, boolean isJson)
 
 Emits an event to the given actorId's client.
 
-* actorId: The actorId to emit to.
+* actorId: The actorId or actorIds (array) to emit to.
 * path: The event name (or dot separated path).
 * data: Any data you want to send with this event.
 * language: A language code that may be given if the data is bound to a single language only.
@@ -74,10 +73,21 @@ Broadcast an event to all the actors.
 * data: Any data you want to send with this event.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
 
-### state.emitToActors(array actorIds, string path, data, string language, boolean isJson)
+### state.findActors(string actorIds[], Function callback)
 
-Just like `emit`, but for multiple actors at once. The actorIds argument is an array of actor ID
-strings.
+This looks up all actors' sessions, to see which actors are online and which are not. This can be useful when managing
+a pool of users in a room for example. The callback function receives an error argument (in case of database failure),
+and a `found` argument which is the following object:
+
+```js
+var found = {
+	online: ['someActorId', 'someActorId3'],
+	offline: ['someActorId2']
+};
+```
+
+These lists will contain all actorIds you have passed into the function, but divided into an `online` and an `offline`
+group.
 
 ### state.error(string code, string logDetails, Function callback)
 

@@ -1,6 +1,84 @@
 # Release history
 
-## vNEXT
+## vNext
+
+### Session variables
+
+Like in the good old days of PHP, MAGE now supports session variables. That means there is now a public API to store
+any JSON serializable information on a session. In your user commands you will have direct access to these values, since
+sessions are resolved (and their variables loaded) before running any user command. This means that reading session
+variables during user commands is essentially a free operation. See the
+[Session module](./lib/modules/session/Readme.md) documentation for more info.
+
+### Who's online?
+
+You can now check if a user is online (read: has an active session) by calling
+`state.findActors(string actorIds[], Function callback)`. The logic behind this method is also run internally when
+emitting events, and its results are cached. That means that running this function before emitting to other users can
+be considered to be essentially a free operation. See the [State](./lib/state/Readme.md) documentation for more info.
+
+### state.emitToActors deprecated
+
+When emitting a message to multiple actors at once, you were expected to use this function. Now you can just call
+`state.emit` with an array of actorIds instead of a single actorId string. So from now on, please use `state.emit` for
+event emission everywhere.
+
+### Access Control List (ACL)
+
+#### ACL for User Commands
+
+Mage user command "access" has been replaced with Access Control Lists.
+
+* Users can now specify an array of "tags" (E.g: '*', 'admin', 'cms') on a user command to allow users with at least
+  one of those tags to run it.
+* A wildcard '*' tag allows a user command to be run by any user.
+* Tagging a user with the wildcard tag allows the user to run any user command.
+* In development mode, every user will be granted the wildcard tag automatically.
+* User commands that do not have an `exports.acl` property specified or an empty `exports.acl = []` will not be able to
+  be run by anyone.
+* The previous `exports.access = 'foo'` property in existing user commands has been replaced with
+  `exports.acl = ['foo']`.
+* By default, there are three built-in tags namely "*", "admin" and "user". However, you can name tag any way you wish.
+* The ident module's `register` API for user creation receives an `acl` attribute through the `options` parameter. `acl`
+  is an array with all the tags accessible by this user. Therefore it is a suggestion that you at least attach one
+  built-in tag to a user.
+
+#### ACL for Archivist
+
+ACL can also be used with archivist's client vault. In `lib/archivist` you can configure an ACL test-function for each
+topic to set access-rules for users. That function receives a function called `test` that accepts:
+
+1. ACL-tag(s) (array or string).
+2. The archivist operation(s) (array or string). Available keys are "get", "set", "touch", "del", "list" and "*".
+3. An optional options-object that takes the `shard` boolean. This ensures data is only exposed to users sharded to.
+
+Configuration of the client vault could look as follows:
+
+```js
+{
+    acl: function (test) {
+        test('user', 'get', { shard: true });
+        test('admin', '*');
+    }
+}
+```
+
+### Bugfixes and improvements
+
+* When creating a Couchbase N1QL index, we weren't waiting properly for creation to complete.
+
+### Dependency Updates
+
+| dependency          | from   | to      | changes                                                                   |
+|---------------------|--------|---------|---------------------------------------------------------------------------|
+| component-x         | 0.1.0  | ~0.1.1  | Removes the unused "jog" dependency (which was breaking)                  |
+
+
+## v0.48.0 - Modern Node Cat
+
+### Node.js
+
+MAGE is now compatible with Node.js 0.10, 0.12, 4 and 5!
 
 ### Bugfixes and improvements
 
@@ -11,21 +89,26 @@
 * Added archivist operation errors to distribute callback
 * Added couchbase create & drop database (bucket) capabilities
 * Added daemon timeouts to configuration
+* Changed memwatch dependency to memwatch-next as it is an up to date fork
+* Changed mdns2 back to mdns as it has been updated back with mdns2 changes
 
 ### Component updates
 
 | dependency          | from  | to    | changes
 |---------------------|-------|-------|------------------------------------------------------------------------------|
 | mage/mage.js        | 0.2.5 | 0.2.6 | [Release notes](https://github.com/mage/mage.js/releases/tag/0.2.6)          |
-| Wizcorp/node-tomes  | 0.1.0 | 0.2.1 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md) |
+| Wizcorp/node-tomes  | 0.1.0 | 0.2.3 | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.3/HISTORY.md) |
 
 ### Dependency Updates
 
 | dependency          | from   | to      | changes                                                                              |
 |---------------------|--------|---------|--------------------------------------------------------------------------------------|
-| tomes               | 0.1.0  | 0.2.1   | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.1/HISTORY.md)         |
+| tomes               | 0.1.0  | 0.2.3   | [Release notes](https://github.com/Wizcorp/node-tomes/blob/0.2.3/HISTORY.md)         |
 | couchbase           | 1.2.2  | 2.1.6   |                                                                                      |
-| zmq                 | ^2.8.0 | ^2.14.0 | [Release notes](https://github.com/JustinTulloss/zeromq.node/blob/2.14.0/History.md) |
+| zmq                 | ^2.8.0 | ~2.14.0 | [Release notes](https://github.com/JustinTulloss/zeromq.node/blob/2.14.0/History.md) |
+| heapdump            | 0.3.3  | 0.3.7   |                                                                                      |
+| sqlite3             | ~3.0.0 | ~3.1.0  |                                                                                      |
+| ldapjs              | 0.6.3  | 0.7.1   |                                                                                      |
 
 
 ## v0.47.0 - Waiting for ages cat

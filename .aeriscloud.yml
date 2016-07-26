@@ -57,11 +57,12 @@ services:
 #   cpu: how many CPU do you want to start this machine with?
 #   ram: how much RAM do you want to start this machine with?
 #
-infras:
-  - name: aws
-    basebox: centos-6.4-prepackaged
+boxes:
+  - name: centos
+    basebox: base/centos-6.6
     cpu: 1
     ram: 2048
+basebox_url: http://boxes-aeriscloud.wizcorp.jp/meta
 
 #
 # Activate debugging of the provisioning process
@@ -81,3 +82,4 @@ infras:
 #
 timezone: Asia/Tokyo
 node_version: v0.10.35
+xtradb_version: "56"

@@ -8,7 +8,7 @@ describe('Server events', function () {
 		mage = require('mage');
 		fullConfig = mage.config.server.msgStream;
 
-		mage.session.loginAnonymous('admin', function (error) {
+		mage.session.loginAnonymous(['admin'], function (error) {
 			assert.ifError(error);
 			assert(mage.session.getKey());
 

@@ -1,10 +1,45 @@
-Session Module
-==============
+# Session Module
 
 Session management.
 
-User Commands
---------------
+## API
+
+The session object can often be found on `state.session`. The `Session` class exposes the following API:
+
+**string session.actorId**
+
+The user ID associated with this session.
+
+**string session.language**
+
+The language code associated with this user/session.
+
+**session.expire(State state, string reason)**
+
+Expires the session and communicates it to the client passing the given reason.
+
+**session.extend(State state)**
+
+Recalculates a new expiration time for the session and saves it.
+
+### Session variables
+
+You can store arbitrary data on a session object.
+
+**mixed session.getData(string key)**
+
+Returns data for the given key.
+
+**session.setData(string key, mixed value)**
+
+Sets data at a given key.
+
+**session.delData(string key)**
+
+Deletes the data at a given key.
+
+
+## User Commands
 
 ### isValid(sessionKey, callback(err))
 
