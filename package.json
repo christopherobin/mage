@@ -83,7 +83,7 @@
 	"main": "lib/mage",
 	"scripts": {
 		"test": "make test",
-		"postinstall": "./scripts/install.js"
+		"postinstall": "node ./scripts/install.js"
 	},
 	"repository": {
 		"type": "git",
