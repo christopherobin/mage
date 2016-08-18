@@ -41,8 +41,7 @@ If a timeout has been set, this will remove it.
 
 ### boolean state.canAccess(string accessLevel)
 
-Returns `true` if the registered session is authorised at the given access level or beyond. Returns
-`false` otherwise. If no session is registered, the state object's access level becomes "anonymous".
+Returns `true` if the registered session is authorised at the given access level. Returns `false` otherwise.
 
 ### state.setDescription(string desc)
 
@@ -73,6 +72,22 @@ Broadcast an event to all the actors.
 * path: The event name (or dot separated path).
 * data: Any data you want to send with this event.
 * isJson: If the data is a pre-serialized JSON string, pass `true`.
+
+### state.findActors(string actorIds[], Function callback)
+
+This looks up all actors' sessions, to see which actors are online and which are not. This can be useful when managing
+a pool of users in a room for example. The callback function receives an error argument (in case of database failure),
+and a `found` argument which is the following object:
+
+```js
+var found = {
+	online: ['someActorId', 'someActorId3'],
+	offline: ['someActorId2']
+};
+```
+
+These lists will contain all actorIds you have passed into the function, but divided into an `online` and an `offline`
+group.
 
 ### state.error(string code, string logDetails, Function callback)
 
