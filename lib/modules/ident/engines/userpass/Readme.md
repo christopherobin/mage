@@ -82,11 +82,11 @@ Returns the entire user object which looks something like this:
 }
 ```
 
-### updateUser ( state, username, changes, cb )
-Changes object should match up with properties inside the ident object.
-Note: Currently only password is supported, so it would look like this:
+### updateCredentials ( state, credentials, cb )
+Credentials object should contain existing username and new password like this:
 ``` json
 {
+	"username": "info@wizcorp.jp",
 	"password": "new password"
 }
 ```

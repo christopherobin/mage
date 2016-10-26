@@ -4,9 +4,9 @@ exports.acl = ['user'];
 exports.params = ['newPassword'];
 
 exports.execute = function (state, newPassword, cb) {
-	var userId = state.actorId;
+	var credentials = { username: state.actorId, password: newPassword };
 
-	mage.user.changePassword(state, userId, newPassword, function (error) {
+	mage.user.changePassword(state, credentials, function (error) {
 		if (error) {
 			return state.error(error, error, cb);
 		}
