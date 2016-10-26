@@ -104,4 +104,50 @@ describe('Ident module', function () {
 			});
 		});
 	});
+
+	it('Can update existing user password, and not login with old password', function (done) {
+		var newPassword = 'newPassword';
+
+		mage.user.register(password, function (error, username) {
+			assert.ifError(error);
+			assert(username, 'no username');
+
+			mage.user.login(username, password, function (error) {
+				assert.ifError(error);
+
+				mage.user.changePassword(newPassword, function (error) {
+					assert.ifError(error);
+
+					mage.user.login(username, password, function (error) {
+						assert.equal(error, 'invalidPassword');
+
+						done();
+					});
+				});
+			});
+		});
+	});
+
+	it('Can update existing user password, and login with new password', function (done) {
+		var newPassword = 'newPassword';
+
+		mage.user.register(password, function (error, username) {
+			assert.ifError(error);
+			assert(username, 'no username');
+
+			mage.user.login(username, password, function (error) {
+				assert.ifError(error);
+
+				mage.user.changePassword(newPassword, function (error) {
+					assert.ifError(error);
+
+					mage.user.login(username, newPassword, function (error) {
+						assert.ifError(error);
+
+						done();
+					});
+				});
+			});
+		});
+	});
 });

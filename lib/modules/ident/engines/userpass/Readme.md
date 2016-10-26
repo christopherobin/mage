@@ -82,6 +82,15 @@ Returns the entire user object which looks something like this:
 }
 ```
 
+### updateUser ( state, username, changes, cb )
+Changes object should match up with properties inside the ident object.
+Note: Currently only password is supported, so it would look like this:
+``` json
+{
+	"password": "new password"
+}
+```
+
 ### listUsers ( state, cb )
 Returns a list of usernames and userIds, like this:
 ``` json

@@ -89,3 +89,11 @@ exports.login = function (state, username, password, cb) {
 		});
 	});
 };
+
+exports.changePassword = function (state, username, newPassword, cb) {
+	var engine = mage.ident.getEngine(IDENT_ENGINE);
+
+	var changes = { password: newPassword };
+
+	engine.updateUser(state, username, changes, cb);
+};
