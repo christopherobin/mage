@@ -82,6 +82,15 @@ Returns the entire user object which looks something like this:
 }
 ```
 
+### updateCredentials ( state, credentials, cb )
+Credentials object should contain existing username and new password like this:
+``` json
+{
+	"username": "info@wizcorp.jp",
+	"password": "new password"
+}
+```
+
 ### listUsers ( state, cb )
 Returns a list of usernames and userIds, like this:
 ``` json

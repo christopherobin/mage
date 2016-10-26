@@ -89,3 +89,9 @@ exports.login = function (state, username, password, cb) {
 		});
 	});
 };
+
+exports.changePassword = function (state, credentials, cb) {
+	var engine = mage.ident.getEngine(IDENT_ENGINE);
+
+	engine.updateCredentials(state, credentials, cb);
+};
