@@ -70,6 +70,8 @@ Configuration of the client vault could look as follows:
 }
 ```
 
+**Please note** that the shard mechanism is going to change in an upcoming version of MAGE.
+
 ### JSON-RPC
 
 This has been supported for quite a while, but was hurting our architecture while nobody was using it. For this reason
@@ -77,6 +79,7 @@ we have decided to remove it.
 
 ### Bugfixes and improvements
 
+* When a worker crashes, the log entry by the master process is now more verbose (logging the exit code and signal).
 * The `ident` module now has an `updateCredentials` API.
 * Added `serviceName` option to `server` configuration to allow specifying unique names between environments in the same
   physical cluster.
@@ -85,6 +88,7 @@ we have decided to remove it.
 * Fix in the fetching logic of the Couchbase migrations log.
 * Made the package.json "engines" field more explicit about specific supported Node versions.
 * The location of the PID file is now configurable (under `daemon.pidfile`).
+* Savvy socket filename is now configurable (under `savvy.sockfile`).
 * Fixed error reporting in `mage.setup()`.
 * Fixed a bug in the session module that made it depend on the `mage.logger` module, which crashed if you did not
   call `mage.useModules('logger');`.
@@ -100,6 +104,7 @@ we have decided to remove it.
 | dependency          | from   | to      | changes                                                                   |
 |---------------------|--------|---------|---------------------------------------------------------------------------|
 | component-x         | 0.1.0  | ~0.1.1  | Removes the unused "jog" dependency (which was breaking)                  |
+| jayson              | 1.1.3  | removed |                                                                           |
 
 ### Component updates
 
