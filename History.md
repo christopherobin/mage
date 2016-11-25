@@ -10,14 +10,21 @@ sessions are resolved (and their variables loaded) before running any user comma
 variables during user commands is essentially a free operation. See the
 [Session module](./lib/modules/session/Readme.md) documentation for more info.
 
-### Who's online?
+### State
+
+#### Who's online?
 
 You can now check if a user is online (read: has an active session) by calling
 `state.findActors(string actorIds[], Function callback)`. The logic behind this method is also run internally when
 emitting events, and its results are cached. That means that running this function before emitting to other users can
 be considered to be essentially a free operation. See the [State](./lib/state/Readme.md) documentation for more info.
 
-### state.emitToActors deprecated
+#### state.respond improvements
+
+* `state.respond` now takes a 2nd argument (boolean) to indicate that the response is already JSON serialized.
+* `state.respond` now immediately serializes to JSON (if it needs to), and no longer does a deep-copy on the response.
+
+#### state.emitToActors deprecated
 
 When emitting a message to multiple actors at once, you were expected to use this function. Now you can just call
 `state.emit` with an array of actorIds instead of a single actorId string. So from now on, please use `state.emit` for
@@ -63,15 +70,42 @@ Configuration of the client vault could look as follows:
 }
 ```
 
+### JSON-RPC
+
+This has been supported for quite a while, but was hurting our architecture while nobody was using it. For this reason
+we have decided to remove it.
+
 ### Bugfixes and improvements
 
+* The `ident` module now has an `updateCredentials` API.
+* Added `serviceName` option to `server` configuration to allow specifying unique names between environments in the same
+  physical cluster.
+* Archivist's `beforeDistribute` handler now allows users to still access the database for fresh data.
 * When creating a Couchbase N1QL index, we weren't waiting properly for creation to complete.
+* Fix in the fetching logic of the Couchbase migrations log.
+* Made the package.json "engines" field more explicit about specific supported Node versions.
+* The location of the PID file is now configurable (under `daemon.pidfile`).
+* Fixed error reporting in `mage.setup()`.
+* Fixed a bug in the session module that made it depend on the `mage.logger` module, which crashed if you did not
+  call `mage.useModules('logger');`.
+* Fixed a missing "session.unset" event.
+* Fixed Windows compatibility issues in:
+  * Component installation logic;
+  * The post-install script;
+  * The HTTP server binding logic;
+  * The Savvy server binding logic.
 
 ### Dependency Updates
 
 | dependency          | from   | to      | changes                                                                   |
 |---------------------|--------|---------|---------------------------------------------------------------------------|
 | component-x         | 0.1.0  | ~0.1.1  | Removes the unused "jog" dependency (which was breaking)                  |
+
+### Component updates
+
+| dependency                   | from  | to    | changes |
+|------------------------------|-------|-------|---------|
+| ericclemmons/unique-selector | 0.0.3 | 0.0.4 |         |
 
 
 ## v0.48.0 - Modern Node Cat
