@@ -1,6 +1,6 @@
 # Release history
 
-## vNext
+## v0.49.0 - High Five Cat
 
 ### Session variables
 
