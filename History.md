@@ -1,5 +1,12 @@
 # Release history
 
+## vNEXT
+
+### Bugfixes and improvements
+
+* Fixed a stack overflow when sending too many user commands in a batch that either don't exist, or don't pass ACL.
+
+
 ## v0.49.0 - High Five Cat
 
 ### Session variables
