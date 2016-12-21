@@ -4,7 +4,10 @@
 
 ### Bugfixes and improvements
 
+* state.data now has a `batch` property which contains information about the RPC-batch request.
+* Fixed the JSON response when calling a user command that didn't exist.
 * Fixed a stack overflow when sending too many user commands in a batch that either don't exist, or don't pass ACL.
+* Widened the supported node-couchbase versions from 2.1.6 to ^2.1.6.
 
 
 ## v0.49.0 - High Five Cat
