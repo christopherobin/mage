@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.49.1 - iCat
 
 ### Bugfixes and improvements
 
