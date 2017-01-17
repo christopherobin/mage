@@ -113,6 +113,35 @@ describe('Server events', function () {
 		});
 	});
 
+	describe('Session expired behavior', function () {
+		var key;
+		var dummyKey = 'foo:bar';
+
+		before(function () {
+			key = mage.session.getKey();
+			mage.session.setKey(dummyKey);
+			mage.msgServer.stream.setSessionKey(dummyKey);
+		});
+
+		after(function () {
+			mage.session.setKey(key);
+			mage.msgServer.stream.setSessionKey(key);
+			mage.msgServer.stream.abort();
+			mage.msgServer.stream.start();
+		});
+
+		it('Disconnects session when the session has expired', function (done) {
+			mage.eventManager.once('session.unset', function (evtName, data) {
+				assert.strictEqual(evtName, 'session.unset');
+				assert.strictEqual(data, 'noSession');
+				done();
+			});
+
+			mage.msgServer.stream.abort();
+			mage.msgServer.stream.start();
+		});
+	});
+
 	describe('Server gone behavior', function () {
 		it('Disconnects session when its host cannot be located', function (done) {
 			mage.eventManager.once('session.unset', function (evtName, data) {

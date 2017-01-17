@@ -2,6 +2,22 @@
 
 The message server is in charge of message propagation through the network and between the clients and the backend.
 
+## Cluster Identification
+
+Currently the message server system will identify itself as being a part of a cluster by using the application root
+package name and version. However in environment where multiple instances of the same application and version are run,
+there will be conflicts with the messaging system. (e.g. inside single box which houses multiple test environments).
+
+To prevent pollution and contamination of messages, the `server.serviceName` configuration entry needs to be set, to
+give each environment a unique identifier.
+
+Example:
+
+```yaml
+server:
+    serviceName: applicationName-environmentID
+```
+
 ## Subsystems
 
 The systems that make the message server and their configuration are described below.
