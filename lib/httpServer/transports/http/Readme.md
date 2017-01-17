@@ -50,7 +50,7 @@ Removes the handler function registered on the given route.
 
 ## Simple file serving
 
-### httpServer.serveFolder(route, folderPath, [onFinish])
+### httpServer.serveFolder(route, folderPath, [defaultFile], [onFinish])
 
 Registers a route to lead directly to a folder on disk. If you want to be notified when a request finishes, you may pass
 an `onFinish` function. It may receive an error as its first argument. If you decide to pass this function, logging the
@@ -61,6 +61,16 @@ Example:
 ```js
 mage.core.httpServer.serveFolder('/source', './lib');
 ```
+
+If you provide a `defaultFile` file name argument, serving up a folder by its name will serve up a default file if it
+exists.
+
+Example:
+
+```js
+mage.core.httpServer.serveFolder('/source', './lib', 'index.html');
+```
+
 
 ### httpServer.serveFile(route, filePath, [onFinish])
 
