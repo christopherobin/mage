@@ -5,10 +5,6 @@
 The [installation guide](./Install.md) will guide you through the necessary steps to install MAGE.
 But before you go there, please make sure that the requirements described below are met.
 
-If you are using [AerisCloud](https://github.com/Wizcorp/AerisCloud) to run your project, all the
-requirements that are described here are automatically taken care of.
-
-
 ## Operating system
 
 MAGE is currently only supported to run on Linux and Mac OS X.
