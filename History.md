@@ -1,6 +1,6 @@
 # Release history
 
-## vNEXT
+## v0.50.0 - Final-form Cat
 
 ### Alternative build systems
 
