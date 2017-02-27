@@ -1,5 +1,34 @@
 # Release history
 
+## vNEXT
+
+### Alternative build systems
+
+MAGE now supports build systems other than component.io (finally). These build systems can extract client configuration
+for an app by using the `mage.getClientConfig(appName, baseUrl)` API. There is a Webpack compatible web SDK for MAGE
+that can be found at https://github.com/mage/ (all `mage-sdk-js` prefixed repositories).
+
+### HTTP folder serving
+
+`httpServer.serveFolder` now accepts a `defaultFile` argument that names the file to serve when no file name is present
+in the request.
+
+For example, serving the `./lib` folder as HTTP path `/source`, defaulting to `index.html` if no file name is given:
+
+```js
+mage.core.httpServer.serveFolder('/source', './lib', 'index.html');
+```
+
+### Bugfixes and improvements
+
+* A bug in archivist distribution edge-cases has been fixed (introduced in 0.49.0).
+* Couchbase migration scripts could fail to start due to a JSON parsing issue.
+* Fixed a minor path issue in the HTTP server for Windows systems.
+* The longpolling warning "Client connection disappeared" has been reduced to "debug" level.
+* When calling `state.distribute()` you may now pass an options object (if you really know what you're doing) to ignore
+  `preDistribute` hooks from firing.
+
+
 ## v0.49.1 - iCat
 
 ### Bugfixes and improvements
